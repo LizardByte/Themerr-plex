@@ -1,5 +1,5 @@
 # buildstage
-FROM python:2.7.18-alpine3.11 as buildstage
+FROM python:3.8.7-alpine3.11 as buildstage
 
 # build args
 ARG BUILD_VERSION
