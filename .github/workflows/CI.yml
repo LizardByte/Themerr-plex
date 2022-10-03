@@ -1,0 +1,105 @@
+---
+name: CI
+
+on:
+  pull_request:
+    branches: [master, nightly]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  check_changelog:
+    name: Check Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Verify Changelog
+        id: verify_changelog
+        if: ${{ github.ref == 'refs/heads/master' || github.base_ref == 'master' }}
+        # base_ref for pull request check, ref for push
+        uses: LizardByte/actions/verify_changelog@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      next_version: ${{ steps.verify_changelog.outputs.changelog_parser_version }}
+      last_version: ${{ steps.verify_changelog.outputs.latest_release_tag_name }}
+      release_body: ${{ steps.verify_changelog.outputs.changelog_parser_description }}
+
+  build:
+    runs-on: ubuntu-20.04
+    needs: check_changelog
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: Themerr-plex.bundle
+
+      - name: Install Python 2.7
+        uses: actions/setup-python@v3
+        with:
+          python-version: '2.7'
+
+      - name: Set up Python 2.7 Dependencies
+        working-directory: Themerr-plex.bundle
+        run: |
+          echo "Installing Requirements"
+          python --version
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip setuptools
+
+          # install dev requirements
+          python -m pip install --upgrade -r requirements-dev.txt
+
+          # install plugin requirements
+          python ./scripts/install_requirements.py
+
+      - name: Build plist
+        working-directory: Themerr-plex.bundle
+        env:
+          BUILD_VERSION: ${{ needs.check_changelog.outputs.next_version }}
+        run: |
+          python ./scripts/build_plist.py
+
+      - name: Test Plex Plugin
+        working-directory: Themerr-plex.bundle
+        run: |
+          python ./Contents/Code/__init__.py
+
+      - name: Upload Artifacts
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Themerr-plex.bundle
+          if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
+          path: |
+            ${{ github.workspace }}
+            !**/*.git*
+            !**/*.pyc
+            !**/__pycache__
+            !**/Themerr-plex.bundle/.*
+            !**/Themerr-plex.bundle/cache.sqlite
+            !**/Themerr-plex.bundle/docs
+            !**/Themerr-plex.bundle/scripts
+
+      - name: Package Release
+        shell: bash
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        run: |
+          7z "-xr!*.git*" "-xr!*.pyc" "-xr!__pycache__" "-x!.*" "-x!cache.sqlite" "-x!docs" "-x!scripts" \
+            a "./Themerr-plex.bundle.zip" "Themerr-plex.bundle"
+
+          mkdir artifacts
+          mv ./Themerr-plex.bundle.zip ./artifacts/
+
+      - name: Create Release
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        uses: LizardByte/.github/actions/create_release@master
+        with:
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          next_version: ${{ needs.check_changelog.outputs.next_version }}
+          last_version: ${{ needs.check_changelog.outputs.last_version }}
+          release_body: ${{ needs.check_changelog.outputs.release_body }}

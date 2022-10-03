@@ -1,0 +1,39 @@
+[
+	{
+		"id": "int_upload_timeout",
+		"type": "text",
+		"label": "Upload Timeout (in seconds)",
+		"default": "60",
+		"secure": "false"
+	},
+	{
+		"id": "str_youtube_user",
+		"type": "text",
+		"label": "YouTube Username",
+		"default": "",
+		"secure": "true"
+	},
+	{
+		"id": "str_youtube_passwd",
+		"type": "text",
+		"label": "YouTube Password",
+		"default": "",
+		"option": "hidden",
+		"secure": "true"
+	},
+	{
+		"id": "url_plex_server",
+		"type": "text",
+		"label": "Plex Server URL",
+		"default": "http://localhost:32400",
+		"secure": "true"
+	},
+	{
+		"id": "str_plex_token",
+		"type": "text",
+		"label": "Plex token",
+		"default": "",
+		"option": "hidden",
+		"secure": "true"
+	}
+]
