@@ -40,7 +40,7 @@ jobs:
           path: Themerr-plex.bundle
 
       - name: Install Python 2.7
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '2.7'
 
@@ -82,6 +82,8 @@ jobs:
             !**/__pycache__
             !**/Themerr-plex.bundle/.*
             !**/Themerr-plex.bundle/cache.sqlite
+            !**/Themerr-plex.bundle/DOCKER_README.md
+            !**/Themerr-plex.bundle/Dockerfile
             !**/Themerr-plex.bundle/docs
             !**/Themerr-plex.bundle/scripts
 
@@ -89,7 +91,16 @@ jobs:
         shell: bash
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         run: |
-          7z "-xr!*.git*" "-xr!*.pyc" "-xr!__pycache__" "-x!.*" "-x!cache.sqlite" "-x!docs" "-x!scripts" \
+          7z \
+            "-xr!*.git*" \
+            "-xr!*.pyc" \
+            "-xr!__pycache__" \
+            "-xr!Themerr-plex.bundle\.*" \
+            "-xr!Themerr-plex.bundle\cache.sqlite" \
+            "-xr!Themerr-plex.bundle\DOCKER_README.md" \
+            "-xr!Themerr-plex.bundle\Dockerfile" \
+            "-xr!Themerr-plex.bundle\docs" \
+            "-xr!Themerr-plex.bundle\scripts" \
             a "./Themerr-plex.bundle.zip" "Themerr-plex.bundle"
 
           mkdir artifacts
