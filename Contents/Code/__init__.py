@@ -5,7 +5,7 @@ import re
 import sys
 
 # plex debugging
-if 'plexscripthost' not in sys.executable.lower():  # the code is running outside of Plex
+if 'plexscripthost' not in sys.executable.lower() or sys.executable != '':  # the code is running outside of Plex
     from plexhints import plexhints_setup, update_sys_path
     plexhints_setup()  # read the plugin plist file and determine if plexhints should use elevated policy or not
     update_sys_path()  # when running outside plex, append the path
