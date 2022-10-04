@@ -80,6 +80,7 @@ jobs:
             !**/*.git*
             !**/*.pyc
             !**/__pycache__
+            !**/plexhints*
             !**/Themerr-plex.bundle/.*
             !**/Themerr-plex.bundle/cache.sqlite
             !**/Themerr-plex.bundle/DOCKER_README.md
@@ -95,12 +96,13 @@ jobs:
             "-xr!*.git*" \
             "-xr!*.pyc" \
             "-xr!__pycache__" \
-            "-xr!Themerr-plex.bundle\.*" \
-            "-xr!Themerr-plex.bundle\cache.sqlite" \
-            "-xr!Themerr-plex.bundle\DOCKER_README.md" \
-            "-xr!Themerr-plex.bundle\Dockerfile" \
-            "-xr!Themerr-plex.bundle\docs" \
-            "-xr!Themerr-plex.bundle\scripts" \
+            "-xr!plexhints*" \
+            "-xr!Themerr-plex.bundle/.*" \
+            "-xr!Themerr-plex.bundle/cache.sqlite" \
+            "-xr!Themerr-plex.bundle/DOCKER_README.md" \
+            "-xr!Themerr-plex.bundle/Dockerfile" \
+            "-xr!Themerr-plex.bundle/docs" \
+            "-xr!Themerr-plex.bundle/scripts" \
             a "./Themerr-plex.bundle.zip" "Themerr-plex.bundle"
 
           mkdir artifacts

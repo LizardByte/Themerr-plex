@@ -4,7 +4,7 @@
 import sys
 
 # plex debugging
-if 'plexscripthost' not in sys.executable.lower():  # the code is running outside of Plex
+if 'plexscripthost' not in sys.executable.lower() or sys.executable != '':  # the code is running outside of Plex
     from plexhints.log_kit import Log
     from plexhints.prefs_kit import Prefs
 
