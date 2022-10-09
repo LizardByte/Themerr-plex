@@ -13,6 +13,10 @@ Minimal setup is required to use Themerr-plex. In addition to the installation, 
 .. Attention:: You must re-match your movies in order for `Themerr-plex` to apply themes to them. This is a
    limitation with Plex.
 
+.. Note:: If the movie was rematched and no theme song was added, it is most likely that the movie is not in the
+   database. Please see :ref:`contributing/database <contributing/database:database>` for information on how to
+   contribute.
+
 Preferences
 -----------
 
