@@ -4,7 +4,7 @@
 ### Fixed
 - use try/except/else for plexhints import
 - docker build was missing some plugin files
-- dockerignore file was not being repsected
+- dockerignore file was not being respected
 - issue with special characters being replaced in plist file
 ### Changed
 - move plugin to `Music` category
