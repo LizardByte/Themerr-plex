@@ -1,5 +1,5 @@
-# buildstage
-FROM python:2.7.18-alpine3.11 as buildstage
+# syntax = docker/dockerfile:latest
+FROM python:2.7.18-buster AS buildstage
 
 # build args
 ARG BUILD_VERSION
@@ -8,26 +8,34 @@ ARG GITHUB_SHA=$COMMIT
 # note: BUILD_VERSION may be blank, COMMIT is also available
 # note: build_plist.py uses BUILD_VERSION and GITHUB_SHA
 
-# setup build directory
-RUN mkdir /build
-WORKDIR /build/
+# create build dir and copy GitHub repo there
+# todo - add `--link` once hadolint supports this syntax, see https://github.com/hadolint/hadolint/issues/826
+COPY . /build
 
-# copy repo
-COPY . .
+# set build dir
+WORKDIR /build
 
-RUN python  # update pip \
-      -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip==20.3.4 setuptools \
-    && python -m pip install --upgrade -r requirements-dev.txt  # install dev requirements \
-    && python ./scripts/install_requirements.py  # install plugin requirements \
-    && python ./scripts/build_plist.py  # build plist \
-    && rm -r ./scripts/  # remove scripts dir
+# update pip
+RUN python -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
+      pip==20.3.4 setuptools requests
+    # requests required to install python-plexapi
+    # dev requirements not necessary for docker image, significantly speeds up build since lxml doesn't need to build
 
-# single layer deployed image
-FROM scratch
+# build plugin
+RUN python ./scripts/install_requirements.py \
+    && python ./scripts/build_plist.py
+
+# clean
+RUN rm -rf ./scripts/ \
+    # list contents
+    && ls -a
+
+FROM scratch AS deploy
 
 # variables
 ARG PLUGIN_NAME="Themerr-plex.bundle"
 ARG PLUGIN_DIR="/config/Library/Application Support/Plex Media Server/Plug-ins"
 
 # add files from buildstage
+# todo - add `--link` once hadolint supports this syntax, see https://github.com/hadolint/hadolint/issues/826
 COPY --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME
