@@ -13,7 +13,6 @@ else:  # the code is running outside of Plex
 import requests
 from typing import Optional
 import urllib3
-import plexapi
 from plexapi.server import PlexServer
 
 
@@ -34,8 +33,6 @@ def setup_plexapi():
     >>> setup_plexapi()
     ...
     """
-    plexapi.TIMEOUT = int(Prefs['int_upload_timeout'])
-
     plex_url = Prefs['url_plex_server']
     Log.Debug('Plex url: %s' % plex_url)
 
