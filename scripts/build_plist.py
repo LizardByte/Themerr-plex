@@ -8,7 +8,7 @@ commit = os.getenv('GITHUB_SHA', 'development build')
 print('commit: %s' % commit)
 
 if not version:
-    checked = '<i class="fa-solid fa-fw fa-times-circle" style="color:red"></i>'
+    checked = '<i class="fas fa-fw fa-times-circle" style="color:red"></i>'
     if commit != 'development build':
         version = commit[0:7]
         print('using commit as version: %s' % version)
@@ -16,7 +16,7 @@ if not version:
         version = commit
         print('unknown version: %s' % version)
 else:
-    checked = '<i class="fa-solid fa-fw fa-check-circle" style="color:green"></i>'
+    checked = '<i class="fas fa-fw fa-check-circle" style="color:green"></i>'
 
 info_file = os.path.join('Contents', 'Info.plist')
 
@@ -54,7 +54,7 @@ pl = dict(
             <table>
                 <tr>
                     <td><i class="fa fa-fw fa-question-circle"></i> Reference:</td>
-                    <td>| <i class="fa-solid fa-fw fa-file-lines"></i> <a
+                    <td>| <i class="fas fa-fw fa-file-lines"></i> <a
                             href="https://docs.lizardbyte.dev/projects/themerr-plex" target="_blank">Docs</a></td>
                 </tr>
             </table>

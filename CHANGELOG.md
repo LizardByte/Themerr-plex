@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.4] - 2022-10-14
+### Fixed
+- issue with timeout not being respected
+- agent info formatting corrected
+- documentation corrected, it is not required to re-match movies/items
+### Changed
+- default timeout is now 180 seconds
+
 ## [0.0.3] - 2022-10-09
 ### Fixed
 - use try/except/else for plexhints import

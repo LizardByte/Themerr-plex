@@ -9,25 +9,25 @@ Minimal setup is required to use Themerr-plex. In addition to the installation, 
    #. Select the gear cog when hovering over the Themerr-plex plugin tile.
    #. Set the values of the preferences and save.
    #. Enable `Themerr-plex` in your agent settings.
+   #. Refresh Metadata
 
-.. Attention:: You must re-match your movies in order for `Themerr-plex` to apply themes to them. This is a
-   limitation with Plex.
-
-.. Note:: If the movie was rematched and no theme song was added, it is most likely that the movie is not in the
-   database. Please see :ref:`contributing/database <contributing/database:database>` for information on how to
+.. Note:: If a movie's metadata was refreshed and no theme song was added, it is most likely that the movie is not in
+   the database. Please see :ref:`contributing/database <contributing/database:database>` for information on how to
    contribute.
+
+.. Attention:: It may take several minutes after completing a metadata refresh for a theme song to be available.
 
 Preferences
 -----------
 
-Upload Timeout
-^^^^^^^^^^^^^^
+PlexAPI Timeout
+^^^^^^^^^^^^^^^
 
 Description
    The timeout (in seconds) when uploading theme audio to the Plex server.
 
 Default
-   ``60``
+   ``180``
 
 YouTube Username
 ^^^^^^^^^^^^^^^^

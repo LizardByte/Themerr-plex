@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # standard imports
+import os
 import re
 import sys
 
@@ -30,10 +31,8 @@ import youtube_dl
 # local imports
 if sys.version_info.major < 3:
     from default_prefs import default_prefs
-    from plex_api_helper import add_themes
 else:
     from .default_prefs import default_prefs
-    from .plex_api_helper import add_themes
 
 
 def process_youtube(url):
@@ -90,6 +89,26 @@ def process_youtube(url):
     return audio_url  # return None or url found
 
 
+def set_environment(key, value):
+    # type: (str, str) -> None
+    """
+    Set an environment variable key to a specified value.
+
+    Parameters
+    ----------
+    key : str
+       The variable name.
+    value : str
+        The variable value.
+
+    Examples
+    --------
+    >>> set_environment(key='plexapi_plexapi_timeout', value='180')
+    ...
+    """
+    os.environ[key.upper()] = value
+
+
 def ValidatePrefs():
     # type: () -> MessageContainer
     """
@@ -133,6 +152,10 @@ def ValidatePrefs():
                 if Prefs[key] is not True and Prefs[key] is not False:
                     Log.Error("Setting '%s' must be True or False; Value '%s'" % (key, Prefs[key]))
                     error_message += "Setting '%s' must be True or False; Value '%s'<br/>" % (key, Prefs[key])
+
+            plexapi_key = key.split('_', 1)[-1]
+            if plexapi_key.startswith('plexapi_'):
+                set_environment(key=plexapi_key, value=Prefs[key])
 
     if error_message != '':
         return MessageContainer(header='Error', message=error_message)
@@ -353,6 +376,7 @@ class Themerr(Agent.Movies):
             theme_url = process_youtube(url=yt_video_url)
 
             if theme_url:
+                from plex_api_helper import add_themes  # import here to allow environment variable to be fully setup
                 add_themes(rating_key=rating_key, theme_urls=[theme_url])
 
         return metadata
