@@ -20,14 +20,14 @@ Minimal setup is required to use Themerr-plex. In addition to the installation, 
 Preferences
 -----------
 
-Upload Timeout
-^^^^^^^^^^^^^^
+PlexAPI Timeout
+^^^^^^^^^^^^^^^
 
 Description
    The timeout (in seconds) when uploading theme audio to the Plex server.
 
 Default
-   ``60``
+   ``180``
 
 YouTube Username
 ^^^^^^^^^^^^^^^^
