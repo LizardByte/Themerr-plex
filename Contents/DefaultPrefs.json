@@ -2,7 +2,7 @@
 	{
 		"id": "int_plexapi_plexapi_timeout",
 		"type": "text",
-		"label": "PlexAPI Timeout, in seconds (requires a Plex Media Server restart)",
+		"label": "PlexAPI Timeout, in seconds (min: 1)",
 		"default": "180",
 		"secure": "false"
 	},

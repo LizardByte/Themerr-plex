@@ -29,6 +29,9 @@ Description
 Default
    ``180``
 
+Minimum
+   ``1``
+
 YouTube Username
 ^^^^^^^^^^^^^^^^
 
