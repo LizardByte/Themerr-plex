@@ -13,7 +13,7 @@ else:  # the code is running outside of Plex
 import requests
 from typing import Optional
 import urllib3
-from plexapi.server import PlexServer
+import plexapi.server
 
 
 def setup_plexapi():
@@ -47,7 +47,8 @@ def setup_plexapi():
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # Disable the insecure request warning
 
     # create the plex server object
-    plex = PlexServer(baseurl=plex_url, token=plex_token, session=sess)
+    plexapi.server.TIMEOUT = int(Prefs['int_plexapi_plexapi_timeout'])
+    plex = plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
 
     return plex
 

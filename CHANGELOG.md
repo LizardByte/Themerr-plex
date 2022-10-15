@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.5] - 2022-10-15
+### Fixed
+- changing timeout no longer requires a Plex Media Server restart
+
 ## [0.0.4] - 2022-10-14
 ### Fixed
 - issue with timeout not being respected
