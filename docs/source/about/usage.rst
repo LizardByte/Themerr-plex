@@ -49,26 +49,3 @@ Description
 
 Default
    None
-
-Plex Server URL
-^^^^^^^^^^^^^^^
-
-Description
-   The URL to use for accessing the Plex server. Themerr-plex uses `python-plexapi` to upload theme songs, so must have
-   access to the Plex URL.
-
-Default
-   ``http://localhost:32400``
-
-Plex token
-^^^^^^^^^^
-
-Description
-   The token to use for accessing the Plex server. Themerr-plex uses `python-plexapi` to upload theme songs, so this
-   must be set.
-
-   .. Tip:: See `Finding an authentication token / X-Plex-Token
-      <https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token>`_.
-
-Default
-   None
