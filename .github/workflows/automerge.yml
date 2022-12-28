@@ -13,9 +13,10 @@ on:
 
 jobs:
   autoapprove:
-    if: >
+    if: >-
       contains(fromJson('["LizardByte-bot"]'), github.event.pull_request.user.login) &&
-      contains(fromJson('["LizardByte-bot"]'), github.actor)
+      contains(fromJson('["LizardByte-bot"]'), github.actor) &&
+      startsWith(github.repository, 'LizardByte/')
     runs-on: ubuntu-latest
     steps:
       - name: Autoapproving
@@ -36,6 +37,7 @@ jobs:
             })
 
   automerge:
+    if: startsWith(github.repository, 'LizardByte/')
     needs: [autoapprove]
     runs-on: ubuntu-latest
     concurrency:
@@ -49,7 +51,7 @@ jobs:
           BASE_BRANCHES: nightly
           GITHUB_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
           GITHUB_LOGIN: ${{ secrets.GH_BOT_NAME }}
-          MERGE_LABELS: ""
+          MERGE_LABELS: "!dependencies"
           MERGE_METHOD: "squash"
           MERGE_COMMIT_MESSAGE: "{pullRequest.title} (#{pullRequest.number})"
           MERGE_DELETE_BRANCH: true
