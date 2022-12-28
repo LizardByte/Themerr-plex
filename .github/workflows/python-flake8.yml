@@ -24,7 +24,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools flake8
+          # pin flake8 before v6.0.0 due to removal of support for type comments (required for Python 2.7 type hints)
+          python -m pip install --upgrade pip setuptools "flake8<6"
 
       - name: Test with flake8
         run: |
