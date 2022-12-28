@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# standard imports
+import os
+
 # plex debugging
 try:
     import plexhints  # noqa: F401
@@ -33,13 +36,11 @@ def setup_plexapi():
     >>> setup_plexapi()
     ...
     """
-    plex_url = Prefs['url_plex_server']
-    Log.Debug('Plex url: %s' % plex_url)
-
-    plex_token = Prefs['str_plex_token']
+    plex_url = 'http://localhost:32400'
+    plex_token = os.environ.get('PLEXTOKEN')
 
     if not plex_token:
-        Log.Error('Plex token not set in agent settings, cannot proceed.')
+        Log.Error('Plex token not found in environment, cannot proceed.')
         return False
 
     sess = requests.Session()

@@ -20,20 +20,5 @@
 		"default": "",
 		"option": "hidden",
 		"secure": "true"
-	},
-	{
-		"id": "url_plex_server",
-		"type": "text",
-		"label": "Plex Server URL",
-		"default": "http://localhost:32400",
-		"secure": "true"
-	},
-	{
-		"id": "str_plex_token",
-		"type": "text",
-		"label": "Plex token",
-		"default": "",
-		"option": "hidden",
-		"secure": "true"
 	}
 ]
