@@ -7,8 +7,9 @@
 # - automerge
 # - autoupdate-labeler
 
-# It uses GitHub Action that auto-updates pull requests branches, when changes are pushed to their destination branch.
+# It uses an action that auto-updates pull requests branches, when changes are pushed to their destination branch.
 # Auto-updating to the latest destination branch works only in the context of upstream repo and not forks.
+# Dependabot PRs are updated by an action that comments `@depdenabot rebase` on dependabot PRs.
 
 name: autoupdate
 
