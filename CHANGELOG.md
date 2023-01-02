@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.8] - 2022-01-02
+### Fixed
+- Fixed Read the Docs build error for epub
+
 ## [0.0.7] - 2022-12-28
 ### Fixed
 - Fixed readme status badge
@@ -45,3 +49,4 @@
 [0.0.5]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.5
 [0.0.6]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.6
 [0.0.7]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.7
+[0.0.8]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.8

@@ -20,7 +20,7 @@ libraries that use the new agents.
 Integrations
 ------------
 
-.. image:: https://img.shields.io/github/actions/workflow/status/lizardbyte/themerr-plex/CI.yml?branch=master&label=CI%20build&logo=github&style=for-the-badge
+.. image:: https://img.shields.io/github/actions/workflow/status/lizardbyte/themerr-plex/CI.yml.svg?branch=master&label=CI%20build&logo=github&style=for-the-badge
    :alt: GitHub Workflow Status (CI)
    :target: https://github.com/LizardByte/Themerr-plex/actions/workflows/CI.yml?query=branch%3Amaster
 
