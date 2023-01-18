@@ -8,7 +8,8 @@ Minimal setup is required to use Themerr-plex. In addition to the installation, 
    #. Navigate to the `Plugins` menu within the Plex server settings.
    #. Select the gear cog when hovering over the Themerr-plex plugin tile.
    #. Set the values of the preferences and save.
-   #. Enable `Themerr-plex` in your agent settings.
+   #. For legacy agents and plugins, enable `Themerr-plex` in your agent settings. This is not necessary for the
+      new Plex Movie agent.
    #. Refresh Metadata
 
 .. Note:: If a movie's metadata was refreshed and no theme song was added, it is most likely that the movie is not in
