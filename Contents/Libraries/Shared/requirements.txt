@@ -7,3 +7,6 @@ youtube_dl==2021.12.17
 # custom python-plexapi supporting python 2.7
 # this is used to upload theme songs since Movie agents cannot correctly do so
 git+https://github.com/reenignearcher/python-plexapi.git@master-py2.7#egg=plexapi
+
+# websocket-client is required for plexapi alert listener
+websocket-client==0.59.0;python_version<"3"
