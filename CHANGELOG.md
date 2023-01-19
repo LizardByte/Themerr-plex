@@ -1,6 +1,10 @@
 # Changelog
 
-## [0.0.8] - 2022-01-02
+## [0.1.0] - 2023-01-18
+### Added
+- Added support for new Plex Movie agent
+
+## [0.0.8] - 2023-01-02
 ### Fixed
 - Fixed Read the Docs build error for epub
 
@@ -50,3 +54,4 @@
 [0.0.6]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.6
 [0.0.7]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.7
 [0.0.8]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.8
+[0.1.0]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.0
