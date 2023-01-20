@@ -6,6 +6,7 @@
    about/installation
    about/docker
    about/usage
+   about/troubleshooting
 
 .. toctree::
    :maxdepth: 2
