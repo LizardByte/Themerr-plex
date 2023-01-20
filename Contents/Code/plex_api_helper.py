@@ -19,9 +19,9 @@ import requests
 from typing import Optional
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
-import plexapi.alert
+from plexapi.alert import AlertListener
 import plexapi.server
-import plexapi.utils
+from plexapi.utils import reverseSearchType
 
 # local imports
 if sys.version_info.major < 3:
@@ -131,7 +131,7 @@ def plex_listener():
     global plex
     if not plex:
         plex = setup_plexapi()
-    listener = plexapi.alert.AlertListener(server=plex, callback=plex_listener_handler, callbackError=Log.Error)
+    listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=Log.Error)
     listener.run()
 
 
@@ -164,9 +164,9 @@ def plex_listener_handler(data):
 
             # known search types:
             # https://github.com/pkkid/python-plexapi/blob/8b3235445f6b3051c39ff6d6fc5d49f4e674d576/plexapi/utils.py#L35-L55
-            if plexapi.utils.reverseSearchType(libtype=entry['type']) == 'movie' \
-                    and entry['state'] == 5 \
-                    and entry['identifier'] == 'com.plexapp.plugins.library':
+            if (reverseSearchType(libtype=entry['type']) == 'movie'
+                    and entry['state'] == 5
+                    and entry['identifier'] == 'com.plexapp.plugins.library'):
                 # todo - add themes for collections
                 # identifier always appears to be `com.plexapp.plugins.library` for updating library metadata
                 # entry['title'] = movie title

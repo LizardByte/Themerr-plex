@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.1] - 2023-01-19
+### Fixed
+- Fixed `plexapi.utils` import, causing plugin to hang
+
 ## [0.1.0] - 2023-01-18
 ### Added
 - Added support for new Plex Movie agent
@@ -55,3 +59,4 @@
 [0.0.7]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.7
 [0.0.8]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.8
 [0.1.0]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.0
+[0.1.1]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.1
