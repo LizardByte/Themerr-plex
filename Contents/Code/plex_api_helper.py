@@ -132,7 +132,7 @@ def plex_listener():
     if not plex:
         plex = setup_plexapi()
     listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=Log.Error)
-    listener.run()
+    listener.start()
 
 
 def plex_listener_handler(data):

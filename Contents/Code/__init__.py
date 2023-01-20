@@ -3,7 +3,6 @@
 # standard imports
 import re
 import sys
-import threading
 
 # plex debugging
 try:
@@ -121,9 +120,8 @@ def Start():
     Log.Debug('Themerr-plex plug-in started.')
 
     # start watching plex
-    listener_thread = threading.Thread(target=plex_listener, name='plex_listener')
-    listener_thread.daemon = True
-    listener_thread.start()
+    plex_listener()
+    Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
 
 
 @handler(prefix='/music/themerr-plex', name='Themerr-plex', thumb='attribution.png')
