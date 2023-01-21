@@ -82,9 +82,14 @@ def ValidatePrefs():
                     error_message += "Setting '%s' must be True or False; Value '%s'<br/>" % (key, Prefs[key])
 
             # special cases
-            if key == 'int_plexapi_plexapi_timeout' and int(Prefs[key]) <= 0:
-                Log.Error("Setting '%s' must be greater than 0; Value '%s'" % (key, Prefs[key]))
-                error_message += "Setting '%s' must be greater than 0; Value '%s'<br/>" % (key, Prefs[key])
+            int_greater_than_zero = [
+                'int_plexapi_plexapi_timeout',
+                'int_plexapi_upload_threads'
+            ]
+            for test in int_greater_than_zero:
+                if key == test and int(Prefs[key]) <= 0:
+                    Log.Error("Setting '%s' must be greater than 0; Value '%s'" % (key, Prefs[key]))
+                    error_message += "Setting '%s' must be greater than 0; Value '%s'<br/>" % (key, Prefs[key])
 
     if error_message != '':
         return MessageContainer(header='Error', message=error_message)
