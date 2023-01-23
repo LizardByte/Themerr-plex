@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2] - 2023-01-23
+### Added
+- Process items from Plex Movie agent with a queue
+- Allow specifying number of simultaneous items to process for Plex Movie agent
+### Fixed
+- Fixed issue where plugin would be unresponsive to changes from Plex Movie agent after 30 minutes
+
 ## [0.1.1] - 2023-01-19
 ### Fixed
 - Fixed `plexapi.utils` import, causing plugin to hang
@@ -60,3 +67,4 @@
 [0.0.8]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.8
 [0.1.0]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.0
 [0.1.1]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.1
+[0.1.2]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.2
