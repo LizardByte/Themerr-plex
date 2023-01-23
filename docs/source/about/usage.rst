@@ -33,6 +33,19 @@ Default
 Minimum
    ``1``
 
+Multiprocessing Threads
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   The number of simultaneous themes to upload for libraries using the Plex Movie agent. Does not apply to legacy
+   agents or plugin agents.
+
+Default
+   ``3``
+
+Minimum
+   ``1``
+
 YouTube Username
 ^^^^^^^^^^^^^^^^
 

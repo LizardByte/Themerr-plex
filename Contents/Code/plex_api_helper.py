@@ -3,6 +3,8 @@
 # standard imports
 import os
 import sys
+import time
+import threading
 
 # plex debugging
 try:
@@ -15,11 +17,13 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
+from future.moves import queue
 import requests
 from typing import Optional
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 from plexapi.alert import AlertListener
+from plexapi.exceptions import BadRequest
 import plexapi.server
 from plexapi.utils import reverseSearchType
 
@@ -34,7 +38,8 @@ else:
 plex = None
 
 # list currently processing items to avoid processing again
-processing = []
+q = queue.Queue()
+processing_completed = []
 
 
 def setup_plexapi():
@@ -116,6 +121,24 @@ def add_themes(rating_key, theme_files=None, theme_urls=None):
         Log.Info('No theme songs provided for rating key: %s' % rating_key)
 
 
+def process_queue():
+    # type: () -> None
+    """
+    Add items to the queue.
+
+    This is an endless loop to add items to the queue.
+
+    Examples
+    --------
+    >>> t = threading.Thread(target=process_queue, daemon=True)
+    ...
+    """
+    while True:
+        rating_key = q.get()  # get the rating_key from the queue
+        update_plex_movie_item(rating_key=rating_key)  # process that rating_key
+        q.task_done()  # tells the queue that we are done with this item
+
+
 def plex_listener():
     # type: () -> None
     """
@@ -128,11 +151,25 @@ def plex_listener():
     >>> plex_listener()
     ...
     """
+    # create multiple threads for processing themes faster
+    # minimum value of 1
+    for t in range(max(1, int(Prefs['int_plexapi_upload_threads']))):
+        try:
+            # for each thread, start it
+            t = threading.Thread(target=process_queue)
+            # when we set daemon to true, that thread will end when the main thread ends
+            t.daemon = True
+            # start the daemon thread
+            t.start()
+        except RuntimeError as e:
+            Log.Error('RuntimeError encountered: %s' % e)
+            break
+
     global plex
     if not plex:
         plex = setup_plexapi()
     listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=Log.Error)
-    listener.run()
+    listener.start()
 
 
 def plex_listener_handler(data):
@@ -140,8 +177,7 @@ def plex_listener_handler(data):
     """
     Process events from ``plex_listener()``.
 
-    Check if ``data`` is for an event that indicates metadata update has finished for a movie item, and process further
-    as required.
+    Check if we need to add an item to the queue or remove it from the ``processing_completed`` list.
 
     Parameters
     ----------
@@ -153,9 +189,7 @@ def plex_listener_handler(data):
     >>> plex_listener_handler(data={'type': 'timeline'})
     ...
     """
-    global plex, processing
-    if not plex:
-        plex = setup_plexapi()
+    global processing_completed
     # Log.Debug(data)
     if data['type'] == 'timeline':
         for entry in data['TimelineEntry']:
@@ -172,40 +206,74 @@ def plex_listener_handler(data):
                 # entry['title'] = movie title
                 # entry['itemID'] = rating key
 
-                # check if entry is already processing to avoid endless looping
-                if int(entry['itemID']) in processing:
-                    processing.remove(int(entry['itemID']))
+                rating_key = int(entry['itemID'])
+
+                # check if entry has already processed to avoid endless looping
+                if rating_key in processing_completed:
+                    processing_completed.remove(int(entry['itemID']))
                     Log.Debug('Finished uploading theme: {title=%s, rating_key=%s}' %
                               (entry['title'], entry['itemID']))
                     return
+                elif rating_key not in q.queue:
+                    q.put(item=rating_key)
 
-                plex_item = plex.fetchItem(ekey=int(entry['itemID']))  # must be an int or weird things happen
 
-                # guids does not appear to exist for legacy agents or plugins
-                # therefore, we don't need to filter those out
-                for guid in plex_item.guids:
-                    split_guid = guid.id.split('://')
-                    database = guid_map[split_guid[0]]
-                    database_id = split_guid[1]
+def update_plex_movie_item(rating_key):
+    # type: (int) -> None
+    """
+    Upload theme songs to the Plex Media Server.
 
-                    Log.Debug('Attempting update for: {title=%s, rating_key=%s, database=%s, database_id=%s}' %
-                              (plex_item.title, plex_item.ratingKey, database, database_id))
+    Add themes to the server. Once finished, add the ``rating_key`` to the ``processing_completed`` list.
 
-                    url = 'https://app.lizardbyte.dev/ThemerrDB/movies/%s/%s.json' % (database, database_id)
+    Parameters
+    ----------
+    rating_key : int
+        The ``rating_key`` of the item to upload a theme for.
 
-                    data = JSON.ObjectFromURL(url=url, errors='ignore')
+    Examples
+    --------
+    >>> update_plex_movie_item(rating_key=1)
+    ...
+    """
+    global plex, processing_completed
+    if not plex:
+        plex = setup_plexapi()
+    plex_item = plex.fetchItem(ekey=rating_key)
 
-                    try:
-                        yt_video_url = data['youtube_theme_url']
-                    except KeyError:
-                        Log.Info('No theme song found for %s (%s)' % (plex_item.title, plex_item.year))
-                        return
-                    else:
-                        theme_url = process_youtube(url=yt_video_url)
+    # guids does not appear to exist for legacy agents or plugins
+    # therefore, we don't need to filter those out
+    for guid in plex_item.guids:
+        split_guid = guid.id.split('://')
+        database = guid_map[split_guid[0]]
+        database_id = split_guid[1]
 
-                        if theme_url:
-                            processing.append(plex_item.ratingKey)
-                            add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
+        Log.Debug('Attempting update for: {title=%s, rating_key=%s, database=%s, database_id=%s}' %
+                  (plex_item.title, plex_item.ratingKey, database, database_id))
 
-                            # theme found and uploaded using this database, so return
-                            return
+        url = 'https://app.lizardbyte.dev/ThemerrDB/movies/%s/%s.json' % (database, database_id)
+
+        data = JSON.ObjectFromURL(url=url, errors='ignore')
+
+        try:
+            yt_video_url = data['youtube_theme_url']
+        except KeyError:
+            Log.Info('No theme song found for %s (%s)' % (plex_item.title, plex_item.year))
+            return
+        else:
+            theme_url = process_youtube(url=yt_video_url)
+
+            if theme_url:
+                try:
+                    add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
+                except BadRequest as e:
+                    # log it and try again in 30 seconds
+                    Log.Error('Error uploading theme: %s' % e)
+                    Log.Info('Trying again in 30 seconds.')
+                    time.sleep(30)
+                    add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
+
+                # add the item to processing_completed list
+                processing_completed.append(rating_key)
+
+                # theme found and uploaded using this database, so return
+                return

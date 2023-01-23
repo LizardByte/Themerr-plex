@@ -7,6 +7,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "int_plexapi_upload_threads",
+		"type": "text",
+		"label": "Multiprocessing Threads, integer (min: 1)",
+		"default": "3",
+		"secure": "false"
+	},
+	{
 		"id": "str_youtube_user",
 		"type": "text",
 		"label": "YouTube Username",
