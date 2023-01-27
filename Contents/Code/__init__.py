@@ -29,11 +29,13 @@ from typing import Optional
 # local imports
 if sys.version_info.major < 3:
     from default_prefs import default_prefs
-    from plex_api_helper import add_themes, plex_listener
+    from helpers import issue_url_games, issue_url_movies
+    from plex_api_helper import add_themes, get_plex_item, plex_listener
     from youtube_dl_helper import process_youtube
 else:
     from .default_prefs import default_prefs
-    from .plex_api_helper import add_themes, plex_listener
+    from .helpers import issue_url_games, issue_url_movies
+    from .plex_api_helper import add_themes, get_plex_item, plex_listener
     from .youtube_dl_helper import process_youtube
 
 
@@ -95,7 +97,7 @@ def ValidatePrefs():
         return MessageContainer(header='Error', message=error_message)
     else:
         Log.Info("DefaultPrefs.json is valid")
-        return MessageContainer(header='Success', message='RetroArcher - Provided preference values are ok')
+        return MessageContainer(header='Success', message='Themerr-plex - Provided preference values are ok')
 
 
 def Start():
@@ -245,7 +247,7 @@ class Themerr(Agent.Movies):
         Log.Debug('media.primary_metadata.id: %s' % media.primary_metadata.id)
 
         # the media_id will be used to create the url path, replacing `-` with `/`
-        if media.primary_metadata == 'dev.lizardbyte.retroarcher-plex':
+        if media.primary_agent == 'dev.lizardbyte.retroarcher-plex':
             media_id = 'games-%s' % re.search(r'((igdb)-(\d+))', media.primary_metadata.id).group(1)
         else:
             media_id = 'movies-%s-%s' % (media.primary_agent.rsplit('.', 1)[-1], media.primary_metadata.id)
@@ -297,26 +299,57 @@ class Themerr(Agent.Movies):
         >>> Themerr().update(metadata=..., media=..., lang='en', force=True)
         ...
         """
-        Log.Debug('Updating with arguments: {metadata=%s, media=%s, lang=%s, force=%s' %
-                  (metadata, media, lang, force))
-
         rating_key = int(media.id)  # rating key of plex item
-        Log.Info('Rating key: %s' % rating_key)
 
-        Log.Info('metadata.id: %s' % metadata.id)
-        url = 'https://app.lizardbyte.dev/ThemerrDB/%s.json' % metadata.id.replace('-', '/')
+        Log.Debug('%s: Updating with arguments: {metadata=%s, media=%s, lang=%s, force=%s' %
+                  (rating_key, metadata, media, lang, force))
 
-        data = JSON.ObjectFromURL(url=url, errors='ignore')
+        Log.Info('%s: metadata.id: %s' % (rating_key, metadata.id))
+        split_id = metadata.id.split('-')
+        item_type = split_id[0]
+        database = split_id[1]
+        database_id = split_id[2]
+        url = 'https://app.lizardbyte.dev/ThemerrDB/%s/%s/%s.json' % (item_type, database, database_id)
 
         try:
-            yt_video_url = data['youtube_theme_url']
-        except KeyError:
-            Log.Info('No theme song found for %s (%s)' % (metadata.title, metadata.year))
-            return
-        else:
-            theme_url = process_youtube(url=yt_video_url)
+            data = JSON.ObjectFromURL(url=url, errors='ignore')
+        except Exception as e:
+            Log.Error('%s: Error retrieving data from ThemerrDB: %s' % (rating_key, e))
+            if database == 'themoviedb':  # movies
+                # need to use python-plexapi to get the movie year
+                plex_item = get_plex_item(rating_key=rating_key)
 
-            if theme_url:
-                add_themes(rating_key=rating_key, theme_urls=[theme_url])
+                # create the url to add the theme song to ThemerrDB
+                try:
+                    issue_title = '%s (%s)' % (plex_item.title, plex_item.year)
+                    issue_url = issue_url_movies % (issue_title, database_id)
+                    Log.Info('%s: Theme song missing in ThemerrDB. Add it here -> "%s"' % (rating_key, issue_url))
+                except Exception as e:
+                    Log.Error('%s: Error creating the url to add the theme song to ThemerrDB: %s' % (rating_key, e))
+            elif database == 'igdb':  # games
+                try:
+                    game_data = JSON.ObjectFromURL(url='https://db.lizardbyte.dev/games/%s.json' % database_id)
+                except Exception as e:
+                    Log.Error('%s: Error retrieving data from LizardByteDB: %s' % (rating_key, e))
+                else:
+                    try:
+                        issue_year = game_data['release_date'][0]['y']
+                    except (KeyError, IndexError):
+                        issue_year = None
+                    issue_url_suffix = game_data['slug']
+                    issue_title = '%s (%s)' % (game_data['name'], issue_year)
+                    issue_url = issue_url_games % (issue_title, issue_url_suffix)
+                    Log.Info('%s: Theme song missing in ThemerrDB. Add it here -> %s' % (rating_key, issue_url))
+        else:
+            try:
+                yt_video_url = data['youtube_theme_url']
+            except KeyError:
+                Log.Info('%s: No theme song found for %s (%s)' % (rating_key, metadata.title, metadata.year))
+                return
+            else:
+                theme_url = process_youtube(url=yt_video_url)
+
+                if theme_url:
+                    add_themes(rating_key=rating_key, theme_urls=[theme_url])
 
         return metadata

@@ -29,10 +29,10 @@ from plexapi.utils import reverseSearchType
 
 # local imports
 if sys.version_info.major < 3:
-    from helpers import guid_map
+    from helpers import guid_map, issue_url_movies
     from youtube_dl_helper import process_youtube
 else:
-    from .helpers import guid_map
+    from .helpers import guid_map, issue_url_movies
     from .youtube_dl_helper import process_youtube
 
 plex = None
@@ -80,7 +80,7 @@ def setup_plexapi():
 
 
 def add_themes(rating_key, theme_files=None, theme_urls=None):
-    # type: (int, Optional[list], Optional[list]) -> None
+    # type: (int, Optional[list], Optional[list]) -> bool
     """
     Apply themes to the specified item.
 
@@ -95,10 +95,17 @@ def add_themes(rating_key, theme_files=None, theme_urls=None):
     theme_urls : Optional[list]
         A list of urls to theme songs.
 
+    Returns
+    -------
+    bool
+        True if the themes were added successfully, False otherwise.
+
     Examples
     --------
     >>> add_themes(theme_list=[...], rating_key=...)
     """
+    uploaded = False
+
     if theme_files or theme_urls:
         global plex
         if not plex:
@@ -112,13 +119,89 @@ def add_themes(rating_key, theme_files=None, theme_urls=None):
             if theme_files:
                 for theme_file in theme_files:
                     Log.Info('Attempting to upload theme file: %s' % theme_file)
-                    plex_item.uploadTheme(filepath=theme_file)
+                    uploaded = upload_theme(plex_item=plex_item, filepath=theme_file)
             if theme_urls:
                 for theme_url in theme_urls:
                     Log.Info('Attempting to upload theme file: %s' % theme_url)
-                    plex_item.uploadTheme(url=theme_url)
+                    uploaded = upload_theme(plex_item=plex_item, url=theme_url)
     else:
         Log.Info('No theme songs provided for rating key: %s' % rating_key)
+
+    return uploaded
+
+
+def upload_theme(plex_item, filepath=None, url=None):
+    # type: (any, Optional[str], Optional[str]) -> bool
+    """
+    Upload a theme to the specified item.
+
+    Uploads a theme to the item specified by the ``plex_item``.
+
+    Parameters
+    ----------
+    plex_item : any
+        The item to upload the theme to.
+    filepath : Optional[str]
+        The path to the theme song.
+    url : Optional[str]
+        The url to the theme song.
+
+    Returns
+    -------
+    bool
+        True if the theme was uploaded successfully, False otherwise.
+
+    Examples
+    --------
+    >>> upload_theme(plex_item=..., url=...)
+    ...
+    """
+    count = 0
+    while count <= int(Prefs['int_plexapi_upload_retries_max']):
+        try:
+            if filepath:
+                plex_item.uploadTheme(filepath=filepath)
+            elif url:
+                plex_item.uploadTheme(url=url)
+        except BadRequest as e:
+            sleep_time = 2**count
+            Log.Error('%s: Error uploading theme: %s' % (plex_item.ratingKey, e))
+            Log.Error('%s: Trying again in : %s' % (plex_item.ratingKey, sleep_time))
+            time.sleep(sleep_time)
+            count += 1
+        else:
+            return True
+    return False
+
+
+def get_plex_item(rating_key):
+    # type: (int) -> any
+    """
+    Get any item from the Plex Server.
+
+    This function is used to get an item from the Plex Server. It can then be used to get the metadata for the item.
+
+    Parameters
+    ----------
+    rating_key : int
+        The ``rating_key`` of the item to upload a theme for.
+
+    Returns
+    -------
+    any
+        The item from the Plex Server.
+
+    Examples
+    --------
+    >>> get_plex_item(rating_key=1)
+    ...
+    """
+    global plex, processing_completed
+    if not plex:
+        plex = setup_plexapi()
+    plex_item = plex.fetchItem(ekey=rating_key)
+
+    return plex_item
 
 
 def process_queue():
@@ -240,6 +323,8 @@ def update_plex_movie_item(rating_key):
         plex = setup_plexapi()
     plex_item = plex.fetchItem(ekey=rating_key)
 
+    themerr_db_logs = []
+
     # guids does not appear to exist for legacy agents or plugins
     # therefore, we don't need to filter those out
     for guid in plex_item.guids:
@@ -247,33 +332,41 @@ def update_plex_movie_item(rating_key):
         database = guid_map[split_guid[0]]
         database_id = split_guid[1]
 
-        Log.Debug('Attempting update for: {title=%s, rating_key=%s, database=%s, database_id=%s}' %
-                  (plex_item.title, plex_item.ratingKey, database, database_id))
+        Log.Debug('%s: Attempting update for: {title=%s, rating_key=%s, database=%s, database_id=%s}' %
+                  (rating_key, plex_item.title, plex_item.ratingKey, database, database_id))
 
         url = 'https://app.lizardbyte.dev/ThemerrDB/movies/%s/%s.json' % (database, database_id)
 
-        data = JSON.ObjectFromURL(url=url, errors='ignore')
-
         try:
-            yt_video_url = data['youtube_theme_url']
-        except KeyError:
-            Log.Info('No theme song found for %s (%s)' % (plex_item.title, plex_item.year))
-            return
+            data = JSON.ObjectFromURL(url=url, errors='ignore')
+        except Exception:
+            themerr_db_logs.append('%s: Could not retrieve data from ThemerrDB using %s' % (rating_key, database))
+            if database == 'themoviedb':
+                issue_title = '%s (%s)' % (plex_item.title, plex_item.year)
+                issue_url = issue_url_movies % (issue_title, database_id)
+                themerr_db_logs.insert(
+                    0,
+                    '%s: Theme song missing in ThemerrDB. Add it here -> "%s"' % (rating_key, issue_url)
+                )
         else:
-            theme_url = process_youtube(url=yt_video_url)
-
-            if theme_url:
-                try:
-                    add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
-                except BadRequest as e:
-                    # log it and try again in 30 seconds
-                    Log.Error('Error uploading theme: %s' % e)
-                    Log.Info('Trying again in 30 seconds.')
-                    time.sleep(30)
-                    add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
-
-                # add the item to processing_completed list
-                processing_completed.append(rating_key)
-
-                # theme found and uploaded using this database, so return
+            try:
+                yt_video_url = data['youtube_theme_url']
+            except KeyError:
+                Log.Info('%s: No theme song found for %s (%s)' % (rating_key, plex_item.title, plex_item.year))
                 return
+            else:
+                theme_url = process_youtube(url=yt_video_url)
+
+                if theme_url:
+                    theme_added = add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
+
+                    # add the item to processing_completed list
+                    if theme_added:
+                        processing_completed.append(rating_key)
+
+                        # theme found and uploaded using this database, so return
+                        return
+
+    # could not upload theme using any database, so log the errors
+    for log in themerr_db_logs:
+        Log.Error(log)

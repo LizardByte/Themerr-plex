@@ -7,6 +7,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "int_plexapi_upload_retries_max",
+		"type": "text",
+		"label": "Max Retries, integer (min: 0)",
+		"default": "6",
+		"secure": "false"
+	},
+	{
 		"id": "int_plexapi_upload_threads",
 		"type": "text",
 		"label": "Multiprocessing Threads, integer (min: 1)",
