@@ -33,6 +33,20 @@ Default
 Minimum
    ``1``
 
+Max Retries
+^^^^^^^^^^^
+
+Description
+   The number of times to retry uploading theme audio to the Plex server. The time between retries will increase
+   exponentially. The time between is calculated as ``2 ^ retry_number``. For example, the first retry will occur
+   after 2 seconds, the second retry will occur after 4 seconds, and the third retry will occur after 8 seconds.
+
+Default
+   ``6``
+
+Minimum
+   ``0``
+
 Multiprocessing Threads
 ^^^^^^^^^^^^^^^^^^^^^^^
 
