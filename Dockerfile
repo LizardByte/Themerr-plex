@@ -46,4 +46,6 @@ ARG PLUGIN_NAME="Themerr-plex.bundle"
 ARG PLUGIN_DIR="/config/Library/Application Support/Plex Media Server/Plug-ins"
 
 # add files from buildstage
-COPY --link --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME
+# trailing slash on build directory copies the contents of the directory, instead of the directory itself
+# do not use `--link` here, the docker mod will not work
+COPY --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME

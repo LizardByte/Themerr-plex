@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.4] - 2023-02-04
+### Fixed
+- (Docker) Fixed issue where plugin would not load with LinuxServer.io image using a docker mod, introduced in v0.1.0.
+
 ## [0.1.3] - 2023-01-28
 ### Added
 - Max Retries setting added, allowing you to specify how many times to retry a failed upload
@@ -75,3 +79,4 @@
 [0.1.1]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.1
 [0.1.2]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.2
 [0.1.3]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.3
+[0.1.4]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.4
