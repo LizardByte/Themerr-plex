@@ -6,3 +6,6 @@
 
 # ignore directories
 docs/
+
+# ignore venv when building locally
+venv/

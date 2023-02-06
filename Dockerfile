@@ -1,6 +1,7 @@
-# platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
+# syntax=docker/dockerfile:1.4
 # artifacts: false
-FROM python:2.7.18-buster AS buildstage
+# platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
+FROM ubuntu:22.04 AS buildstage
 
 # build args
 ARG BUILD_VERSION
@@ -8,6 +9,18 @@ ARG COMMIT
 ARG GITHUB_SHA=$COMMIT
 # note: BUILD_VERSION may be blank, COMMIT is also available
 # note: build_plist.py uses BUILD_VERSION and GITHUB_SHA
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# install dependencies
+# dotnet deps: https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#dependencies
+RUN <<_DEPS
+apt-get update -y
+apt-get install -y --no-install-recommends \
+  python2=2.7.18* \
+  python-pip=20.3.4*
+apt-get clean
+rm -rf /var/lib/apt/lists/*
+_DEPS
 
 # create build dir and copy GitHub repo there
 COPY --link . /build
@@ -18,8 +31,8 @@ WORKDIR /build
 # update pip
 RUN <<_PIP
 #!/bin/bash
-python -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  pip==20.3.4 setuptools requests
+python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
+  pip setuptools requests
 # requests required to install python-plexapi
 # dev requirements not necessary for docker image, significantly speeds up build since lxml doesn't need to build
 _PIP
@@ -27,8 +40,8 @@ _PIP
 # build plugin
 RUN <<_BUILD
 #!/bin/bash
-python ./scripts/install_requirements.py
-python ./scripts/build_plist.py
+python2 ./scripts/install_requirements.py
+python2 ./scripts/build_plist.py
 _BUILD
 
 # clean
@@ -47,5 +60,4 @@ ARG PLUGIN_DIR="/config/Library/Application Support/Plex Media Server/Plug-ins"
 
 # add files from buildstage
 # trailing slash on build directory copies the contents of the directory, instead of the directory itself
-# do not use `--link` here, the docker mod will not work
-COPY --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME
+COPY --link --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME
