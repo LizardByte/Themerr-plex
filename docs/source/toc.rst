@@ -22,5 +22,6 @@
    :titlesonly:
 
    code_docs/main
+   code_docs/helpers
    code_docs/plex_api_helper
    code_docs/youtube_dl_helper

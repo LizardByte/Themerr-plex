@@ -20,7 +20,6 @@ else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
     from plexhints.model_kit import Movie  # model kit
     from plexhints.object_kit import MessageContainer, MetadataSearchResult, SearchResult  # object kit
-    from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
@@ -29,12 +28,12 @@ from typing import Optional
 # local imports
 if sys.version_info.major < 3:
     from default_prefs import default_prefs
-    from helpers import issue_url_games, issue_url_movies
+    from helpers import get_json, issue_url_games, issue_url_movies
     from plex_api_helper import add_themes, get_plex_item, plex_listener
     from youtube_dl_helper import process_youtube
 else:
     from .default_prefs import default_prefs
-    from .helpers import issue_url_games, issue_url_movies
+    from .helpers import get_json, issue_url_games, issue_url_movies
     from .plex_api_helper import add_themes, get_plex_item, plex_listener
     from .youtube_dl_helper import process_youtube
 
@@ -312,7 +311,7 @@ class Themerr(Agent.Movies):
         url = 'https://app.lizardbyte.dev/ThemerrDB/%s/%s/%s.json' % (item_type, database, database_id)
 
         try:
-            data = JSON.ObjectFromURL(url=url, errors='ignore')
+            data = get_json(url=url)
         except Exception as e:
             Log.Error('%s: Error retrieving data from ThemerrDB: %s' % (rating_key, e))
             if database == 'themoviedb':  # movies
@@ -328,7 +327,7 @@ class Themerr(Agent.Movies):
                     Log.Error('%s: Error creating the url to add the theme song to ThemerrDB: %s' % (rating_key, e))
             elif database == 'igdb':  # games
                 try:
-                    game_data = JSON.ObjectFromURL(url='https://db.lizardbyte.dev/games/%s.json' % database_id)
+                    game_data = get_json(url='https://db.lizardbyte.dev/games/%s.json' % database_id)
                 except Exception as e:
                     Log.Error('%s: Error retrieving data from LizardByteDB: %s' % (rating_key, e))
                 else:

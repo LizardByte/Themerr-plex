@@ -13,7 +13,6 @@ except ImportError:
     pass
 else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
-    from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
@@ -29,10 +28,10 @@ from plexapi.utils import reverseSearchType
 
 # local imports
 if sys.version_info.major < 3:
-    from helpers import guid_map, issue_url_movies
+    from helpers import get_json, guid_map, issue_url_movies
     from youtube_dl_helper import process_youtube
 else:
-    from .helpers import guid_map, issue_url_movies
+    from .helpers import get_json, guid_map, issue_url_movies
     from .youtube_dl_helper import process_youtube
 
 plex = None
@@ -338,7 +337,7 @@ def update_plex_movie_item(rating_key):
         url = 'https://app.lizardbyte.dev/ThemerrDB/movies/%s/%s.json' % (database, database_id)
 
         try:
-            data = JSON.ObjectFromURL(url=url, errors='ignore')
+            data = get_json(url=url)
         except Exception:
             themerr_db_logs.append('%s: Could not retrieve data from ThemerrDB using %s' % (rating_key, database))
             if database == 'themoviedb':
