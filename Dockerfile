@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 # artifacts: false
 # platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-FROM ubuntu:22.04 AS buildstage
+FROM ubuntu:23.04 AS buildstage
 
 # build args
 ARG BUILD_VERSION
