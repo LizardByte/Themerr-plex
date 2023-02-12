@@ -41,8 +41,6 @@ Test with Sphinx
 
 pytest
 ------
-.. Todo:: PyTest is not yet implemented.
-
 Themerr-plex uses `pytest <https://pypi.org/project/pytest/>`_ for unit testing. pytest is included in the
 ``requirements-dev.txt``.
 
