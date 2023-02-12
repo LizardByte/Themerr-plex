@@ -1,0 +1,37 @@
+---
+name: Python Tests
+
+on:
+  pull_request:
+    branches: [master, nightly]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pytest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '2.7'
+
+      - name: Install python dependencies
+        shell: bash
+        run: |
+          # requests is required to install python-plexapi
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade \
+            pip setuptools requests
+          python -m pip --no-python-version-warning --disable-pip-version-check install -r requirements-dev.txt
+          python -m pip --no-python-version-warning --disable-pip-version-check install -r requirements.txt
+
+      - name: Test with pytest
+        run: |
+          python -m pytest -v
