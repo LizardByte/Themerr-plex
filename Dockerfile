@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 # artifacts: false
 # platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-FROM python:2.7-buster AS buildstage
+FROM python:2.7.17-buster AS buildstage
 # in order to use ubuntu:22.04 or newer, we will need to install git from source
 
 # build args
