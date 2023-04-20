@@ -3,7 +3,11 @@
 future==0.18.3
 requests==2.27.1;python_version<"3"  # 2.27 is last version supporting Python 2.7
 typing==3.10.0.0
-youtube_dl==2021.12.17
+
+# youtube_dl is not capable or willing to create a new release so have to install from git
+# youtube_dl==2021.12.17
+# unknown if dependabot can update this
+git+https://github.com/ytdl-org/youtube-dl.git@26035bde46c0acc30dc053618451d9aeca4b7709#egg=youtube_dl
 
 # custom python-plexapi supporting python 2.7
 # this is used to upload theme songs since Movie agents cannot correctly do so
