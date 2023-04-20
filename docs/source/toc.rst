@@ -7,11 +7,13 @@
    about/docker
    about/usage
    about/troubleshooting
+   about/changelog
 
 .. toctree::
    :maxdepth: 2
    :caption: Contributing
 
+   contributing/contributing
    contributing/database
    contributing/build
    contributing/testing

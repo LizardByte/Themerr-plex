@@ -1,70 +1,74 @@
 # Changelog
 
 ## [0.1.4] - 2023-02-04
-### Fixed
+**Fixed**
 - (Docker) Fixed issue where plugin would not load with LinuxServer.io image using a docker mod, introduced in v0.1.0.
 
 ## [0.1.3] - 2023-01-28
-### Added
+**Added**
 - Max Retries setting added, allowing you to specify how many times to retry a failed upload
-### Fixed
+
+**Fixed**
 - Improve error handling and logging when theme song does not exist in ThemerrDB
 
 ## [0.1.2] - 2023-01-23
-### Added
+**Added**
 - Process items from Plex Movie agent with a queue
 - Allow specifying number of simultaneous items to process for Plex Movie agent
-### Fixed
+
+**Fixed**
 - Fixed issue where plugin would be unresponsive to changes from Plex Movie agent after 30 minutes
 
 ## [0.1.1] - 2023-01-19
-### Fixed
+**Fixed**
 - Fixed `plexapi.utils` import, causing plugin to hang
 
 ## [0.1.0] - 2023-01-18
-### Added
+**Added**
 - Added support for new Plex Movie agent
 
 ## [0.0.8] - 2023-01-02
-### Fixed
+**Fixed**
 - Fixed Read the Docs build error for epub
 
 ## [0.0.7] - 2022-12-28
-### Fixed
+**Fixed**
 - Fixed readme status badge
 
 ## [0.0.6] - 2022-12-28
-### Changed
+**Changed**
 - Plex token is now automatically fetched from the Plex python environment
 
 ## [0.0.5] - 2022-10-15
-### Fixed
+**Fixed**
 - changing timeout no longer requires a Plex Media Server restart
 
 ## [0.0.4] - 2022-10-14
-### Fixed
+**Fixed**
 - issue with timeout not being respected
 - agent info formatting corrected
 - documentation corrected, it is not required to re-match movies/items
-### Changed
+
+**Changed**
 - default timeout is now 180 seconds
 
 ## [0.0.3] - 2022-10-09
-### Fixed
+**Fixed**
 - use try/except/else for plexhints import
 - docker build was missing some plugin files
 - dockerignore file was not being respected
 - issue with special characters being replaced in plist file
-### Changed
+
+**Changed**
 - move plugin to `Music` category
 
 ## [0.0.2] - 2022-10-04
-### Fixed
+**Fixed**
 - `plexhints` import error on Docker
 - Reduced release bundle size
 
 ## [0.0.1] - 2022-10-03
-### Added
+**Added**
 - Initial Release
 
 [0.0.1]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.0.1
