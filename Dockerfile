@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 # artifacts: false
 # platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-FROM python:2.7.17-buster AS buildstage
+FROM python:2.7.18-buster AS buildstage
 # in order to use ubuntu:22.04 or newer, we will need to install git from source
 
 # build args
@@ -14,7 +14,7 @@ ARG GITHUB_SHA=$COMMIT
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # git 2.34 does not work with python 2.7
 # git 2.25 may work since it is included with ubuntu 20.04
-# too install git from source, see here: https://stackoverflow.com/a/52344030/11214013
+# to install git from source, see here: https://stackoverflow.com/a/52344030/11214013
 # install dependencies
 #RUN <<_DEPS
 ##!/bin/bash
