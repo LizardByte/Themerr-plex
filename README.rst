@@ -13,7 +13,7 @@ This plugin contributes to the following metadata agents.
    - Plex Movie
    - Plex Movie (Legacy) - `com.plexapp.agents.imdb`
    - The Movie Database - `com.plexapp.agents.themoviedb`
-   - RetroArcher - `dev.lizardbyte.retroarcher-plex`
+   - `RetroArcher <https://github.com/LizardByte/RetroArcher-plex>`_ - `dev.lizardbyte.retroarcher-plex`
 
 Integrations
 ------------
