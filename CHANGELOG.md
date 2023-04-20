@@ -1,8 +1,11 @@
 # Changelog
 
-## [0.1.4] - 2023-02-04
+## [0.1.4] - 2023-04-20
 **Fixed**
-- (Docker) Fixed issue where plugin would not load with LinuxServer.io image using a docker mod, introduced in v0.1.0.
+- Updated youtube_dl, fixing an issue where plugin would fail to get themes in some cases
+
+**Misc**
+- LinuxServer.io images now support mods with multi-digest layers (https://github.com/linuxserver/docker-mods/pull/577)
 
 ## [0.1.3] - 2023-01-28
 **Added**
