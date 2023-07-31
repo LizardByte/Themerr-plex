@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0] - 2023-07-31
+**Added**
+- Add option to prefer MPEG AAC audio codec over Opus
+
+**Fixed**
+- Fix issue where most theme songs would not play on Apple devices.
+- Remove tests directory from release package
+
 ## [0.1.4] - 2023-04-20
 **Fixed**
 - Updated youtube_dl, fixing an issue where plugin would fail to get themes in some cases
@@ -87,3 +95,4 @@
 [0.1.2]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.2
 [0.1.3]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.3
 [0.1.4]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.1.4
+[0.2.0]: https://github.com/lizardbyte/themerr-plex/releases/tag/v0.2.0
