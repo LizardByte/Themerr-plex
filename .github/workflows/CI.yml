@@ -44,9 +44,7 @@ jobs:
           path: Themerr-plex.bundle
 
       - name: Install Python 2.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: '2.7'
+        uses: LizardByte/.github/actions/setup_python2@nightly
 
       - name: Set up Python 2.7 Dependencies
         working-directory: Themerr-plex.bundle
@@ -107,6 +105,7 @@ jobs:
             "-xr!Themerr-plex.bundle/Dockerfile" \
             "-xr!Themerr-plex.bundle/docs" \
             "-xr!Themerr-plex.bundle/scripts" \
+            "-xr!Themerr-plex.bundle/tests" \
             a "./Themerr-plex.bundle.zip" "Themerr-plex.bundle"
 
           mkdir artifacts

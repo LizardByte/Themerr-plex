@@ -25,6 +25,18 @@ Minimal setup is required to use Themerr-plex. In addition to the installation, 
 Preferences
 -----------
 
+Prefer MP4A AAC Codec
+^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   Some Plex clients, such as AppleTV, do not support the Opus audio codec for theme songs. This setting will
+   force Themerr to select the MP4A AAC codec over the Opus codec when both are available. If the MP4A AAC codec is
+   not available, the Opus codec will be used and the theme song will not be playable on clients that do not support
+   the Opus codec.
+
+Default
+   True
+
 PlexAPI Timeout
 ^^^^^^^^^^^^^^^
 
