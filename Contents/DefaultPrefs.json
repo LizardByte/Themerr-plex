@@ -7,6 +7,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "bool_remove_unused_theme_songs",
+		"type": "bool",
+		"label": "Remove unused theme songs (frees up space in your Plex metadata directory)",
+		"default": "True",
+		"secure": "false"
+	},
+	{
 		"id": "int_plexapi_plexapi_timeout",
 		"type": "text",
 		"label": "PlexAPI Timeout, in seconds (min: 1)",

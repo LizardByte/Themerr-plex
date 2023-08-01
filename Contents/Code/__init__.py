@@ -29,12 +29,12 @@ from typing import Optional
 # local imports
 if sys.version_info.major < 3:
     from default_prefs import default_prefs
-    from helpers import issue_url_games, issue_url_movies
+    from constants import issue_url_games, issue_url_movies
     from plex_api_helper import add_themes, get_plex_item, plex_listener
     from youtube_dl_helper import process_youtube
 else:
     from .default_prefs import default_prefs
-    from .helpers import issue_url_games, issue_url_movies
+    from .constants import issue_url_games, issue_url_movies
     from .plex_api_helper import add_themes, get_plex_item, plex_listener
     from .youtube_dl_helper import process_youtube
 
