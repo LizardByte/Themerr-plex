@@ -22,6 +22,34 @@ Minimal setup is required to use Themerr-plex. In addition to the installation, 
 
 .. Attention:: It may take several minutes after completing a metadata refresh for a theme song to be available.
 
+Web UI
+------
+
+A web interface is provided by the plugin. Currently the web ui only provides a couple of end points.
+
+/
+^
+
+This endpoint will display a report showing the theme song status for each item in a library supported by Themerr-plex.
+A supported library is any that has the default agent as one supported by Themerr-plex.
+
+The report provides an easy means to contribute to `ThemerrDB <https://github.com/LizardByte/ThemerrDB>`_ by providing
+`Add/Edit` buttons for items that can be added to ThemerrDB.
+
+/status
+^^^^^^^
+
+An endpoint that provides a JSON response. If a valid response is returned, Themerr-plex is running.
+
+**Example Response**
+
+.. code-block:: json
+
+   {
+     "message":"Ok",
+     "result":"success"
+   }
+
 Preferences
 -----------
 
@@ -103,3 +131,40 @@ Description
 
 Default
    None
+
+Web UI Locale
+^^^^^^^^^^^^^
+
+Description
+   The localization value to use for translations.
+
+Default
+   ``en``
+
+Web UI Host Address
+^^^^^^^^^^^^^^^^^^^
+
+Description
+   The host address to bind the Web UI to.
+
+Default
+   ``0.0.0.0``
+
+Web UI Port
+^^^^^^^^^^^
+
+Description
+   The port to bind the Web UI to.
+
+Default
+   ``9494``
+
+Log all web server messages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   If set to ``True``, all web server messages will be logged. This will include logging requests and status codes when
+   requesting any resource. It is recommended to keep this disabled unless debugging.
+
+Default
+   ``False``

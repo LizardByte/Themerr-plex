@@ -4,7 +4,6 @@
 import hashlib
 import os
 import shutil
-import sys
 import time
 import threading
 
@@ -14,7 +13,6 @@ try:
 except ImportError:
     pass
 else:  # the code is running outside of Plex
-    from plexhints.core_kit import Core  # core kit
     from plexhints.log_kit import Log  # log kit
     from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
@@ -22,7 +20,7 @@ else:  # the code is running outside of Plex
 # imports from Libraries\Shared
 from future.moves import queue
 import requests
-from typing import Optional
+from typing import Optional, Tuple
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 from plexapi.alert import AlertListener
@@ -31,12 +29,8 @@ import plexapi.server
 from plexapi.utils import reverseSearchType
 
 # local imports
-if sys.version_info.major < 3:
-    from constants import guid_map, issue_url_movies
-    from youtube_dl_helper import process_youtube
-else:
-    from .constants import guid_map, issue_url_movies
-    from .youtube_dl_helper import process_youtube
+from constants import app_support_directory, guid_map, issue_url_movies
+from youtube_dl_helper import process_youtube
 
 plex = None
 
@@ -45,7 +39,6 @@ q = queue.Queue()
 processing_completed = []
 
 # constants
-app_support_directory = Core.app_support_path
 metadata_movie_directory = os.path.join(app_support_directory, 'Metadata', 'Movies')
 
 
@@ -141,6 +134,35 @@ def add_themes(rating_key, theme_files=None, theme_urls=None):
     return uploaded
 
 
+def get_theme_upload_path(plex_item):
+    # type: (any) -> str
+    """
+    Get the path to the theme upload directory.
+
+    Get the hashed path of the theme upload directory for the item specified by the ``plex_item``.
+
+    Parameters
+    ----------
+    plex_item : any
+        The item to get the theme upload path for.
+
+    Returns
+    -------
+    str
+        The path to the theme upload directory.
+
+    Examples
+    --------
+    >>> get_theme_upload_path(plex_item=...)
+    "...bundle/Uploads/themes..."
+    """
+    guid = plex_item.guid
+    full_hash = hashlib.sha1(guid).hexdigest()
+    theme_upload_path = os.path.join(
+        metadata_movie_directory, full_hash[0], full_hash[1:] + '.bundle', 'Uploads', 'themes')
+    return theme_upload_path
+
+
 def remove_uploaded_themes(plex_item):
     # type: (any) -> None
     """
@@ -163,10 +185,7 @@ def remove_uploaded_themes(plex_item):
     >>> remove_uploaded_themes(plex_item=...)
     ...
     """
-    guid = plex_item.guid
-    full_hash = hashlib.sha1(guid).hexdigest()
-    theme_upload_path = os.path.join(
-        metadata_movie_directory, full_hash[0], full_hash[1:] + '.bundle', 'Uploads', 'themes')
+    theme_upload_path = get_theme_upload_path(plex_item=plex_item)
     if os.path.isdir(theme_upload_path):
         shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_themes_error_handler)
 
@@ -232,6 +251,50 @@ def upload_theme(plex_item, filepath=None, url=None):
         else:
             return True
     return False
+
+
+def get_database_id(item):
+    # type: (any) -> Tuple[Optional[str], Optional[str]]
+    agent = None
+    database_id = None
+    imdb_id = None  # if this gets set we need to do additional processing
+
+    if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
+        agent = 'tv.plex.agents.movie'
+        for guid in item.guids:
+            split_guid = guid.id.split('://')
+            database = guid_map[split_guid[0]]
+            database_id = split_guid[1]
+
+            if database == 'igdb':
+                imdb_id = database_id
+                database_id = None
+
+            if database == 'themoviedb':
+                imdb_id = None  # reset this as we won't need to process it
+                break
+    elif item.guid:
+        split_guid = item.guid.split('://')
+        agent = split_guid[0]
+        if agent == 'dev.lizardbyte.retroarcher-plex':
+            # dev.lizardbyte.retroarcher-plex://{igdb-1638}{platform-4}{(USA)}?lang=en
+            database_id = item.guid.split('igdb-')[1].split('}')[0]
+        elif agent == 'com.plexapp.agents.themoviedb':
+            # com.plexapp.agents.themoviedb://363088?lang=en
+            database_id = item.guid.split('://')[1].split('?')[0]
+        elif agent == 'com.plexapp.agents.imdb':
+            # com.plexapp.agents.imdb://tt0113189?lang=en
+            imdb_id = item.guid.split('://')[1].split('?')[0]
+
+    if imdb_id:
+        themerr_url = 'https://app.lizardbyte.dev/ThemerrDB/%s/%s/%s.json' % ('movies', 'imdb', imdb_id)
+        themerr_response = requests.get(url=themerr_url)
+
+        if themerr_response.status_code == requests.codes.ok:
+            themerr_json = themerr_response.json()
+            database_id = themerr_json['id']
+
+    return agent, database_id
 
 
 def get_plex_item(rating_key):

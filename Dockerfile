@@ -17,6 +17,7 @@ RUN <<_DEPS
 set -e
 apt-get update -y
 apt-get install -y --no-install-recommends \
+  npm=8.5.* \
   python2=2.7.18* \
   python-pip=20.3.4*
 apt-get clean
@@ -47,6 +48,14 @@ python2 -m pip --no-python-version-warning --disable-pip-version-check install -
   --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
 python2 ./scripts/build_plist.py
 _BUILD
+
+# setup npm and dependencies
+RUN <<_NPM
+#!/bin/bash
+set -e
+npm install
+mv ./node_modules ./Contents/Resources/web
+_NPM
 
 # clean
 RUN <<_CLEAN

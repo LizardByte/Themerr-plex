@@ -10,7 +10,7 @@ Themerr-plex is a metadata agent plug-in for Plex Media Player. The plug-in adds
 
 This plugin contributes to the following metadata agents.
 
-   - Plex Movie
+   - Plex Movie - `tv.plex.agents.movie`
    - Plex Movie (Legacy) - `com.plexapp.agents.imdb`
    - The Movie Database - `com.plexapp.agents.themoviedb`
    - `RetroArcher <https://github.com/LizardByte/RetroArcher-plex>`_ - `dev.lizardbyte.retroarcher-plex`

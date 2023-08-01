@@ -48,5 +48,42 @@
 		"default": "",
 		"option": "hidden",
 		"secure": "true"
+	},
+	{
+		"id": "enum_locale",
+		"type": "enum",
+		"label": "Web UI Locale",
+		"default": "en",
+		"values": [
+			"de",
+			"en",
+			"en_GB",
+			"en_US",
+			"es",
+			"fr",
+			"it",
+			"ru"
+		]
+	},
+	{
+		"id": "str_http_host",
+		"type": "text",
+		"label": "Web UI Host Address (requires Plex Media Server restart)",
+		"default": "0.0.0.0",
+		"secure": "false"
+	},
+	{
+		"id": "int_http_port",
+		"type": "text",
+		"label": "Web UI Port (requires Plex Media Server restart)",
+		"default": "9494",
+		"secure": "false"
+	},
+	{
+		"id": "bool_log_werkzeug_messages",
+		"type": "bool",
+		"label": "Log all web server messages (requires Plex Media Server restart)",
+		"default": "False",
+		"secure": "false"
 	}
 ]

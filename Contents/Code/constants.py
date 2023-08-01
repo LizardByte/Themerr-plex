@@ -1,3 +1,30 @@
+# -*- coding: utf-8 -*-
+
+# standard imports
+import os
+
+# plex debugging
+try:
+    import plexhints  # noqa: F401
+except ImportError:
+    pass
+else:  # the code is running outside of Plex
+    from plexhints.core_kit import Core  # core kit
+
+app_support_directory = Core.app_support_path
+plugin_identifier = 'dev.lizardbyte.themerr-plex'
+plugin_support_directory = os.path.join(app_support_directory, 'Plug-in Support')
+plugin_support_data_directory = os.path.join(plugin_support_directory, 'Data')
+themerr_data_directory = os.path.join(plugin_support_data_directory, plugin_identifier, 'DataItems')
+
+contributes_to = [
+    'tv.plex.agents.movie',
+    'com.plexapp.agents.imdb',
+    'com.plexapp.agents.themoviedb',
+    # 'com.plexapp.agents.thetvdb',  # not available as movie agent
+    'dev.lizardbyte.retroarcher-plex'
+]
+
 guid_map = dict(
     imdb='imdb',
     tmdb='themoviedb',

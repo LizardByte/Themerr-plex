@@ -36,6 +36,26 @@ Build Plist
 
       python ./scripts/build_plist.py
 
+npm dependencies
+----------------
+Install nodejs and npm. Downloads available `here <https://nodejs.org/en/download/>`_.
+
+Install npm dependencies.
+   .. code-block:: bash
+
+      npm install
+
+Move modules directory.
+   Linux/macOS
+      .. code-block:: bash
+
+         mv ./node_modules ./Contents/Resources/web
+
+   Windows
+      .. code-block:: batch
+
+         move .\node_modules .\Contents\Resources\web
+
 Remote Build
 ------------
 It may be beneficial to build remotely in some cases. This will enable easier building on different operating systems.

@@ -59,6 +59,12 @@ jobs:
           python -m pip install --upgrade --target=./Contents/Libraries/Shared -r \
             requirements.txt --no-warn-script-location
 
+      - name: Install npm packages
+        working-directory: Themerr-plex.bundle
+        run: |
+          npm install
+          mv ./node_modules ./Contents/Resources/web
+
       - name: Build plist
         working-directory: Themerr-plex.bundle
         env:
@@ -89,6 +95,7 @@ jobs:
             !**/Themerr-plex.bundle/Dockerfile
             !**/Themerr-plex.bundle/docs
             !**/Themerr-plex.bundle/scripts
+            !**/Themerr-plex.bundle/tests
 
       - name: Package Release
         shell: bash
