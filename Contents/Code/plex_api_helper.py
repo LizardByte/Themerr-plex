@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 # standard imports
+import hashlib
 import os
+import shutil
 import sys
 import time
 import threading
@@ -12,6 +14,7 @@ try:
 except ImportError:
     pass
 else:  # the code is running outside of Plex
+    from plexhints.core_kit import Core  # core kit
     from plexhints.log_kit import Log  # log kit
     from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
@@ -29,10 +32,10 @@ from plexapi.utils import reverseSearchType
 
 # local imports
 if sys.version_info.major < 3:
-    from helpers import guid_map, issue_url_movies
+    from constants import guid_map, issue_url_movies
     from youtube_dl_helper import process_youtube
 else:
-    from .helpers import guid_map, issue_url_movies
+    from .constants import guid_map, issue_url_movies
     from .youtube_dl_helper import process_youtube
 
 plex = None
@@ -40,6 +43,10 @@ plex = None
 # list currently processing items to avoid processing again
 q = queue.Queue()
 processing_completed = []
+
+# constants
+app_support_directory = Core.app_support_path
+metadata_movie_directory = os.path.join(app_support_directory, 'Metadata', 'Movies')
 
 
 def setup_plexapi():
@@ -116,6 +123,10 @@ def add_themes(rating_key, theme_files=None, theme_urls=None):
         if plex:
             plex_item = plex.fetchItem(ekey=int(rating_key))  # must be an int or weird things happen
 
+            # remove existing theme uploads
+            if Prefs['bool_remove_unused_theme_songs']:
+                remove_uploaded_themes(plex_item=plex_item)
+
             if theme_files:
                 for theme_file in theme_files:
                     Log.Info('Attempting to upload theme file: %s' % theme_file)
@@ -128,6 +139,55 @@ def add_themes(rating_key, theme_files=None, theme_urls=None):
         Log.Info('No theme songs provided for rating key: %s' % rating_key)
 
     return uploaded
+
+
+def remove_uploaded_themes(plex_item):
+    # type: (any) -> None
+    """
+    Remove themes for the specified item.
+
+    Deletes the themes upload directory for the item specified by the ``plex_item``.
+
+    Parameters
+    ----------
+    plex_item : any
+        The item to remove the themes from.
+
+    Returns
+    -------
+    bool
+        True if the themes were removed successfully, False otherwise.
+
+    Examples
+    --------
+    >>> remove_uploaded_themes(plex_item=...)
+    ...
+    """
+    guid = plex_item.guid
+    full_hash = hashlib.sha1(guid).hexdigest()
+    theme_upload_path = os.path.join(
+        metadata_movie_directory, full_hash[0], full_hash[1:] + '.bundle', 'Uploads', 'themes')
+    if os.path.isdir(theme_upload_path):
+        shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_themes_error_handler)
+
+
+def remove_uploaded_themes_error_handler(func, path, exc_info):
+    # type: (any, any, any) -> None
+    """
+    Error handler for removing themes.
+
+    Handles errors that occur when removing themes using ``shutil``.
+
+    Parameters
+    ----------
+    func : any
+        The function that caused the error.
+    path : str
+        The path that caused the error.
+    exc_info : any
+        The exception information.
+    """
+    Log.Error('Error removing themes with function: %s, path: %s, exception info: %s' % (func, path, exc_info))
 
 
 def upload_theme(plex_item, filepath=None, url=None):

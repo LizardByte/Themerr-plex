@@ -37,6 +37,16 @@ Description
 Default
    True
 
+Remove unused theme songs
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When Themerr-plex uploads a theme song to the Plex server, it will remove any existing theme songs for the same
+   movie. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory.
+
+Default
+   True
+
 PlexAPI Timeout
 ^^^^^^^^^^^^^^^
 
