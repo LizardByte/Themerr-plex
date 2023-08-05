@@ -1,8 +1,12 @@
 # these requirements must support python 2.7
 # it is doubtful that Plex will ever update to Python 3+
+flask==1.1.4;python_version<"3"
+flask-babel==2.0.0;python_version<"3"
 future==0.18.3
+polib==1.2.0;python_version<"3"
 requests==2.27.1;python_version<"3"  # 2.27 is last version supporting Python 2.7
 typing==3.10.0.0
+werkzeug==1.0.1;python_version<"3"
 
 # youtube_dl is not capable or willing to create a new release so have to install from git
 # youtube_dl==2021.12.17

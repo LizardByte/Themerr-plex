@@ -5,7 +5,7 @@ Testing
 
 Flake8
 ------
-Themerr-plex uses `Flake8 <https://pypi.org/project/flake8/>`_ for enforcing consistent code styling. Flake is included
+Themerr-plex uses `Flake8 <https://pypi.org/project/flake8/>`_ for enforcing consistent code styling. Flake8 is included
 in the ``requirements-dev.txt``.
 
 The config file for flake8 is ``.flake8``. This is already included in the root of the repo and should not be modified.

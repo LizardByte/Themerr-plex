@@ -168,3 +168,7 @@ plexhints-temp
 
 # Remove python modules
 Contents/Libraries/Shared/
+
+# npm
+node_modules/
+package-lock.json

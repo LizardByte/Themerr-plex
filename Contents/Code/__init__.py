@@ -2,7 +2,6 @@
 
 # standard imports
 import re
-import sys
 
 # plex debugging
 try:
@@ -27,16 +26,11 @@ else:  # the code is running outside of Plex
 from typing import Optional
 
 # local imports
-if sys.version_info.major < 3:
-    from default_prefs import default_prefs
-    from constants import issue_url_games, issue_url_movies
-    from plex_api_helper import add_themes, get_plex_item, plex_listener
-    from youtube_dl_helper import process_youtube
-else:
-    from .default_prefs import default_prefs
-    from .constants import issue_url_games, issue_url_movies
-    from .plex_api_helper import add_themes, get_plex_item, plex_listener
-    from .youtube_dl_helper import process_youtube
+from default_prefs import default_prefs
+from constants import contributes_to, issue_url_games, issue_url_movies
+from plex_api_helper import add_themes, get_plex_item, plex_listener
+from youtube_dl_helper import process_youtube
+from webapp import start_server
 
 
 def ValidatePrefs():
@@ -112,7 +106,7 @@ def Start():
     for more information.
 
     First preferences are validated using the ``ValidatePrefs()`` method. Then the ``plex_api_helper.plex_listener()``
-    method is started to handle updating theme songs for the new Plex Movie agent.
+    method is started to handle updating theme songs for the new Plex Movie agent. Finally, the web server is started.
 
     Examples
     --------
@@ -124,11 +118,12 @@ def Start():
     if prefs_valid.header == 'Error':
         Log.Warn('Themerr-plex plug-in preferences are not valid.')
 
-    Log.Debug('Themerr-plex plug-in started.')
-
     # start watching plex
     plex_listener()
     Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
+
+    start_server()  # start the web server if it is not running
+    Log.Debug('plug-in started.')
 
 
 @handler(prefix='/music/themerr-plex', name='Themerr-plex', thumb='attribution.png')
@@ -194,12 +189,7 @@ class Themerr(Agent.Movies):
     primary_provider = False
     fallback_agent = False
     accepts_from = []
-    contributes_to = [
-        'com.plexapp.agents.imdb',
-        'com.plexapp.agents.themoviedb',
-        # 'com.plexapp.agents.thetvdb',  # not available as movie agent
-        'dev.lizardbyte.retroarcher-plex'
-    ]
+    contributes_to = contributes_to
 
     @staticmethod
     def search(results, media, lang, manual):

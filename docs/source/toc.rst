@@ -25,4 +25,5 @@
 
    code_docs/main
    code_docs/plex_api_helper
+   code_docs/webapp
    code_docs/youtube_dl_helper

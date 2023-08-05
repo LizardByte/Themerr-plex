@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# standard imports
-
 # plex debugging
 try:
     import plexhints  # noqa: F401
