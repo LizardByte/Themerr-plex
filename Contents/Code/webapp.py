@@ -320,8 +320,8 @@ def translations():
     locale = get_locale()
 
     po_files = [
-        '%s/%s/LC_MESSAGES/plugger.po' % (app.config['BABEL_TRANSLATION_DIRECTORIES'], locale),  # selected locale
-        '%s/plugger.po' % app.config['BABEL_TRANSLATION_DIRECTORIES'],  # fallback to default domain
+        '%s/%s/LC_MESSAGES/themerr-plex.po' % (app.config['BABEL_TRANSLATION_DIRECTORIES'], locale),  # selected locale
+        '%s/themerr-plex.po' % app.config['BABEL_TRANSLATION_DIRECTORIES'],  # fallback to default domain
     ]
 
     for po_file in po_files:

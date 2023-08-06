@@ -20,7 +20,7 @@ def test_home(test_client):
         assert response.status_code == 200
 
 
-def test_favicon(test_client):
+def test_image(test_client):
     """
     WHEN the '/favicon.ico' file is requested (GET)
     THEN check that the response is valid
