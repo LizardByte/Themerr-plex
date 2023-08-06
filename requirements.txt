@@ -21,3 +21,7 @@ https://github.com/reenignearcher/python-plexapi/archive/master-py2.7.zip#egg=pl
 
 # websocket-client is required for plexapi alert listener
 websocket-client==0.59.0;python_version<"3"
+
+# required for websocket to pass tests
+pysocks==1.7.1;python_version<"3"
+win-inet-pton==1.1.0;python_version<"3" and platform_system=="Windows"
