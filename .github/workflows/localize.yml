@@ -38,14 +38,14 @@ jobs:
           git config --global pager.diff false
 
           # print the git diff
-          git diff Contents/Scripts/themerr-plex.po
+          git diff Contents/Strings/themerr-plex.po
 
           # set the variable with minimal output, replacing `\t` with ` `
           OUTPUT=$(git diff --numstat Contents/Strings/themerr-plex.po | sed -e "s#\t# #g")
           echo "git_diff=${OUTPUT}" >> $GITHUB_ENV
 
       - name: git reset
-        if: ${{ env.git_diff == '1 1 Contents/Scripts/themerr-plex.po' }}  # only run if more than 1 line changed
+        if: ${{ env.git_diff == '1 1 Contents/Strings/themerr-plex.po' }}  # only run if more than 1 line changed
         run: |
           git reset --hard
 
@@ -57,7 +57,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           add-paths: |
-            Contents/Scripts/*.po
+            Contents/Strings/*.po
           token: ${{ secrets.GH_BOT_TOKEN }}  # must trigger PR tests
           commit-message: New localization template
           branch: localize/update
