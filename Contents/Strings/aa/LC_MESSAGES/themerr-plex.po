@@ -1,0 +1,64 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2023-08-05 13:12-0400\n"
+"PO-Revision-Date: 2023-08-06 14:47\n"
+"Last-Translator: \n"
+"Language-Team: Afar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: aa\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] nightly/themerr-plex.po\n"
+"X-Crowdin-File-ID: 25\n"
+"Language: aa_ER\n"
+
+#: Contents/Resources/web/templates/home.html:65
+msgid "Title"
+msgstr "crwdns5109:0crwdne5109:0"
+
+#: Contents/Resources/web/templates/home.html:66
+msgid "Year"
+msgstr "crwdns5111:0crwdne5111:0"
+
+#: Contents/Resources/web/templates/home.html:67
+msgid "Contribute"
+msgstr "crwdns5113:0crwdne5113:0"
+
+#: Contents/Resources/web/templates/home.html:81
+msgid "Add"
+msgstr "crwdns5115:0crwdne5115:0"
+
+#: Contents/Resources/web/templates/home.html:84
+msgid "Edit"
+msgstr "crwdns5117:0crwdne5117:0"
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr "crwdns5119:0crwdne5119:0"
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr "crwdns5121:0crwdne5121:0"
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr "crwdns5123:0crwdne5123:0"
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr "crwdns5125:0crwdne5125:0"
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr "crwdns5127:0crwdne5127:0"
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr "crwdns5129:0crwdne5129:0"
+
