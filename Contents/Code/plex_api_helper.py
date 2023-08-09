@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # standard imports
-import hashlib
 import os
-import shutil
 import time
 import threading
 
@@ -14,13 +12,13 @@ except ImportError:
     pass
 else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
-    from plexhints.parse_kit import JSON  # parse kit
+    from plexhints.parse_kit import JSON, XML  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
 from future.moves import queue
 import requests
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 from plexapi.alert import AlertListener
@@ -29,17 +27,27 @@ import plexapi.server
 from plexapi.utils import reverseSearchType
 
 # local imports
-from constants import app_support_directory, guid_map, issue_url_movies
+from constants import contributes_to, guid_map
+import general_helper
+import lizardbyte_db_helper
+import tmdb_helper
 from youtube_dl_helper import process_youtube
 
 plex = None
 
-# list currently processing items to avoid processing again
 q = queue.Queue()
-processing_completed = []
 
-# constants
-metadata_movie_directory = os.path.join(app_support_directory, 'Metadata', 'Movies')
+
+plex_url = 'http://localhost:32400'
+plex_token = os.environ.get('PLEXTOKEN')
+
+plex_section_type_settings_map = dict(
+    album=9,
+    artist=8,
+    movie=1,
+    photo=13,
+    show=2,
+)
 
 
 def setup_plexapi():
@@ -61,9 +69,6 @@ def setup_plexapi():
     """
     global plex
     if not plex:
-        plex_url = 'http://localhost:32400'
-        plex_token = os.environ.get('PLEXTOKEN')
-
         if not plex_token:
             Log.Error('Plex token not found in environment, cannot proceed.')
             return False
@@ -79,147 +84,239 @@ def setup_plexapi():
     return plex
 
 
-def add_themes(rating_key, theme_files=None, theme_urls=None):
-    # type: (int, Optional[list], Optional[list]) -> bool
+def update_plex_item(rating_key):
+    # type: (int) -> bool
     """
-    Apply themes to the specified item.
+    Automated update of Plex item using only the rating key.
 
-    Adds theme songs to the item specified by the ``rating_key``.
+    Given the rating key, this function will automatically handle collecting the required information to update the
+    theme song, and any other metadata.
 
     Parameters
     ----------
-    rating_key : str
-        The key corresponding to the item that the themes will be added to.
-    theme_files : Optional[list]
-        A list of paths to theme songs.
-    theme_urls : Optional[list]
-        A list of urls to theme songs.
+    rating_key : int
+        The rating key of the item to be updated.
 
     Returns
     -------
     bool
-        True if the themes were added successfully, False otherwise.
+        True if the item was updated successfully, False otherwise.
 
     Examples
     --------
-    >>> add_themes(theme_list=[...], rating_key=...)
+    >>> update_plex_item(rating_key=12345)
+    """
+    # first get the plex item
+    item = get_plex_item(rating_key=rating_key)
+
+    if not item:
+        Log.Error('Could not find item with rating key: %s' % rating_key)
+        return False
+
+    database_info = get_database_info(item=item)
+    Log.Debug('-' * 50)
+    Log.Debug('item title: {}'.format(item.title))
+    Log.Debug('item type: {}'.format(item.type))
+    Log.Debug('database_info: {}'.format(database_info))
+
+    database_type = database_info[0]
+    database = database_info[1]
+    agent = database_info[2]
+    database_id = database_info[3]
+
+    if database and database_type and database_id:
+        url = 'https://app.lizardbyte.dev/ThemerrDB/{}/{}/{}.json'.format(database_type, database, database_id)
+
+        try:
+            data = JSON.ObjectFromURL(
+                cacheTime=3600,
+                url=url,
+                errors='ignore'  # don't crash the plugin
+            )
+        except Exception as e:
+            Log.Error('{}: Error retrieving data from ThemerrDB: {}'.format(item.ratingKey, e))
+        else:
+            if data:
+                # update collection metadata
+                Log.Debug('data found for {} {}'.format(item.type, item.title))
+                if item.type == 'collection':
+                    # determine if we want to update the metadata based on the agent and user preferences
+                    update_collection_metadata = False
+
+                    if agent == 'tv.plex.agents.movie':  # new Plex Movie agent
+                        if Prefs['bool_update_collection_metadata_plex_movie']:
+                            update_collection_metadata = True
+                    elif database != 'igdb':  # any other legacy agents except RetroArcher
+                        # game collections/franchises don't have extended metadata
+                        if Prefs['bool_update_collection_metadata_legacy']:
+                            update_collection_metadata = True
+
+                    if update_collection_metadata:
+                        # update poster
+                        try:
+                            url = 'https://image.tmdb.org/t/p/original{}'.format(data['poster_path'])
+                        except KeyError:
+                            pass
+                        else:
+                            add_media(item=item, media_type='posters', media_url_id=data['poster_path'], media_url=url)
+                        # update art
+                        try:
+                            url = 'https://image.tmdb.org/t/p/original{}'.format(data['backdrop_path'])
+                        except KeyError:
+                            pass
+                        else:
+                            add_media(item=item, media_type='art', media_url_id=data['backdrop_path'], media_url=url)
+                        # update summary
+                        try:
+                            summary = data['overview']
+                        except KeyError:
+                            pass
+                        else:
+                            if item.summary != summary:
+                                Log.Info('Updating summary for collection: {}'.format(item.title))
+                                try:
+                                    item.editSummary(summary=summary, locked=False)
+                                except Exception as e:
+                                    Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
+
+                # get youtube_url
+                try:
+                    yt_video_url = data['youtube_theme_url']
+                except KeyError:
+                    Log.Info('{}: No theme song found for {} ({})'.format(item.ratingKey, item.title, item.year))
+                else:
+                    theme_url = process_youtube(url=yt_video_url)
+
+                    if theme_url:
+                        add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url)
+
+
+def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
+    # type: (any, str, str, Optional[str], Optional[str]) -> bool
+    """
+    Apply media to the specified item.
+
+    Adds theme song to the item specified by the ``rating_key``. If the same theme song is already present, it will be
+    skipped.
+
+    Parameters
+    ----------
+    item : any
+        The Plex item to add the theme to.
+    media_type : str
+        The type of media to add. Must be one of 'art', 'posters', or 'themes'.
+    media_url_id : str
+        The url or id of the media.
+    media_file : Optional[str]
+        Full path to media file.
+    media_url : Optional[str]
+        URL of media.
+
+    Returns
+    -------
+    bool
+        True if the media was added successfully or already present, False otherwise.
+
+    Examples
+    --------
+    >>> add_media(item=..., media_type='themes', media_url_id=..., media_url=...)
+    >>> add_media(item=..., media_type='themes', media_url_url=..., media_file=...)
     """
     uploaded = False
 
-    if theme_files or theme_urls:
+    settings_hash = general_helper.get_themerr_settings_hash()
+    themerr_data = general_helper.get_themerr_json_data(item=item)
+
+    media_type_dict = dict(
+        art=dict(
+            method=item.uploadArt,
+            type='art',
+            name='art',
+            themerr_data_key='art_url',
+            remove_pref='bool_remove_unused_art',
+        ),
+        posters=dict(
+            method=item.uploadPoster,
+            type='posters',
+            name='poster',
+            themerr_data_key='poster_url',
+            remove_pref='bool_remove_unused_posters',
+        ),
+        themes=dict(
+            method=item.uploadTheme,
+            type='themes',
+            name='theme',
+            themerr_data_key='youtube_theme_url',
+            remove_pref='bool_remove_unused_theme_songs',
+        ),
+    )
+
+    if media_file or media_url:
         global plex
         if not plex:
             plex = setup_plexapi()
 
-        Log.Info('Plexapi working with item with rating key: %s' % rating_key)
+        Log.Info('Plexapi attempting to upload {} for type: {}, title: {}, rating_key: {}'.format(
+            media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
+        ))
 
-        if plex:
-            plex_item = plex.fetchItem(ekey=int(rating_key))  # must be an int or weird things happen
+        try:
+            if themerr_data['settings_hash'] == settings_hash \
+                    and themerr_data[media_type_dict[media_type]['themerr_data_key']] == media_url_id:
+                Log.Info('Skipping {} for type: {}, title: {}, rating_key: {}'.format(
+                    media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
+                ))
 
-            # remove existing theme uploads
-            if Prefs['bool_remove_unused_theme_songs']:
-                remove_uploaded_themes(plex_item=plex_item)
+                # false because we aren't doing anything, and the listener will not see this item again
+                return False
+        except KeyError:
+            pass
 
-            if theme_files:
-                for theme_file in theme_files:
-                    Log.Info('Attempting to upload theme file: %s' % theme_file)
-                    uploaded = upload_theme(plex_item=plex_item, filepath=theme_file)
-            if theme_urls:
-                for theme_url in theme_urls:
-                    Log.Info('Attempting to upload theme file: %s' % theme_url)
-                    uploaded = upload_theme(plex_item=plex_item, url=theme_url)
+        # remove existing theme uploads
+        if Prefs[media_type_dict[media_type]['remove_pref']]:
+            general_helper.remove_uploaded_media(item=item, media_type=media_type)
+
+        Log.Info('Attempting to upload {} for type: {}, title: {}, rating_key: {}'.format(
+            media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
+        ))
+        if media_file:
+            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'], filepath=media_file)
+        if media_url:
+            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'], url=media_url)
     else:
-        Log.Info('No theme songs provided for rating key: %s' % rating_key)
+        Log.Warning('No theme songs provided for type: {}, title: {}, rating_key: {}'.format(
+            item.type, item.title, item.ratingKey
+        ))
+
+    if uploaded:
+        # new data for themerr.json
+        new_themerr_data = dict(
+            settings_hash=settings_hash
+        )
+        new_themerr_data[media_type_dict[media_type]['themerr_data_key']] = media_url_id
+
+        general_helper.update_themerr_data_file(item=item, new_themerr_data=new_themerr_data)
+    else:
+        Log.Debug('Could not upload {} for type: {}, title: {}, rating_key: {}'.format(
+            media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
+        ))
 
     return uploaded
 
 
-def get_theme_upload_path(plex_item):
-    # type: (any) -> str
+def upload_media(item, method, filepath=None, url=None):
+    # type: (any, Callable, Optional[str], Optional[str]) -> bool
     """
-    Get the path to the theme upload directory.
+    Upload media to the specified item.
 
-    Get the hashed path of the theme upload directory for the item specified by the ``plex_item``.
+    Uploads art, poster, or theme to the item specified by the ``item``.
 
     Parameters
     ----------
-    plex_item : any
-        The item to get the theme upload path for.
-
-    Returns
-    -------
-    str
-        The path to the theme upload directory.
-
-    Examples
-    --------
-    >>> get_theme_upload_path(plex_item=...)
-    "...bundle/Uploads/themes..."
-    """
-    guid = plex_item.guid
-    full_hash = hashlib.sha1(guid).hexdigest()
-    theme_upload_path = os.path.join(
-        metadata_movie_directory, full_hash[0], full_hash[1:] + '.bundle', 'Uploads', 'themes')
-    return theme_upload_path
-
-
-def remove_uploaded_themes(plex_item):
-    # type: (any) -> None
-    """
-    Remove themes for the specified item.
-
-    Deletes the themes upload directory for the item specified by the ``plex_item``.
-
-    Parameters
-    ----------
-    plex_item : any
-        The item to remove the themes from.
-
-    Returns
-    -------
-    bool
-        True if the themes were removed successfully, False otherwise.
-
-    Examples
-    --------
-    >>> remove_uploaded_themes(plex_item=...)
-    ...
-    """
-    theme_upload_path = get_theme_upload_path(plex_item=plex_item)
-    if os.path.isdir(theme_upload_path):
-        shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_themes_error_handler)
-
-
-def remove_uploaded_themes_error_handler(func, path, exc_info):
-    # type: (any, any, any) -> None
-    """
-    Error handler for removing themes.
-
-    Handles errors that occur when removing themes using ``shutil``.
-
-    Parameters
-    ----------
-    func : any
-        The function that caused the error.
-    path : str
-        The path that caused the error.
-    exc_info : any
-        The exception information.
-    """
-    Log.Error('Error removing themes with function: %s, path: %s, exception info: %s' % (func, path, exc_info))
-
-
-def upload_theme(plex_item, filepath=None, url=None):
-    # type: (any, Optional[str], Optional[str]) -> bool
-    """
-    Upload a theme to the specified item.
-
-    Uploads a theme to the item specified by the ``plex_item``.
-
-    Parameters
-    ----------
-    plex_item : any
+    item : any
         The item to upload the theme to.
+    method : Callable
+        The method to use to upload the theme.
     filepath : Optional[str]
         The path to the theme song.
     url : Optional[str]
@@ -232,20 +329,22 @@ def upload_theme(plex_item, filepath=None, url=None):
 
     Examples
     --------
-    >>> upload_theme(plex_item=..., url=...)
+    >>> upload_media(item=..., method=item.uploadArt, url=...)
+    >>> upload_media(item=..., method=item.uploadPoster, url=...)
+    >>> upload_media(item=..., method=item.uploadTheme, url=...)
     ...
     """
     count = 0
     while count <= int(Prefs['int_plexapi_upload_retries_max']):
         try:
             if filepath:
-                plex_item.uploadTheme(filepath=filepath)
+                method(filepath=filepath)
             elif url:
-                plex_item.uploadTheme(url=url)
+                method(url=url)
         except BadRequest as e:
             sleep_time = 2**count
-            Log.Error('%s: Error uploading theme: %s' % (plex_item.ratingKey, e))
-            Log.Error('%s: Trying again in : %s' % (plex_item.ratingKey, sleep_time))
+            Log.Error('%s: Error uploading media: %s' % (item.ratingKey, e))
+            Log.Error('%s: Trying again in : %s' % (item.ratingKey, sleep_time))
             time.sleep(sleep_time)
             count += 1
         else:
@@ -253,48 +352,101 @@ def upload_theme(plex_item, filepath=None, url=None):
     return False
 
 
-def get_database_id(item):
-    # type: (any) -> Tuple[Optional[str], Optional[str]]
+def get_database_info(item):
+    # type: (any) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]
+    """
+    Get the database info for the specified item.
+
+    Get the ``database_type``, ``database``, ``agent``, ``database_id`` which can be used to locate the theme song
+    in ThemerrDB.
+
+    Parameters
+    ----------
+    item : any
+        The item to get the database info for.
+
+    Returns
+    -------
+    Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]
+        The ``database_type``, ``database``, ``agent``, ``database_id``.
+
+    Examples
+    --------
+    >>> get_database_info(item=...)
+    """
+    Log.Debug('Getting database info for item: %s' % item.title)
+
+    # setup plex just in case
+    global plex
+    if not plex:
+        plex = setup_plexapi()
+
     agent = None
+    database = None
     database_id = None
-    imdb_id = None  # if this gets set we need to do additional processing
+    database_type = None
 
-    if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
-        agent = 'tv.plex.agents.movie'
-        for guid in item.guids:
-            split_guid = guid.id.split('://')
-            database = guid_map[split_guid[0]]
-            database_id = split_guid[1]
+    if item.type == 'movie':
+        # imdb_id = None  # if this gets set we need to do additional processing
 
-            if database == 'igdb':
-                imdb_id = database_id
-                database_id = None
+        if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
+            agent = 'tv.plex.agents.movie'
+            database_type = 'movies'
+            for guid in item.guids:
+                split_guid = guid.id.split('://')
+                temp_database = guid_map[split_guid[0]]
+                temp_database_id = split_guid[1]
 
-            if database == 'themoviedb':
-                imdb_id = None  # reset this as we won't need to process it
-                break
-    elif item.guid:
-        split_guid = item.guid.split('://')
-        agent = split_guid[0]
+                if temp_database == 'imdb':
+                    database_id = temp_database_id
+                    database = temp_database
+
+                if temp_database == 'themoviedb':
+                    database_id = temp_database_id
+                    database = temp_database
+                    break
+        elif item.guid:
+            split_guid = item.guid.split('://')
+            agent = split_guid[0]
+            if agent == 'dev.lizardbyte.retroarcher-plex':
+                # dev.lizardbyte.retroarcher-plex://{igdb-1638}{platform-4}{(USA)}?lang=en
+                database_type = 'games'
+                database = 'igdb'
+                database_id = item.guid.split('igdb-')[1].split('}')[0]
+            elif agent == 'com.plexapp.agents.themoviedb':
+                # com.plexapp.agents.themoviedb://363088?lang=en
+                database_type = 'movies'
+                database = 'themoviedb'
+                database_id = item.guid.split('://')[1].split('?')[0]
+            elif agent == 'com.plexapp.agents.imdb':
+                # com.plexapp.agents.imdb://tt0113189?lang=en
+                database_type = 'movies'
+                database = 'imdb'
+                database_id = item.guid.split('://')[1].split('?')[0]
+
+    elif item.type == 'collection':
+        # this is tricky since collections don't match up with any of the databases
+        # we'll use the collection title and try to find a match
+
+        # using the section id, we can probably figure out the agent
+        section = plex.library.sectionByID(item.librarySectionID)
+        agent = section.agent
+
         if agent == 'dev.lizardbyte.retroarcher-plex':
-            # dev.lizardbyte.retroarcher-plex://{igdb-1638}{platform-4}{(USA)}?lang=en
-            database_id = item.guid.split('igdb-')[1].split('}')[0]
-        elif agent == 'com.plexapp.agents.themoviedb':
-            # com.plexapp.agents.themoviedb://363088?lang=en
-            database_id = item.guid.split('://')[1].split('?')[0]
-        elif agent == 'com.plexapp.agents.imdb':
-            # com.plexapp.agents.imdb://tt0113189?lang=en
-            imdb_id = item.guid.split('://')[1].split('?')[0]
+            # this collection is for a game library
+            database = 'igdb'
+            collection_data = lizardbyte_db_helper.get_igdb_id_from_collection(search_query=item.title)
+            if collection_data:
+                database_id = collection_data[0]
+                database_type = collection_data[1]
+        else:
+            database = 'themoviedb'
+            database_type = 'movie_collections'
+            database_id = tmdb_helper.get_tmdb_id_from_collection(search_query=item.title)
 
-    if imdb_id:
-        themerr_url = 'https://app.lizardbyte.dev/ThemerrDB/%s/%s/%s.json' % ('movies', 'imdb', imdb_id)
-        themerr_response = requests.get(url=themerr_url)
-
-        if themerr_response.status_code == requests.codes.ok:
-            themerr_json = themerr_response.json()
-            database_id = themerr_json['id']
-
-    return agent, database_id
+    Log.Debug('Database info for item: {}, database_info: {}'.format(
+        item.title, (database_type, database, agent, database_id)))
+    return database_type, database, agent, database_id
 
 
 def get_plex_item(rating_key):
@@ -307,7 +459,7 @@ def get_plex_item(rating_key):
     Parameters
     ----------
     rating_key : int
-        The ``rating_key`` of the item to upload a theme for.
+        The ``rating_key`` of the item to get.
 
     Returns
     -------
@@ -319,12 +471,15 @@ def get_plex_item(rating_key):
     >>> get_plex_item(rating_key=1)
     ...
     """
-    global plex, processing_completed
+    global plex
     if not plex:
         plex = setup_plexapi()
-    plex_item = plex.fetchItem(ekey=rating_key)
+    if plex:
+        item = plex.fetchItem(ekey=rating_key)
+    else:
+        item = None
 
-    return plex_item
+    return item
 
 
 def process_queue():
@@ -336,25 +491,25 @@ def process_queue():
 
     Examples
     --------
-    >>> t = threading.Thread(target=process_queue, daemon=True)
+    >>> process_queue()
     ...
     """
     while True:
         rating_key = q.get()  # get the rating_key from the queue
-        update_plex_movie_item(rating_key=rating_key)  # process that rating_key
+        update_plex_item(rating_key=rating_key)  # process that rating_key
         q.task_done()  # tells the queue that we are done with this item
 
 
-def plex_listener():
+def start_queue_threads():
     # type: () -> None
     """
-    Listen for events from Plex server.
+    Start queue threads.
 
-    Send events to ``plex_listener_handler`` and errors to ``Log.Error``.
+    Start the queue threads based on the number of threads set in the preferences.
 
     Examples
     --------
-    >>> plex_listener()
+    >>> start_queue_threads()
     ...
     """
     # create multiple threads for processing themes faster
@@ -371,6 +526,19 @@ def plex_listener():
             Log.Error('RuntimeError encountered: %s' % e)
             break
 
+
+def plex_listener():
+    # type: () -> None
+    """
+    Listen for events from Plex server.
+
+    Send events to ``plex_listener_handler`` and errors to ``Log.Error``.
+
+    Examples
+    --------
+    >>> plex_listener()
+    ...
+    """
     global plex
     if not plex:
         plex = setup_plexapi()
@@ -383,7 +551,8 @@ def plex_listener_handler(data):
     """
     Process events from ``plex_listener()``.
 
-    Check if we need to add an item to the queue or remove it from the ``processing_completed`` list.
+    Check if we need to add an item to the queue. This is used to automatically add themes to items from the
+    new Plex Movie agent, since metadata agents cannot extend it.
 
     Parameters
     ----------
@@ -395,7 +564,6 @@ def plex_listener_handler(data):
     >>> plex_listener_handler(data={'type': 'timeline'})
     ...
     """
-    global processing_completed
     # Log.Debug(data)
     if data['type'] == 'timeline':
         for entry in data['TimelineEntry']:
@@ -407,89 +575,81 @@ def plex_listener_handler(data):
             if (reverseSearchType(libtype=entry['type']) == 'movie'
                     and entry['state'] == 5
                     and entry['identifier'] == 'com.plexapp.plugins.library'):
-                # todo - add themes for collections
                 # identifier always appears to be `com.plexapp.plugins.library` for updating library metadata
                 # entry['title'] = movie title
                 # entry['itemID'] = rating key
 
                 rating_key = int(entry['itemID'])
 
-                # check if entry has already processed to avoid endless looping
-                if rating_key in processing_completed:
-                    processing_completed.remove(int(entry['itemID']))
-                    Log.Debug('Finished uploading theme: {title=%s, rating_key=%s}' %
-                              (entry['title'], entry['itemID']))
-                    return
-                elif rating_key not in q.queue:
+                # since we added the themerr json file, we no longer need to keep track of whether the update
+                # here is from Themerr updating the theme, as we will just skip it if no changes are required
+                if rating_key not in q.queue:  # if the item was not in the list, then add it to the queue
                     q.put(item=rating_key)
 
 
-def update_plex_movie_item(rating_key):
-    # type: (int) -> None
+def scheduled_update():
+    # type: () -> None
     """
-    Upload theme songs to the Plex Media Server.
+    Update all items in the Plex Server.
 
-    Add themes to the server. Once finished, add the ``rating_key`` to the ``processing_completed`` list.
-
-    Parameters
-    ----------
-    rating_key : int
-        The ``rating_key`` of the item to upload a theme for.
+    This is used to update all items in the Plex Server. It is called from a scheduled task.
 
     Examples
     --------
-    >>> update_plex_movie_item(rating_key=1)
-    ...
+    >>> scheduled_update()
+
+    See Also
+    --------
+    scheduled_tasks.setup_scheduling : The method where the scheduled task is configurerd.
+    scheduled_tasks.schedule_loop : The method that runs the pending scheduled tasks.
     """
-    global plex, processing_completed
+    global plex
     if not plex:
         plex = setup_plexapi()
-    plex_item = plex.fetchItem(ekey=rating_key)
 
-    themerr_db_logs = []
+    plex_library = plex.library
 
-    # guids does not appear to exist for legacy agents or plugins
-    # therefore, we don't need to filter those out
-    for guid in plex_item.guids:
-        split_guid = guid.id.split('://')
-        database = guid_map[split_guid[0]]
-        database_id = split_guid[1]
+    sections = plex_library.sections()
 
-        Log.Debug('%s: Attempting update for: {title=%s, rating_key=%s, database=%s, database_id=%s}' %
-                  (rating_key, plex_item.title, plex_item.ratingKey, database, database_id))
+    for section in sections:
+        if section.agent not in contributes_to:
+            # todo - there is a small chance that a library with an unsupported agent could still have
+            # individual items that was matched with a supported agent...
+            continue  # skip unsupported metadata agents
 
-        url = 'https://app.lizardbyte.dev/ThemerrDB/movies/%s/%s.json' % (database, database_id)
+        if section.agent == 'tv.plex.agents.movie':
+            if not Prefs['bool_plex_movie_support']:
+                continue
+        elif section.agent in contributes_to:
+            # check if the agent is enabled
+            if not plex_token:
+                Log.Error('Plex token not found in environment, cannot proceed.')
+                continue
 
-        try:
-            data = JSON.ObjectFromURL(url=url, errors='ignore')
-        except Exception:
-            themerr_db_logs.append('%s: Could not retrieve data from ThemerrDB using %s' % (rating_key, database))
-            if database == 'themoviedb':
-                issue_title = '%s (%s)' % (plex_item.title, plex_item.year)
-                issue_url = issue_url_movies % (issue_title, database_id)
-                themerr_db_logs.insert(
-                    0,
-                    '%s: Theme song missing in ThemerrDB. Add it here -> "%s"' % (rating_key, issue_url)
-                )
-        else:
-            try:
-                yt_video_url = data['youtube_theme_url']
-            except KeyError:
-                Log.Info('%s: No theme song found for %s (%s)' % (rating_key, plex_item.title, plex_item.year))
-                return
-            else:
-                theme_url = process_youtube(url=yt_video_url)
+            # get the settings for this agent
+            settings_url = '{}/system/agents/{}/config/{}'.format(
+                plex_url, section.agent, plex_section_type_settings_map[section.type])
+            settings_data = XML.ElementFromURL(
+                url=settings_url,
+                cacheTime=0
+            )
+            Log.Debug('settings data: {}'.format(settings_data))
 
-                if theme_url:
-                    theme_added = add_themes(rating_key=plex_item.ratingKey, theme_urls=[theme_url])
+            themerr_plex_element = settings_data.find(".//Agent[@name='Themerr-plex']")
+            if themerr_plex_element.get('enabled') != '1':  # Plex is using a string
+                Log.Debug('Themerr-plex is disabled for agent "{}"'.format(section.agent))
+                continue
 
-                    # add the item to processing_completed list
-                    if theme_added:
-                        processing_completed.append(rating_key)
+        # get all the items in the section
+        media_items = section.all() if Prefs['bool_auto_update_movie_themes'] else []
 
-                        # theme found and uploaded using this database, so return
-                        return
+        # get all collections in the section
+        collections = section.collections() if Prefs['bool_auto_update_collection_themes'] else []
 
-    # could not upload theme using any database, so log the errors
-    for log in themerr_db_logs:
-        Log.Error(log)
+        # combine the items and collections into one list
+        # this is done so that we can process both items and collections in the same loop
+        all_items = media_items + collections
+
+        for item in all_items:
+            if item.ratingKey not in q.queue:
+                q.put(item=item.ratingKey)

@@ -31,6 +31,11 @@ jobs:
           python -m pip --no-python-version-warning --disable-pip-version-check install \
             --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
 
+      - name: Build plist
+        shell: bash
+        run: |
+          python ./scripts/build_plist.py
+
       - name: Test with pytest
         shell: bash  # our Python 2.7 setup action doesn't support PowerShell
         run: |

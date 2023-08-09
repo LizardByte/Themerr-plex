@@ -15,32 +15,30 @@ try:
 except ImportError:
     pass
 else:  # the code is running outside of Plex
-    from plexhints.core_kit import Core  # core kit
+    from plexhints.constant_kit import CACHE_1DAY  # constant kit
     from plexhints.log_kit import Log  # log kit
+    from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # lib imports
 import flask
-from flask import Flask, Response, render_template, request, send_from_directory
+from flask import Flask, Response, render_template, send_from_directory
 from flask_babel import Babel
 import polib
 from werkzeug.utils import secure_filename
 
 # local imports
-from constants import contributes_to, issue_url_games, issue_url_movies, plugin_identifier
-from plex_api_helper import get_database_id, get_theme_upload_path, setup_plexapi
-
-bundle_path = Core.bundle_path
-if bundle_path.endswith('test.bundle'):
-    # use current directory instead, to allow for testing outside of Plex
-    bundle_path = os.getcwd()
+from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier
+from general_helper import get_media_upload_path
+from plex_api_helper import get_database_info, setup_plexapi
+import tmdb_helper
 
 # setup flask app
 app = Flask(
     import_name=__name__,
-    root_path=os.path.join(bundle_path, 'Contents', 'Resources', 'web'),
-    static_folder=os.path.join(bundle_path, 'Contents', 'Resources', 'web'),
-    template_folder=os.path.join(bundle_path, 'Contents', 'Resources', 'web', 'templates')
+    root_path=os.path.join(plugin_directory, 'Contents', 'Resources', 'web'),
+    static_folder=os.path.join(plugin_directory, 'Contents', 'Resources', 'web'),
+    template_folder=os.path.join(plugin_directory, 'Contents', 'Resources', 'web', 'templates')
     )
 
 # remove extra lines rendered jinja templates
@@ -56,7 +54,7 @@ babel = Babel(
     configure_jinja=True
 )
 
-app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.path.join(bundle_path, 'Contents', 'Strings')
+app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.path.join(plugin_directory, 'Contents', 'Strings')
 
 # setup logging for flask
 Log.Info('Adding flask log handlers to plex plugin logger')
@@ -72,12 +70,12 @@ app.logger.setLevel(plugin_logger.level)
 app.logger.info('flask app logger test message')
 
 try:
-    Prefs['bool_log_werkzeug_messages']
+    Prefs['bool_webapp_log_werkzeug_messages']
 except KeyError:
     # this fails when building docs
     pass
 else:
-    if Prefs['bool_log_werkzeug_messages']:
+    if Prefs['bool_webapp_log_werkzeug_messages']:
         # get the werkzeug logger
         werkzeug_logger = logging.getLogger('werkzeug')
 
@@ -115,25 +113,41 @@ def get_locale():
     str
         The locale.
 
-    See Also
-    --------
-    pyra.locales.get_locale : Use this function instead.
-
     Examples
     --------
     >>> get_locale()
     en
     """
-    return Prefs['enum_locale']
+    return Prefs['enum_webapp_locale']
 
 
 def start_server():
+    # type: () -> bool
+    """
+    Start the flask server.
+
+    The flask server is started in a separate thread to allow the plugin to continue running.
+
+    Returns
+    -------
+    bool
+        True if the server is running, otherwise False.
+
+    Examples
+    --------
+    >>> start_server()
+
+    See Also
+    --------
+    Core.Start : Function that starts the plugin.
+    stop_server : Function that stops the webapp.
+    """
     # use threading to start the flask app... or else web server seems to be killed after a couple of minutes
     flask_thread = Thread(
         target=app.run,
         kwargs=dict(
-            host=Prefs['str_http_host'],
-            port=Prefs['int_http_port'],
+            host=Prefs['str_webapp_http_host'],
+            port=Prefs['int_webapp_http_port'],
             debug=False,
             use_reloader=False  # reloader doesn't work when running in a separate thread
         )
@@ -141,12 +155,30 @@ def start_server():
 
     # start flask application
     flask_thread.start()
+    return flask_thread.is_alive()
 
 
 def stop_server():
-    # stop flask server
-    # todo - this doesn't work
-    request.environ.get('werkzeug.server.shutdown')
+    # type: () -> bool
+    """
+    Stop the web server.
+
+    This method currently does nothing.
+
+    Returns
+    -------
+    bool
+        True if the server was shutdown, otherwise False.
+
+    Examples
+    --------
+    >>> stop_server()
+
+    See Also
+    --------
+    start_server : Function that starts the webapp.
+    """
+    return False
 
 
 @app.route('/', methods=["GET"])
@@ -188,37 +220,102 @@ def home():
             # a individual items that was matched with a supported agent...
             continue  # skip unsupported metadata agents
 
-        # get all items in the section
-        all_items = section.all()
+        # get all the items in the section
+        media_items = section.all()
 
         # get all items in the section with theme songs
-        items_with_themes = section.all(theme__exists=True)
+        media_items_with_themes = section.all(theme__exists=True)
+
+        # get all collections in the section
+        collections = section.collections() if Prefs['bool_auto_update_collection_themes'] else []
+        collections_with_themes = section.collections(theme__exists=True) if Prefs[
+            'bool_auto_update_collection_themes'] else []
+
+        # combine the items and collections into one list
+        # this is done so that we can process both items and collections in the same loop
+        all_items = media_items + collections
 
         # add each section to the items dict
         items[section.key] = dict(
             title=section.title,
             agent=section.agent,
             items=[],
-            percent_complete=int(len(items_with_themes) / len(all_items) * 100) if len(items_with_themes) else 0
+            media_count=len(media_items),
+            media_percent_complete=int(
+                len(media_items_with_themes) / len(media_items) * 100) if len(media_items_with_themes) else 0,
+            collection_count=len(collections),
+            collection_percent_complete=int(
+                len(collections_with_themes) / len(collections) * 100) if len(collections_with_themes) else 0,
+            collections_enabled=Prefs['bool_auto_update_collection_themes'],
+            total_count=len(all_items),
         )
 
         for item in all_items:
             # build the issue url
-            database_info = get_database_id(item=item)
-            item_agent = database_info[0]
-            database_id = database_info[1]
+            database_info = get_database_info(item=item)
+            database_type = database_info[0]
+            database = database_info[1]
+            item_agent = database_info[2]
+            database_id = database_info[3]
+
+            try:
+                year = item.year
+            except AttributeError:
+                year = None
+
+            # convert imdb id to tmdb id, so we can build the issue url properly
+            if item.type == 'movie' and item_agent == 'com.plexapp.agents.imdb':
+                # try to get tmdb id from imdb id
+                tmdb_id = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id=database_id)
+                if tmdb_id:
+                    database_id = tmdb_id
 
             item_issue_url = None
-            if item_agent == 'dev.lizardbyte.retroarcher-plex':
-                issue_url = issue_url_games
-            elif item_agent in contributes_to:
-                issue_url = issue_url_movies
-            else:
+
+            try:
+                issue_url = issue_urls[database_type]
+            except KeyError:
                 issue_url = None
 
             if issue_url:
-                issue_title = '%s (%s)' % (item.title, item.year)
-                item_issue_url = issue_url % (issue_title, database_id)
+                if item.type == 'movie':
+                    # override the id since ThemerrDB issues require the slug as part of the url
+                    if item_agent == 'dev.lizardbyte.retroarcher-plex':
+                        # get the slug and name from LizardByte db
+                        try:
+                            db_data = JSON.ObjectFromURL(
+                                url='https://db.lizardbyte.dev/games/{}.json'.format(database_id),
+                                cacheTime=CACHE_1DAY,
+                                errors='strict'
+                            )
+                            issue_title = '{} ({})'.format(db_data['name'], year)
+                            database_id = db_data['slug']
+                        except Exception as e:
+                            Log.Error('Error getting game data from LizardByte db: {}'.format(e))
+                            issue_title = '{} ({})'.format(item.title, year)
+                            database_id = None
+                    else:
+                        issue_title = '{} ({})'.format(item.title, year)
+                else:  # collections
+                    issue_title = item.title
+
+                    # override the id since ThemerrDB issues require the slug as part of the url
+                    if item_agent == 'dev.lizardbyte.retroarcher-plex':
+                        # get the slug and name from LizardByte db
+                        try:
+                            db_data = JSON.ObjectFromURL(
+                                url='https://db.lizardbyte.dev/{}/all.json'.format(
+                                    database_type.rsplit('_', 1)[-1]),
+                                cacheTime=CACHE_1DAY,
+                                errors='strict'
+                            )
+                            issue_title = db_data[str(database_id)]['name']
+                            database_id = db_data[str(database_id)]['slug']
+                        except Exception as e:
+                            Log.Error('Error getting collection data from LizardByte db: {}'.format(e))
+                            database_id = None
+
+                item_issue_url = issue_url.format(issue_title, database_id if database_id else '')
 
             theme_status = 'missing'  # default status
             issue_action = 'add'  # default action
@@ -227,7 +324,7 @@ def home():
                 theme_status = 'complete'
                 issue_action = 'edit'
 
-                theme_upload_path = get_theme_upload_path(plex_item=item)
+                theme_upload_path = get_media_upload_path(item=item, media_type='themes')
                 if not os.path.isdir(theme_upload_path) or not os.listdir(theme_upload_path):
                     theme_status = 'error'
                     issue_action = 'add'
@@ -235,12 +332,15 @@ def home():
             items[section.key]['items'].append(dict(
                 title=item.title,
                 agent=item_agent,
+                database=database,
+                database_type=database_type,
                 database_id=database_id,
                 issue_action=issue_action,
                 issue_url=item_issue_url,
                 theme=True if item.theme else False,
                 theme_status=theme_status,
-                year=item.year,
+                type=item.type,
+                year=year,
             ))
 
     return render_template('home.html', title='Home', items=items)

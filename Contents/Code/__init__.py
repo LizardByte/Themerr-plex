@@ -19,7 +19,6 @@ else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
     from plexhints.model_kit import Movie  # model kit
     from plexhints.object_kit import MessageContainer, MetadataSearchResult, SearchResult  # object kit
-    from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
@@ -27,10 +26,35 @@ from typing import Optional
 
 # local imports
 from default_prefs import default_prefs
-from constants import contributes_to, issue_url_games, issue_url_movies
-from plex_api_helper import add_themes, get_plex_item, plex_listener
-from youtube_dl_helper import process_youtube
+from constants import contributes_to, version
+from plex_api_helper import plex_listener, start_queue_threads, update_plex_item
+from scheduled_tasks import setup_scheduling
 from webapp import start_server
+
+# variables
+last_prefs = dict()
+
+
+def copy_prefs():
+    # type: () -> None
+    """
+    Copy the current preferences to the last preferences.
+
+    This function is used to copy the current preferences to the last preferences. This is useful to determine if the
+    preferences have changed.
+
+    Examples
+    --------
+    >>> copy_prefs()
+    """
+    global last_prefs
+    last_prefs = dict()
+
+    for key in default_prefs:
+        try:
+            last_prefs[key] = Prefs[key]
+        except KeyError:
+            pass  # this was already logged
 
 
 def ValidatePrefs():
@@ -55,6 +79,8 @@ def ValidatePrefs():
     >>> ValidatePrefs()
     ...
     """
+    global last_prefs
+
     # todo - validate username and password
     error_message = ''  # start with a blank error message
 
@@ -87,6 +113,22 @@ def ValidatePrefs():
                     Log.Error("Setting '%s' must be greater than 0; Value '%s'" % (key, Prefs[key]))
                     error_message += "Setting '%s' must be greater than 0; Value '%s'<br/>" % (key, Prefs[key])
 
+            # restart webserver if required
+            requires_restart = [
+                'str_webapp_http_host',
+                'int_webapp_http_port',
+                'bool_webapp_log_werkzeug_messages'
+            ]
+
+            if key in requires_restart:
+                try:
+                    if last_prefs[key] != Prefs[key]:
+                        Log.Info('Changing this setting ({}) requires a Plex Media Server restart.'.format(key))
+                except KeyError:
+                    pass
+
+    copy_prefs()  # since validate prefs runs on startup, this will have already run at least once
+
     if error_message != '':
         return MessageContainer(header='Error', message=error_message)
     else:
@@ -105,28 +147,38 @@ def Start():
     <https://web.archive.org/web/https://dev.plexapp.com/docs/channels/basics.html#predefined-functions>`_
     for more information.
 
-    First preferences are validated using the ``ValidatePrefs()`` method. Then the ``plex_api_helper.plex_listener()``
-    method is started to handle updating theme songs for the new Plex Movie agent. Finally, the web server is started.
+    Preferences are validated, then additional threads are started for the web server, queue, plex listener, and
+    scheduled tasks.
 
     Examples
     --------
     >>> Start()
     ...
     """
+    Log.Info('Themerr-plex, version: {}'.format(version))
+
     # validate prefs
     prefs_valid = ValidatePrefs()
     if prefs_valid.header == 'Error':
         Log.Warn('Themerr-plex plug-in preferences are not valid.')
 
-    # start watching plex
-    plex_listener()
-    Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
+    start_server()  # start the web server
+    Log.Debug('web server started.')
 
-    start_server()  # start the web server if it is not running
+    start_queue_threads()  # start queue threads
+    Log.Debug('queue threads started.')
+
+    if Prefs['bool_plex_movie_support']:
+        plex_listener()  # start watching plex
+        Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
+
+    setup_scheduling()  # start scheduled tasks
+    Log.Debug('scheduled tasks started.')
+
     Log.Debug('plug-in started.')
 
 
-@handler(prefix='/music/themerr-plex', name='Themerr-plex', thumb='attribution.png')
+@handler(prefix='/applications/themerr-plex', name='Themerr-plex ({})'.format(version), thumb='icon-default.png')
 def main():
     """
     Create the main plug-in ``handler``.
@@ -289,57 +341,10 @@ class Themerr(Agent.Movies):
         >>> Themerr().update(metadata=..., media=..., lang='en', force=True)
         ...
         """
+        Log.Debug('Updating with arguments: {metadata=%s, media=%s, lang=%s, force=%s' %
+                  (metadata, media, lang, force))
+
         rating_key = int(media.id)  # rating key of plex item
-
-        Log.Debug('%s: Updating with arguments: {metadata=%s, media=%s, lang=%s, force=%s' %
-                  (rating_key, metadata, media, lang, force))
-
-        Log.Info('%s: metadata.id: %s' % (rating_key, metadata.id))
-        split_id = metadata.id.split('-')
-        item_type = split_id[0]
-        database = split_id[1]
-        database_id = split_id[2]
-        url = 'https://app.lizardbyte.dev/ThemerrDB/%s/%s/%s.json' % (item_type, database, database_id)
-
-        try:
-            data = JSON.ObjectFromURL(url=url, errors='ignore')
-        except Exception as e:
-            Log.Error('%s: Error retrieving data from ThemerrDB: %s' % (rating_key, e))
-            if database == 'themoviedb':  # movies
-                # need to use python-plexapi to get the movie year
-                plex_item = get_plex_item(rating_key=rating_key)
-
-                # create the url to add the theme song to ThemerrDB
-                try:
-                    issue_title = '%s (%s)' % (plex_item.title, plex_item.year)
-                    issue_url = issue_url_movies % (issue_title, database_id)
-                    Log.Info('%s: Theme song missing in ThemerrDB. Add it here -> "%s"' % (rating_key, issue_url))
-                except Exception as e:
-                    Log.Error('%s: Error creating the url to add the theme song to ThemerrDB: %s' % (rating_key, e))
-            elif database == 'igdb':  # games
-                try:
-                    game_data = JSON.ObjectFromURL(url='https://db.lizardbyte.dev/games/%s.json' % database_id)
-                except Exception as e:
-                    Log.Error('%s: Error retrieving data from LizardByteDB: %s' % (rating_key, e))
-                else:
-                    try:
-                        issue_year = game_data['release_date'][0]['y']
-                    except (KeyError, IndexError):
-                        issue_year = None
-                    issue_url_suffix = game_data['slug']
-                    issue_title = '%s (%s)' % (game_data['name'], issue_year)
-                    issue_url = issue_url_games % (issue_title, issue_url_suffix)
-                    Log.Info('%s: Theme song missing in ThemerrDB. Add it here -> %s' % (rating_key, issue_url))
-        else:
-            try:
-                yt_video_url = data['youtube_theme_url']
-            except KeyError:
-                Log.Info('%s: No theme song found for %s (%s)' % (rating_key, metadata.title, metadata.year))
-                return
-            else:
-                theme_url = process_youtube(url=yt_video_url)
-
-                if theme_url:
-                    add_themes(rating_key=rating_key, theme_urls=[theme_url])
+        update_plex_item(rating_key=rating_key)
 
         return metadata

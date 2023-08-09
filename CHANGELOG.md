@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.0] - 2023-08-19
+**Added**
+- Option to enable/disable support for Plex Movie agent - (enabled by default)
+- Option to update themes on a schedule - (enabled by default)
+- Option to download themes for collections - (enabled by default)
+- Option to update collection metadata (art, poster, and summary) -
+  (enabled by default for legacy agents, disabled for Plex Movie agent)
+- Options to remove unused media (themes, art, posters) on update -
+  (enabled by default for themes, disabled for art and posters)
+- Themerr icon
+- Version is now printed to the log on startup
+- Version is now displayed in the Plex plugin menu
+- Web UI which shows the completion percentage of theme songs in the Plex libraries
+
+**Fixed**
+- Themerr-plex will now skip upload of media if the existing media is the same
+- Themerr-plex is now categorized as a Utility plugin instead of Music
+- Refactored code to use common methods where possible
+- Use TMDB api to convert IMDB ids to TMDB ids
+
 ## [0.2.0] - 2023-07-31
 **Added**
 - Add option to prefer MPEG AAC audio codec over Opus
