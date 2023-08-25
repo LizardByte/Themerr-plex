@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-08-05 13:12-0400\n"
-"PO-Revision-Date: 2023-08-05 21:49\n"
+"POT-Creation-Date: 2023-08-25 19:26+0000\n"
+"PO-Revision-Date: 2023-08-25 20:16\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -18,47 +18,63 @@ msgstr ""
 "X-Crowdin-File-ID: 25\n"
 "Language: it_IT\n"
 
-#: Contents/Resources/web/templates/home.html:65
+#: Contents/Resources/web/templates/home.html:33
+msgid "Games"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:34
+msgid "Movies"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:76
+msgid "Collections"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:96
 msgid "Title"
+msgstr "Titolo"
+
+#: Contents/Resources/web/templates/home.html:97
+msgid "Type"
 msgstr ""
 
-#: Contents/Resources/web/templates/home.html:66
+#: Contents/Resources/web/templates/home.html:98
 msgid "Year"
-msgstr ""
+msgstr "Anno"
 
-#: Contents/Resources/web/templates/home.html:67
+#: Contents/Resources/web/templates/home.html:99
 msgid "Contribute"
-msgstr ""
+msgstr "Contribuisci"
 
-#: Contents/Resources/web/templates/home.html:81
+#: Contents/Resources/web/templates/home.html:113
 msgid "Add"
-msgstr ""
+msgstr "Aggiungi"
 
-#: Contents/Resources/web/templates/home.html:84
+#: Contents/Resources/web/templates/home.html:116
 msgid "Edit"
-msgstr ""
+msgstr "Modifica"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr ""
+msgstr "Dona"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr ""
+msgstr "GitHub Sponsors"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr ""
+msgstr "Supporto"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr ""
+msgstr "Documentazione"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr ""
+msgstr "Centro assistenza"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr ""
+msgstr "Pagina iniziale"
 
