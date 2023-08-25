@@ -53,6 +53,19 @@ An endpoint that provides a JSON response. If a valid response is returned, Them
 Preferences
 -----------
 
+Plex Movie agent support
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will add themes to movies using the Plex Movie agent. This is the new agent that is
+   not using the Plex plugin framework, so Themerr-plex cannot contribute to this agent with standard techniques.
+   Instead Themerr-plex will start a websocket server and listen for events from the Plex server. Whenever a movie
+   is added or has it's metadata refreshed, Themerr-plex will attempt to add a theme song to the movie (if the theme
+   song is available in ThemerrDB).
+
+Default
+   ``True``
+
 Prefer MP4A AAC Codec
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -63,23 +76,108 @@ Description
    the Opus codec.
 
 Default
-   True
+   ``True``
 
 Remove unused theme songs
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Description
    When Themerr-plex uploads a theme song to the Plex server, it will remove any existing theme songs for the same
-   movie. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory.
+   item. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory. This will only remove
+   items that were uploaded by Themerr-plex or via the hidden Plex rest API method, it will not affect local media
+   assets.
 
 Default
-   True
+   ``True``
+
+Remove unused art
+^^^^^^^^^^^^^^^^^
+
+Description
+   When Themerr-plex uploads art to the Plex server, it will remove any existing art for the same
+   item. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory. This will only remove
+   items that are user uploaded, it will not affect items added by metadata agents or local media assets.
+
+Default
+   ``False``
+
+Remove unused posters
+^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When Themerr-plex uploads posters to the Plex server, it will remove any existing posters for the same
+   item. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory. This will only remove
+   items that are user uploaded, it will not affect items added by metadata agents or local media assets.
+
+Default
+   ``False``
+
+Automatically update items
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will periodically check for changes in ThemerrDB and apply the changes to the items in
+   your Plex Media Server automatically.
+
+Default
+   ``True``
+
+Update movie themes during automatic update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will update movie themes during automatic updates.
+
+Default
+   ``True``
+
+Update collection themes during automatic update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will update collection themes during automatic updates.
+
+Default
+   ``True``
+
+Update collection metadata for Plex Movie agent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will update collection metadata for the Plex Movie agent during automatic updates.
+   Requires ``Update collection themes during automatic update`` to be enabled.
+
+Default
+   ``False``
+
+Update collection metadata for legacy agents
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will update collection metadata for legacy agents during automatic updates. Themerr-plex
+   must also be enabled in the agent settings.
+   Requires ``Update collection themes during automatic update`` to be enabled.
+
+Default
+   ``True``
+
+Interval for automatic update task
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   The interval (in minutes) to run the automatic update task.
+
+Default
+   ``60``
+
+Minimum
+   ``15``
 
 PlexAPI Timeout
 ^^^^^^^^^^^^^^^
 
 Description
-   The timeout (in seconds) when uploading theme audio to the Plex server.
+   The timeout (in seconds) when uploading media to the Plex server.
 
 Default
    ``180``
@@ -147,6 +245,9 @@ Web UI Host Address
 Description
    The host address to bind the Web UI to.
 
+.. Attention::
+   Changing this value requires a Plex Media Server restart.
+
 Default
    ``0.0.0.0``
 
@@ -155,6 +256,9 @@ Web UI Port
 
 Description
    The port to bind the Web UI to.
+
+.. Attention::
+   Changing this value requires a Plex Media Server restart.
 
 Default
    ``9494``
@@ -165,6 +269,9 @@ Log all web server messages
 Description
    If set to ``True``, all web server messages will be logged. This will include logging requests and status codes when
    requesting any resource. It is recommended to keep this disabled unless debugging.
+
+.. Attention::
+   Changing this value requires a Plex Media Server restart.
 
 Default
    ``False``

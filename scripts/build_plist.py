@@ -86,7 +86,7 @@ pl = dict(
 # Samsung, PlexConnect and Plex Home Theater
 
 # PlexPluginRegions:
-# Possible string values are the proper ISO two letter code for the country.
+# Possible string values are the proper ISO two-letter code for the country.
 # A full list of values are available at http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 
 # PlexPluginDebug:
