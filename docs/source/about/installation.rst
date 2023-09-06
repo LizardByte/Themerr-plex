@@ -12,7 +12,7 @@ The bundle is cross platform, meaning Linux, macOS, and Windows are supported.
 #. Extract the contents to your Plex Media Server Plugins directory.
 
 .. Tip:: See
-   `How do I find the Plug-Ins folder <https://support.plex.tv/articles/201106098-how-do-i-find-the-plug-ins-folder>`_
+   `How do I find the Plug-Ins folder <https://support.plex.tv/articles/201106098-how-do-i-find-the-plug-ins-folder>`__
    for information specific to your Plex server install.
 
 Docker

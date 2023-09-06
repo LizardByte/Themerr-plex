@@ -27,13 +27,13 @@ Web UI
 
 A web interface is provided by the plugin. Currently the web ui only provides a couple of end points.
 
-/
-^
+/ (root)
+^^^^^^^^
 
 This endpoint will display a report showing the theme song status for each item in a library supported by Themerr-plex.
 A supported library is any that has the default agent as one supported by Themerr-plex.
 
-The report provides an easy means to contribute to `ThemerrDB <https://github.com/LizardByte/ThemerrDB>`_ by providing
+The report provides an easy means to contribute to `ThemerrDB <https://github.com/LizardByte/ThemerrDB>`__ by providing
 `Add/Edit` buttons for items that can be added to ThemerrDB.
 
 /status
