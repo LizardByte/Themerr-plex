@@ -1,6 +1,6 @@
 let translations = null
 
-let getTranslation = function(string) {
+let gettext = function(string) {
     // download translations
     if (translations === null) {
         $.ajax({
