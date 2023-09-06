@@ -2,7 +2,7 @@
 
 Overview
 ========
-LizardByte has the full documentation hosted on `Read the Docs <http://themerr-plex.readthedocs.io/>`_.
+LizardByte has the full documentation hosted on `Read the Docs <http://themerr-plex.readthedocs.io/>`__.
 
 About
 -----
@@ -13,7 +13,7 @@ This plugin contributes to the following metadata agents.
    - Plex Movie - `tv.plex.agents.movie`
    - Plex Movie (Legacy) - `com.plexapp.agents.imdb`
    - The Movie Database - `com.plexapp.agents.themoviedb`
-   - `RetroArcher <https://github.com/LizardByte/RetroArcher-plex>`_ - `dev.lizardbyte.retroarcher-plex`
+   - `RetroArcher <https://github.com/LizardByte/RetroArcher-plex>`__ - `dev.lizardbyte.retroarcher-plex`
 
 Integrations
 ------------
