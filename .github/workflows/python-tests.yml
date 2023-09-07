@@ -24,12 +24,10 @@ jobs:
       - name: Install python dependencies
         shell: bash
         run: |
-          # requests is required to install python-plexapi
           python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade \
-            pip setuptools requests
+            pip setuptools wheel
           python -m pip --no-python-version-warning --disable-pip-version-check install -r requirements-dev.txt
-          python -m pip --no-python-version-warning --disable-pip-version-check install \
-            --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
+          python -m pip --no-python-version-warning --disable-pip-version-check install -r requirements.txt
 
       - name: Build plist
         shell: bash

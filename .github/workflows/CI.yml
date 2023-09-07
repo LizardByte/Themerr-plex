@@ -72,11 +72,6 @@ jobs:
         run: |
           python ./scripts/build_plist.py
 
-      - name: Test Plex Plugin
-        working-directory: Themerr-plex.bundle
-        run: |
-          python ./Contents/Code/__init__.py
-
       - name: Upload Artifacts
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
         uses: actions/upload-artifact@v3

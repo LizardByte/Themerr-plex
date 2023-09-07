@@ -78,7 +78,6 @@ def setup_plexapi():
         urllib3.disable_warnings(InsecureRequestWarning)  # Disable the insecure request warning
 
         # create the plex server object
-        plexapi.server.TIMEOUT = int(Prefs['int_plexapi_plexapi_timeout'])
         plex = plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
 
     return plex
@@ -338,9 +337,15 @@ def upload_media(item, method, filepath=None, url=None):
     while count <= int(Prefs['int_plexapi_upload_retries_max']):
         try:
             if filepath:
-                method(filepath=filepath)
+                if method == item.uploadTheme:
+                    method(filepath=filepath, timeout=int(Prefs['int_plexapi_plexapi_timeout']))
+                else:
+                    method(filepath=filepath)
             elif url:
-                method(url=url)
+                if method == item.uploadTheme:
+                    method(url=url, timeout=int(Prefs['int_plexapi_plexapi_timeout']))
+                else:
+                    method(url=url)
         except BadRequest as e:
             sleep_time = 2**count
             Log.Error('%s: Error uploading media: %s' % (item.ratingKey, e))
