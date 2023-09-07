@@ -23,9 +23,6 @@ else:  # the code is running outside of Plex
 
 # imports from Libraries\Shared
 from typing import Optional
-# we need to import youtube_dl.compat to prevent plexapi-backport from screwing with the standard library
-# this needs to occur before any plexapi import
-from youtube_dl import compat  # noqa: F401
 
 # local imports
 from default_prefs import default_prefs

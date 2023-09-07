@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
 # local imports
+import Code
 from Code import ValidatePrefs
 from Code import default_prefs
 from plexhints.agent_kit import Media
 from plexhints.model_kit import Movie
 from plexhints.object_kit import MessageContainer, SearchResult
+from plexhints.prefs_kit import Prefs
 
 # setup items to test
 test_items = dict(
@@ -34,6 +37,14 @@ test_items = dict(
 )
 
 
+def test_copy_prefs():
+    Code.copy_prefs()
+    assert Code.last_prefs, "Prefs did not copy"
+
+    for key in default_prefs:
+        assert Code.last_prefs[key] == Prefs[key]
+
+
 def test_validate_prefs():
     result_container = ValidatePrefs()
     assert isinstance(result_container, MessageContainer)
@@ -48,6 +59,8 @@ def test_validate_prefs():
     # assert result_container.header == "Error"
     # assert "must be an integer" in result_container.message
 
+
+def test_validate_prefs_default_prefs():
     # add a default pref and make sure it is not in DefaultPrefs.json
     default_prefs['new_pref'] = 'new_value'
     result_container = ValidatePrefs()
@@ -66,7 +79,7 @@ def test_main():
     pass
 
 
-def test_themerr_search(agent):
+def test_themerr_agent_search(agent):
     for key, item in test_items.items():
         media = Media.Movie()
         media.primary_metadata = Movie()
@@ -93,7 +106,7 @@ def test_themerr_search(agent):
             assert result.id == "%s-%s-%s" % (item['category'], database, item_id)
 
 
-def test_themerr_update(agent):
+def test_themerr_agent_update(agent):
     metadata = Movie()
 
     for key, item in test_items.items():

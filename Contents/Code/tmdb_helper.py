@@ -85,7 +85,6 @@ def get_tmdb_id_from_collection(search_query):
     645
     """
     # /search/collection?query=James%20Bond%20Collection&include_adult=false&language=en-US&page=1"
-
     query_url = 'search/collection?query={}'
 
     # Plex returns 500 error if spaces are in collection query, same with `_`, `+`, and `%20`... so use `-`
