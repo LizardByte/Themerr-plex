@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-08-25 19:26+0000\n"
-"PO-Revision-Date: 2023-08-25 20:16\n"
+"PO-Revision-Date: 2023-09-07 16:42\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -20,61 +20,61 @@ msgstr ""
 
 #: Contents/Resources/web/templates/home.html:33
 msgid "Games"
-msgstr ""
+msgstr "Jeux"
 
 #: Contents/Resources/web/templates/home.html:34
 msgid "Movies"
-msgstr ""
+msgstr "Cinéma"
 
 #: Contents/Resources/web/templates/home.html:76
 msgid "Collections"
-msgstr ""
+msgstr "Collections"
 
 #: Contents/Resources/web/templates/home.html:96
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #: Contents/Resources/web/templates/home.html:97
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: Contents/Resources/web/templates/home.html:98
 msgid "Year"
-msgstr ""
+msgstr "Année"
 
 #: Contents/Resources/web/templates/home.html:99
 msgid "Contribute"
-msgstr ""
+msgstr "Contribuer"
 
 #: Contents/Resources/web/templates/home.html:113
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
 #: Contents/Resources/web/templates/home.html:116
 msgid "Edit"
-msgstr ""
+msgstr "Editer"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr ""
+msgstr "Faire un don"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr ""
+msgstr "Sponsors de GitHub"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr ""
+msgstr "Soutien"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr ""
+msgstr "Docs"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr ""
+msgstr "Centre d'assistance"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr ""
+msgstr "Accueil"
 
