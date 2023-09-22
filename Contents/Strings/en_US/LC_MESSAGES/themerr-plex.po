@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-08-05 13:12-0400\n"
-"PO-Revision-Date: 2023-08-05 23:03\n"
+"POT-Creation-Date: 2023-08-25 19:26+0000\n"
+"PO-Revision-Date: 2023-09-02 05:41\n"
 "Last-Translator: \n"
 "Language-Team: English, United States\n"
 "MIME-Version: 1.0\n"
@@ -18,23 +18,39 @@ msgstr ""
 "X-Crowdin-File-ID: 25\n"
 "Language: en_US\n"
 
-#: Contents/Resources/web/templates/home.html:65
+#: Contents/Resources/web/templates/home.html:33
+msgid "Games"
+msgstr "Games"
+
+#: Contents/Resources/web/templates/home.html:34
+msgid "Movies"
+msgstr "Movies"
+
+#: Contents/Resources/web/templates/home.html:76
+msgid "Collections"
+msgstr "Collections"
+
+#: Contents/Resources/web/templates/home.html:96
 msgid "Title"
 msgstr "Title"
 
-#: Contents/Resources/web/templates/home.html:66
+#: Contents/Resources/web/templates/home.html:97
+msgid "Type"
+msgstr "Type"
+
+#: Contents/Resources/web/templates/home.html:98
 msgid "Year"
 msgstr "Year"
 
-#: Contents/Resources/web/templates/home.html:67
+#: Contents/Resources/web/templates/home.html:99
 msgid "Contribute"
 msgstr "Contribute"
 
-#: Contents/Resources/web/templates/home.html:81
+#: Contents/Resources/web/templates/home.html:113
 msgid "Add"
 msgstr "Add"
 
-#: Contents/Resources/web/templates/home.html:84
+#: Contents/Resources/web/templates/home.html:116
 msgid "Edit"
 msgstr "Edit"
 
