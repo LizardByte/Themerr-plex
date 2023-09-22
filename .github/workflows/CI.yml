@@ -47,6 +47,7 @@ jobs:
         uses: LizardByte/.github/actions/setup_python2@nightly
 
       - name: Set up Python 2.7 Dependencies
+        shell: bash
         working-directory: Themerr-plex.bundle
         run: |
           echo "Installing Requirements"
@@ -66,35 +67,15 @@ jobs:
           mv ./node_modules ./Contents/Resources/web
 
       - name: Build plist
+        shell: bash
         working-directory: Themerr-plex.bundle
         env:
           BUILD_VERSION: ${{ needs.check_changelog.outputs.next_version }}
         run: |
           python ./scripts/build_plist.py
 
-      - name: Upload Artifacts
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: Themerr-plex.bundle
-          if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
-          path: |
-            ${{ github.workspace }}
-            !**/*.git*
-            !**/*.pyc
-            !**/__pycache__
-            !**/plexhints*
-            !**/Themerr-plex.bundle/.*
-            !**/Themerr-plex.bundle/cache.sqlite
-            !**/Themerr-plex.bundle/DOCKER_README.md
-            !**/Themerr-plex.bundle/Dockerfile
-            !**/Themerr-plex.bundle/docs
-            !**/Themerr-plex.bundle/scripts
-            !**/Themerr-plex.bundle/tests
-
       - name: Package Release
         shell: bash
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         run: |
           7z \
             "-xr!*.git*" \
@@ -103,6 +84,7 @@ jobs:
             "-xr!plexhints*" \
             "-xr!Themerr-plex.bundle/.*" \
             "-xr!Themerr-plex.bundle/cache.sqlite" \
+            "-xr!Themerr-plex.bundle/crowdin.yml" \
             "-xr!Themerr-plex.bundle/DOCKER_README.md" \
             "-xr!Themerr-plex.bundle/Dockerfile" \
             "-xr!Themerr-plex.bundle/docs" \
@@ -113,6 +95,14 @@ jobs:
           mkdir artifacts
           mv ./Themerr-plex.bundle.zip ./artifacts/
 
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Themerr-plex.bundle
+          if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
+          path: |
+            ${{ github.workspace }}/artifacts
+
       - name: Create Release
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: LizardByte/.github/actions/create_release@master
@@ -121,3 +111,135 @@ jobs:
           next_version: ${{ needs.check_changelog.outputs.next_version }}
           last_version: ${{ needs.check_changelog.outputs.last_version }}
           release_body: ${{ needs.check_changelog.outputs.release_body }}
+
+  pytest:
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    env:
+      PLEXAPI_AUTH_SERVER_BASEURL: http://127.0.0.1:32400
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Themerr-plex.bundle
+
+      - name: Extract artifacts zip
+        shell: bash
+        run: |
+          # extract zip
+          7z x Themerr-plex.bundle.zip -o.
+
+          # move all files from "Themerr-plex.bundle" to root, with no target directory
+          cp -r ./Themerr-plex.bundle/. .
+
+          # remove zip
+          rm Themerr-plex.bundle.zip
+
+      - name: Set up Python
+        uses: LizardByte/.github/actions/setup_python2@nightly
+
+      - name: Install python dependencies
+        shell: bash
+        run: |
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade \
+            pip setuptools wheel
+          python -m pip --no-python-version-warning --disable-pip-version-check install -r requirements-dev.txt
+
+      - name: Install Plex Media Server
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            choco install plexmediaserver
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            brew install --cask plex-media-server
+
+            # starting with pms 1.29.2 servers must be claimed... disable that
+            # https://forums.plex.tv/t/new-server-claiming-requirement-for-macos/816337
+            defaults write com.plexapp.plexmediaserver enableLocalSecurity -bool FALSE
+
+            # copy plugin before starting plex server
+            mkdir -p "${HOME}/Library/Application Support/Plex Media Server/Plug-ins"
+            cp -r ./Themerr-plex.bundle "${HOME}/Library/Application Support/Plex Media Server/Plug-ins/"
+
+            open "/Applications/Plex Media Server.app"
+          elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
+            echo deb https://downloads.plex.tv/repo/deb public main | \
+              sudo tee /etc/apt/sources.list.d/plexmediaserver.list
+            sudo apt-get update
+            sudo apt-get install plexmediaserver
+
+            # stop service
+            sudo systemctl stop plexmediaserver
+
+            # debug
+            cat /lib/systemd/system/plexmediaserver.service
+
+            # do not edit service directly, use override
+            override=/etc/systemd/system/plexmediaserver.service.d/override.conf
+            sudo mkdir -p $(dirname ${override})
+            sudo touch ${override}
+            echo "[Service]" | sudo tee ${override}
+            echo "User=$USER" | sudo tee -a ${override}
+
+            # take ownership
+            sudo chown -R $USER:$USER "/var/lib/plexmediaserver/Library/Application Support/Plex Media Server"
+
+            # reload service
+            sudo systemctl daemon-reload
+
+            # start
+            sudo systemctl start plexmediaserver
+          else
+            echo "Unknown OS: ${{ matrix.os }}"
+            exit 1
+          fi
+
+      - name: Update Plex registry settings
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          # starting with pmps 1.32.2 servers must be claimed... disable that
+          # https://forums.plex.tv/t/new-claiming-requirement-for-windows/839096
+          REG ADD "HKCU\Software\Plex, Inc.\Plex Media Server" /v enableLocalSecurity /t REG_DWORD /d 0 /f
+
+      - name: Bootstrap Plex server
+        id: boostrap
+        shell: bash
+        run: |
+          python \
+            -u scripts/plex-bootstraptest.py \
+            --destination plex \
+            --advertise-ip 127.0.0.1 \
+            --bootstrap-timeout 540 \
+            --no-docker \
+            --server-name plex-test-${{ matrix.os }}-${{ github.run_id }} \
+            --without-shows \
+            --without-music \
+            --without-photos \
+            --unclaimed
+
+      - name: Test with pytest
+        id: test
+        shell: bash
+        run: |
+          python -m pytest \
+            -rXs \
+            --tb=native \
+            --verbose \
+            --cov=Contents/Code \
+            tests
+
+      - name: Upload coverage
+        # any except cancelled or skipped
+        if: always() && (steps.test.outcome == 'success' || steps.test.outcome == 'failure')
+        uses: codecov/codecov-action@v3
+        with:
+          flags: ${{ runner.os }}

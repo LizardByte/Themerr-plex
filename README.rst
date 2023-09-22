@@ -26,6 +26,10 @@ Integrations
    :alt: Read the Docs
    :target: http://themerr-plex.readthedocs.io/
 
+.. image:: https://img.shields.io/codecov/c/gh/LizardByte/Themerr-plex?token=1LYYVYWY9D&style=for-the-badge&logo=codecov&label=codecov
+   :alt: Codecov
+   :target: https://codecov.io/gh/LizardByte/Themerr-plex
+
 Downloads
 ---------
 

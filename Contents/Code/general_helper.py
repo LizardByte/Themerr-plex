@@ -20,6 +20,11 @@ else:  # the code is running outside of Plex
 # local imports
 from constants import metadata_base_directory, metadata_type_map, themerr_data_directory
 
+# constants
+legacy_keys = [
+    'downloaded_timestamp'
+]
+
 
 def get_media_upload_path(item, media_type):
     # type: (any, str) -> str
@@ -40,6 +45,11 @@ def get_media_upload_path(item, media_type):
     str
         The path to the theme upload directory.
 
+    Raises
+    ------
+    ValueError
+        If the ``media_type`` is not one of 'art', 'posters', or 'themes'.
+
     Examples
     --------
     >>> get_media_upload_path(item=..., media_type='art')
@@ -49,6 +59,13 @@ def get_media_upload_path(item, media_type):
     >>> get_media_upload_path(item=..., media_type='themes')
     "...bundle/Uploads/themes..."
     """
+    allowed_media_types = ['art', 'posters', 'themes']
+    if media_type not in allowed_media_types:
+        raise ValueError(
+            'This error should be reported to https://github.com/LizardByte/Themerr-plex/issues;'
+            'media_type must be one of: {}'.format(allowed_media_types)
+        )
+
     guid = item.guid
     full_hash = hashlib.sha1(guid).hexdigest()
     theme_upload_path = os.path.join(
@@ -202,9 +219,6 @@ def update_themerr_data_file(item, new_themerr_data):
     themerr_data = get_themerr_json_data(item=item)
 
     # remove legacy keys
-    legacy_keys = [
-        'downloaded_timestamp'
-    ]
     for key in legacy_keys:
         try:
             del themerr_data[key]
