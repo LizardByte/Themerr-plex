@@ -36,7 +36,7 @@ schedule.logger.info('schedule logger test message')
 
 
 def run_threaded(target, daemon=None, args=(), **kwargs):
-    # type: (Callable, Optional[bool], Iterable, Mapping[str, Any]) -> None
+    # type: (Callable, Optional[bool], Iterable, Mapping[str, Any]) -> threading.Thread
     """
     Run a function in a thread.
 
@@ -54,6 +54,11 @@ def run_threaded(target, daemon=None, args=(), **kwargs):
     kwargs : Mapping[str, Any]
         The keyword arguments to pass to the function.
 
+    Returns
+    -------
+    threading.Thread
+        The thread that the function is running in.
+
     Examples
     --------
     >>> run_threaded(target=Log.Info, daemon=True, args=['Hello, world!'])
@@ -63,6 +68,7 @@ def run_threaded(target, daemon=None, args=(), **kwargs):
     if daemon:
         job_thread.daemon = True
     job_thread.start()
+    return job_thread
 
 
 def schedule_loop():
@@ -77,6 +83,7 @@ def schedule_loop():
     >>> schedule_loop()
     ...
     """
+    time.sleep(60)  # give a little time for the server to start
     schedule.run_all()  # run all jobs once
 
     while True:

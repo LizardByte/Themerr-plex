@@ -8,10 +8,8 @@ import time
 # lib imports
 import plexapi
 from plexapi.exceptions import NotFound
-from plexapi.myplex import MyPlexAccount
 from plexapi.server import PlexServer
 from plexhints.agent_kit import Agent
-from plexhints.core_kit import PLUGIN_LOGS_PATH
 import pytest
 import requests
 
@@ -28,44 +26,7 @@ else:
 
 # plex server setup
 SERVER_BASEURL = plexapi.CONFIG.get("auth.server_baseurl")
-MYPLEX_USERNAME = plexapi.CONFIG.get("auth.myplex_username")
-MYPLEX_PASSWORD = plexapi.CONFIG.get("auth.myplex_password")
 SERVER_TOKEN = plexapi.CONFIG.get("auth.server_token")
-
-TEST_AUTHENTICATED = "authenticated"
-TEST_ANONYMOUSLY = "anonymously"
-ANON_PARAM = pytest.param(TEST_ANONYMOUSLY, marks=pytest.mark.anonymous)
-AUTH_PARAM = pytest.param(TEST_AUTHENTICATED, marks=pytest.mark.authenticated)
-
-
-BASE_DIR_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def pytest_generate_tests(metafunc):
-    if "plex" in metafunc.fixturenames:
-        if (
-            "account" in metafunc.fixturenames
-            or TEST_AUTHENTICATED in metafunc.definition.keywords
-        ):
-            metafunc.parametrize("plex", [AUTH_PARAM], indirect=True)
-        else:
-            metafunc.parametrize("plex", [ANON_PARAM, AUTH_PARAM], indirect=True)
-    elif "account" in metafunc.fixturenames:
-        metafunc.parametrize("account", [AUTH_PARAM], indirect=True)
-
-
-def pytest_runtest_setup(item):
-    if "client" in item.keywords and not item.config.getvalue("client"):
-        return pytest.skip("Need --client option to run.")
-    if TEST_AUTHENTICATED in item.keywords and not (MYPLEX_USERNAME and MYPLEX_PASSWORD or SERVER_TOKEN):
-        return pytest.skip(
-            "You have to specify MYPLEX_USERNAME and MYPLEX_PASSWORD or SERVER_TOKEN to run authenticated tests"
-        )
-    if TEST_ANONYMOUSLY in item.keywords and (MYPLEX_USERNAME and MYPLEX_PASSWORD or SERVER_TOKEN):
-        return pytest.skip(
-            "Anonymous tests should be ran on unclaimed server, without providing MYPLEX_USERNAME and "
-            "MYPLEX_PASSWORD or SERVER_TOKEN"
-        )
 
 
 def wait_for_themes(movies):
@@ -88,6 +49,9 @@ def wait_for_themes(movies):
         else:
             time.sleep(3)
             timer += 3
+
+    assert with_themes == total, (
+        "Not all themes were uploaded in time, themes uploaded: {}/{}".format(with_themes, total))
 
 
 # basic fixtures
@@ -116,7 +80,7 @@ def test_client(scope='function'):
 @pytest.fixture(scope="session")
 def plugin_logs():
     # list contents of the plugin logs directory
-    plugin_logs = os.listdir(PLUGIN_LOGS_PATH)
+    plugin_logs = os.listdir(os.environ['PLEX_PLUGIN_LOG_PATH'])
 
     yield plugin_logs
 
@@ -125,7 +89,7 @@ def plugin_logs():
 @pytest.fixture(scope="session")
 def plugin_log_file():
     # the primary plugin log file
-    plugin_log_file = os.path.join(PLUGIN_LOGS_PATH, "{}.log".format(constants.plugin_identifier))
+    plugin_log_file = os.path.join(os.environ['PLEX_PLUGIN_LOG_PATH'], "{}.log".format(constants.plugin_identifier))
 
     yield plugin_log_file
 
@@ -141,35 +105,31 @@ def sess():
 def plex(request, sess):
     assert SERVER_BASEURL, "Required SERVER_BASEURL not specified."
 
-    if request.param == TEST_AUTHENTICATED:
-        token = MyPlexAccount(session=sess).authenticationToken
-    else:
-        token = None
-    return PlexServer(SERVER_BASEURL, token, session=sess)
+    return PlexServer(SERVER_BASEURL, SERVER_TOKEN, session=sess)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def movies_new_agent(plex):
-    movies = plex.library.section("Movies-new-agent")
+    movies = plex.library.section("Movies")
     wait_for_themes(movies=movies)
     return movies
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def movies_imdb_agent(plex):
-    movies = plex.library.section("Movies-imdb-agent")
+    movies = plex.library.section("Movies-imdb")
     wait_for_themes(movies=movies)
     return movies
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def movies_themoviedb_agent(plex):
-    movies = plex.library.section("Movies-themoviedb-agent")
+    movies = plex.library.section("Movies-tmdb")
     wait_for_themes(movies=movies)
     return movies
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def collection_new_agent(plex, movies_new_agent, movie_new_agent):
     try:
         return movies_new_agent.collection("Test Collection")
@@ -181,7 +141,7 @@ def collection_new_agent(plex, movies_new_agent, movie_new_agent):
         )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def collection_imdb_agent(plex, movies_imdb_agent, movie_imdb_agent):
     try:
         return movies_imdb_agent.collection("Test Collection")
@@ -193,7 +153,7 @@ def collection_imdb_agent(plex, movies_imdb_agent, movie_imdb_agent):
         )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def collection_themoviedb_agent(plex, movies_themoviedb_agent, movie_themoviedb_agent):
     try:
         return movies_themoviedb_agent.collection("Test Collection")

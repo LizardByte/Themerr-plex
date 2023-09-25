@@ -84,6 +84,7 @@ jobs:
             "-xr!plexhints*" \
             "-xr!Themerr-plex.bundle/.*" \
             "-xr!Themerr-plex.bundle/cache.sqlite" \
+            "-xr!Themerr-plex.bundle/codecov.yml" \
             "-xr!Themerr-plex.bundle/crowdin.yml" \
             "-xr!Themerr-plex.bundle/DOCKER_README.md" \
             "-xr!Themerr-plex.bundle/Dockerfile" \
@@ -120,8 +121,6 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
-    env:
-      PLEXAPI_AUTH_SERVER_BASEURL: http://127.0.0.1:32400
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -146,6 +145,21 @@ jobs:
       - name: Set up Python
         uses: LizardByte/.github/actions/setup_python2@nightly
 
+      - name: Bootstrap Plex server
+        env:
+          PLEXAPI_PLEXAPI_TIMEOUT: "60"
+        id: bootstrap
+        uses: LizardByte/plexhints@v0.1.0
+        with:
+          additional_server_queries_put: >-
+            /system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
+            /system/agents/com.plexapp.agents.themoviedb/config/1?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
+          plugin_bundles_to_install: >-
+            Themerr-plex.bundle
+          without_shows: true
+          without_music: true
+          without_photos: true
+
       - name: Install python dependencies
         shell: bash
         run: |
@@ -153,89 +167,36 @@ jobs:
             pip setuptools wheel
           python -m pip --no-python-version-warning --disable-pip-version-check install -r requirements-dev.txt
 
-      - name: Install Plex Media Server
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            choco install plexmediaserver
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            brew install --cask plex-media-server
-
-            # starting with pms 1.29.2 servers must be claimed... disable that
-            # https://forums.plex.tv/t/new-server-claiming-requirement-for-macos/816337
-            defaults write com.plexapp.plexmediaserver enableLocalSecurity -bool FALSE
-
-            # copy plugin before starting plex server
-            mkdir -p "${HOME}/Library/Application Support/Plex Media Server/Plug-ins"
-            cp -r ./Themerr-plex.bundle "${HOME}/Library/Application Support/Plex Media Server/Plug-ins/"
-
-            open "/Applications/Plex Media Server.app"
-          elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
-            echo deb https://downloads.plex.tv/repo/deb public main | \
-              sudo tee /etc/apt/sources.list.d/plexmediaserver.list
-            sudo apt-get update
-            sudo apt-get install plexmediaserver
-
-            # stop service
-            sudo systemctl stop plexmediaserver
-
-            # debug
-            cat /lib/systemd/system/plexmediaserver.service
-
-            # do not edit service directly, use override
-            override=/etc/systemd/system/plexmediaserver.service.d/override.conf
-            sudo mkdir -p $(dirname ${override})
-            sudo touch ${override}
-            echo "[Service]" | sudo tee ${override}
-            echo "User=$USER" | sudo tee -a ${override}
-
-            # take ownership
-            sudo chown -R $USER:$USER "/var/lib/plexmediaserver/Library/Application Support/Plex Media Server"
-
-            # reload service
-            sudo systemctl daemon-reload
-
-            # start
-            sudo systemctl start plexmediaserver
-          else
-            echo "Unknown OS: ${{ matrix.os }}"
-            exit 1
-          fi
-
-      - name: Update Plex registry settings
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          # starting with pmps 1.32.2 servers must be claimed... disable that
-          # https://forums.plex.tv/t/new-claiming-requirement-for-windows/839096
-          REG ADD "HKCU\Software\Plex, Inc.\Plex Media Server" /v enableLocalSecurity /t REG_DWORD /d 0 /f
-
-      - name: Bootstrap Plex server
-        id: boostrap
-        shell: bash
-        run: |
-          python \
-            -u scripts/plex-bootstraptest.py \
-            --destination plex \
-            --advertise-ip 127.0.0.1 \
-            --bootstrap-timeout 540 \
-            --no-docker \
-            --server-name plex-test-${{ matrix.os }}-${{ github.run_id }} \
-            --without-shows \
-            --without-music \
-            --without-photos \
-            --unclaimed
-
       - name: Test with pytest
+        env:
+          PLEX_PLUGIN_LOG_PATH: ${{ steps.bootstrap.outputs.PLEX_PLUGIN_LOG_PATH }}
+          PLEXAPI_AUTH_SERVER_BASEURL: ${{ steps.bootstrap.outputs.PLEX_SERVER_BASEURL }}
+          PLEXAPI_AUTH_SERVER_TOKEN: ${{ steps.bootstrap.outputs.PLEXTOKEN }}
+          PLEXAPI_PLEXAPI_TIMEOUT: "60"
+          PLEXTOKEN: ${{ steps.bootstrap.outputs.PLEXTOKEN }}
         id: test
         shell: bash
         run: |
           python -m pytest \
-            -rXs \
+            -rxXs \
+            --maxfail=1 \
             --tb=native \
             --verbose \
             --cov=Contents/Code \
             tests
+
+      - name: Debug log file
+        if: always()
+        shell: bash
+        run: |
+          echo "Debugging log file"
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            log_file=$(cygpath.exe -u \
+              "${{ steps.bootstrap.outputs.PLEX_PLUGIN_LOG_PATH }}/dev.lizardbyte.themerr-plex.log")
+          else
+            log_file="${{ steps.bootstrap.outputs.PLEX_PLUGIN_LOG_PATH }}/dev.lizardbyte.themerr-plex.log"
+          fi
+          cat "${log_file}"
 
       - name: Upload coverage
         # any except cancelled or skipped

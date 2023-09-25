@@ -11,7 +11,6 @@ from Code import constants
 from Code import general_helper
 
 
-@pytest.mark.anonymous
 def test_get_media_upload_path(movies_themoviedb_agent):
     test_items = [
         movies_themoviedb_agent.all()[0]
@@ -28,7 +27,6 @@ def test_get_media_upload_path(movies_themoviedb_agent):
                 assert os.path.isdir(media_upload_path)
 
 
-@pytest.mark.anonymous
 def test_get_media_upload_path_invalid(movies_themoviedb_agent):
     test_items = [
         movies_themoviedb_agent.all()[0]
@@ -38,7 +36,6 @@ def test_get_media_upload_path_invalid(movies_themoviedb_agent):
         general_helper.get_media_upload_path(item=test_items[0], media_type='invalid')
 
 
-@pytest.mark.anonymous
 def test_get_themerr_json_path(movies_themoviedb_agent):
     test_items = [
         movies_themoviedb_agent.all()[0]
@@ -51,7 +48,6 @@ def test_get_themerr_json_path(movies_themoviedb_agent):
                             'DataItems') in themerr_json_path
 
 
-@pytest.mark.anonymous
 def test_get_themerr_json_data(movies_themoviedb_agent):
     test_items = [
         movies_themoviedb_agent.all()[0]
@@ -72,7 +68,6 @@ def test_get_themerr_settings_hash():
     assert len(themerr_settings_hash) == 64
 
 
-@pytest.mark.anonymous
 def test_remove_uploaded_media(movies_themoviedb_agent):
     test_items = [
         movies_themoviedb_agent.all()[0]
@@ -103,7 +98,6 @@ def test_remove_uploaded_media_error_handler():
     )
 
 
-@pytest.mark.anonymous
 def test_update_themerr_data_file(movies_themoviedb_agent):
     test_items = [
         movies_themoviedb_agent.all()[0]
