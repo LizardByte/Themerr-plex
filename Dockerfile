@@ -18,6 +18,7 @@ set -e
 apt-get update -y
 apt-get install -y --no-install-recommends \
   npm=8.5.* \
+  patch \
   python2=2.7.18* \
   python-pip=20.3.4*
 apt-get clean
@@ -49,6 +50,18 @@ python2 -m pip --no-python-version-warning --disable-pip-version-check install -
 python2 ./scripts/build_plist.py
 _BUILD
 
+# patch youtube-dl
+WORKDIR /build/Contents/Libraries/Shared
+RUN <<_YOUTUBE_DL_PATCH
+#!/bin/bash
+set -e
+patch_dir=/build/patches
+patch -p1 < "${patch_dir}/youtube_dl-compat.patch"
+patch -p1 < "${patch_dir}/youtube_dl-extractor.patch"
+_YOUTUBE_DL_PATCH
+
+WORKDIR /build
+
 # setup npm and dependencies
 RUN <<_NPM
 #!/bin/bash
@@ -61,6 +74,7 @@ _NPM
 RUN <<_CLEAN
 #!/bin/bash
 set -e
+rm -rf ./patches/
 rm -rf ./scripts/
 # list contents
 ls -a

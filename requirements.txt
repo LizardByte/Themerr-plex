@@ -13,8 +13,8 @@ werkzeug==1.0.1;python_version<"3"
 # youtube_dl is not capable or willing to create a new release so have to install from git
 # youtube_dl==2021.12.17
 # dependabot cannot update this
-# git+https://github.com/ytdl-org/youtube-dl.git@26035bde46c0acc30dc053618451d9aeca4b7709#egg=youtube_dl
-https://github.com/ytdl-org/youtube-dl/archive/26035bde46c0acc30dc053618451d9aeca4b7709.zip#egg=youtube_dl
+# git+https://github.com/ytdl-org/youtube-dl.git@00ef748cc0e35ee60efd0f7a00e373ab8d1af86b#egg=youtube_dl
+https://github.com/ytdl-org/youtube-dl/archive/00ef748cc0e35ee60efd0f7a00e373ab8d1af86b.zip#egg=youtube_dl
 
 # required for websocket to pass tests
 pysocks==1.7.1;python_version<"3"
