@@ -2,9 +2,6 @@
 # standard imports
 import os
 
-# lib imports
-import pytest
-
 
 def _check_themes(movies):
     # ensure all movies have themes
@@ -40,16 +37,13 @@ def test_plugin_log_file_exceptions(plugin_log_file):
             "Unexpected exception: {}".format(exception))
 
 
-@pytest.mark.anonymous
 def test_movies_new_agent(movies_new_agent):
     _check_themes(movies_new_agent)
 
 
-@pytest.mark.anonymous
 def test_movies_imdb_agent(movies_imdb_agent):
     _check_themes(movies_imdb_agent)
 
 
-@pytest.mark.anonymous
 def test_movies_themoviedb_agent(movies_themoviedb_agent):
     _check_themes(movies_themoviedb_agent)
