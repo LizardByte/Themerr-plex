@@ -11,7 +11,7 @@ def _check_themes(movies):
         assert item.theme, "No theme found for {}".format(item.title)
 
 
-def test_plugin_los(plugin_logs):
+def test_plugin_logs(plugin_logs):
     print('plugin_logs: {}'.format(plugin_logs))
     assert plugin_logs, "No plugin logs found"
 
@@ -19,13 +19,14 @@ def test_plugin_los(plugin_logs):
 def test_plugin_log_file(plugin_log_file):
     found = False
     count = 0
-    while not found and count < 60:  # plugin takes a little while to start on macOS
+    max_count = 120
+    while not found and count < max_count:  # plugin takes a little while to start on macOS
         count += 1
         if os.path.isfile(plugin_log_file):
             found = True
         else:
             time.sleep(1)
-    assert found, "After 60 seconds, plugin log file not found: {}".format(plugin_log_file)
+    assert found, "After {} seconds, plugin log file not found: {}".format(max_count, plugin_log_file)
 
 
 def test_plugin_log_file_exceptions(plugin_log_file):
