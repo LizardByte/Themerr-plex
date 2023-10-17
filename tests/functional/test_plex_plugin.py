@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # standard imports
 import os
+import time
 
 
 def _check_themes(movies):
@@ -16,7 +17,15 @@ def test_plugin_los(plugin_logs):
 
 
 def test_plugin_log_file(plugin_log_file):
-    assert os.path.isfile(plugin_log_file), "Plugin log file not found: {}".format(plugin_log_file)
+    found = False
+    count = 0
+    while not found and count < 60:  # plugin takes a little while to start on macOS
+        count += 1
+        if os.path.isfile(plugin_log_file):
+            found = True
+        else:
+            time.sleep(1)
+    assert found, "After 60 seconds, plugin log file not found: {}".format(plugin_log_file)
 
 
 def test_plugin_log_file_exceptions(plugin_log_file):
