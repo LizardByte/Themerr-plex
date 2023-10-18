@@ -29,6 +29,19 @@ SERVER_BASEURL = plexapi.CONFIG.get("auth.server_baseurl")
 SERVER_TOKEN = plexapi.CONFIG.get("auth.server_token")
 
 
+def wait_for_file(file_path, timeout=300):
+    # type: (str, int) -> None
+    found = False
+    count = 0
+    while not found and count < timeout:  # plugin takes a little while to start on macOS
+        count += 1
+        if os.path.isfile(file_path):
+            found = True
+        else:
+            time.sleep(1)
+    assert found, "After {} seconds, {} file not found".format(timeout, file_path)
+
+
 def wait_for_themes(movies):
     # ensure library is not refreshing
     while movies.refreshing:
@@ -90,6 +103,8 @@ def plugin_logs():
 def plugin_log_file():
     # the primary plugin log file
     plugin_log_file = os.path.join(os.environ['PLEX_PLUGIN_LOG_PATH'], "{}.log".format(constants.plugin_identifier))
+
+    wait_for_file(file_path=plugin_log_file, timeout=300)
 
     yield plugin_log_file
 
