@@ -3,7 +3,7 @@
 flask==1.1.4;python_version<"3"
 flask-babel==1.0.0;python_version<"3"
 future==0.18.3
-plexapi-backport[alert]==4.15.2  # custom python-plexapi supporting python 2.7
+plexapi-backport[alert]==4.15.4  # custom python-plexapi supporting python 2.7
 polib==1.2.0;python_version<"3"
 requests==2.27.1;python_version<"3"  # 2.27 is last version supporting Python 2.7
 schedule==0.6.0;python_version<"3"
