@@ -3,6 +3,6 @@
     "@fontsource/open-sans": "4.5.13",
     "@fortawesome/fontawesome-free": "6.2.0",
     "bootstrap": "5.3.2",
-    "jquery": "3.7.0"
+    "jquery": "3.7.1"
   }
 }
