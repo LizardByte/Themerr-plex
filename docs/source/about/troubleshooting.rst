@@ -1,4 +1,4 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/tree/nightly/docs/source/about/troubleshooting.rst
+:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/about/troubleshooting.rst
 
 Troubleshooting
 ===============
@@ -13,7 +13,7 @@ Adding your YouTube credentials (e-mail and password) in Themerr's preference ma
 YouTube also sometimes changes the way its login page works, preventing YouTube-DL from using those credentials.
 
 A workaround is to login in a web browser, and then export your YouTube cookies with a tool such as `Get cookies.txt
-locally <https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc>`__. Note 
+locally <https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc>`__. Note
 that Themerr currently only supports Chromium's JSON export format. In the exporter you use, if prompted, you need to
 use the "JSON" or "Chrome" format.
 

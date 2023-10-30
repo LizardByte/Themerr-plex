@@ -1,4 +1,4 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/tree/nightly/README.rst
+:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/README.rst
 
 Overview
 ========
