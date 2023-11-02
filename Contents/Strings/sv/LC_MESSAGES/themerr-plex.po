@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-08-25 19:26+0000\n"
-"PO-Revision-Date: 2023-11-02 16:42\n"
+"PO-Revision-Date: 2023-11-02 18:01\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -36,45 +36,45 @@ msgstr "Titel"
 
 #: Contents/Resources/web/templates/home.html:97
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: Contents/Resources/web/templates/home.html:98
 msgid "Year"
-msgstr ""
+msgstr "Årtal"
 
 #: Contents/Resources/web/templates/home.html:99
 msgid "Contribute"
-msgstr ""
+msgstr "Bidra"
 
 #: Contents/Resources/web/templates/home.html:113
 msgid "Add"
-msgstr ""
+msgstr "Lägg till"
 
 #: Contents/Resources/web/templates/home.html:116
 msgid "Edit"
-msgstr ""
+msgstr "Redigera"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr ""
+msgstr "Donera"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr ""
+msgstr "GitHub-sponsorer"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr ""
+msgstr "Dokumentation"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr ""
+msgstr "Online support"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr ""
+msgstr "Hem"
 
