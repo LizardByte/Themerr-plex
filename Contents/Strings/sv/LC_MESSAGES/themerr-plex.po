@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-08-25 19:26+0000\n"
-"PO-Revision-Date: 2023-11-02 15:20\n"
+"PO-Revision-Date: 2023-11-02 16:42\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -20,19 +20,19 @@ msgstr ""
 
 #: Contents/Resources/web/templates/home.html:33
 msgid "Games"
-msgstr ""
+msgstr "Spel"
 
 #: Contents/Resources/web/templates/home.html:34
 msgid "Movies"
-msgstr ""
+msgstr "Filmer"
 
 #: Contents/Resources/web/templates/home.html:76
 msgid "Collections"
-msgstr ""
+msgstr "Samlingar"
 
 #: Contents/Resources/web/templates/home.html:96
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: Contents/Resources/web/templates/home.html:97
 msgid "Type"
