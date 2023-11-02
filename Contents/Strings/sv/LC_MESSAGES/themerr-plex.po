@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2023-08-25 19:26+0000\n"
+"PO-Revision-Date: 2023-11-02 15:20\n"
+"Last-Translator: \n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: sv-SE\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] nightly/themerr-plex.po\n"
+"X-Crowdin-File-ID: 25\n"
+"Language: sv_SE\n"
+
+#: Contents/Resources/web/templates/home.html:33
+msgid "Games"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:34
+msgid "Movies"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:76
+msgid "Collections"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:96
+msgid "Title"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:97
+msgid "Type"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:98
+msgid "Year"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:99
+msgid "Contribute"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:113
+msgid "Add"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:116
+msgid "Edit"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr ""
+
