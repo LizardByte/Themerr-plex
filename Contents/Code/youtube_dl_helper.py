@@ -13,6 +13,26 @@ else:  # the code is running outside of Plex
 from typing import Optional
 import youtube_dl
 
+class LoggerProxy(object):
+    def debug(self, msg, *args, **kwargs):
+        Log.Debug(msg, *args, **kwargs)
+
+    def info(self, msg, *args, **kwargs):
+        Log.Info(msg, *args, **kwargs)
+
+    def warning(self, msg, *args, **kwargs):
+        Log.Warn(msg, *args, **kwargs)
+
+    def error(self, msg, *args, **kwargs):
+        Log.Error(msg, *args, **kwargs)
+
+    def critical(self, msg, *args, **kwargs):
+        Log.Critical(msg, *args, **kwargs)
+
+    def exception(self, msg, *args, **kwargs):
+        Log.Exception(msg, exc_info=True, *args, **kwargs)
+
+youtube_logger = LoggerProxy()
 
 def process_youtube(url):
     # type: (str) -> Optional[str]
@@ -35,7 +55,10 @@ def process_youtube(url):
     ...
     """
     youtube_dl_params = dict(
-        outmpl='%(id)s.%(ext)s',
+        logger=youtube_logger,
+        verbose=True,
+        socket_timeout=10,
+        outtmpl=u'%(id)s.%(ext)s',
         youtube_include_dash_manifest=False,
         username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
         password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
@@ -44,10 +67,18 @@ def process_youtube(url):
     ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
 
     with ydl:
-        result = ydl.extract_info(
-            url=url,
-            download=False  # We just want to extract the info
-        )
+        try:
+            result = ydl.extract_info(
+                url=url,
+                download=False  # We just want to extract the info
+            )
+        except Exception as exc:
+            if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
+                Log.Info('YDL returned YT error while downloading %s: %s' % (url, exc))
+            else:
+                Log.Exception('YDL returned an unexpected error while downloading %s: %s' % (url, exc))
+            return None
+
         if 'entries' in result:
             # Can be a playlist or a list of videos
             video_data = result['entries'][0]
