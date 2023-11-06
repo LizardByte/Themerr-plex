@@ -12,6 +12,7 @@ else:  # the code is running outside of Plex
 # imports from Libraries\Shared
 from constants import plugin_identifier
 from typing import Optional
+import logging
 import youtube_dl
 
 # get the plugin logger
