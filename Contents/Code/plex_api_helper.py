@@ -38,7 +38,7 @@ plex = None
 q = queue.Queue()
 
 
-plex_url = 'http://127.0.0.1:32400'
+plex_url = 'http://127.0.0.1:32400'  # the explicit IPv4 address is used because `localhost` can resolve to ::1, which `websocket` rejects
 plex_token = os.environ.get('PLEXTOKEN')
 
 plex_section_type_settings_map = dict(
