@@ -10,29 +10,12 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
+from constants import plugin_identifier
 from typing import Optional
 import youtube_dl
 
-class LoggerProxy(object):
-    def debug(self, msg, *args, **kwargs):
-        Log.Debug(msg, *args, **kwargs)
-
-    def info(self, msg, *args, **kwargs):
-        Log.Info(msg, *args, **kwargs)
-
-    def warning(self, msg, *args, **kwargs):
-        Log.Warn(msg, *args, **kwargs)
-
-    def error(self, msg, *args, **kwargs):
-        Log.Error(msg, *args, **kwargs)
-
-    def critical(self, msg, *args, **kwargs):
-        Log.Critical(msg, *args, **kwargs)
-
-    def exception(self, msg, *args, **kwargs):
-        Log.Exception(msg, exc_info=True, *args, **kwargs)
-
-youtube_logger = LoggerProxy()
+# get the plugin logger
+plugin_logger = logging.getLogger(plugin_identifier)
 
 def process_youtube(url):
     # type: (str) -> Optional[str]
@@ -55,7 +38,7 @@ def process_youtube(url):
     ...
     """
     youtube_dl_params = dict(
-        logger=youtube_logger,
+        logger=plugin_logger,
         verbose=True,
         socket_timeout=10,
         outtmpl=u'%(id)s.%(ext)s',
