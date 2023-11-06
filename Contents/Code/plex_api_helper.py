@@ -38,7 +38,7 @@ plex = None
 q = queue.Queue()
 
 
-plex_url = 'http://localhost:32400'
+plex_url = 'http://127.0.0.1:32400'
 plex_token = os.environ.get('PLEXTOKEN')
 
 plex_section_type_settings_map = dict(
