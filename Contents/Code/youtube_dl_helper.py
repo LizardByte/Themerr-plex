@@ -13,7 +13,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-from constants import plugin_identifier
+from constants import plugin_identifier, cookie_jar_file
 from typing import Optional
 import youtube_dl
 
@@ -42,6 +42,7 @@ def process_youtube(url):
     ...
     """
     youtube_dl_params = dict(
+        cookiefile=cookie_jar_file,
         logger=plugin_logger,
         outtmpl=u'%(id)s.%(ext)s',
         password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,

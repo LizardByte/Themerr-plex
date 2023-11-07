@@ -39,6 +39,7 @@ metadata_base_directory = os.path.join(app_support_directory, 'Metadata')
 plugin_support_directory = os.path.join(app_support_directory, 'Plug-in Support')
 plugin_support_data_directory = os.path.join(plugin_support_directory, 'Data')
 themerr_data_directory = os.path.join(plugin_support_data_directory, plugin_identifier, 'DataItems')
+cookie_jar_file = os.path.join(plugin_support_data_directory, plugin_identifier, 'HTTPCookies')
 
 contributes_to = [
     'tv.plex.agents.movie',
@@ -97,4 +98,28 @@ issue_urls = dict(
     movie_collections='{}&labels={}&template={}&title={}{}&{}={}{}'.format(
         base_url, issue_label, issue_template, title_prefix['movie_collections'], '{}', url_name,
         url_prefix['movie_collections'], '{}'),
+)
+
+media_type_dict = dict(
+    art=dict(
+        method=lambda i: i.uploadArt,
+        type='art',
+        name='art',
+        themerr_data_key='art_url',
+        remove_pref='bool_remove_unused_art',
+    ),
+    posters=dict(
+        method=lambda i: i.uploadPoster,
+        type='posters',
+        name='poster',
+        themerr_data_key='poster_url',
+        remove_pref='bool_remove_unused_posters',
+    ),
+    themes=dict(
+        method=lambda i: i.uploadTheme,
+        type='themes',
+        name='theme',
+        themerr_data_key='youtube_theme_url',
+        remove_pref='bool_remove_unused_theme_songs',
+    ),
 )
