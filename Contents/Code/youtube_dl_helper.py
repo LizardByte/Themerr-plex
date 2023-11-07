@@ -13,7 +13,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-from constants import plugin_identifier
+from constants import plugin_identifier, cookie_jar_file
 from typing import Optional
 import youtube_dl
 
@@ -48,6 +48,7 @@ def process_youtube(url):
         username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
         verbose=True,
         youtube_include_dash_manifest=False,
+        cookiefile=cookie_jar_file,
     )
 
     ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
