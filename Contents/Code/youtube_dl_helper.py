@@ -20,6 +20,7 @@ import youtube_dl
 # get the plugin logger
 plugin_logger = logging.getLogger(plugin_identifier)
 
+
 def process_youtube(url):
     # type: (str) -> Optional[str]
     """
