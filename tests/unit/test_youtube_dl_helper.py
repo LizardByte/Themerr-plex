@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-# lib imports
-import pytest
-from youtube_dl import DownloadError
-
 # local imports
 from Code import youtube_dl_helper
 
