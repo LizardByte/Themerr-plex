@@ -39,12 +39,11 @@ def process_youtube(url):
     """
     youtube_dl_params = dict(
         logger=plugin_logger,
-        verbose=True,
-        socket_timeout=10,
         outtmpl=u'%(id)s.%(ext)s',
-        youtube_include_dash_manifest=False,
-        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
         password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
+        socket_timeout=10,
+        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
+        youtube_include_dash_manifest=False,
     )
 
     ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
