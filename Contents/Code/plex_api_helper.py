@@ -502,7 +502,10 @@ def process_queue():
     """
     while True:
         rating_key = q.get()  # get the rating_key from the queue
-        update_plex_item(rating_key=rating_key)  # process that rating_key
+        try:
+            update_plex_item(rating_key=rating_key)  # process that rating_key
+        except Exception as e:
+            Log.Exception('Unexpected error processing rating key: %s, error: %s' % (rating_key, e))
         q.task_done()  # tells the queue that we are done with this item
 
 
