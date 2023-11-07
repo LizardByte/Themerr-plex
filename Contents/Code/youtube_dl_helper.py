@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# standard imports
+import logging
+
 # plex debugging
 try:
     import plexhints  # noqa: F401
@@ -10,8 +13,12 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
+from constants import plugin_identifier
 from typing import Optional
 import youtube_dl
+
+# get the plugin logger
+plugin_logger = logging.getLogger(plugin_identifier)
 
 
 def process_youtube(url):
@@ -35,19 +42,29 @@ def process_youtube(url):
     ...
     """
     youtube_dl_params = dict(
-        outmpl='%(id)s.%(ext)s',
-        youtube_include_dash_manifest=False,
-        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
+        logger=plugin_logger,
+        outtmpl=u'%(id)s.%(ext)s',
         password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
+        socket_timeout=10,
+        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
+        youtube_include_dash_manifest=False,
     )
 
     ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
 
     with ydl:
-        result = ydl.extract_info(
-            url=url,
-            download=False  # We just want to extract the info
-        )
+        try:
+            result = ydl.extract_info(
+                url=url,
+                download=False  # We just want to extract the info
+            )
+        except Exception as exc:
+            if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
+                Log.Info('YDL returned YT error while downloading %s: %s' % (url, exc))
+            else:
+                Log.Exception('YDL returned an unexpected error while downloading %s: %s' % (url, exc))
+            return None
+
         if 'entries' in result:
             # Can be a playlist or a list of videos
             video_data = result['entries'][0]
