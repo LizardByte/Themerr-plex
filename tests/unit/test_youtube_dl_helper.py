@@ -26,5 +26,5 @@ def test_process_youtube_invalid():
         'https://blahblahblah',
     ]
     for url in invalid_urls:
-        with pytest.raises(DownloadError):
-            youtube_dl_helper.process_youtube(url=url)
+        audio_url = youtube_dl_helper.process_youtube(url=url)
+        assert audio_url is None
