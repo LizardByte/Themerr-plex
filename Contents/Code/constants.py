@@ -102,21 +102,21 @@ issue_urls = dict(
 
 media_type_dict = dict(
     art=dict(
-        method=lambda i: i.uploadArt,
+        method=lambda item: item.uploadArt,
         type='art',
         name='art',
         themerr_data_key='art_url',
         remove_pref='bool_remove_unused_art',
     ),
     posters=dict(
-        method=lambda i: i.uploadPoster,
+        method=lambda item: item.uploadPoster,
         type='posters',
         name='poster',
         themerr_data_key='poster_url',
         remove_pref='bool_remove_unused_posters',
     ),
     themes=dict(
-        method=lambda i: i.uploadTheme,
+        method=lambda item: item.uploadTheme,
         type='themes',
         name='theme',
         themerr_data_key='youtube_theme_url',
