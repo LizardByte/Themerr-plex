@@ -3,6 +3,20 @@
 Troubleshooting
 ===============
 
+Rate Limiting / Videos Not Downloading
+--------------------------------------
+
+By default, YouTube-DL will perform queries to YouTube anonymously. As a result, YouTube may rate limit the
+requests, or sometimes simply block the content (e.g. for age-restricted content, but not only).
+
+Adding your YouTube credentials (e-mail and password) in Themerr's preference may fix the problem. Hoewever,
+YouTube also sometimes changes the way its login page works, preventing YouTube-DL from using those credentials.
+
+A workaround is to login in a web browser, and then export your YouTube cookies with a tool such as ["Get cookies.txt
+locally"](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc). You 
+should then add the exported cookies to the HTTPCookies file that can be found in the 
+`Plug-in Support/Data/dev.lizardbyte.themerr-plex/` directory, starting from the Plex data root.
+
 Plugin Logs
 -----------
 
