@@ -205,7 +205,7 @@ def update_plex_item(rating_key):
                             Log.Exception('{}: Error processing youtube url: {}'.format(item.ratingKey, e))
                         else:
                             if theme_url:
-                                add_media(item=item, media_type='themes', 
+                                add_media(item=item, media_type='themes',
                                           media_url_id=yt_video_url, media_url=theme_url)
 
 
@@ -242,6 +242,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
     """
     uploaded = False
 
+    settings_hash = general_helper.get_themerr_settings_hash()
     themerr_data = general_helper.get_themerr_json_data(item=item)
 
     if media_file or media_url:
