@@ -145,17 +145,11 @@ jobs:
           # remove zip
           rm Themerr-plex.bundle.zip
 
-      - name: Set up Python
-        # dependabot cannot pick up our tags, so use the commit hash
-        uses: LizardByte/setup-python-action@8851ba6849c1003134ced0581b34204f0c322cad
-        with:
-          python-version: '2.7'
-
       - name: Bootstrap Plex server
         env:
           PLEXAPI_PLEXAPI_TIMEOUT: "60"
         id: bootstrap
-        uses: LizardByte/plexhints@v0.1.2
+        uses: LizardByte/plexhints@fix(action)-delay-start-of-plex-on-macos
         with:
           additional_server_queries_put: >-
             /system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
@@ -165,6 +159,12 @@ jobs:
           without_shows: true
           without_music: true
           without_photos: true
+
+      - name: Set up Python
+        # dependabot cannot pick up our tags, so use the commit hash
+        uses: LizardByte/setup-python-action@8851ba6849c1003134ced0581b34204f0c322cad
+        with:
+          python-version: '2.7'
 
       - name: Install python dependencies
         shell: bash
