@@ -89,6 +89,30 @@ def setup_plexapi():
     return plex
 
 
+def is_field_locked(item, field_name):
+    # type: (any, str) -> bool
+    """
+    Check if the specified field is locked -- i.e. if the user has manually set a value for it and does not want
+    it to be updated by an automated process.
+
+    Parameters
+    ----------
+    item : any
+        The Plex item to check.
+    field_name : str
+        The name of the field to check.
+
+    Returns
+    -------
+    bool
+        True if the field is locked, False otherwise.
+    """
+    for field in item.fields:
+        if field.name == field_name:
+            return field.locked
+    return False
+
+
 def update_plex_item(rating_key):
     # type: (int) -> bool
     """
@@ -175,46 +199,52 @@ def update_plex_item(rating_key):
                         else:
                             add_media(item=item, media_type='art', media_url_id=data['backdrop_path'], media_url=url)
                         # update summary
-                        try:
-                            summary = data['overview']
-                        except KeyError:
-                            pass
+                        if is_field_locked(item, "summary"):
+                            Log.Info('Not overwriting locked summary for collection: {}'.format(item.title))
                         else:
-                            if item.summary != summary:
-                                Log.Info('Updating summary for collection: {}'.format(item.title))
-                                try:
-                                    item.editSummary(summary=summary, locked=False)
-                                except Exception as e:
-                                    Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
+                            try:
+                                summary = data['overview']
+                            except KeyError:
+                                pass
+                            else:
+                                if item.summary != summary:
+                                    Log.Info('Updating summary for collection: {}'.format(item.title))
+                                    try:
+                                        item.editSummary(summary=summary, locked=False)
+                                    except Exception as e:
+                                        Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                # get youtube_url
-                try:
-                    yt_video_url = data['youtube_theme_url']
-                except KeyError:
-                    Log.Info('{}: No theme song found for {} ({})'.format(item.ratingKey, item.title, item.year))
+                if is_field_locked(item, "theme"):
+                    Log.Info('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:
-                    settings_hash = general_helper.get_themerr_settings_hash()
-                    themerr_data = general_helper.get_themerr_json_data(item=item)
-
+                    # get youtube_url
                     try:
-                        skip = themerr_data['settings_hash'] == settings_hash \
-                            and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
+                        yt_video_url = data['youtube_theme_url']
                     except KeyError:
-                        skip = False
-
-                    if skip:
-                        Log.Info('Skipping {} for type: {}, title: {}, rating_key: {}'.format(
-                            media_type_dict['themes']['name'], item.type, item.title, item.ratingKey
-                        ))
+                        Log.Info('{}: No theme song found for {} ({})'.format(item.ratingKey, item.title, item.year))
                     else:
+                        settings_hash = general_helper.get_themerr_settings_hash()
+                        themerr_data = general_helper.get_themerr_json_data(item=item)
+
                         try:
-                            theme_url = process_youtube(url=yt_video_url)
-                        except Exception as e:
-                            Log.Exception('{}: Error processing youtube url: {}'.format(item.ratingKey, e))
+                            skip = themerr_data['settings_hash'] == settings_hash \
+                                and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
+                        except KeyError:
+                            skip = False
+
+                        if skip:
+                            Log.Info('Skipping {} for type: {}, title: {}, rating_key: {}'.format(
+                                media_type_dict['themes']['name'], item.type, item.title, item.ratingKey
+                            ))
                         else:
-                            if theme_url:
-                                add_media(item=item, media_type='themes',
-                                          media_url_id=yt_video_url, media_url=theme_url)
+                            try:
+                                theme_url = process_youtube(url=yt_video_url)
+                            except Exception as e:
+                                Log.Exception('{}: Error processing youtube url: {}'.format(item.ratingKey, e))
+                            else:
+                                if theme_url:
+                                    add_media(item=item, media_type='themes',
+                                            media_url_id=yt_video_url, media_url=theme_url)
 
 
 def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
@@ -252,6 +282,12 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
 
     settings_hash = general_helper.get_themerr_settings_hash()
     themerr_data = general_helper.get_themerr_json_data(item=item)
+
+    if is_field_locked(item, media_type_dict[media_type]['plex_field']):
+        Log.Info('Not overwriting locked "{}" for {}: {}'.format(
+            media_type_dict[media_type]['name'], item.type, item.title
+        ))
+        return False
 
     if media_file or media_url:
         global plex
@@ -298,6 +334,9 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
         new_themerr_data[media_type_dict[media_type]['themerr_data_key']] = media_url_id
 
         general_helper.update_themerr_data_file(item=item, new_themerr_data=new_themerr_data)
+
+        # unlock the field since it contains an automatically added value
+        getattr(item, "_edit")(**{'{}.locked'.format(media_type_dict[media_type]['plex_field']): 0})
     else:
         Log.Debug('Could not upload {} for type: {}, title: {}, rating_key: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
