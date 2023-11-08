@@ -27,7 +27,7 @@ import plexapi.server
 from plexapi.utils import reverseSearchType
 
 # local imports
-from constants import contributes_to, guid_map
+from constants import contributes_to, guid_map, media_type_dict
 import general_helper
 import lizardbyte_db_helper
 import tmdb_helper
@@ -185,10 +185,28 @@ def update_plex_item(rating_key):
                 except KeyError:
                     Log.Info('{}: No theme song found for {} ({})'.format(item.ratingKey, item.title, item.year))
                 else:
-                    theme_url = process_youtube(url=yt_video_url)
+                    settings_hash = general_helper.get_themerr_settings_hash()
+                    themerr_data = general_helper.get_themerr_json_data(item=item)
 
-                    if theme_url:
-                        add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url)
+                    try:
+                        skip = themerr_data['settings_hash'] == settings_hash \
+                            and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
+                    except KeyError:
+                        skip = False
+
+                    if skip:
+                        Log.Info('Skipping {} for type: {}, title: {}, rating_key: {}'.format(
+                            media_type_dict['themes']['name'], item.type, item.title, item.ratingKey
+                        ))
+                    else:
+                        try:
+                            theme_url = process_youtube(url=yt_video_url)
+                        except Exception as e:
+                            Log.Exception('{}: Error processing youtube url: {}'.format(item.ratingKey, e))
+                        else:
+                            if theme_url:
+                                add_media(item=item, media_type='themes',
+                                          media_url_id=yt_video_url, media_url=theme_url)
 
 
 def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
@@ -227,30 +245,6 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
     settings_hash = general_helper.get_themerr_settings_hash()
     themerr_data = general_helper.get_themerr_json_data(item=item)
 
-    media_type_dict = dict(
-        art=dict(
-            method=item.uploadArt,
-            type='art',
-            name='art',
-            themerr_data_key='art_url',
-            remove_pref='bool_remove_unused_art',
-        ),
-        posters=dict(
-            method=item.uploadPoster,
-            type='posters',
-            name='poster',
-            themerr_data_key='poster_url',
-            remove_pref='bool_remove_unused_posters',
-        ),
-        themes=dict(
-            method=item.uploadTheme,
-            type='themes',
-            name='theme',
-            themerr_data_key='youtube_theme_url',
-            remove_pref='bool_remove_unused_theme_songs',
-        ),
-    )
-
     if media_file or media_url:
         global plex
         if not plex:
@@ -280,9 +274,9 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
             media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
         ))
         if media_file:
-            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'], filepath=media_file)
+            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), filepath=media_file)
         if media_url:
-            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'], url=media_url)
+            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), url=media_url)
     else:
         Log.Warning('No theme songs provided for type: {}, title: {}, rating_key: {}'.format(
             item.type, item.title, item.ratingKey
