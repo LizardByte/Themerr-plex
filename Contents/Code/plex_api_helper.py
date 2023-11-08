@@ -37,6 +37,9 @@ plex = None
 
 q = queue.Queue()
 
+# disable auto-reload, because Themerr doesn't rely on it, so it will only slow down the app
+# when accessing a missing field
+os.environ["PLEXAPI_PLEXAPI_AUTORELOAD"] = "false"
 
 # the explicit IPv4 address is used because `localhost` can resolve to ::1, which `websocket` rejects
 plex_url = 'http://127.0.0.1:32400'
