@@ -283,7 +283,6 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
         ))
 
     if uploaded:
-        settings_hash = general_helper.get_themerr_settings_hash()
         # new data for themerr.json
         new_themerr_data = dict(
             settings_hash=settings_hash
