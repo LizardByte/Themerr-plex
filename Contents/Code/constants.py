@@ -39,6 +39,7 @@ metadata_base_directory = os.path.join(app_support_directory, 'Metadata')
 plugin_support_directory = os.path.join(app_support_directory, 'Plug-in Support')
 plugin_support_data_directory = os.path.join(plugin_support_directory, 'Data')
 themerr_data_directory = os.path.join(plugin_support_data_directory, plugin_identifier, 'DataItems')
+cookie_jar_file = os.path.join(plugin_support_data_directory, plugin_identifier, 'HTTPCookies')
 
 contributes_to = [
     'tv.plex.agents.movie',
