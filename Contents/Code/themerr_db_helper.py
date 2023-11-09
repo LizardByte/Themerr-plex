@@ -11,7 +11,6 @@ else:  # the code is running outside of Plex
 
 # local imports
 from constants import canonical_db
-from general_helper import fetch_json
 
 # imports from Libraries\Shared
 from typing import Union
@@ -27,13 +26,21 @@ def update_cache():
 
     for database_type in database_types:
         try:
-            pages = fetch_json('https://app.lizardbyte.dev/ThemerrDB/{}/pages.json'.format(database_type))
+            pages = JSON.ObjectFromURL(
+                cacheTime=3600,
+                url='https://app.lizardbyte.dev/ThemerrDB/{}/pages.json'.format(database_type),
+                errors='ignore'  # don't crash the plugin
+            )
             page_count = pages['pages']
 
             id_index = set()
 
             for page in range(page_count):
-                page_data = fetch_json('https://app.lizardbyte.dev/ThemerrDB/{}/all_page_{}.json'.format(database_type, page + 1))
+                page_data = JSON.ObjectFromURL(
+                    cacheTime=3600,
+                    url='https://app.lizardbyte.dev/ThemerrDB/{}/all_page_{}.json'.format(database_type, page + 1),
+                    errors='ignore'  # don't crash the plugin
+                )
 
                 id_index.update(str(item['id']) for item in page_data)
 

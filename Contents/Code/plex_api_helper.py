@@ -135,8 +135,11 @@ def update_plex_item(rating_key):
             return False
 
         try:
-            data = general_helper.fetch_json('https://app.lizardbyte.dev/ThemerrDB/{}/{}/{}.json'
-                                             .format(database_type, database, database_id))
+            data = JSON.ObjectFromURL(
+                cacheTime=3600,
+                url='https://app.lizardbyte.dev/ThemerrDB/{}/{}/{}.json'.format(database_type, database, database_id),
+                errors='ignore'  # don't crash the plugin
+            )
         except Exception as e:
             Log.Error('{}: Error retrieving data from ThemerrDB: {}'.format(item.ratingKey, e))
         else:

@@ -238,25 +238,3 @@ def update_themerr_data_file(item, new_themerr_data):
 
     # write themerr json
     Core.storage.save(filename=themerr_json_path, data=json.dumps(themerr_data), binary=False)
-
-
-def fetch_json(url):
-    # type: (str) -> dict
-    """
-    Fetch JSON from the specified URL.
-
-    Parameters
-    ----------
-    url : str
-        The URL to fetch JSON from.
-
-    Returns
-    -------
-    dict
-        The JSON data from the specified URL.
-    """
-    return JSON.ObjectFromURL(
-        cacheTime=3600,
-        url=url,
-        errors='ignore'  # don't crash the plugin
-    )
