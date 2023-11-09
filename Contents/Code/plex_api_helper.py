@@ -92,8 +92,9 @@ def setup_plexapi():
 def is_field_locked(item, field_name):
     # type: (any, str) -> bool
     """
-    Check if the specified field is locked -- i.e. if the user has manually set a value for it and does not want
-    it to be updated by an automated process.
+    Check if the specified field is locked.
+    
+    This is used to ensure a field has not been manually set by the user.
 
     Parameters
     ----------
@@ -107,6 +108,10 @@ def is_field_locked(item, field_name):
     bool
         True if the field is locked, False otherwise.
     """
+
+    Examples
+    --------
+    # add an example please
     for field in item.fields:
         if field.name == field_name:
             return field.locked
@@ -200,7 +205,7 @@ def update_plex_item(rating_key):
                             add_media(item=item, media_type='art', media_url_id=data['backdrop_path'], media_url=url)
                         # update summary
                         if is_field_locked(item, "summary"):
-                            Log.Info('Not overwriting locked summary for collection: {}'.format(item.title))
+                            Log.Debug('Not overwriting locked summary for collection: {}'.format(item.title))
                         else:
                             try:
                                 summary = data['overview']
@@ -215,7 +220,7 @@ def update_plex_item(rating_key):
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
                 if is_field_locked(item, "theme"):
-                    Log.Info('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
+                    Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
                     try:
