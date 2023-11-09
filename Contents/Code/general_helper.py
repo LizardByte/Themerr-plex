@@ -14,7 +14,6 @@ except ImportError:
 else:  # the code is running outside of Plex
     from plexhints.core_kit import Core  # core kit
     from plexhints.log_kit import Log  # log kit
-    from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 
