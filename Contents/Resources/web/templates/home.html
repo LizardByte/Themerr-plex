@@ -126,7 +126,7 @@
                                     <td class="{{ year_column_width }}">{{ item['year'] }}</td>
                                     <td class="{{ contribute_column_width }}">
                                         {% if item['theme_status'] == 'failed' %}
-                                            Failed to download
+                                            _(Failed to download)
                                         {% elif item['issue_action'] and item['issue_url'] != None %}
                                             <a href="{{ item['issue_url'] }}" target="_blank"
                                                class="btn btn-sm py-0 px-1 {{ contribute_button_color }}"
