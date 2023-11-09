@@ -404,9 +404,9 @@ def get_database_info(item):
                     database_id = temp_database_id
                     database = temp_database
 
-                if temp_database == 'themoviedb':
+                if temp_database in ('themoviedb', 'tmdb'):
                     database_id = temp_database_id
-                    database = temp_database
+                    database = 'themoviedb'
                     break
         elif item.guid:
             split_guid = item.guid.split('://')
