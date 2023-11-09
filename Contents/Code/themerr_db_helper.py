@@ -9,9 +9,12 @@ else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
     from plexhints.parse_kit import JSON  # parse kit
 
-# imports from Libraries\Shared
+# local imports
 from constants import canonical_db
 from general_helper import fetch_json
+
+# imports from Libraries\Shared
+from typing import Union
 
 database_cache = {}
 
@@ -41,7 +44,7 @@ def update_cache():
 
 
 def item_may_exist(database_type, database, id):
-    # type: (str, str, int | str) -> bool
+    # type: (str, str, Union[int, str]) -> bool
     """
     Check if an item may exist in the ThemerrDB.
 
@@ -53,7 +56,7 @@ def item_may_exist(database_type, database, id):
     database : str
         The database to check for the item.
 
-    id : int | str
+    id : Union[int, str]
         The ID of the item to check for.
 
     Returns
