@@ -19,6 +19,15 @@ database_cache = {}
 
 
 def update_cache():
+    # type: () -> None
+    """
+    Update the ThemerrDB cache.
+
+    The pages.json file is fetched for all database types, then each all_page_N.json file is fetched to form the 
+    complete set of available IDs.
+
+    Note: the cache only contains IDs for each database type's canonical database (see constants.canonical_db).
+    """
     Log.Info('Updating ThemerrDB cache')
 
     global database_cache
