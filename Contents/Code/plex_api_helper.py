@@ -129,7 +129,7 @@ def update_plex_item(rating_key):
     database_id = database_info[3]
 
     if database and database_type and database_id:
-        if not themerr_db_helper.item_may_exist(database_type, database, database_id):
+        if not themerr_db_helper.item_may_exist(database_type=database_type, database=database, id=database_id):
             Log.Debug('{} item does not exist in ThemerrDB, skipping: {} ({})'
                       .format(item.type, item.title, database_id))
             return False
