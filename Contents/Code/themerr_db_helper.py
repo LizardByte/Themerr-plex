@@ -79,6 +79,14 @@ def item_may_exist(database_type, database, id):
     -------
     bool
         True if the item exists in the ThemerrDB (or if the cache is empty/missing), otherwise False.
+
+    Examples
+    --------
+    >>> item_may_exist(database_type='games', database='igdb', id=1234)
+    True
+
+    >>> item_may_exist(database_type='movies', database='themoviedb', id=1234)
+    False
     """
     if database != canonical_db[database_type]:
         return True
