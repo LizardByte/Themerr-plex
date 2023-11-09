@@ -63,6 +63,14 @@ metadata_type_map = dict(
     show='TV Shows'
 )
 
+canonical_db = dict(
+    games='igdb',
+    game_collections='igdb',
+    game_franchises='igdb',
+    movies='themoviedb',
+    movie_collections='themoviedb'
+)
+
 # issue url constants
 base_url = 'https://github.com/LizardByte/ThemerrDB/issues/new?assignees='
 issue_label = 'request-theme'

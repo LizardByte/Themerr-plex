@@ -30,6 +30,7 @@ from plexapi.utils import reverseSearchType
 from constants import contributes_to, guid_map, media_type_dict
 import general_helper
 import lizardbyte_db_helper
+import themerr_db_helper
 import tmdb_helper
 from youtube_dl_helper import process_youtube
 
@@ -128,7 +129,10 @@ def update_plex_item(rating_key):
     database_id = database_info[3]
 
     if database and database_type and database_id:
-        url = 'https://app.lizardbyte.dev/ThemerrDB/{}/{}/{}.json'.format(database_type, database, database_id)
+        if not themerr_db_helper.item_may_exist(database_type, database, database_id):
+            Log.Debug('{} item does not exist in ThemerrDB, skipping: {} ({})'
+                      .format(item.type, item.title, database_id))
+            return False
 
         try:
             data = general_helper.fetch_json('https://app.lizardbyte.dev/ThemerrDB/{}/{}/{}.json'
@@ -609,6 +613,8 @@ def scheduled_update():
     global plex
     if not plex:
         plex = setup_plexapi()
+
+    themerr_db_helper.update_cache()
 
     plex_library = plex.library
 
