@@ -31,6 +31,7 @@ from werkzeug.utils import secure_filename
 from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier
 from general_helper import get_media_upload_path
 from plex_api_helper import get_database_info, setup_plexapi
+import themerr_db_helper
 import tmdb_helper
 
 # setup flask app
@@ -210,6 +211,8 @@ def home():
     plex_server = setup_plexapi()
     plex_library = plex_server.library
 
+    themerr_db_helper.update_cache()
+
     sections = plex_library.sections()
 
     items = dict()
@@ -328,6 +331,10 @@ def home():
                 if not os.path.isdir(theme_upload_path) or not os.listdir(theme_upload_path):
                     theme_status = 'error'
                     issue_action = 'add'
+            else:
+                if database_type and themerr_db_helper.item_may_exist(database_type, database, database_id):
+                    theme_status = 'failed'
+                    issue_action = 'exists'
 
             items[section.key]['items'].append(dict(
                 title=item.title,
