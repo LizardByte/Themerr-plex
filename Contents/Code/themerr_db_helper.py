@@ -45,18 +45,18 @@ def update_cache():
 
     global database_cache, cache_updating, last_cache_update
 
-    try:
-        cache_updating = True
-
-        if time.time() - last_cache_update < 3600:
+    if time.time() - last_cache_update < 3600:
             Log.Info('Cache updated less than an hour ago, skipping')
             return
 
-        if cache_updating:
-            while cache_updating:
-                Log.Info('Cache updating...')
-                time.sleep(1)
+    if cache_updating:
+        while cache_updating:
+            Log.Info('Cache updating...')
+            time.sleep(1)
 
+    cache_updating = True
+
+    try:
         for database_type, databases in db_field_name.items():
             try:
                 pages = JSON.ObjectFromURL(
