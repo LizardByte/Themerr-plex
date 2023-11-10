@@ -17,6 +17,7 @@ from typing import Union
 
 database_cache = {}
 cache_updating = False
+last_cache_update = 0
 
 db_field_name = dict(
     games={'igdb': 'id'},
@@ -35,46 +36,57 @@ def update_cache():
     The pages.json file is fetched for all database types, then each all_page_N.json file is fetched to form the 
     complete set of available IDs.
 
-    Note: the cache only contains IDs for each database type's canonical database (see constants.canonical_db).
+    Attempting to update the cache while an update is already in progress will wait until the current update is
+    complete.
+
+    Updating the cache less than an hour after the last update is a no-op.
     """
     Log.Info('Updating ThemerrDB cache')
 
-    global database_cache, cache_updating
-    if cache_updating:
-        while cache_updating:
-            Log.Info('Cache updating...')
-            time.sleep(1)
-    cache_updating = True
-    database_types = db_field_name.keys()
+    global database_cache, cache_updating, last_cache_update
 
-    for database_type in database_types:
-        databases = db_field_name[database_type]
-        try:
-            pages = JSON.ObjectFromURL(
-                cacheTime=3600,
-                url='https://app.lizardbyte.dev/ThemerrDB/{}/pages.json'.format(database_type),
-                errors='ignore'  # don't crash the plugin
-            )
-            page_count = pages['pages']
+    try:
+        cache_updating = True
 
-            id_index = {db: set() for db in databases}
+        if time.time() - last_cache_update < 3600:
+            Log.Info('Cache updated less than an hour ago, skipping')
+            return
 
-            for page in range(page_count):
-                page_data = JSON.ObjectFromURL(
+        if cache_updating:
+            while cache_updating:
+                Log.Info('Cache updating...')
+                time.sleep(1)
+
+        for database_type, databases in db_field_name.items():
+            try:
+                pages = JSON.ObjectFromURL(
                     cacheTime=3600,
-                    url='https://app.lizardbyte.dev/ThemerrDB/{}/all_page_{}.json'.format(database_type, page + 1),
+                    url='https://app.lizardbyte.dev/ThemerrDB/{}/pages.json'.format(database_type),
                     errors='ignore'  # don't crash the plugin
                 )
+                page_count = pages['pages']
 
-                for db in databases:
-                    id_index[db].update(str(item[db_field_name[database_type][db]]) for item in page_data)
+                id_index = {db: set() for db in databases}
 
-            database_cache[database_type] = id_index
-            Log.Info('{}: database updated'.format(database_type, len(id_index)))
-        except Exception as e:
-            Log.Error('{}: Error retrieving page index from ThemerrDB: {}'.format(database_type, e))
+                for page in range(page_count):
+                    page_data = JSON.ObjectFromURL(
+                        cacheTime=3600,
+                        url='https://app.lizardbyte.dev/ThemerrDB/{}/all_page_{}.json'.format(database_type, page + 1),
+                        errors='ignore'  # don't crash the plugin
+                    )
 
-    cache_updating = False
+                    for db in databases:
+                        id_index[db].update(str(item[db_field_name[database_type][db]]) for item in page_data)
+
+                database_cache[database_type] = id_index
+
+                Log.Info('{}: database updated'.format(database_type, len(id_index)))
+            except Exception as e:
+                Log.Error('{}: Error retrieving page index from ThemerrDB: {}'.format(database_type, e))
+
+        last_cache_update = time.time()
+    finally:
+        cache_updating = False
 
 
 def item_exists(database_type, database, id):
