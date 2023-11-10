@@ -9,13 +9,18 @@ else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
     from plexhints.parse_kit import JSON  # parse kit
 
-# local imports
-from constants import canonical_db
-
 # imports from Libraries\Shared
 from typing import Union
 
 database_cache = {}
+
+db_field_name = dict(
+    games={'igdb': 'id'},
+    game_collections={'igdb': 'id'},
+    game_franchises={'igdb': 'id'},
+    movies={'themoviedb': 'id', 'imdb': 'imdb_id'},
+    movie_collections={'themoviedb': 'id'},
+)
 
 
 def update_cache():
@@ -34,6 +39,7 @@ def update_cache():
     database_types = canonical_db.keys()
 
     for database_type in database_types:
+        databases = db_field_name[database_type]
         try:
             pages = JSON.ObjectFromURL(
                 cacheTime=3600,
@@ -42,7 +48,7 @@ def update_cache():
             )
             page_count = pages['pages']
 
-            id_index = set()
+            id_index = {db: set() for db in databases}
 
             for page in range(page_count):
                 page_data = JSON.ObjectFromURL(
@@ -51,18 +57,19 @@ def update_cache():
                     errors='ignore'  # don't crash the plugin
                 )
 
-                id_index.update(str(item['id']) for item in page_data)
+                for db in databases:
+                    id_index[db].update(str(item[db_field_name[database_type][db]]) for item in page_data)
 
             database_cache[database_type] = id_index
-            Log.Info('{}: {} items in database'.format(database_type, len(id_index)))
+            Log.Info('{}: database updated'.format(database_type, len(id_index)))
         except Exception as e:
             Log.Error('{}: Error retrieving page index from ThemerrDB: {}'.format(database_type, e))
 
 
-def item_may_exist(database_type, database, id):
+def item_exists(database_type, database, id):
     # type: (str, str, Union[int, str]) -> bool
     """
-    Check if an item may exist in the ThemerrDB.
+    Check if an item exists in the ThemerrDB.
 
     Parameters
     ----------
@@ -78,20 +85,18 @@ def item_may_exist(database_type, database, id):
     Returns
     -------
     bool
-        True if the item exists in the ThemerrDB (or if the cache is empty/missing), otherwise False.
+        True if the item exists in the ThemerrDB, otherwise False.
 
     Examples
     --------
-    >>> item_may_exist(database_type='games', database='igdb', id=1234)
+    >>> item_exists(database_type='games', database='igdb', id=1234)
     True
 
-    >>> item_may_exist(database_type='movies', database='themoviedb', id=1234)
+    >>> item_exists(database_type='movies', database='themoviedb', id=1234)
     False
     """
-    if database != canonical_db[database_type]:
-        return True
+    if not database_type in database_cache:
+        update_cache()
 
-    if database_type in database_cache:
-        return str(id) in database_cache[database_type]
-
-    return True
+    type_cache = database_cache[database_type]
+    return database in type_cache and str(id) in type_cache[database]

@@ -332,7 +332,7 @@ def home():
                     theme_status = 'error'
                     issue_action = 'add'
             else:
-                if database_type and themerr_db_helper.item_may_exist(
+                if database_type and themerr_db_helper.item_exists(
                     database_type=database_type, database=database, id=database_id):
                     theme_status = 'failed'
                     issue_action = 'exists'
