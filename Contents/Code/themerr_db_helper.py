@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# standard imports
+import time
+
 # plex debugging
 try:
     import plexhints  # noqa: F401
@@ -13,6 +16,7 @@ else:  # the code is running outside of Plex
 from typing import Union
 
 database_cache = {}
+cache_updating = False
 
 db_field_name = dict(
     games={'igdb': 'id'},
@@ -35,7 +39,12 @@ def update_cache():
     """
     Log.Info('Updating ThemerrDB cache')
 
-    global database_cache
+    global database_cache, cache_updating
+    if cache_updating:
+        while cache_updating:
+            Log.Info('Cache updating...')
+            time.sleep(1)
+    cache_updating = True
     database_types = db_field_name.keys()
 
     for database_type in database_types:
@@ -64,6 +73,8 @@ def update_cache():
             Log.Info('{}: database updated'.format(database_type, len(id_index)))
         except Exception as e:
             Log.Error('{}: Error retrieving page index from ThemerrDB: {}'.format(database_type, e))
+
+    cache_updating = False
 
 
 def item_exists(database_type, database, id):
