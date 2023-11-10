@@ -36,7 +36,7 @@ def update_cache():
     Log.Info('Updating ThemerrDB cache')
 
     global database_cache
-    database_types = canonical_db.keys()
+    database_types = db_field_name.keys()
 
     for database_type in database_types:
         databases = db_field_name[database_type]
