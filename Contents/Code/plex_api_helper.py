@@ -107,11 +107,12 @@ def is_field_locked(item, field_name):
     -------
     bool
         True if the field is locked, False otherwise.
-    """
 
     Examples
     --------
-    # add an example please
+    >>> is_field_locked(item=..., field_name='theme')
+    False
+    """
     for field in item.fields:
         if field.name == field_name:
             return field.locked
