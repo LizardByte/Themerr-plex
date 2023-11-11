@@ -20,6 +20,7 @@ if os.path.isdir('Contents'):
     # local imports
     from Code import constants
     from Code import Themerr
+    from Code import themerr_db_helper
     from Code import webapp
 else:
     raise Exception('Contents directory not found')
@@ -178,3 +179,11 @@ def collection_themoviedb_agent(plex, movies_themoviedb_agent, movie_themoviedb_
             section=movies_themoviedb_agent,
             items=movie_themoviedb_agent
         )
+
+
+@pytest.fixture(scope='function')
+def empty_themerr_db_cache():
+    themerr_db_helper.database_cache = {}  # reset the cache
+    themerr_db_helper.cache_updating = False
+    themerr_db_helper.last_cache_update = 0
+    return

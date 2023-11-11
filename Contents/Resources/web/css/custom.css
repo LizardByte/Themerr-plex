@@ -163,3 +163,8 @@ iframe.feedback {
 .hover-zoom:hover img {
     transform: scale(1.1);
 }
+
+.progress-bar {
+    overflow: visible;
+    z-index: 999;
+}

@@ -9,8 +9,9 @@
         {# constants #}
         {% set title_column_width = 'col-6' %}
         {% set type_column_width = 'col-2' %}
-        {% set year_column_width = 'col-2' %}
-        {% set contribute_column_width = 'col-2' %}
+        {% set year_column_width = 'col-1' %}
+        {% set contribute_column_width = 'col-1' %}
+        {% set status_column_width = 'col-2' %}
 
         {% for section in items %}
         <!-- Library sections -->
@@ -97,6 +98,7 @@
                                 <th class="{{ type_column_width }}">{{ _('Type') }}</th>
                                 <th class="{{ year_column_width }}">{{ _('Year') }}</th>
                                 <th class="{{ contribute_column_width }}">{{ _('Contribute') }}</th>
+                                <th class="{{ status_column_width }}">{{ _('Status') }}</th>
                             </tr>
 
                             {% for item in items[section]['items'] %}
@@ -104,6 +106,8 @@
                                     {% set theme_status_color = 'table-success' %}
                                 {% elif item['theme_status'] == 'missing' %}
                                     {% set theme_status_color = 'table-danger' %}
+                                {% elif item['theme_status'] == 'failed' %}
+                                    {% set theme_status_color = 'table-warning' %}
                                 {% else %}
                                     {% set theme_status_color = 'table-danger' %}
                                 {% endif %}
@@ -123,11 +127,27 @@
                                     <td class="{{ type_column_width }}">{{ item['type'] }}</td>
                                     <td class="{{ year_column_width }}">{{ item['year'] }}</td>
                                     <td class="{{ contribute_column_width }}">
-                                        {% if item['issue_action'] and item['issue_url'] != None %}
+                                        {% if item['issue_url'] != None %}
                                             <a href="{{ item['issue_url'] }}" target="_blank"
                                                class="btn btn-sm py-0 px-1 {{ contribute_button_color }}"
                                                role="button">{{ contribute_button_text }}</a>
+                                        {% else %}
+                                            {{ _('No known ID') }}
                                         {% endif %}
+                                    </td>
+                                    <td class="{{ status_column_width }}">
+                                        {% if item['user_supplied'] %}
+                                            <i class="fas fa-user text-info"></i> {{ _('User-supplied') }}
+                                        {% elif item['theme_status'] == 'complete' %}
+                                            <i class="fas fa-check-circle text-success"></i> {{ _('Themerr-provided') }}
+                                        {% elif item['theme_status'] == 'missing' %}
+                                            <i class="fas fa-times-circle text-danger"></i> {{ _('Missing from ThemerrDB') }}
+                                        {% elif item['theme_status'] == 'failed' %}
+                                            <i class="fas fa-exclamation-circle text-warning"></i> {{ _('Failed to download') }}
+                                        {% else %}
+                                            <i class="fas fa-exclamation-circle text-danger"></i>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
 

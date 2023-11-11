@@ -29,8 +29,8 @@ from werkzeug.utils import secure_filename
 
 # local imports
 from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier
-from general_helper import get_media_upload_path
 from plex_api_helper import get_database_info, setup_plexapi
+import themerr_db_helper
 import tmdb_helper
 
 # setup flask app
@@ -210,6 +210,8 @@ def home():
     plex_server = setup_plexapi()
     plex_library = plex_server.library
 
+    themerr_db_helper.update_cache()
+
     sections = plex_library.sections()
 
     items = dict()
@@ -317,17 +319,24 @@ def home():
 
                 item_issue_url = issue_url.format(issue_title, database_id if database_id else '')
 
-            theme_status = 'missing'  # default status
-            issue_action = 'add'  # default action
+            if database_type and themerr_db_helper.item_exists(
+                    database_type=database_type, database=database, id=database_id):
+                issue_action = 'edit'
+            else:
+                issue_action = 'add'
 
             if item.theme:
                 theme_status = 'complete'
-                issue_action = 'edit'
 
-                theme_upload_path = get_media_upload_path(item=item, media_type='themes')
-                if not os.path.isdir(theme_upload_path) or not os.listdir(theme_upload_path):
-                    theme_status = 'error'
-                    issue_action = 'add'
+                selected = (theme for theme in item.themes() if theme.selected).next()
+                user_supplied = (getattr(selected, 'provider', None) == 'local')
+            else:
+                if issue_action == 'edit':
+                    theme_status = 'failed'
+                else:
+                    theme_status = 'missing'
+
+                user_supplied = False
 
             items[section.key]['items'].append(dict(
                 title=item.title,
@@ -340,6 +349,7 @@ def home():
                 theme=True if item.theme else False,
                 theme_status=theme_status,
                 type=item.type,
+                user_supplied=user_supplied,
                 year=year,
             ))
 
