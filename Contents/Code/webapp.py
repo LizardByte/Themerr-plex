@@ -29,7 +29,6 @@ from werkzeug.utils import secure_filename
 
 # local imports
 from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier
-from general_helper import get_media_upload_path
 from plex_api_helper import get_database_info, setup_plexapi
 import themerr_db_helper
 import tmdb_helper

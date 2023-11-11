@@ -33,7 +33,7 @@ def update_cache():
     """
     Update the ThemerrDB cache.
 
-    The pages.json file is fetched for all database types, then each all_page_N.json file is fetched to form the 
+    The pages.json file is fetched for all database types, then each all_page_N.json file is fetched to form the
     complete set of available IDs.
 
     Attempting to update the cache while an update is already in progress will wait until the current update is
@@ -46,8 +46,8 @@ def update_cache():
     global database_cache, cache_updating, last_cache_update
 
     if time.time() - last_cache_update < 3600:
-            Log.Info('Cache updated less than an hour ago, skipping')
-            return
+        Log.Info('Cache updated less than an hour ago, skipping')
+        return
 
     if cache_updating:
         while cache_updating:
@@ -80,7 +80,7 @@ def update_cache():
 
                 database_cache[database_type] = id_index
 
-                Log.Info('{}: database updated'.format(database_type, len(id_index)))
+                Log.Info('{}: database updated'.format(database_type))
             except Exception as e:
                 Log.Error('{}: Error retrieving page index from ThemerrDB: {}'.format(database_type, e))
 
