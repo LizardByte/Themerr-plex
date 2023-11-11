@@ -22,6 +22,7 @@ from typing import Callable, Optional, Tuple
 import urllib3
 from urllib3.exceptions import InsecureRequestWarning
 from plexapi.alert import AlertListener
+from plexapi.base import PlexPartialObject
 from plexapi.exceptions import BadRequest
 import plexapi.server
 from plexapi.utils import reverseSearchType
@@ -213,7 +214,7 @@ def update_plex_item(rating_key):
 
 
 def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
-    # type: (any, str, str, Optional[str], Optional[str]) -> bool
+    # type: (PlexPartialObject, str, str, Optional[str], Optional[str]) -> bool
     """
     Apply media to the specified item.
 
@@ -222,7 +223,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The Plex item to add the theme to.
     media_type : str
         The type of media to add. Must be one of 'art', 'posters', or 'themes'.
@@ -302,7 +303,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
 
 
 def upload_media(item, method, filepath=None, url=None):
-    # type: (any, Callable, Optional[str], Optional[str]) -> bool
+    # type: (PlexPartialObject, Callable, Optional[str], Optional[str]) -> bool
     """
     Upload media to the specified item.
 
@@ -310,8 +311,8 @@ def upload_media(item, method, filepath=None, url=None):
 
     Parameters
     ----------
-    item : any
-        The item to upload the theme to.
+    item : PlexPartialObject
+        The Plex item to upload the theme to.
     method : Callable
         The method to use to upload the theme.
     filepath : Optional[str]
@@ -356,7 +357,7 @@ def upload_media(item, method, filepath=None, url=None):
 
 
 def get_database_info(item):
-    # type: (any) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]
+    # type: (PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]
     """
     Get the database info for the specified item.
 
@@ -365,8 +366,8 @@ def get_database_info(item):
 
     Parameters
     ----------
-    item : any
-        The item to get the database info for.
+    item : PlexPartialObject
+        The Plex item to get the database info for.
 
     Returns
     -------
@@ -390,8 +391,6 @@ def get_database_info(item):
     database_type = None
 
     if item.type == 'movie':
-        # imdb_id = None  # if this gets set we need to do additional processing
-
         if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
             agent = 'tv.plex.agents.movie'
             database_type = 'movies'
@@ -453,7 +452,7 @@ def get_database_info(item):
 
 
 def get_plex_item(rating_key):
-    # type: (int) -> any
+    # type: (int) -> PlexPartialObject
     """
     Get any item from the Plex Server.
 
@@ -466,8 +465,8 @@ def get_plex_item(rating_key):
 
     Returns
     -------
-    any
-        The item from the Plex Server.
+    PlexPartialObject
+        The Plex item from the Plex Server.
 
     Examples
     --------
