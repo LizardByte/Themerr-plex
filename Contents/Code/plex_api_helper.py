@@ -90,7 +90,7 @@ def setup_plexapi():
 
 
 def is_field_locked(item, field_name):
-    # type: (any, str) -> bool
+    # type: (PlexPartialObject, str) -> bool
     """
     Check if the specified field is locked.
     
@@ -98,7 +98,7 @@ def is_field_locked(item, field_name):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The Plex item to check.
     field_name : str
         The name of the field to check.
