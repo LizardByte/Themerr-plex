@@ -84,6 +84,8 @@ def update_cache():
             except Exception as e:
                 Log.Error('{}: Error retrieving page index from ThemerrDB: {}'.format(database_type, e))
 
+                database_cache[database_type] = {}
+
         last_cache_update = time.time()
     finally:
         cache_updating = False
