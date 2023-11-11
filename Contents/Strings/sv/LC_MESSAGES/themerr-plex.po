@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-08-25 19:26+0000\n"
-"PO-Revision-Date: 2023-11-02 18:01\n"
+"POT-Creation-Date: 2023-11-11 18:06+0000\n"
+"PO-Revision-Date: 2023-11-11 21:02\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -18,41 +18,65 @@ msgstr ""
 "X-Crowdin-File-ID: 25\n"
 "Language: sv_SE\n"
 
-#: Contents/Resources/web/templates/home.html:33
+#: Contents/Resources/web/templates/home.html:34
 msgid "Games"
 msgstr "Spel"
 
-#: Contents/Resources/web/templates/home.html:34
+#: Contents/Resources/web/templates/home.html:35
 msgid "Movies"
 msgstr "Filmer"
 
-#: Contents/Resources/web/templates/home.html:76
+#: Contents/Resources/web/templates/home.html:77
 msgid "Collections"
 msgstr "Samlingar"
 
-#: Contents/Resources/web/templates/home.html:96
+#: Contents/Resources/web/templates/home.html:97
 msgid "Title"
 msgstr "Titel"
 
-#: Contents/Resources/web/templates/home.html:97
+#: Contents/Resources/web/templates/home.html:98
 msgid "Type"
 msgstr "Typ"
 
-#: Contents/Resources/web/templates/home.html:98
+#: Contents/Resources/web/templates/home.html:99
 msgid "Year"
 msgstr "Årtal"
 
-#: Contents/Resources/web/templates/home.html:99
+#: Contents/Resources/web/templates/home.html:100
 msgid "Contribute"
 msgstr "Bidra"
 
-#: Contents/Resources/web/templates/home.html:113
+#: Contents/Resources/web/templates/home.html:101
+msgid "Status"
+msgstr "Status"
+
+#: Contents/Resources/web/templates/home.html:117
 msgid "Add"
 msgstr "Lägg till"
 
-#: Contents/Resources/web/templates/home.html:116
+#: Contents/Resources/web/templates/home.html:120
 msgid "Edit"
 msgstr "Redigera"
+
+#: Contents/Resources/web/templates/home.html:135
+msgid "No known ID"
+msgstr "Inget känt ID"
+
+#: Contents/Resources/web/templates/home.html:140
+msgid "User-supplied"
+msgstr "Levereras av användaren"
+
+#: Contents/Resources/web/templates/home.html:142
+msgid "Themerr-provided"
+msgstr "Den av Merr tillhandahållna"
+
+#: Contents/Resources/web/templates/home.html:144
+msgid "Missing from ThemerrDB"
+msgstr "Saknas från ThemerrDB"
+
+#: Contents/Resources/web/templates/home.html:146
+msgid "Failed to download"
+msgstr "Misslyckades med att ladda ner"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
