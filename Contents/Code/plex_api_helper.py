@@ -289,7 +289,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
     settings_hash = general_helper.get_themerr_settings_hash()
     themerr_data = general_helper.get_themerr_json_data(item=item)
 
-    if is_field_locked(item, media_type_dict[media_type]['plex_field']):
+    if is_field_locked(item=item, field_name=media_type_dict[media_type]['plex_field']):
         Log.Info('Not overwriting locked "{}" for {}: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title
         ))
