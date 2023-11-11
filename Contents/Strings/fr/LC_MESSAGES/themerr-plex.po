@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-11 18:06+0000\n"
-"PO-Revision-Date: 2023-11-11 19:00\n"
+"PO-Revision-Date: 2023-11-11 21:02\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr "Jeux"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Movies"
-msgstr "Cinéma"
+msgstr "Films"
 
 #: Contents/Resources/web/templates/home.html:77
 msgid "Collections"
@@ -48,7 +48,7 @@ msgstr "Contribuer"
 
 #: Contents/Resources/web/templates/home.html:101
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: Contents/Resources/web/templates/home.html:117
 msgid "Add"
@@ -56,27 +56,27 @@ msgstr "Ajouter"
 
 #: Contents/Resources/web/templates/home.html:120
 msgid "Edit"
-msgstr "Editer"
+msgstr "Modifier"
 
 #: Contents/Resources/web/templates/home.html:135
 msgid "No known ID"
-msgstr ""
+msgstr "Aucun ID connu"
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "User-supplied"
-msgstr ""
+msgstr "Fourni par l'utilisateur"
 
 #: Contents/Resources/web/templates/home.html:142
 msgid "Themerr-provided"
-msgstr ""
+msgstr "Fourni par Themerr"
 
 #: Contents/Resources/web/templates/home.html:144
 msgid "Missing from ThemerrDB"
-msgstr ""
+msgstr "Absent de ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:146
 msgid "Failed to download"
-msgstr ""
+msgstr "Téléchargement échoué"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
@@ -84,7 +84,7 @@ msgstr "Faire un don"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "Sponsors de GitHub"
+msgstr "GitHub Sponsors"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
@@ -92,7 +92,7 @@ msgstr "Assistance"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Docs"
+msgstr "Documentation"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
