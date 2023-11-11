@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-11 18:06+0000\n"
-"PO-Revision-Date: 2023-11-11 19:00\n"
+"PO-Revision-Date: 2023-11-11 21:03\n"
 "Last-Translator: \n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,7 @@ msgstr "Contribute"
 
 #: Contents/Resources/web/templates/home.html:101
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: Contents/Resources/web/templates/home.html:117
 msgid "Add"
@@ -60,23 +60,23 @@ msgstr "Edit"
 
 #: Contents/Resources/web/templates/home.html:135
 msgid "No known ID"
-msgstr ""
+msgstr "No known ID"
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "User-supplied"
-msgstr ""
+msgstr "User-supplied"
 
 #: Contents/Resources/web/templates/home.html:142
 msgid "Themerr-provided"
-msgstr ""
+msgstr "Themerr-provided"
 
 #: Contents/Resources/web/templates/home.html:144
 msgid "Missing from ThemerrDB"
-msgstr ""
+msgstr "Missing from ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:146
 msgid "Failed to download"
-msgstr ""
+msgstr "Failed to download"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
