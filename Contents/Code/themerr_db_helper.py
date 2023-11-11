@@ -118,7 +118,12 @@ def item_exists(database_type, database, id):
     >>> item_exists(database_type='movies', database='themoviedb', id=1234)
     False
     """
-    if not database_type in database_cache:
+    if database_type not in db_field_name:
+        Log.Critical('"{}" is not a valid database_type. Allowed values are: {}'
+                     .format(database_type, db_field_name.keys()))
+        return False
+
+    if database_type not in database_cache:
         update_cache()
 
     type_cache = database_cache[database_type]
