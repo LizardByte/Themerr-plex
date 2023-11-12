@@ -164,7 +164,7 @@ iframe.feedback {
     transform: scale(1.1);
 }
 
-.progress-bar {
+.progress-bar:first-child {
     overflow: visible;
     z-index: 999;
 }
