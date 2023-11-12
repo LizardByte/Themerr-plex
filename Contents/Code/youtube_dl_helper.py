@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # standard imports
+from builtins import open
 import logging
+import json
+import tempfile
 
 # plex debugging
 try:
@@ -13,7 +16,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-from constants import plugin_identifier, cookie_jar_file
+from constants import plugin_identifier
 from typing import Optional
 import youtube_dl
 
@@ -41,74 +44,97 @@ def process_youtube(url):
     >>> process_youtube(url='https://www.youtube.com/watch?v=dQw4w9WgXcQ')
     ...
     """
-    youtube_dl_params = dict(
-        cookiefile=cookie_jar_file,
-        logger=plugin_logger,
-        outtmpl=u'%(id)s.%(ext)s',
-        password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
-        socket_timeout=10,
-        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
-        youtube_include_dash_manifest=False,
-    )
 
-    ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
+    with tempfile.NamedTemporaryFile() as cookie_jar_file:
+        youtube_dl_params = dict(
+            cookiefile=cookie_jar_file.name,
+            logger=plugin_logger,
+            outtmpl=u'%(id)s.%(ext)s',
+            password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
+            socket_timeout=10,
+            username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
+            youtube_include_dash_manifest=False,
+        )
 
-    with ydl:
-        try:
-            result = ydl.extract_info(
-                url=url,
-                download=False  # We just want to extract the info
-            )
-        except Exception as exc:
-            if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
-                Log.Info('YDL returned YT error while downloading %s: %s' % (url, exc))
-            else:
-                Log.Exception('YDL returned an unexpected error while downloading %s: %s' % (url, exc))
-            return None
+        if Prefs['str_youtube_cookies']:
+            try:
+                cookies = json.loads(Prefs['str_youtube_cookies'])
+                cookie_jar_file.write('# Netscape HTTP Cookie File\n')
+                for cookie in cookies:
+                    include_subdom = True if cookie['domain'].startswith('.') else False
+                    expiry = int(cookie.get('expiry', 0))
+                    nsbool = lambda b: 'TRUE' if b else 'FALSE'
+                    values = [
+                        cookie['domain'],
+                        nsbool(include_subdom),
+                        cookie['path'],
+                        nsbool(cookie['secure']),
+                        str(expiry),
+                        cookie['name'],
+                        cookie['value']
+                    ]
+                    cookie_jar_file.write('\t'.join(values) + '\n')
+            except Exception as exc:
+                Log.Exception('Failed to write YouTube cookies to file, will try anyway. Error: %s' % exc)
 
-        if 'entries' in result:
-            # Can be a playlist or a list of videos
-            video_data = result['entries'][0]
-        else:
-            # Just a video
-            video_data = result
+        ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
 
-    selected = {
-        'opus': {
-            'size': 0,
-            'audio_url': None
-        },
-        'mp4a': {
-            'size': 0,
-            'audio_url': None
-        },
-    }
-    if video_data:
-        for fmt in video_data['formats']:  # loop through formats, select largest audio size for better quality
-            if 'audio only' in fmt['format']:
-                if 'opus' == fmt['acodec']:
-                    temp_codec = 'opus'
-                elif 'mp4a' == fmt['acodec'].split('.')[0]:
-                    temp_codec = 'mp4a'
+        with ydl:
+            try:
+                result = ydl.extract_info(
+                    url=url,
+                    download=False  # We just want to extract the info
+                )
+            except Exception as exc:
+                if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
+                    Log.Info('YDL returned YT error while downloading %s: %s' % (url, exc))
                 else:
-                    Log.Debug('Unknown codec: %s' % fmt['acodec'])
-                    continue  # unknown codec
-                filesize = int(fmt['filesize'])
-                if filesize > selected[temp_codec]['size']:
-                    selected[temp_codec]['size'] = filesize
-                    selected[temp_codec]['audio_url'] = fmt['url']
+                    Log.Exception('YDL returned an unexpected error while downloading %s: %s' % (url, exc))
+                return None
 
-    audio_url = None
+            if 'entries' in result:
+                # Can be a playlist or a list of videos
+                video_data = result['entries'][0]
+            else:
+                # Just a video
+                video_data = result
 
-    if 0 < selected['opus']['size'] > selected['mp4a']['size']:
-        audio_url = selected['opus']['audio_url']
-    elif 0 < selected['mp4a']['size'] > selected['opus']['size']:
-        audio_url = selected['mp4a']['audio_url']
+        selected = {
+            'opus': {
+                'size': 0,
+                'audio_url': None
+            },
+            'mp4a': {
+                'size': 0,
+                'audio_url': None
+            },
+        }
+        if video_data:
+            for fmt in video_data['formats']:  # loop through formats, select largest audio size for better quality
+                if 'audio only' in fmt['format']:
+                    if 'opus' == fmt['acodec']:
+                        temp_codec = 'opus'
+                    elif 'mp4a' == fmt['acodec'].split('.')[0]:
+                        temp_codec = 'mp4a'
+                    else:
+                        Log.Debug('Unknown codec: %s' % fmt['acodec'])
+                        continue  # unknown codec
+                    filesize = int(fmt['filesize'])
+                    if filesize > selected[temp_codec]['size']:
+                        selected[temp_codec]['size'] = filesize
+                        selected[temp_codec]['audio_url'] = fmt['url']
 
-    if audio_url and Prefs['bool_prefer_mp4a_codec']:  # mp4a codec is preferred
-        if selected['mp4a']['audio_url']:  # mp4a codec is available
-            audio_url = selected['mp4a']['audio_url']
-        elif selected['opus']['audio_url']:  # fallback to opus :(
+        audio_url = None
+
+        if 0 < selected['opus']['size'] > selected['mp4a']['size']:
             audio_url = selected['opus']['audio_url']
+        elif 0 < selected['mp4a']['size'] > selected['opus']['size']:
+            audio_url = selected['mp4a']['audio_url']
 
-    return audio_url  # return None or url found
+        if audio_url and Prefs['bool_prefer_mp4a_codec']:  # mp4a codec is preferred
+            if selected['mp4a']['audio_url']:  # mp4a codec is available
+                audio_url = selected['mp4a']['audio_url']
+            elif selected['opus']['audio_url']:  # fallback to opus :(
+                audio_url = selected['opus']['audio_url']
+
+        return audio_url  # return None or url found
