@@ -22,6 +22,7 @@ import youtube_dl
 # get the plugin logger
 plugin_logger = logging.getLogger(plugin_identifier)
 
+
 def nsbool(value):
     # type: (bool) -> str
     """
