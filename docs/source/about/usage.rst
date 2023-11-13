@@ -235,7 +235,7 @@ YouTube Cookies
 
 Description
    The cookies to use for the requests to YouTube. Should be in Chromium JSON export format. 
-   [Example exporter](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid).
+   `Example exporter <https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid>`__.
 
 Default
    None
