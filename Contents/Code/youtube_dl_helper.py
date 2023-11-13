@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # standard imports
-from builtins import open
 import logging
 import json
 import tempfile
@@ -22,6 +21,23 @@ import youtube_dl
 
 # get the plugin logger
 plugin_logger = logging.getLogger(plugin_identifier)
+
+def nsbool(value):
+    # type: (bool) -> str
+    """
+    Format a boolean value for a Netscape cookie jar file.
+
+    Parameters
+    ----------
+    value : bool
+        The boolean value to format.
+
+    Returns
+    -------
+    str
+        'TRUE' or 'FALSE'.
+    """
+    return 'TRUE' if value else 'FALSE'
 
 
 def process_youtube(url):
@@ -61,9 +77,8 @@ def process_youtube(url):
                 cookies = json.loads(Prefs['str_youtube_cookies'])
                 cookie_jar_file.write('# Netscape HTTP Cookie File\n')
                 for cookie in cookies:
-                    include_subdom = True if cookie['domain'].startswith('.') else False
+                    include_subdom = cookie['domain'].startswith('.')
                     expiry = int(cookie.get('expiry', 0))
-                    nsbool = lambda b: 'TRUE' if b else 'FALSE'
                     values = [
                         cookie['domain'],
                         nsbool(include_subdom),
@@ -73,9 +88,9 @@ def process_youtube(url):
                         cookie['name'],
                         cookie['value']
                     ]
-                    cookie_jar_file.write('\t'.join(values) + '\n')
-            except Exception as exc:
-                Log.Exception('Failed to write YouTube cookies to file, will try anyway. Error: %s' % exc)
+                    cookie_jar_file.write('{}\n'.format('\t'.join(values)))
+            except Exception as e:
+                Log.Exception('Failed to write YouTube cookies to file, will try anyway. Error: {}'.format(e))
 
         ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
 
@@ -87,9 +102,9 @@ def process_youtube(url):
                 )
             except Exception as exc:
                 if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
-                    Log.Info('YDL returned YT error while downloading %s: %s' % (url, exc))
+                    Log.Info('YDL returned YT error while downloading {}: {}'.format(url, exc))
                 else:
-                    Log.Exception('YDL returned an unexpected error while downloading %s: %s' % (url, exc))
+                    Log.Exception('YDL returned an unexpected error while downloading {}: {}'.format(url, exc))
                 return None
 
             if 'entries' in result:
