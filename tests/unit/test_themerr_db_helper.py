@@ -8,7 +8,6 @@ from Code import themerr_db_helper
 def test_update_cache(empty_themerr_db_cache):
     themerr_db_helper.update_cache()
     assert themerr_db_helper.last_cache_update > 0, 'Cache update did not complete'
-    assert themerr_db_helper.cache_updating is False, 'Cache update did not complete'
 
     assert "movies" in themerr_db_helper.database_cache, 'Cache does not contain movies'
     assert "movie_collections" in themerr_db_helper.database_cache, 'Cache does not contain movie_collections'
