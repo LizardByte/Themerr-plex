@@ -63,6 +63,8 @@ def process_youtube(url):
     """
 
     with tempfile.NamedTemporaryFile() as cookie_jar_file:
+        cookie_jar_file.write('# Netscape HTTP Cookie File\n')
+        
         youtube_dl_params = dict(
             cookiefile=cookie_jar_file.name,
             logger=plugin_logger,
@@ -76,7 +78,6 @@ def process_youtube(url):
         if Prefs['str_youtube_cookies']:
             try:
                 cookies = json.loads(Prefs['str_youtube_cookies'])
-                cookie_jar_file.write('# Netscape HTTP Cookie File\n')
                 for cookie in cookies:
                     include_subdom = cookie['domain'].startswith('.')
                     expiry = int(cookie.get('expiry', 0))
