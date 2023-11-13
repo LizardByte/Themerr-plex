@@ -64,7 +64,7 @@ def process_youtube(url):
 
     with tempfile.NamedTemporaryFile() as cookie_jar_file:
         cookie_jar_file.write('# Netscape HTTP Cookie File\n')
-        
+
         youtube_dl_params = dict(
             cookiefile=cookie_jar_file.name,
             logger=plugin_logger,
