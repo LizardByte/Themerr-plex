@@ -63,6 +63,14 @@ jobs:
           python -m pip install --upgrade --target=./Contents/Libraries/Shared -r \
             requirements.txt --no-warn-script-location
 
+      - name: Patch python deps
+        shell: bash
+        working-directory: Themerr-plex.bundle/Contents/Libraries/Shared
+        run: |
+          patch_dir=${{ github.workspace }}/Themerr-plex.bundle/patches
+          patch -p1 < "${patch_dir}/youtube_dl-compat.patch"
+          patch -p1 < "${patch_dir}/youtube_dl-extractor.patch"
+
       - name: Install npm packages
         working-directory: Themerr-plex.bundle
         run: |
@@ -92,6 +100,7 @@ jobs:
             "-xr!Themerr-plex.bundle/DOCKER_README.md" \
             "-xr!Themerr-plex.bundle/Dockerfile" \
             "-xr!Themerr-plex.bundle/docs" \
+            "-xr!Themerr-plex.bundle/patches" \
             "-xr!Themerr-plex.bundle/scripts" \
             "-xr!Themerr-plex.bundle/tests" \
             a "./Themerr-plex.bundle.zip" "Themerr-plex.bundle"
