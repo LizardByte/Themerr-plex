@@ -3,6 +3,7 @@
 # standard imports
 import logging
 import json
+import os
 import tempfile
 
 # plex debugging
@@ -15,7 +16,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-from constants import plugin_identifier
+from constants import plugin_identifier, plugin_support_data_directory
 from typing import Optional
 import youtube_dl
 
@@ -62,38 +63,42 @@ def process_youtube(url):
     ...
     """
 
-    with tempfile.NamedTemporaryFile() as cookie_jar_file:
-        cookie_jar_file.write('# Netscape HTTP Cookie File\n')
+    cookie_jar_file = tempfile.NamedTemporaryFile(dir=plugin_support_data_directory, delete=False)
+    cookie_jar_file.write('# Netscape HTTP Cookie File\n')
 
-        youtube_dl_params = dict(
-            cookiefile=cookie_jar_file.name,
-            logger=plugin_logger,
-            outtmpl=u'%(id)s.%(ext)s',
-            password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
-            socket_timeout=10,
-            username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
-            youtube_include_dash_manifest=False,
-        )
+    youtube_dl_params = dict(
+        cookiefile=cookie_jar_file.name,
+        logger=plugin_logger,
+        outtmpl=u'%(id)s.%(ext)s',
+        password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
+        socket_timeout=10,
+        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
+        youtube_include_dash_manifest=False,
+    )
 
-        if Prefs['str_youtube_cookies']:
-            try:
-                cookies = json.loads(Prefs['str_youtube_cookies'])
-                for cookie in cookies:
-                    include_subdom = cookie['domain'].startswith('.')
-                    expiry = int(cookie.get('expiry', 0))
-                    values = [
-                        cookie['domain'],
-                        nsbool(include_subdom),
-                        cookie['path'],
-                        nsbool(cookie['secure']),
-                        str(expiry),
-                        cookie['name'],
-                        cookie['value']
-                    ]
-                    cookie_jar_file.write('{}\n'.format('\t'.join(values)))
-            except Exception as e:
-                Log.Exception('Failed to write YouTube cookies to file, will try anyway. Error: {}'.format(e))
+    if Prefs['str_youtube_cookies']:
+        try:
+            cookies = json.loads(Prefs['str_youtube_cookies'])
+            for cookie in cookies:
+                include_subdom = cookie['domain'].startswith('.')
+                expiry = int(cookie.get('expiry', 0))
+                values = [
+                    cookie['domain'],
+                    nsbool(include_subdom),
+                    cookie['path'],
+                    nsbool(cookie['secure']),
+                    str(expiry),
+                    cookie['name'],
+                    cookie['value']
+                ]
+                cookie_jar_file.write('{}\n'.format('\t'.join(values)))
+        except Exception as e:
+            Log.Exception('Failed to write YouTube cookies to file, will try anyway. Error: {}'.format(e))
 
+    cookie_jar_file.flush()
+    cookie_jar_file.close()
+
+    try:
         ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
 
         with ydl:
@@ -155,3 +160,8 @@ def process_youtube(url):
                 audio_url = selected['opus']['audio_url']
 
         return audio_url  # return None or url found
+    finally:
+        try:
+            os.remove(cookie_jar_file.name)
+        except Exception as e:
+            Log.Exception('Failed to delete cookie jar file: {}'.format(e))
