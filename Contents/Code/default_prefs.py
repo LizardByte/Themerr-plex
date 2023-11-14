@@ -17,6 +17,7 @@ default_prefs = dict(
     int_plexapi_upload_threads='3',
     str_youtube_user='',
     str_youtube_passwd='',
+    str_youtube_cookies='',
     enum_webapp_locale='en',
     str_webapp_http_host='0.0.0.0',
     int_webapp_http_port='9494',

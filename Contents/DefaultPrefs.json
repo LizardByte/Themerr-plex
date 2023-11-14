@@ -113,6 +113,13 @@
 		"secure": "true"
 	},
 	{
+		"id": "str_youtube_cookies",
+		"type": "text",
+		"label": "YouTube Cookies (JSON format)",
+		"default": "",
+		"secure": "true"
+	},
+	{
 		"id": "enum_webapp_locale",
 		"type": "enum",
 		"label": "Web UI Locale",
