@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # standard imports
+from threading import Lock
 import time
 
 # plex debugging
@@ -16,7 +17,6 @@ else:  # the code is running outside of Plex
 from typing import Union
 
 database_cache = {}
-cache_updating = False
 last_cache_update = 0
 
 db_field_name = dict(
@@ -26,6 +26,8 @@ db_field_name = dict(
     movies={'themoviedb': 'id', 'imdb': 'imdb_id'},
     movie_collections={'themoviedb': 'id'},
 )
+
+lock = Lock()
 
 
 def update_cache():
@@ -43,20 +45,13 @@ def update_cache():
     """
     Log.Info('Updating ThemerrDB cache')
 
-    global database_cache, cache_updating, last_cache_update
+    global last_cache_update
 
     if time.time() - last_cache_update < 3600:
         Log.Info('Cache updated less than an hour ago, skipping')
         return
 
-    if cache_updating:
-        while cache_updating:
-            Log.Info('Cache updating...')
-            time.sleep(1)
-
-    cache_updating = True
-
-    try:
+    with lock:
         for database_type, databases in db_field_name.items():
             try:
                 pages = JSON.ObjectFromURL(
@@ -87,8 +82,6 @@ def update_cache():
                 database_cache[database_type] = {}
 
         last_cache_update = time.time()
-    finally:
-        cache_updating = False
 
 
 def item_exists(database_type, database, id):
