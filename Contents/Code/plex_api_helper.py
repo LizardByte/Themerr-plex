@@ -89,36 +89,6 @@ def setup_plexapi():
     return plex
 
 
-def is_field_locked(item, field_name):
-    # type: (PlexPartialObject, str) -> bool
-    """
-    Check if the specified field is locked.
-    
-    This is used to ensure a field has not been manually set by the user.
-
-    Parameters
-    ----------
-    item : PlexPartialObject
-        The Plex item to check.
-    field_name : str
-        The name of the field to check.
-
-    Returns
-    -------
-    bool
-        True if the field is locked, False otherwise.
-
-    Examples
-    --------
-    >>> is_field_locked(item=..., field_name='theme')
-    False
-    """
-    for field in item.fields:
-        if field.name == field_name:
-            return field.locked
-    return False
-
-
 def update_plex_item(rating_key):
     # type: (int) -> bool
     """
@@ -205,7 +175,7 @@ def update_plex_item(rating_key):
                         else:
                             add_media(item=item, media_type='art', media_url_id=data['backdrop_path'], media_url=url)
                         # update summary
-                        if is_field_locked(item=item, field_name="summary"):
+                        if item.isLocked(field='summary'):
                             Log.Debug('Not overwriting locked summary for collection: {}'.format(item.title))
                         else:
                             try:
@@ -220,7 +190,7 @@ def update_plex_item(rating_key):
                                     except Exception as e:
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                if is_field_locked(item=item, field_name="theme"):
+                if item.isLocked(field='theme'):
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
@@ -289,7 +259,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
     settings_hash = general_helper.get_themerr_settings_hash()
     themerr_data = general_helper.get_themerr_json_data(item=item)
 
-    if is_field_locked(item=item, field_name=media_type_dict[media_type]['plex_field']):
+    if item.isLocked(field=media_type_dict[media_type]['plex_field']):
         Log.Info('Not overwriting locked "{}" for {}: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title
         ))
