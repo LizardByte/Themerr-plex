@@ -260,6 +260,9 @@ def home():
             item_agent = database_info[2]
             database_id = database_info[3]
 
+            og_db = database
+            og_db_id = database_id
+
             try:
                 year = item.year
             except AttributeError:
@@ -320,7 +323,10 @@ def home():
                 item_issue_url = issue_url.format(issue_title, database_id if database_id else '')
 
             if database_type and themerr_db_helper.item_exists(
-                    database_type=database_type, database=database, id=database_id):
+                    database_type=database_type,
+                    database=og_db,
+                    id=og_db_id,
+            ):
                 issue_action = 'edit'
             else:
                 issue_action = 'add'
