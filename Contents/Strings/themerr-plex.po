@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Themerr-plex v0\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-11-11 18:06+0000\n"
+"POT-Creation-Date: 2023-11-16 03:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,19 +63,27 @@ msgid "No known ID"
 msgstr ""
 
 #: Contents/Resources/web/templates/home.html:140
-msgid "User-supplied"
+msgid "User provided"
 msgstr ""
 
 #: Contents/Resources/web/templates/home.html:142
-msgid "Themerr-provided"
+msgid "Themerr provided"
 msgstr ""
 
 #: Contents/Resources/web/templates/home.html:144
-msgid "Missing from ThemerrDB"
+msgid "Unknown provider"
 msgstr ""
 
 #: Contents/Resources/web/templates/home.html:146
+msgid "Missing from ThemerrDB"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:148
 msgid "Failed to download"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:150
+msgid "Unknown status"
 msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:23
