@@ -29,6 +29,7 @@ from werkzeug.utils import secure_filename
 
 # local imports
 from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier
+import general_helper
 from plex_api_helper import get_database_info, setup_plexapi
 import themerr_db_helper
 import tmdb_helper
@@ -335,14 +336,21 @@ def home():
                 theme_status = 'complete'
 
                 selected = (theme for theme in item.themes() if theme.selected).next()
-                user_supplied = (getattr(selected, 'provider', None) == 'local')
+                user_provided = (getattr(selected, 'provider', None) == 'local')
+
+                if user_provided:
+                    themerr_provided = False
+                else:
+                    themerr_data = general_helper.get_themerr_json_data(item=item)
+                    themerr_provided = True if themerr_data else False
             else:
                 if issue_action == 'edit':
                     theme_status = 'failed'
                 else:
                     theme_status = 'missing'
 
-                user_supplied = False
+                user_provided = False
+                themerr_provided = False
 
             items[section.key]['items'].append(dict(
                 title=item.title,
@@ -354,8 +362,9 @@ def home():
                 issue_url=item_issue_url,
                 theme=True if item.theme else False,
                 theme_status=theme_status,
+                themerr_provided=themerr_provided,
                 type=item.type,
-                user_supplied=user_supplied,
+                user_provided=user_provided,
                 year=year,
             ))
 

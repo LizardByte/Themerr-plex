@@ -136,16 +136,18 @@
                                         {% endif %}
                                     </td>
                                     <td class="{{ status_column_width }}">
-                                        {% if item['user_supplied'] %}
-                                            <i class="fas fa-user text-info"></i> {{ _('User-supplied') }}
+                                        {% if item['user_provided'] %}
+                                            <i class="fas fa-user text-info"></i> {{ _('User provided') }}
+                                        {% elif item['themerr_provided'] %}
+                                            <i class="fas fa-check-circle text-success"></i> {{ _('Themerr provided') }}
                                         {% elif item['theme_status'] == 'complete' %}
-                                            <i class="fas fa-check-circle text-success"></i> {{ _('Themerr-provided') }}
+                                            <i class="fas fa-question-circle text-secondary"></i> {{ _('Unknown provider') }}
                                         {% elif item['theme_status'] == 'missing' %}
                                             <i class="fas fa-times-circle text-danger"></i> {{ _('Missing from ThemerrDB') }}
                                         {% elif item['theme_status'] == 'failed' %}
                                             <i class="fas fa-exclamation-circle text-warning"></i> {{ _('Failed to download') }}
                                         {% else %}
-                                            <i class="fas fa-exclamation-circle text-danger"></i>
+                                            <i class="fas fa-exclamation-circle text-danger"></i> {{ _('Unknown status') }}
                                         {% endif %}
                                     </td>
                                 </tr>
