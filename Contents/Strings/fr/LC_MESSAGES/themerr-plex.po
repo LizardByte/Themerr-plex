@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-11-17 01:35\n"
+"PO-Revision-Date: 2023-11-17 08:11\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgstr "État Inconnu"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr ""
+msgstr "La base de données est mise en cache, veuillez réessayer prochainement."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
