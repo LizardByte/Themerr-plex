@@ -12,6 +12,7 @@ default_prefs = dict(
     bool_update_collection_metadata_plex_movie='False',
     bool_update_collection_metadata_legacy='True',
     int_update_themes_interval='60',
+    int_update_database_cache_interval='60',
     int_plexapi_plexapi_timeout='180',
     int_plexapi_upload_retries_max='3',
     int_plexapi_upload_threads='3',
