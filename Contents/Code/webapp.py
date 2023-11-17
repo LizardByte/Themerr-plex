@@ -7,7 +7,7 @@ from __future__ import division  # fix float division for python2
 import json
 import logging
 import os
-from threading import Thread
+from threading import Lock, Thread
 
 # plex debugging
 try:
@@ -16,6 +16,7 @@ except ImportError:
     pass
 else:  # the code is running outside of Plex
     from plexhints.constant_kit import CACHE_1DAY  # constant kit
+    from plexhints.core_kit import Core  # core kit
     from plexhints.log_kit import Log  # log kit
     from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
@@ -28,7 +29,7 @@ import polib
 from werkzeug.utils import secure_filename
 
 # local imports
-from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier
+from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier, themerr_data_directory
 import general_helper
 from plex_api_helper import get_database_info, setup_plexapi
 import themerr_db_helper
@@ -99,6 +100,10 @@ mime_type_map = {
     'png': 'image/png',
     'svg': 'image/svg+xml',
 }
+
+# where the database cache is stored
+database_cache_file = os.path.join(themerr_data_directory, 'database_cache.json')
+database_cache_lock = Lock()
 
 
 @babel.localeselector
@@ -182,30 +187,14 @@ def stop_server():
     return False
 
 
-@app.route('/', methods=["GET"])
-@app.route('/home', methods=["GET"])
-def home():
-    # type: () -> render_template
+def cache_data():
+    # type: () -> None
     """
-    Serve the webapp home page.
+    Cache data for use in the Web UI dashboard.
 
-    This page serves the Themerr completion report for supported Plex libraries.
-
-    Returns
-    -------
-    render_template
-        The rendered page.
-
-    Notes
-    -----
-    The following routes trigger this function.
-
-        - `/`
-        - `/home`
-
-    Examples
-    --------
-    >>> home()
+    Because there are many http requests that must be made to gather the data for the dashboard, it can be
+    time-consuming to populate; therefore, this is performed within this caching function, which runs on a schedule.
+    This function will create a json file that can be loaded by other functions.
     """
     # get all Plex items from supported metadata agents
     plex_server = setup_plexapi()
@@ -368,7 +357,45 @@ def home():
                 year=year,
             ))
 
-    return render_template('home.html', title='Home', items=items)
+    with database_cache_lock:
+        Core.storage.save(filename=database_cache_file, data=json.dumps(items), binary=False)
+
+
+@app.route('/', methods=["GET"])
+@app.route('/home', methods=["GET"])
+def home():
+    # type: () -> render_template
+    """
+    Serve the webapp home page.
+
+    This page serves the Themerr completion report for supported Plex libraries.
+
+    Returns
+    -------
+    render_template
+        The rendered page.
+
+    Notes
+    -----
+    The following routes trigger this function.
+
+        - `/`
+        - `/home`
+
+    Examples
+    --------
+    >>> home()
+    """
+    items = []
+    try:
+        items = json.loads(Core.storage.load(filename=database_cache_file, binary=False))
+    except IOError:
+        pass
+
+    if items:
+        return render_template('home.html', title='Home', items=items)
+    else:
+        return render_template('home_db_not_cached.html', title='Home')
 
 
 @app.route("/<path:img>", methods=["GET"])

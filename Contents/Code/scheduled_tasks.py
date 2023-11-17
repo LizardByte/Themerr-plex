@@ -21,6 +21,7 @@ from typing import Any, Callable, Iterable, Mapping, Optional
 # local imports
 from constants import plugin_identifier
 from plex_api_helper import scheduled_update
+from webapp import cache_data
 
 # setup logging for schedule
 Log.Info('Adding schedule log handlers to plex plugin logger')
@@ -111,6 +112,10 @@ def setup_scheduling():
         schedule.every(max(15, int(Prefs['int_update_themes_interval']))).minutes.do(
             job_func=run_threaded,
             target=scheduled_update
+        )
+        schedule.every(max(15, int(Prefs['int_update_database_cache_interval']))).minutes.do(
+            job_func=run_threaded,
+            target=cache_data
         )
 
     run_threaded(target=schedule_loop, daemon=True)  # start the schedule loop in a thread

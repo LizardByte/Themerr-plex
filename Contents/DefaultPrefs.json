@@ -77,6 +77,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "int_update_database_cache_interval",
+		"type": "text",
+		"label": "Interval for database cache update task, in minutes (min: 15)",
+		"default": "60",
+		"secure": "false"
+	},
+	{
 		"id": "int_plexapi_plexapi_timeout",
 		"type": "text",
 		"label": "PlexAPI Timeout, in seconds (min: 1)",

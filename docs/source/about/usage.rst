@@ -173,6 +173,18 @@ Default
 Minimum
    ``15``
 
+Interval for database cache update task
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   The interval (in minutes) to run the database cache update task. This data is used to display the Web UI dashboard.
+
+Default
+   ``60``
+
+Minimum
+   ``15``
+
 PlexAPI Timeout
 ^^^^^^^^^^^^^^^
 
@@ -234,7 +246,7 @@ YouTube Cookies
 ^^^^^^^^^^^^^^^^
 
 Description
-   The cookies to use for the requests to YouTube. Should be in Chromium JSON export format. 
+   The cookies to use for the requests to YouTube. Should be in Chromium JSON export format.
    `Example exporter <https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid>`__.
 
 Default
