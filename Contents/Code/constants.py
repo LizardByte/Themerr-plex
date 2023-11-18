@@ -106,6 +106,7 @@ media_type_dict = dict(
         name='art',
         themerr_data_key='art_url',
         remove_pref='bool_remove_unused_art',
+        plex_field='art',
     ),
     posters=dict(
         method=lambda item: item.uploadPoster,
@@ -113,6 +114,7 @@ media_type_dict = dict(
         name='poster',
         themerr_data_key='poster_url',
         remove_pref='bool_remove_unused_posters',
+        plex_field='thumb',
     ),
     themes=dict(
         method=lambda item: item.uploadTheme,
@@ -120,5 +122,6 @@ media_type_dict = dict(
         name='theme',
         themerr_data_key='youtube_theme_url',
         remove_pref='bool_remove_unused_theme_songs',
+        plex_field='theme',
     ),
 )
