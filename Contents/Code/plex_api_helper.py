@@ -314,9 +314,18 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
         # unlock the field since it contains an automatically added value
         edit_field = "{}.locked".format(media_type_dict[media_type]['plex_field'])
         edits = {
-            edit_field : 0,
+            edit_field: 0,
         }
-        item.edit(**edits)
+        count = 0
+        while count < 3:  # there are random read timeouts
+            try:
+                item.edit(**edits)
+            except requests.ReadTimeout as e:
+                Log.Error('{}: Error unlocking field: {}'.format(item.ratingKey, e))
+                time.sleep(5)
+                count += 1
+            else:
+                break
     else:
         Log.Debug('Could not upload {} for type: {}, title: {}, rating_key: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
