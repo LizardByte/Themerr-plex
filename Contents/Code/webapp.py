@@ -290,7 +290,7 @@ def cache_data():
                             issue_title = '{} ({})'.format(item.title, year)
                             database_id = None
                     else:
-                        issue_title = '{} ({})'.format(item.title, year)
+                        issue_title = '{} ({})'.format(getattr(item, "originalTitle", None) or item.title, year)
                 else:  # collections
                     issue_title = item.title
 
