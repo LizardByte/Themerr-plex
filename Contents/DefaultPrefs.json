@@ -105,6 +105,38 @@
 		"secure": "false"
 	},
 	{
+		"id": "enum_browser_driver",
+		"type": "enum",
+		"label": "Browser (driver) for web automations (e.g. collecting YouTube cookies)",
+		"default": "None",
+		"values": [
+			"None",
+			"Chrome",
+			"Firefox"
+		]
+	},
+	{
+		"id": "int_update_browser_driver_interval",
+		"type": "text",
+		"label": "Interval to check for browser driver updates, in hours (min: 1)",
+		"default": "24",
+		"secure": "false"
+	},
+	{
+		"id": "bool_youtube_consent",
+		"type": "bool",
+		"label": "Agree to YouTube's Terms of Service",
+		"default": "False",
+		"secure": "false"
+	},
+	{
+		"id": "bool_youtube_cookies",
+		"type": "bool",
+		"label": "Use cookies from YouTube.com",
+		"default": "False",
+		"secure": "false"
+	},
+	{
 		"id": "str_youtube_cookies",
 		"type": "text",
 		"label": "YouTube Cookies (JSON format)",

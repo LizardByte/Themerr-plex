@@ -60,6 +60,28 @@ def test_get_themerr_json_data(movies):
         assert 'youtube_theme_url' in themerr_json_data.keys()
 
 
+@pytest.mark.parametrize('ip_address', [(None, None), ('8.8.8.8', 'US'), ('193.110.81.0', 'FR')])
+def test_get_user_country_code(ip_address):
+    user_country_code = general_helper.get_user_country_code(ip_address=ip_address[0])
+    assert user_country_code
+    assert isinstance(user_country_code, str)
+
+    # ensure country code is 2 characters long
+    assert len(user_country_code) == 2
+
+    if ip_address[1]:
+        assert user_country_code == ip_address[1]
+
+
+@pytest.mark.parametrize('ip_address', [(None, None), ('8.8.8.8', False), ('193.110.81.0', True)])
+def test_is_user_in_eu(ip_address):
+    is_user_in_eu = general_helper.is_user_in_eu(ip_address=ip_address[0])
+    assert isinstance(is_user_in_eu, bool)
+
+    if ip_address[1] is not None:
+        assert is_user_in_eu == ip_address[1]
+
+
 def test_get_themerr_settings_hash():
     themerr_settings_hash = general_helper.get_themerr_settings_hash()
     assert themerr_settings_hash

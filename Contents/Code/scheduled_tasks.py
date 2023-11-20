@@ -21,6 +21,7 @@ from typing import Any, Callable, Iterable, Mapping, Optional
 # local imports
 from constants import plugin_identifier
 from plex_api_helper import scheduled_update
+from selenium_helper import install_driver
 from webapp import cache_data
 
 # setup logging for schedule
@@ -107,8 +108,14 @@ def setup_scheduling():
     See Also
     --------
     plex_api_helper.scheduled_update : Scheduled function to update the themes.
+    selenium_helper.install_driver : Scheduled function to install the browser driver, if required.
+    webapp.cache_data : Scheduled function to cache data for web dashboard.
     """
     if Prefs['bool_auto_update_items']:
+        schedule.every(max(1, int(Prefs['int_update_browser_driver_interval']))).hours.do(
+            job_func=run_threaded,
+            target=install_driver
+        )
         schedule.every(max(15, int(Prefs['int_update_themes_interval']))).minutes.do(
             job_func=run_threaded,
             target=scheduled_update

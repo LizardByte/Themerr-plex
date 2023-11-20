@@ -16,6 +16,10 @@ else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
+# imports from Libraries\Shared
+from plexapi.base import PlexPartialObject
+import requests
+from typing import Optional
 
 # local imports
 from constants import metadata_base_directory, metadata_type_map, themerr_data_directory
@@ -27,7 +31,7 @@ legacy_keys = [
 
 
 def get_media_upload_path(item, media_type):
-    # type: (any, str) -> str
+    # type: (PlexPartialObject, str) -> str
     """
     Get the path to the theme upload directory.
 
@@ -35,7 +39,7 @@ def get_media_upload_path(item, media_type):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the theme upload path for.
     media_type : str
         The media type to get the theme upload path for. Must be one of 'art', 'posters', or 'themes'.
@@ -75,7 +79,7 @@ def get_media_upload_path(item, media_type):
 
 
 def get_themerr_json_path(item):
-    # type: (any) -> str
+    # type: (PlexPartialObject) -> str
     """
     Get the path to the Themerr data file.
 
@@ -83,7 +87,7 @@ def get_themerr_json_path(item):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the Themerr data file path for.
 
     Returns
@@ -102,7 +106,7 @@ def get_themerr_json_path(item):
 
 
 def get_themerr_json_data(item):
-    # type: (any) -> dict
+    # type: (PlexPartialObject) -> dict
     """
     Get the Themerr data for the specified item.
 
@@ -111,7 +115,7 @@ def get_themerr_json_data(item):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the Themerr data for.
 
     Returns
@@ -153,8 +157,94 @@ def get_themerr_settings_hash():
     return settings_hash
 
 
+def get_user_country_code(ip_address=None):
+    # type: (Optional[str]) -> str
+    """
+    Get the country code for the user with the given IP address.
+
+    Parameters
+    ----------
+    ip_address : Optional[str]
+        The IP address of the user.
+
+    Returns
+    -------
+    str
+        The `ALPHA-2 <https://www.iban.com/country-codes>`__ country code for the user with the given IP address.
+
+    Examples
+    --------
+    >>> get_user_country_code()
+    'US'
+    """
+    api_url = 'https://ipinfo.io/json'
+    if ip_address:
+        api_url = 'https://ipinfo.io/{}/json'.format(ip_address)
+
+    try:
+        response = requests.get(api_url)
+        data = response.json()
+        return data.get('country').encode('utf-8')
+    except requests.RequestException as e:
+        Log.Error("Could not determine user country: {}".format(e))
+
+
+def is_user_in_eu(ip_address=None):
+    # type: (Optional[str]) -> bool
+    """
+    Check if the user with the given IP address is in the European Union.
+
+    Parameters
+    ----------
+    ip_address : Optional[str]
+        The IP address of the user.
+
+    Returns
+    -------
+    bool
+        True if the user with the given IP address is in the European Union, False otherwise.
+
+    Examples
+    --------
+    >>> is_user_in_eu()
+    False
+    """
+    eu_countries = [
+        'AT',  # Austria
+        'BE',  # Belgium
+        'BG',  # Bulgaria
+        'CY',  # Cyprus
+        'CZ',  # Czech Republic
+        'DE',  # Germany
+        'DK',  # Denmark
+        'EE',  # Estonia
+        'ES',  # Spain
+        'FI',  # Finland
+        'FR',  # France
+        'GR',  # Greece
+        'HR',  # Croatia
+        'HU',  # Hungary
+        'IE',  # Ireland
+        'IT',  # Italy
+        'LT',  # Lithuania
+        'LU',  # Luxembourg
+        'LV',  # Latvia
+        'MT',  # Malta
+        'NL',  # Netherlands
+        'PL',  # Poland
+        'PT',  # Portugal
+        'RO',  # Romania
+        'SE',  # Sweden
+        'SI',  # Slovenia
+        'SK',  # Slovakia
+    ]
+
+    country_code = get_user_country_code(ip_address=ip_address)
+    return country_code in eu_countries
+
+
 def remove_uploaded_media(item, media_type):
-    # type: (any, str) -> None
+    # type: (PlexPartialObject, str) -> None
     """
     Remove themes for the specified item.
 
@@ -162,7 +252,7 @@ def remove_uploaded_media(item, media_type):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to remove the themes from.
     media_type : str
         The media type to remove the themes from. Must be one of 'art', 'posters', or 'themes'.
@@ -193,7 +283,7 @@ def remove_uploaded_media_error_handler(func, path, exc_info):
     ----------
     func : any
         The function that caused the error.
-    path : str
+    path : any
         The path that caused the error.
     exc_info : any
         The exception information.
@@ -202,7 +292,7 @@ def remove_uploaded_media_error_handler(func, path, exc_info):
 
 
 def update_themerr_data_file(item, new_themerr_data):
-    # type: (any, dict) -> None
+    # type: (PlexPartialObject, dict) -> None
     """
     Update the Themerr data file for the specified item.
 
@@ -210,7 +300,7 @@ def update_themerr_data_file(item, new_themerr_data):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to update the Themerr data file for.
     new_themerr_data : dict
         The Themerr data to update the Themerr data file with.
