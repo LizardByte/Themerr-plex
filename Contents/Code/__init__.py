@@ -25,17 +25,20 @@ else:  # the code is running outside of Plex
 # imports from Libraries\Shared
 from typing import Optional
 
-# get the original Python builtins module
-python_builtins = inspect.getmodule(object)
+try:
+    # get the original Python builtins module
+    python_builtins = inspect.getmodule(object)
 
-# get the Sandbox instance
-sandbox = inspect.stack()[1][0].f_locals["self"]
+    # get the Sandbox instance
+    sandbox = inspect.stack()[1][0].f_locals["self"]
 
-# bypass RestrictedPython
-getattr(sandbox, "_core").loader.compile = lambda src, name, _=False: python_builtins.compile(src, name, "exec")
+    # bypass RestrictedPython
+    getattr(sandbox, "_core").loader.compile = lambda src, name, _=False: python_builtins.compile(src, name, "exec")
 
-# restore Python builtins
-sandbox.environment.update(python_builtins.vars(python_builtins))
+    # restore Python builtins
+    sandbox.environment.update(python_builtins.vars(python_builtins))
+except Exception as e:
+    Log.Exception("Failed to bypass RestrictedPython: {}".format(e))
 
 # local imports
 from default_prefs import default_prefs
