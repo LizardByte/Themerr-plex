@@ -25,6 +25,7 @@ from plexapi.alert import AlertListener
 from plexapi.base import PlexPartialObject
 from plexapi.exceptions import BadRequest
 import plexapi.server
+from plexapi.myplex import MyPlexAccount  # must be imported after plexapi.server otherwise it breaks
 from plexapi.utils import reverseSearchType
 
 # local imports
@@ -765,3 +766,60 @@ def scheduled_update():
         for item in all_items:
             if item.ratingKey not in q.queue:
                 q.put(item=item.ratingKey)
+
+
+def get_user_info(token):
+    # type: (str) -> Optional[MyPlexAccount]
+    """
+    Get the Plex user info.
+
+    Parameters
+    ----------
+    token : str
+        The Plex token.
+
+    Returns
+    -------
+    Optional[MyPlexAccount]
+        The Plex user info.
+
+    Examples
+    --------
+    >>> get_user_info(token='...')
+    ...
+    """
+    global plex
+    if not plex:
+        plex = setup_plexapi()
+
+    try:
+        return MyPlexAccount(token=token)
+    except Exception:
+        return None
+
+
+def is_server_owner(user):
+    # type: (MyPlexAccount) -> bool
+    """
+    Check if the user is the owner of the Plex server.
+
+    Parameters
+    ----------
+    user : MyPlexAccount
+        The Plex user info.
+
+    Returns
+    -------
+    bool
+        True if the user is the owner of the Plex server, False otherwise.
+
+    Examples
+    --------
+    >>> is_server_owner(user=...)
+    ...
+    """
+    global plex
+    if not plex:
+        plex = setup_plexapi()
+
+    return plex.account().username in {user.email, user.username}

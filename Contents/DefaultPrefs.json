@@ -168,6 +168,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "bool_webapp_require_login",
+		"type": "bool",
+		"label": "Require login to access Web UI",
+		"default": "False",
+		"secure": "false"
+	},
+	{
 		"id": "bool_webapp_log_werkzeug_messages",
 		"type": "bool",
 		"label": "bool_webapp_log_werkzeug_messages",

@@ -8,6 +8,7 @@ import json
 import logging
 import os
 from threading import Lock, Thread
+import uuid
 
 # plex debugging
 try:
@@ -23,7 +24,7 @@ else:  # the code is running outside of Plex
 
 # lib imports
 import flask
-from flask import Flask, Response, render_template, send_from_directory
+from flask import Flask, Response, render_template as flask_render_template, send_from_directory, session
 from flask_babel import Babel
 import polib
 from six.moves.urllib.parse import quote_plus
@@ -32,9 +33,38 @@ from werkzeug.utils import secure_filename
 # local imports
 from constants import contributes_to, issue_urls, plugin_directory, plugin_identifier, themerr_data_directory
 import general_helper
-from plex_api_helper import get_database_info, setup_plexapi
+from plex_api_helper import get_database_info, get_user_info, is_server_owner, setup_plexapi
 import themerr_db_helper
 import tmdb_helper
+
+
+def render_template(*args, **kwargs):
+    # type: (str, str) -> flask.render_template
+    """
+    Render a template.
+
+    This function is a wrapper for flask.render_template that adds various useful globals to the template context.
+
+    Parameters
+    ----------
+    *args : str
+        The template name.
+    **kwargs : str
+        The template context.
+
+    Returns
+    -------
+    flask.render_template
+        The rendered template.
+
+    Examples
+    --------
+    >>> render_template('home.html', title='Home', items=items)
+    """
+    kwargs['Prefs'] = Prefs
+    kwargs['is_logged_in'] = is_logged_in
+    return flask_render_template(*args, **kwargs)
+
 
 # setup flask app
 app = Flask(
@@ -105,6 +135,19 @@ mime_type_map = {
 # where the database cache is stored
 database_cache_file = os.path.join(themerr_data_directory, 'database_cache.json')
 database_cache_lock = Lock()
+
+secret_file = os.path.join(themerr_data_directory, 'secret.json')
+
+try:
+    app.secret_key = json.loads(Core.storage.load(filename=secret_file, binary=False))["secret"]
+except Exception:
+    # create random secret
+    Log.Info('Creating random secret')
+    app.secret_key = uuid.uuid4().hex
+    Core.storage.save(
+        filename=secret_file,
+        data=json.dumps({"secret": app.secret_key}),
+        binary=False)
 
 
 responses = {
@@ -495,3 +538,106 @@ def translations():
             return Response(response=json.dumps(data),
                             status=200,
                             mimetype='application/json')
+
+
+def is_logged_in():
+    # type: () -> bool
+    """
+    Check if the user is logged in.
+
+    Returns
+    -------
+    bool
+        True if the user is logged in, otherwise False.
+
+    Examples
+    --------
+    >>> is_logged_in()
+    """
+    if not Prefs['bool_webapp_require_login']:
+        return True
+
+    if "token" not in session:
+        return False
+
+    token = session["token"]
+    user = get_user_info(token)
+    logged_in = user and is_server_owner(user)
+    return logged_in
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    # type: () -> Response
+    """
+    Logout the user.
+
+    Returns
+    -------
+    Response
+        The logout response.
+
+    Examples
+    --------
+    >>> logout()
+    """
+    session.pop("token", None)
+    return flask.redirect(flask.url_for('home'))
+
+
+@app.before_request
+def check_login_status():
+    # type: () -> None
+    """
+    Check if the user is logged in.
+
+    If the user is not logged in, redirect to the login page.
+
+    Examples
+    --------
+    >>> check_login_status()
+    """
+    if not Prefs['bool_webapp_require_login']:
+        return
+    
+    if flask.request.path.startswith('/web'):
+        return
+
+    if flask.request.path in {'/login', '/logout'}:
+        return
+
+    if not is_logged_in():
+        # not logged in, redirect to login page
+        return flask.redirect(flask.url_for('login', redirect_uri=flask.request.path))
+
+
+@app.route("/login", methods=["GET"])
+def login(redirect_uri="/"):
+    # type: (str) -> render_template
+    """
+    Serve the login page.
+
+    Returns
+    -------
+    render_template
+        The rendered page.
+
+    Notes
+    -----
+    The following routes trigger this function.
+
+        - `/login`
+
+    Examples
+    --------
+    >>> login()
+    """
+    return render_template('login.html', title='Login', redirect_uri=redirect_uri)
+
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    session["token"] = flask.request.form["token"]
+    if not is_logged_in():
+        return flask.Response(status=401)
+    return flask.Response(status=200)
