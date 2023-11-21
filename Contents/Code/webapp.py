@@ -599,7 +599,7 @@ def check_login_status():
     """
     if not Prefs['bool_webapp_require_login']:
         return
-    
+
     if flask.request.path.startswith('/web'):
         return
 
