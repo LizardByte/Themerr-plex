@@ -298,6 +298,19 @@ Description
 Default
    ``9494``
 
+Web UI Require Login
+^^^^^^^^^^^^^^^^^^^^
+
+Description
+   If set to ``True``, the Web UI will require the user to log in with their Plex account before accessing the Web UI.
+   Only the owner of the Plex Media Server will be able to log in.
+
+.. Attention::
+   Consider enabling this value if you plan to expose the Web UI to the outside world.
+
+Default
+   ``False``
+
 Log all web server messages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
