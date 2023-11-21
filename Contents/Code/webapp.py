@@ -145,10 +145,11 @@ except Exception:
     # create random secret
     Log.Info('Creating random secret')
     app.secret_key = uuid.uuid4().hex
-    Core.storage.save(
-        filename=secret_file,
-        data=json.dumps({"secret": app.secret_key}),
-        binary=False)
+    try:
+        with open(secret_file, 'w') as f:
+            json.dump({'secret': app.secret_key}, f)
+    except Exception as e:
+        Log.Error('Error saving secret: {}'.format(e))
 
 
 responses = {
