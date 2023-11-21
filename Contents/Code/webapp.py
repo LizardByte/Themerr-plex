@@ -139,7 +139,8 @@ database_cache_lock = Lock()
 secret_file = os.path.join(themerr_data_directory, 'secret.json')
 
 try:
-    app.secret_key = json.loads(Core.storage.load(filename=secret_file, binary=False))["secret"]
+    with open(secret_file, 'r') as f:
+        app.secret_key = json.load(f)['secret']
 except Exception:
     # create random secret
     Log.Info('Creating random secret')
