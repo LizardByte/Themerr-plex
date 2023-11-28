@@ -69,10 +69,7 @@ def process_youtube(url):
     youtube_dl_params = dict(
         cookiefile=cookie_jar_file.name,
         logger=plugin_logger,
-        outtmpl=u'%(id)s.%(ext)s',
-        password=Prefs['str_youtube_passwd'] if Prefs['str_youtube_passwd'] else None,
         socket_timeout=10,
-        username=Prefs['str_youtube_user'] if Prefs['str_youtube_user'] else None,
         youtube_include_dash_manifest=False,
     )
 

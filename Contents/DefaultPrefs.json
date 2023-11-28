@@ -105,21 +105,6 @@
 		"secure": "false"
 	},
 	{
-		"id": "str_youtube_user",
-		"type": "text",
-		"label": "YouTube Username",
-		"default": "",
-		"secure": "true"
-	},
-	{
-		"id": "str_youtube_passwd",
-		"type": "text",
-		"label": "YouTube Password",
-		"default": "",
-		"option": "hidden",
-		"secure": "true"
-	},
-	{
 		"id": "str_youtube_cookies",
 		"type": "text",
 		"label": "YouTube Cookies (JSON format)",
