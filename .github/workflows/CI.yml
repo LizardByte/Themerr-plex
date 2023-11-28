@@ -44,8 +44,7 @@ jobs:
           path: Themerr-plex.bundle
 
       - name: Set up Python
-        # dependabot cannot pick up our tags, so use the commit hash
-        uses: LizardByte/setup-python-action@8851ba6849c1003134ced0581b34204f0c322cad
+        uses: LizardByte/setup-python-action@v2023.1128.10441
         with:
           python-version: '2.7'
 
@@ -155,8 +154,7 @@ jobs:
           rm Themerr-plex.bundle.zip
 
       - name: Set up Python
-        # dependabot cannot pick up our tags, so use the commit hash
-        uses: LizardByte/setup-python-action@8851ba6849c1003134ced0581b34204f0c322cad
+        uses: LizardByte/setup-python-action@v2023.1128.10441
         with:
           python-version: '2.7'
 
