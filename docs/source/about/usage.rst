@@ -224,24 +224,6 @@ Default
 Minimum
    ``1``
 
-YouTube Username
-^^^^^^^^^^^^^^^^
-
-Description
-   The YouTube Username to use. Supplying YouTube credentials will allow access to age restricted content.
-
-Default
-   None
-
-YouTube Password
-^^^^^^^^^^^^^^^^
-
-Description
-   The YouTube Password to use. Supplying YouTube credentials will allow access to age restricted content.
-
-Default
-   None
-
 YouTube Cookies
 ^^^^^^^^^^^^^^^^
 
