@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-11-11 18:06+0000\n"
-"PO-Revision-Date: 2023-11-11 21:03\n"
+"POT-Creation-Date: 2023-11-17 01:01+0000\n"
+"PO-Revision-Date: 2023-11-17 01:35\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -63,20 +63,32 @@ msgid "No known ID"
 msgstr "Идентификация неизвестна"
 
 #: Contents/Resources/web/templates/home.html:140
-msgid "User-supplied"
-msgstr "Поставляемый пользователем"
+msgid "User provided"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:142
-msgid "Themerr-provided"
-msgstr "Themerr-provided"
+msgid "Themerr provided"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:144
+msgid "Unknown provider"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:146
 msgid "Missing from ThemerrDB"
 msgstr "Отсутствует в ThemerrDB"
 
-#: Contents/Resources/web/templates/home.html:146
+#: Contents/Resources/web/templates/home.html:148
 msgid "Failed to download"
 msgstr "Не удалось загрузить"
+
+#: Contents/Resources/web/templates/home.html:150
+msgid "Unknown status"
+msgstr ""
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"

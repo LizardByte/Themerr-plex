@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-11-11 18:06+0000\n"
-"PO-Revision-Date: 2023-11-11 21:02\n"
+"POT-Creation-Date: 2023-11-17 01:01+0000\n"
+"PO-Revision-Date: 2023-11-17 08:11\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -63,20 +63,32 @@ msgid "No known ID"
 msgstr "Aucun ID connu"
 
 #: Contents/Resources/web/templates/home.html:140
-msgid "User-supplied"
+msgid "User provided"
 msgstr "Fourni par l'utilisateur"
 
 #: Contents/Resources/web/templates/home.html:142
-msgid "Themerr-provided"
+msgid "Themerr provided"
 msgstr "Fourni par Themerr"
 
 #: Contents/Resources/web/templates/home.html:144
+msgid "Unknown provider"
+msgstr "Fournisseur inconnu"
+
+#: Contents/Resources/web/templates/home.html:146
 msgid "Missing from ThemerrDB"
 msgstr "Absent de ThemerrDB"
 
-#: Contents/Resources/web/templates/home.html:146
+#: Contents/Resources/web/templates/home.html:148
 msgid "Failed to download"
 msgstr "Téléchargement échoué"
+
+#: Contents/Resources/web/templates/home.html:150
+msgid "Unknown status"
+msgstr "État Inconnu"
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr "La base de données est mise en cache, veuillez réessayer prochainement."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
