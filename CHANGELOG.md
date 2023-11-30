@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.0] - 2023-08-19
+## [0.3.0] - 2023-11-29
 **Added**
 - Option to enable/disable support for Plex Movie agent - (enabled by default)
 - Option to update themes on a schedule - (enabled by default)
@@ -13,12 +13,34 @@
 - Version is now printed to the log on startup
 - Version is now displayed in the Plex plugin menu
 - Web UI which shows the completion percentage of theme songs in the Plex libraries
+- Option to add YouTube cookies to workaround EU consent issue
 
 **Fixed**
 - Themerr-plex will now skip upload of media if the existing media is the same
 - Themerr-plex is now categorized as a Utility plugin instead of Music
 - Refactored code to use common methods where possible
 - Use TMDB api to convert IMDB ids to TMDB ids
+- Fix AlertListener on IPv6-aware hosts
+- Fix error handling around update_plex_item to prevent plugin hanging
+- youtube-dl messages are now logged to Themerr-plex plugin log
+- Disable plexapi auto-reload
+- Use correct types for plex item typehints
+- Ensure themes added by Themerr-plex are unlocked
+- Don't update metadata/fields which are locked
+- Disable restricted python in Plex plugin framework
+- Remove unused YouTube parameters
+
+**Dependencies**
+- Bump peter-evans/create-pull-request from 4 to 5
+- Bump actions/checkout from 3 to 4
+- Use plexapi-backport and bump to 4.15.6
+- Use plexhints from pypi and bump to 0.1.3
+- Bump youtube-dl to 00ef748
+
+**Misc**
+- Update LizardByte workflows
+- Improve CI/CD testing
+- Add CodeQL analysis
 
 ## [0.2.0] - 2023-07-31
 **Added**
