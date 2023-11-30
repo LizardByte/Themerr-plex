@@ -26,6 +26,7 @@
    code_docs/main
    code_docs/general_helper
    code_docs/lizardbyte_db_helper
+   code_docs/migration_helper
    code_docs/plex_api_helper
    code_docs/scheduled_tasks
    code_docs/tmdb_helper
