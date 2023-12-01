@@ -35,7 +35,7 @@ import themerr_db_helper
 import tmdb_helper
 from youtube_dl_helper import process_youtube
 
-plex = None
+plex_server = None
 
 q = queue.Queue()
 
@@ -73,8 +73,8 @@ def setup_plexapi():
     >>> setup_plexapi()
     ...
     """
-    global plex
-    if not plex:
+    global plex_server
+    if not plex_server:
         if not plex_token:
             Log.Error('Plex token not found in environment, cannot proceed.')
             return False
@@ -84,9 +84,9 @@ def setup_plexapi():
         urllib3.disable_warnings(InsecureRequestWarning)  # Disable the insecure request warning
 
         # create the plex server object
-        plex = plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
+        plex_server = plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
 
-    return plex
+    return plex_server
 
 
 def update_plex_item(rating_key):
@@ -266,10 +266,6 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
         return False
 
     if media_file or media_url:
-        global plex
-        if not plex:
-            plex = setup_plexapi()
-
         Log.Info('Plexapi attempting to upload {} for type: {}, title: {}, rating_key: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
         ))
@@ -412,10 +408,7 @@ def get_database_info(item):
     """
     Log.Debug('Getting database info for item: %s' % item.title)
 
-    # setup plex just in case
-    global plex
-    if not plex:
-        plex = setup_plexapi()
+    plex = setup_plexapi()
 
     agent = None
     database = None
@@ -505,13 +498,8 @@ def get_plex_item(rating_key):
     >>> get_plex_item(rating_key=1)
     ...
     """
-    global plex
-    if not plex:
-        plex = setup_plexapi()
-    if plex:
-        item = plex.fetchItem(ekey=rating_key)
-    else:
-        item = None
+    plex = setup_plexapi()
+    item = plex.fetchItem(ekey=rating_key)
 
     return item
 
@@ -576,9 +564,7 @@ def plex_listener():
     >>> plex_listener()
     ...
     """
-    global plex
-    if not plex:
-        plex = setup_plexapi()
+    plex = setup_plexapi()
     listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=Log.Error)
     listener.start()
 
@@ -640,9 +626,7 @@ def scheduled_update():
     scheduled_tasks.setup_scheduling : The method where the scheduled task is configurerd.
     scheduled_tasks.schedule_loop : The method that runs the pending scheduled tasks.
     """
-    global plex
-    if not plex:
-        plex = setup_plexapi()
+    plex = setup_plexapi()
 
     themerr_db_helper.update_cache()
 
