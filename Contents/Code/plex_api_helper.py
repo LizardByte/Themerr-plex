@@ -35,6 +35,9 @@ import themerr_db_helper
 import tmdb_helper
 from youtube_dl_helper import process_youtube
 
+# fix random _strptime import bug in plexapi
+import _strptime  # noqa: F401
+
 plex_server = None
 
 q = queue.Queue()
