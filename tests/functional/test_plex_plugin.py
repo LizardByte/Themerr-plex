@@ -37,13 +37,5 @@ def test_plugin_log_file_exceptions(plugin_log_file):
             "Unexpected exception: {}".format(exception))
 
 
-def test_movies_new_agent(movies_new_agent):
-    _check_themes(movies_new_agent)
-
-
-def test_movies_imdb_agent(movies_imdb_agent):
-    _check_themes(movies_imdb_agent)
-
-
-def test_movies_themoviedb_agent(movies_themoviedb_agent):
-    _check_themes(movies_themoviedb_agent)
+def test_movies(movies):
+    _check_themes(movies)

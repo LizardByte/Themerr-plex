@@ -124,60 +124,31 @@ def plex(request, sess):
     return PlexServer(SERVER_BASEURL, SERVER_TOKEN, session=sess)
 
 
-@pytest.fixture(scope="session")
-def movies_new_agent(plex):
-    movies = plex.library.section("Movies")
-    wait_for_themes(movies=movies)
-    return movies
+@pytest.fixture(params=["Movies", "Movies-imdb", "Movies-tmdb"], scope="session")
+def library_section_names(plex, request):
+    section = request.param
+    assert plex.library.section(section), "Required library section {} not found.".format(section)
+    return section
 
 
 @pytest.fixture(scope="session")
-def movies_imdb_agent(plex):
-    movies = plex.library.section("Movies-imdb")
-    wait_for_themes(movies=movies)
-    return movies
+def movies(library_section_names, plex):
+    section = library_section_names
+    library_movies = plex.library.section(section)
+    wait_for_themes(movies=library_movies)
+    yield library_movies
 
 
 @pytest.fixture(scope="session")
-def movies_themoviedb_agent(plex):
-    movies = plex.library.section("Movies-tmdb")
-    wait_for_themes(movies=movies)
-    return movies
-
-
-@pytest.fixture(scope="session")
-def collection_new_agent(plex, movies_new_agent, movie_new_agent):
+def collections(library_section_names, movies, plex):
+    section = library_section_names
     try:
-        return movies_new_agent.collection("Test Collection")
+        return movies.collection("Test Collection")
     except NotFound:
         return plex.createCollection(
             title="Test Collection",
-            section=movies_new_agent,
-            items=movie_new_agent
-        )
-
-
-@pytest.fixture(scope="session")
-def collection_imdb_agent(plex, movies_imdb_agent, movie_imdb_agent):
-    try:
-        return movies_imdb_agent.collection("Test Collection")
-    except NotFound:
-        return plex.createCollection(
-            title="Test Collection",
-            section=movies_imdb_agent,
-            items=movie_imdb_agent
-        )
-
-
-@pytest.fixture(scope="session")
-def collection_themoviedb_agent(plex, movies_themoviedb_agent, movie_themoviedb_agent):
-    try:
-        return movies_themoviedb_agent.collection("Test Collection")
-    except NotFound:
-        return plex.createCollection(
-            title="Test Collection",
-            section=movies_themoviedb_agent,
-            items=movie_themoviedb_agent
+            section=section,
+            items=movies.all()
         )
 
 

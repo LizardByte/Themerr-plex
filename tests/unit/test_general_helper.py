@@ -11,9 +11,9 @@ from Code import constants
 from Code import general_helper
 
 
-def test_get_media_upload_path(movies_themoviedb_agent):
+def test_get_media_upload_path(movies):
     test_items = [
-        movies_themoviedb_agent.all()[0]
+        movies.all()[0]
     ]
 
     media_types = ['art', 'posters', 'themes']
@@ -27,18 +27,18 @@ def test_get_media_upload_path(movies_themoviedb_agent):
                 assert os.path.isdir(media_upload_path)
 
 
-def test_get_media_upload_path_invalid(movies_themoviedb_agent):
+def test_get_media_upload_path_invalid(movies):
     test_items = [
-        movies_themoviedb_agent.all()[0]
+        movies.all()[0]
     ]
 
     with pytest.raises(ValueError):
         general_helper.get_media_upload_path(item=test_items[0], media_type='invalid')
 
 
-def test_get_themerr_json_path(movies_themoviedb_agent):
+def test_get_themerr_json_path(movies):
     test_items = [
-        movies_themoviedb_agent.all()[0]
+        movies.all()[0]
     ]
 
     for item in test_items:
@@ -48,9 +48,9 @@ def test_get_themerr_json_path(movies_themoviedb_agent):
                             'DataItems') in themerr_json_path
 
 
-def test_get_themerr_json_data(movies_themoviedb_agent):
+def test_get_themerr_json_data(movies):
     test_items = [
-        movies_themoviedb_agent.all()[0]
+        movies.all()[0]
     ]
 
     for item in test_items:
@@ -68,9 +68,9 @@ def test_get_themerr_settings_hash():
     assert len(themerr_settings_hash) == 64
 
 
-def test_remove_uploaded_media(movies_themoviedb_agent):
+def test_remove_uploaded_media(movies):
     test_items = [
-        movies_themoviedb_agent.all()[0]
+        movies.all()[0]
     ]
 
     for item in test_items:
@@ -98,9 +98,9 @@ def test_remove_uploaded_media_error_handler():
     )
 
 
-def test_update_themerr_data_file(movies_themoviedb_agent):
+def test_update_themerr_data_file(movies):
     test_items = [
-        movies_themoviedb_agent.all()[0]
+        movies.all()[0]
     ]
 
     new_themerr_data = {
