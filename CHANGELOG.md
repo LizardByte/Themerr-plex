@@ -1,7 +1,7 @@
 # Changelog
 
-## [Unreleased]
-**Todo**
+## [0.3.1] - 2023-12-02
+**Unreleased**
 
 ## [0.3.0] - 2023-11-29
 **Added**
