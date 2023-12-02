@@ -16,12 +16,9 @@ def test_update_cache(empty_themerr_db_cache):
     assert "game_franchises" in themerr_db_helper.database_cache, 'Cache does not contain game_franchises'
 
 
-def test_item_exists(empty_themerr_db_cache, movies_new_agent, movies_imdb_agent, movies_themoviedb_agent):
-    movies = movies_new_agent.all()
-    movies.extend(movies_imdb_agent.all())
-    movies.extend(movies_themoviedb_agent.all())
-
-    for item in movies:
+def test_item_exists(empty_themerr_db_cache, movies):
+    items = movies.all()
+    for item in items:
         database_info = plex_api_helper.get_database_info(item=item)
 
         database_type = database_info[0]
