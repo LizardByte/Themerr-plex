@@ -1,5 +1,8 @@
 # Changelog
 
+## [Unreleased]
+**Todo**
+
 ## [0.3.0] - 2023-11-29
 **Added**
 - Option to enable/disable support for Plex Movie agent - (enabled by default)
