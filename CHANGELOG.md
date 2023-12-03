@@ -1,7 +1,23 @@
 # Changelog
 
 ## [0.3.1] - 2023-12-02
-**Unreleased**
+Attention, if you used Themerr-plex prior to v0.3.0, the themes added there will be in a locked state. To allow
+Themerr-plex the ability to update these themes in the future, you must unlock them. We have provided a new config
+option that will allow you to automatically unlock all themes for libraries supported by Themerr-plex.
+
+**Added**
+- Add option to migrate from versions < v0.3.0
+
+**Fixed**
+- Fixed random _strptime import errors
+
+**Dependencies**
+- Bump plexhints from 0.1.3 to 2023.1201.11810
+- Bump @fortawesome/fontawesome-free from 6.5.0 to 6.5.1
+
+**Misc**
+- Refactor plex server creation
+- Parametrize movie library fixtures in unit tests
 
 ## [0.3.0] - 2023-11-29
 **Added**
