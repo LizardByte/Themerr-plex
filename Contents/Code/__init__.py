@@ -44,6 +44,7 @@ except Exception as e:
 from default_prefs import default_prefs
 from constants import contributes_to, version
 from plex_api_helper import plex_listener, start_queue_threads, update_plex_item
+import migration_helper
 from scheduled_tasks import setup_scheduling
 from webapp import start_server
 
@@ -144,6 +145,16 @@ def ValidatePrefs():
                     pass
 
     copy_prefs()  # since validate prefs runs on startup, this will have already run at least once
+
+    # perform migrations
+    migration_object = migration_helper.MigrationHelper()
+    for key in default_prefs:
+        migration_key_prefix = 'bool_migrate_'
+        if key.startswith(migration_key_prefix):
+            migration = key.replace(migration_key_prefix, '')
+            migrated = migration_object.get_migration_status(key=migration)
+            if Prefs[key] and not migrated:
+                migration_object.perform_migration(key=migration)
 
     if error_message != '':
         return MessageContainer(header='Error', message=error_message)

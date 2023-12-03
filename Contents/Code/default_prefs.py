@@ -20,5 +20,6 @@ default_prefs = dict(
     enum_webapp_locale='en',
     str_webapp_http_host='0.0.0.0',
     int_webapp_http_port='9494',
-    bool_webapp_log_werkzeug_messages='False'
+    bool_webapp_log_werkzeug_messages='False',
+    bool_migrate_locked_themes='False',
 )

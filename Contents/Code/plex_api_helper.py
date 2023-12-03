@@ -311,26 +311,75 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
         general_helper.update_themerr_data_file(item=item, new_themerr_data=new_themerr_data)
 
         # unlock the field since it contains an automatically added value
-        edit_field = "{}.locked".format(media_type_dict[media_type]['plex_field'])
-        edits = {
-            edit_field: 0,
-        }
-        count = 0
-        while count < 3:  # there are random read timeouts
-            try:
-                item.edit(**edits)
-            except requests.ReadTimeout as e:
-                Log.Error('{}: Error unlocking field: {}'.format(item.ratingKey, e))
-                time.sleep(5)
-                count += 1
-            else:
-                break
+        change_lock_status(item=item, field=media_type_dict[media_type]['plex_field'], lock=False)
     else:
         Log.Debug('Could not upload {} for type: {}, title: {}, rating_key: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title, item.ratingKey
         ))
 
     return uploaded
+
+
+def change_lock_status(item, field, lock=False):
+    # type: (PlexPartialObject, str, bool) -> bool
+    """
+    Change the lock status of the specified field.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        The Plex item to unlock the field for.
+    field : str
+        The field to unlock.
+    lock : bool
+        True to lock the field, False to unlock the field.
+
+    Returns
+    -------
+    bool
+        True if the lock status matches the requested lock status, False otherwise.
+
+    Examples
+    --------
+    >>> change_lock_status(item=..., field='theme', lock=False)
+    """
+    lock_string = 'lock' if lock else 'unlock'
+
+    current_status = item.isLocked(field=field)
+    if current_status == lock:
+        Log.Debug('Lock field "{}" is already {} for item: {}'.format(field, lock, item.title))
+        return current_status == lock
+
+    edits = {
+        '{}.locked'.format(field): int(lock),
+    }
+
+    count = 0
+    successful = False
+    exception = None
+    while count < 3:  # there are random read timeouts
+        try:
+            item.edit(**edits)
+        except requests.ReadTimeout as e:
+            exception = e
+            time.sleep(5)
+            count += 1
+        else:
+            successful = True
+            break
+
+    if not successful:
+        Log.Error('{}: Error {}ing field: {}'.format(item.ratingKey, lock_string, exception))
+
+    # we need to reload the item to get the new lock status
+    reload_kwargs = {field: True}
+    item.reload(**reload_kwargs)
+
+    locked = item.isLocked(field=field)
+    if locked != lock:
+        Log.Error('{}: Error {}ing field: {} != {}'.format(item.ratingKey, lock_string, locked, lock))
+
+    return locked == lock
 
 
 def upload_media(item, method, filepath=None, url=None):
