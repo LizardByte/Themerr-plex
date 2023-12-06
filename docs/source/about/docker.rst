@@ -1,4 +1,4 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/tree/nightly/DOCKER_README.md
+:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/DOCKER_README.md
 
 Docker
 ------

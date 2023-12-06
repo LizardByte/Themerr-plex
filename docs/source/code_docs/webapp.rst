@@ -1,4 +1,4 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/tree/nightly/Contents/Code/webapp.py
+:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/Contents/Code/webapp.py
 
 .. include:: ../global.rst
 

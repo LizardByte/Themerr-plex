@@ -1,4 +1,4 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/tree/nightly/Contents/Code/scheduled_tasks.py
+:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/Contents/Code/scheduled_tasks.py
 
 .. include:: ../global.rst
 

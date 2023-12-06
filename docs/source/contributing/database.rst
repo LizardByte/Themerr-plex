@@ -1,4 +1,4 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/tree/nightly/docs/source/contributing/database.rst
+:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/contributing/database.rst
 
 Database
 ========
