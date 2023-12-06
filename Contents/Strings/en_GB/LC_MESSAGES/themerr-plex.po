@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-12-06 00:59\n"
+"PO-Revision-Date: 2023-12-06 02:01\n"
 "Last-Translator: \n"
 "Language-Team: English, United Kingdom\n"
 "MIME-Version: 1.0\n"
@@ -20,97 +20,97 @@ msgstr ""
 
 #: Contents/Resources/web/templates/home.html:34
 msgid "Games"
-msgstr ""
+msgstr "Games"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Movies"
-msgstr ""
+msgstr "Movies"
 
 #: Contents/Resources/web/templates/home.html:77
 msgid "Collections"
-msgstr ""
+msgstr "Collections"
 
 #: Contents/Resources/web/templates/home.html:97
 msgid "Title"
-msgstr ""
+msgstr "Title"
 
 #: Contents/Resources/web/templates/home.html:98
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: Contents/Resources/web/templates/home.html:99
 msgid "Year"
-msgstr ""
+msgstr "Year"
 
 #: Contents/Resources/web/templates/home.html:100
 msgid "Contribute"
-msgstr ""
+msgstr "Contribute"
 
 #: Contents/Resources/web/templates/home.html:101
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: Contents/Resources/web/templates/home.html:117
 msgid "Add"
-msgstr ""
+msgstr "Add"
 
 #: Contents/Resources/web/templates/home.html:120
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 #: Contents/Resources/web/templates/home.html:135
 msgid "No known ID"
-msgstr ""
+msgstr "No known ID"
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "User provided"
-msgstr ""
+msgstr "User provided"
 
 #: Contents/Resources/web/templates/home.html:142
 msgid "Themerr provided"
-msgstr ""
+msgstr "Themerr provided"
 
 #: Contents/Resources/web/templates/home.html:144
 msgid "Unknown provider"
-msgstr ""
+msgstr "Unknown provider"
 
 #: Contents/Resources/web/templates/home.html:146
 msgid "Missing from ThemerrDB"
-msgstr ""
+msgstr "Missing from ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:148
 msgid "Failed to download"
-msgstr ""
+msgstr "Failed to download"
 
 #: Contents/Resources/web/templates/home.html:150
 msgid "Unknown status"
-msgstr ""
+msgstr "Unknown status"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr ""
+msgstr "Database is being cached, please try again soon."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr ""
+msgstr "Donate"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr ""
+msgstr "GitHub Sponsors"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr ""
+msgstr "Support"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr ""
+msgstr "Docs"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr ""
+msgstr "Support Center"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
