@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-11-17 01:35\n"
+"PO-Revision-Date: 2023-12-06 00:59\n"
 "Last-Translator: \n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
@@ -14,53 +14,53 @@ msgstr ""
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: en\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] nightly/themerr-plex.po\n"
-"X-Crowdin-File-ID: 25\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
 "Language: en_US\n"
 
 #: Contents/Resources/web/templates/home.html:34
 msgid "Games"
-msgstr "Games"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Movies"
-msgstr "Movies"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:77
 msgid "Collections"
-msgstr "Collections"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:97
 msgid "Title"
-msgstr "Title"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:98
 msgid "Type"
-msgstr "Type"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:99
 msgid "Year"
-msgstr "Year"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:100
 msgid "Contribute"
-msgstr "Contribute"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:101
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:117
 msgid "Add"
-msgstr "Add"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:120
 msgid "Edit"
-msgstr "Edit"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:135
 msgid "No known ID"
-msgstr "No known ID"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "User provided"
@@ -76,11 +76,11 @@ msgstr ""
 
 #: Contents/Resources/web/templates/home.html:146
 msgid "Missing from ThemerrDB"
-msgstr "Missing from ThemerrDB"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:148
 msgid "Failed to download"
-msgstr "Failed to download"
+msgstr ""
 
 #: Contents/Resources/web/templates/home.html:150
 msgid "Unknown status"
@@ -92,25 +92,25 @@ msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Donate"
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Support"
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Docs"
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Support Center"
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Home"
+msgstr ""
 
