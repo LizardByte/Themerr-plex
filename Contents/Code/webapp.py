@@ -639,6 +639,7 @@ def login(redirect_uri="/"):
 
 @app.route("/login", methods=["POST"])
 def login_post():
+    session.permanent = True
     session["token"] = flask.request.form["token"]
     if not is_logged_in():
         return flask.Response(status=401)
