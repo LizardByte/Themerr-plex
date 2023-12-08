@@ -788,10 +788,6 @@ def get_user_info(token):
     >>> get_user_info(token='...')
     ...
     """
-    global plex
-    if not plex:
-        plex = setup_plexapi()
-
     try:
         return MyPlexAccount(token=token)
     except Exception:
@@ -818,8 +814,6 @@ def is_server_owner(user):
     >>> is_server_owner(user=...)
     ...
     """
-    global plex
-    if not plex:
-        plex = setup_plexapi()
+    plex = setup_plexapi()
 
     return plex.account().username in {user.email, user.username}
