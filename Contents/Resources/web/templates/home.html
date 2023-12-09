@@ -15,17 +15,17 @@
 
         {% for section in items %}
         <!-- Library sections -->
-        <section class="py-5 offset-anchor" id="{{ items[section]['title'] }}">
+        <section class="py-5 offset-anchor" id="section_{{ items[section]['key'] }}">
             <div class="row">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <!-- Section title -->
                     <h1 class="text-white">{{ items[section]['title'] }}</h1>
                     <!-- Collapse/Expand button -->
                     <h2><a class="text-black" role="button" data-bs-toggle="collapse"
-                           data-bs-target="#{{ items[section]['title'] }}_collapse" aria-expanded="false"
-                           aria-controls="{{ items[section]['title'] }}_collapse"
+                           data-bs-target="#section_{{ items[section]['key'] }}_collapse" aria-expanded="false"
+                           aria-controls="section_{{ items[section]['key'] }}_collapse"
                            onclick="toggleArrow(this)">
-                           <i class="text-white fas fa-caret-up" id="{{ items[section]['title'] }}_arrow"></i>
+                           <i class="text-white fas fa-caret-up" id="section_{{ items[section]['key'] }}_arrow"></i>
                     </a></h2>
                 </div>
             </div>
@@ -90,7 +90,7 @@
             <!-- table -->
             <div class="row">
                 <div class="col-12">
-                    <div class="collapse show" id="{{ items[section]['title'] }}_collapse">
+                    <div class="collapse show" id="section_{{ items[section]['key'] }}_collapse">
                         <table class="table table-sm table-bordered border-dark caption-top">
                             <caption>{{ items[section]['title'] }}</caption>
                             <tr class="d-flex table-dark">
