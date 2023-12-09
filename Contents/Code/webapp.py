@@ -310,7 +310,7 @@ def cache_data():
                             Log.Error('Error getting collection data from LizardByte db: {}'.format(e))
                             database_id = None
 
-                item_issue_url = issue_url.format(issue_title, database_id if database_id else '')
+                item_issue_url = issue_url.format(issue_title, database_id) if database_id else None
 
             if database_type and themerr_db_helper.item_exists(
                     database_type=database_type,
