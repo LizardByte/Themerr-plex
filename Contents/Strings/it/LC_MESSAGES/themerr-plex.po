@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-11-17 01:35\n"
+"PO-Revision-Date: 2023-12-06 00:59\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: it\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] nightly/themerr-plex.po\n"
-"X-Crowdin-File-ID: 25\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
 "Language: it_IT\n"
 
 #: Contents/Resources/web/templates/home.html:34
@@ -96,7 +96,7 @@ msgstr "Dona"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr ""
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"

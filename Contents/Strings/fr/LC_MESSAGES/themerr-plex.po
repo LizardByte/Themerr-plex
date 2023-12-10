@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-11-17 08:11\n"
+"PO-Revision-Date: 2023-12-08 19:07\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: fr\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] nightly/themerr-plex.po\n"
-"X-Crowdin-File-ID: 25\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
 "Language: fr_FR\n"
 
 #: Contents/Resources/web/templates/home.html:34
@@ -84,11 +84,11 @@ msgstr "Téléchargement échoué"
 
 #: Contents/Resources/web/templates/home.html:150
 msgid "Unknown status"
-msgstr "État Inconnu"
+msgstr "État inconnu"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "La base de données est mise en cache, veuillez réessayer prochainement."
+msgstr "La base de données est en cours de mise en cache, veuillez réessayer ultérieurement."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
@@ -100,7 +100,7 @@ msgstr "GitHub Sponsors"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Assistance"
+msgstr "Aide"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
@@ -108,7 +108,7 @@ msgstr "Documentation"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Centre d'assistance"
+msgstr "Centre d'aide"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"

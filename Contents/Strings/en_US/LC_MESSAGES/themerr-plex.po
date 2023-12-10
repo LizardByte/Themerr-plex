@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-11-17 01:35\n"
+"PO-Revision-Date: 2023-12-06 02:01\n"
 "Last-Translator: \n"
 "Language-Team: English, United States\n"
 "MIME-Version: 1.0\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: en-US\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] nightly/themerr-plex.po\n"
-"X-Crowdin-File-ID: 25\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
 "Language: en_US\n"
 
 #: Contents/Resources/web/templates/home.html:34
@@ -64,15 +64,15 @@ msgstr "No known ID"
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "User provided"
-msgstr ""
+msgstr "User provided"
 
 #: Contents/Resources/web/templates/home.html:142
 msgid "Themerr provided"
-msgstr ""
+msgstr "Themerr provided"
 
 #: Contents/Resources/web/templates/home.html:144
 msgid "Unknown provider"
-msgstr ""
+msgstr "Unknown provider"
 
 #: Contents/Resources/web/templates/home.html:146
 msgid "Missing from ThemerrDB"
@@ -84,11 +84,11 @@ msgstr "Failed to download"
 
 #: Contents/Resources/web/templates/home.html:150
 msgid "Unknown status"
-msgstr ""
+msgstr "Unknown status"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr ""
+msgstr "Database is being cached, please try again soon."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
