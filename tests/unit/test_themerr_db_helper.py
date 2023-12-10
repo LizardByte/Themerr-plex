@@ -17,8 +17,7 @@ def test_update_cache(empty_themerr_db_cache):
 
 
 def test_item_exists(empty_themerr_db_cache, movies):
-    items = movies.all()
-    for item in items:
+    for item in movies.all():
         database_info = plex_api_helper.get_database_info(item=item)
 
         database_type = database_info[0]

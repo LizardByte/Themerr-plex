@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 # standard imports
 from functools import partial
 import os
@@ -14,8 +15,10 @@ import pytest
 import requests
 
 # add Contents directory to the system path
-if os.path.isdir('Contents'):
-    sys.path.append('Contents')
+pytest.root_dir = root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+pytest.contents_dir = contents_dir = os.path.join(root_dir, 'Contents')
+if os.path.isdir(contents_dir):
+    sys.path.append(contents_dir)
 
     # local imports
     from Code import constants
