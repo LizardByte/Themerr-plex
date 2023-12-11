@@ -1,36 +1,23 @@
 # -*- coding: utf-8 -*-
+
+# lib imports
+import pytest
+
 # local imports
 from Code import lizardbyte_db_helper
 
 
-def test_get_igdb_id_from_collection():
-    tests = [
-        {
-            'search_query': 'James Bond',
-            'collection_type': 'game_collections',
-            'expected_type': 'game_collections',
-            'expected_id': 326,
-        },
-        {
-            'search_query': 'James Bond',
-            'collection_type': 'game_franchises',
-            'expected_type': 'game_franchises',
-            'expected_id': 37,
-        },
-        {
-            'search_query': 'James Bond',
-            'collection_type': None,
-            'expected_type': 'game_collections',
-            'expected_id': 326,
-        },
-    ]
-
-    for test in tests:
-        igdb_id = lizardbyte_db_helper.get_igdb_id_from_collection(
-            search_query=test['search_query'],
-            collection_type=test['collection_type']
-        )
-        assert igdb_id == (test['expected_id'], test['expected_type'])
+@pytest.mark.parametrize('search_query, collection_type, expected_type, expected_id', [
+    ('James Bond', 'game_collections', 'game_collections', 326),
+    ('James Bond', 'game_franchises', 'game_franchises', 37),
+    ('James Bond', None, 'game_collections', 326),
+])
+def test_get_igdb_id_from_collection(search_query, collection_type, expected_type, expected_id):
+    igdb_id = lizardbyte_db_helper.get_igdb_id_from_collection(
+        search_query=search_query,
+        collection_type=collection_type
+    )
+    assert igdb_id == (expected_id, expected_type)
 
 
 def test_get_igdb_id_from_collection_invalid():
