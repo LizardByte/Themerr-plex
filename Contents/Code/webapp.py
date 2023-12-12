@@ -229,6 +229,7 @@ def cache_data():
 
         # add each section to the items dict
         items[section.key] = dict(
+            key=section.key,
             title=section.title,
             agent=section.agent,
             items=[],
