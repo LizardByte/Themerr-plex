@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: LizardByte/setup-python-action@v2023.1210.35516
+        uses: LizardByte/setup-python-action@v2023.1211.161304
         with:
           python-version: '2.7'
 
