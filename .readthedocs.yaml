@@ -18,6 +18,11 @@ build:
       - rstcheck -r .  # lint rst files
       # - rstfmt --check --diff -w 120 .  # check rst formatting
 
+# submodules required to include youtube-dl
+submodules:
+  include: all
+  recursive: true
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   builder: html

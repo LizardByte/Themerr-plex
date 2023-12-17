@@ -11,12 +11,21 @@ Ensure `git <https://git-scm.com/>`__ is installed and run the following:
 
    .. code-block:: bash
 
-      git clone https://github.com/lizardbyte/themerr-plex.git themerr-plex.bundle
+      git clone --recurse-submodules https://github.com/lizardbyte/themerr-plex.git themerr-plex.bundle
       cd ./themerr-plex.bundle
 
 Setup venv
 ----------
 It is recommended to setup and activate a `venv`_.
+
+Apply Patches
+-------------
+Patch YouTube-DL
+   .. code-block:: bash
+
+      pushd ./third-party/youtube-dl
+      git apply -v ../../patches/youtube_dl-compat.patch
+      popd
 
 Install Requirements
 --------------------
