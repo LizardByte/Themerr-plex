@@ -106,6 +106,11 @@ database_cache_file = os.path.join(themerr_data_directory, 'database_cache.json'
 database_cache_lock = Lock()
 
 
+responses = {
+    500: Response(response='Internal Server Error', status=500, mimetype='text/plain')
+}
+
+
 @babel.localeselector
 def get_locale():
     # type: () -> str
@@ -387,16 +392,15 @@ def home():
     --------
     >>> home()
     """
-    items = []
+    if not os.path.isfile(database_cache_file):
+        return render_template('home_db_not_cached.html', title='Home')
+
     try:
         items = json.loads(Core.storage.load(filename=database_cache_file, binary=False))
     except IOError:
-        pass
+        return responses[500]
 
-    if items:
-        return render_template('home.html', title='Home', items=items)
-    else:
-        return render_template('home_db_not_cached.html', title='Home')
+    return render_template('home.html', title='Home', items=items)
 
 
 @app.route("/<path:img>", methods=["GET"])
