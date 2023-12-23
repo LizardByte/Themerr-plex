@@ -136,20 +136,31 @@ mime_type_map = {
 database_cache_file = os.path.join(themerr_data_directory, 'database_cache.json')
 database_cache_lock = Lock()
 
-secret_file = os.path.join(themerr_data_directory, 'secret.json')
 
-try:
-    with open(secret_file, 'r') as f:
-        app.secret_key = json.load(f)['secret']
-except Exception:
-    # create random secret
-    Log.Info('Creating random secret')
-    app.secret_key = uuid.uuid4().hex
+def create_secret():
+    """
+    Create secret file with random uuid.
+
+    Examples
+    --------
+    >>> create_secret()
+    """
+    secret_file = os.path.join(themerr_data_directory, 'secret.json')
     try:
-        with open(secret_file, 'w') as f:
-            json.dump({'secret': app.secret_key}, f)
-    except Exception as e:
-        Log.Error('Error saving secret: {}'.format(e))
+        with open(secret_file, 'r') as f:
+            app.secret_key = json.load(f)['secret']
+    except Exception:
+        # create random secret
+        Log.Info('Creating random secret')
+        app.secret_key = uuid.uuid4().hex
+        try:
+            with open(secret_file, 'w') as f:
+                json.dump({'secret': app.secret_key}, f)
+        except Exception as e:
+            Log.Error('Error saving secret: {}'.format(e))
+
+
+create_secret()
 
 
 responses = {
