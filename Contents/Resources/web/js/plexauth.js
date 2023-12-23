@@ -1,5 +1,4 @@
-// Code from https://github.com/Tautulli/Tautulli/blob/master/data/interfaces/default/js/script.js.
-// Licensed under the GNU General Public License v3 (GPLv3)
+// Reference: https://github.com/Tautulli/Tautulli/blob/d019efcf911b4806618761c2da48bab7d04031ec/data/interfaces/default/js/script.js
 
 var p = {
     name: 'Unknown',
