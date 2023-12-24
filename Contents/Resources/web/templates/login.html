@@ -28,25 +28,25 @@
 <script src="{{ url_for('static', filename='js/plexauth.js') }}"></script>
 <script>
     function OAuthSuccessCallback(authToken) {
-        signIn(authToken)
+        signIn(authToken);
     }
     function OAuthErrorCallback() {
-        $('#sign-in-alert').text('Error communicating with Plex.tv.').show()
+        $('#sign-in-alert').text('Error communicating with Plex.tv.').show();
     }
 
     $('#sign-in-plex').click(function () {
-        PlexOAuth(OAuthSuccessCallback, OAuthErrorCallback)
-    })
+        PlexOAuth(OAuthSuccessCallback, OAuthErrorCallback);
+    });
 
     function signIn(token) {
-        $('.login-container button').prop('disabled', true)
-        $('#sign-in-plex').html('<i class="fa fa-refresh fa-spin"></i>&nbsp; Sign In with Plex')
+        $('.login-container button').prop('disabled', true);
+        $('#sign-in-plex').html('<i class="fa fa-refresh fa-spin"></i>&nbsp; Sign In with Plex');
 
         var data = {
             token: token
-        }
-        var x_plex_headers = getPlexHeaders()
-        data = $.extend(data, x_plex_headers)
+        };
+        var x_plex_headers = getPlexHeaders();
+        data = $.extend(data, x_plex_headers);
 
         $.ajax({
             url: '{{ url_for("login") }}',
@@ -55,21 +55,21 @@
             dataType: 'json',
             statusCode: {
                 200: function (xhr, status) {
-                    window.location = "{{ redirect_uri }}"
+                    window.location = "{{ redirect_uri }}";
                 },
                 401: function (xhr, status) {
-                    $('#sign-in-alert').text('Invalid Plex account, or the account is not the owner of the server.').show()
+                    $('#sign-in-alert').text('Invalid Plex account, or the account is not the owner of the server.').show();
                 },
                 429: function (xhr, status) {
-                    var retry = Math.ceil(xhr.getResponseHeader('Retry-After') / 60)
-                    $('#sign-in-alert').text(`Too many login attempts. Try again in ${retry} minute(s).`).show()
+                    var retry = Math.ceil(xhr.getResponseHeader('Retry-After') / 60);
+                    $('#sign-in-alert').text(`Too many login attempts. Try again in ${retry} minute(s).`).show();
                 }
             },
             complete: function () {
-                $('.login-container button').prop('disabled', false)
-                $('#sign-in-plex').html('<i class="fa fa-sign-in"></i>&nbsp; Sign In with Plex')
+                $('.login-container button').prop('disabled', false);
+                $('#sign-in-plex').html('<i class="fa fa-sign-in"></i>&nbsp; Sign In with Plex');
             }
-        })
+        });
     }
 </script>
 {% endblock scripts %}
