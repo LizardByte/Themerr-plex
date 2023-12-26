@@ -51,7 +51,7 @@ extensions = [
     'sphinx.ext.autodoc',  # autodocument modules
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.todo',  # enable to-do sections
-    'sphinx.ext.viewcode'  # add links to view source code
+    'sphinx.ext.viewcode',  # add links to view source code
 ]
 
 # Add any paths that contain templates here, relative to this directory.
