@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-12-10 23:36\n"
+"PO-Revision-Date: 2023-12-29 08:53\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,7 @@ msgstr "Modifica"
 
 #: Contents/Resources/web/templates/home.html:135
 msgid "No known ID"
-msgstr "ID non noto"
+msgstr "ID sconosciuto"
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "User provided"
@@ -80,7 +80,7 @@ msgstr "Manca da ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:148
 msgid "Failed to download"
-msgstr "Impossibile scaricare"
+msgstr "Download non riuscito"
 
 #: Contents/Resources/web/templates/home.html:150
 msgid "Unknown status"
@@ -88,7 +88,7 @@ msgstr "Stato sconosciuto"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "Il database è in fase di caching, riprova presto."
+msgstr "Il database è in fase di caching, riprova più tardi."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
@@ -96,7 +96,7 @@ msgstr "Dona"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "Sponsor GitHub"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
