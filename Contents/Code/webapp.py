@@ -266,11 +266,13 @@ def cache_data():
                 year = None
 
             # convert imdb id to tmdb id, so we can build the issue url properly
-            if item.type == 'movie' and item_agent == 'com.plexapp.agents.imdb':
+            if item.type == 'movie' and (
+                    item_agent == 'com.plexapp.agents.imdb'
+                    or database_id.startswith('tt')
+            ):
                 # try to get tmdb id from imdb id
                 tmdb_id = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id=database_id)
-                if tmdb_id:
-                    database_id = tmdb_id
+                database_id = tmdb_id if tmdb_id else None
 
             item_issue_url = None
 
