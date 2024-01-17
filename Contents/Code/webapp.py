@@ -26,6 +26,7 @@ import flask
 from flask import Flask, Response, render_template, send_from_directory
 from flask_babel import Babel
 import polib
+from six.moves.urllib.parse import quote_plus
 from werkzeug.utils import secure_filename
 
 # local imports
@@ -316,7 +317,11 @@ def cache_data():
                             Log.Error('Error getting collection data from LizardByte db: {}'.format(e))
                             database_id = None
 
-                item_issue_url = issue_url.format(issue_title, database_id) if database_id else None
+                if database_id:
+                    # url encode the issue title
+                    issue_title = quote_plus(issue_title)
+
+                    item_issue_url = issue_url.format(issue_title, database_id)
 
             if database_type and themerr_db_helper.item_exists(
                     database_type=database_type,
