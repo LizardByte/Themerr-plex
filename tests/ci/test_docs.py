@@ -1,42 +1,41 @@
+# standard imports
 import os
 import platform
-import pytest
 import shutil
 import subprocess
 
+# lib imports
+import pytest
 
-def build_docs():
+
+doc_matrix = [
+    ('html', os.path.join('html', 'index.html')),
+    ('epub', os.path.join('epub', 'Themerr-plex.epub')),
+]
+
+
+@pytest.mark.parametrize('doc_type, file_name', doc_matrix)
+def test_make_docs(doc_type, file_name):
     """Test building sphinx docs"""
-    doc_types = [
-        'html',
-        'epub',
-    ]
-
     # remove existing build directory
     build_dir = os.path.join(os.getcwd(), 'docs', 'build')
     if os.path.isdir(build_dir):
         shutil.rmtree(path=build_dir)
 
-    for doc_type in doc_types:
-        print('Building {} docs'.format(doc_type))
-        result = subprocess.check_call(
-            args=['make', doc_type],
-            cwd=os.path.join(os.getcwd(), 'docs'),
-            shell=True if platform.system() == 'Windows' else False,
-        )
-        assert result == 0, 'Failed to build {} docs'.format(doc_type)
+    print('Building {} docs'.format(doc_type))
+    result = subprocess.check_call(
+        args=['make', doc_type],
+        cwd=os.path.join(os.getcwd(), 'docs'),
+        shell=True if platform.system() == 'Windows' else False,
+    )
+    assert result == 0, 'Failed to build {} docs'.format(doc_type)
 
     # ensure docs built
-    assert os.path.isfile(os.path.join(build_dir, 'html', 'index.html')), 'HTML docs not built'
-    assert os.path.isfile(os.path.join(build_dir, 'epub', 'Themerr-plex.epub')), 'EPUB docs not built'
+    assert os.path.isfile(os.path.join(build_dir, file_name)), '{} docs not built'.format(doc_type)
 
 
-def test_make_docs():
-    """Test building working sphinx docs"""
-    build_docs()
-
-
-def test_make_docs_broken():
+@pytest.mark.parametrize('doc_type, file_name', doc_matrix)
+def test_dummy_file(doc_type, file_name):
     """Test building sphinx docs with known warnings"""
     # create a dummy rst file
     dummy_file = os.path.join(os.getcwd(), 'docs', 'source', 'dummy.rst')
@@ -48,7 +47,7 @@ def test_make_docs_broken():
 
     # ensure CalledProcessError is raised
     with pytest.raises(subprocess.CalledProcessError):
-        build_docs()
+        test_make_docs(doc_type=doc_type, file_name=file_name)
 
     # remove the dummy rst file
     os.remove(dummy_file)
