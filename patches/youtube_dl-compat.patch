@@ -1,8 +1,8 @@
 diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
-index 3c526a78d..6e2a92d92 100644
+index 3c526a78d..7f7323171 100644
 --- a/youtube_dl/compat.py
 +++ b/youtube_dl/compat.py
-@@ -58,18 +58,22 @@ except ImportError:  # Python 2
+@@ -58,19 +58,25 @@ except ImportError:  # Python 2
  
  # Also fix up lack of method arg in old Pythons
  try:
@@ -17,22 +17,24 @@ index 3c526a78d..6e2a92d92 100644
 -            if method:
 -                r.get_method = types.MethodType(lambda _: method, r)
 -            return r
--
--    compat_urllib_request.Request = _request
 +    def _add_init_method_arg(cls):
 +        init = cls.__init__
 +
 +        def wrapped_init(self, *args, **kwargs):
 +            method = kwargs.pop('method', 'GET')
 +            init(self, *args, **kwargs)
++            if any(callable(x.__dict__.get('get_method')) for x in (self.__class__, self) if x != cls):
++                # allow instance or its subclass to override get_method()
++                return
 +            if self.has_data() and method == 'GET':
 +                method = 'POST'
 +            self.get_method = types.MethodType(lambda _: method, self)
-+
+ 
+-    compat_urllib_request.Request = _request
 +        cls.__init__ = wrapped_init
-+
+ 
 +    _add_init_method_arg(compat_urllib_request.Request)
 +    del _add_init_method_arg
  
- 
  try:
+     import urllib.error as compat_urllib_error
