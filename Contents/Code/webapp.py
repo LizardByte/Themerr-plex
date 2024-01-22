@@ -271,7 +271,14 @@ def cache_data():
                     or database_id.startswith('tt')
             ):
                 # try to get tmdb id from imdb id
-                tmdb_id = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id=database_id)
+                tmdb_id = tmdb_helper.get_tmdb_id_from_external_id(
+                    external_id=database_id, database='imdb', item_type='movie')
+                database_id = tmdb_id if tmdb_id else None
+
+            elif item.type == 'show' and item_agent == 'com.plexapp.agents.tvdb':
+                # try to get tmdb id from tvdb id
+                tmdb_id = tmdb_helper.get_tmdb_id_from_external_id(
+                    external_id=database_id, database='tvdb', item_type='tv')
                 database_id = tmdb_id if tmdb_id else None
 
             item_issue_url = None
@@ -300,6 +307,8 @@ def cache_data():
                             database_id = None
                     else:
                         issue_title = '{} ({})'.format(getattr(item, "originalTitle", None) or item.title, year)
+                elif item.type == 'show':
+                    issue_title = '{} ({})'.format(item.title, year)
                 else:  # collections
                     issue_title = item.title
 

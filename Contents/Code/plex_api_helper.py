@@ -503,6 +503,26 @@ def get_database_info(item):
                 database = 'imdb'
                 database_id = item.guid.split('://')[1].split('?')[0]
 
+    elif item.type == 'show':
+        split_guid = item.guid.split('://')
+        agent = split_guid[0]
+        if agent == 'com.plexapp.agents.themoviedb':
+            database_type = 'tv_shows'
+            database = 'themoviedb'
+            database_id = item.guid.split('://')[1].split('?')[0]
+        elif agent == 'com.plexapp.agents.thetvdb':
+            database_type = 'tv_shows'
+            temp_database = 'thetvdb'
+            temp_database_id = item.guid.split('://')[1].split('?')[0]
+
+            # ThemerrDB does not have TVDB IDs, so we need to convert it to TMDB ID
+            database_id = tmdb_helper.get_tmdb_id_from_external_id(
+                external_id=temp_database_id,
+                database='tvdb',
+                item_type='tv',
+            )
+            database = 'themoviedb' if database_id else None
+
     elif item.type == 'collection':
         # this is tricky since collections don't match up with any of the databases
         # we'll use the collection title and try to find a match
@@ -715,15 +735,20 @@ def scheduled_update():
                 Log.Debug('Themerr-plex is disabled for agent "{}"'.format(section.agent))
                 continue
 
+        all_items = []
+
         # get all the items in the section
-        media_items = section.all() if Prefs['bool_auto_update_movie_themes'] else []
+        if section.type == 'movie':
+            media_items = section.all() if Prefs['bool_auto_update_movie_themes'] else []
 
-        # get all collections in the section
-        collections = section.collections() if Prefs['bool_auto_update_collection_themes'] else []
+            # get all collections in the section
+            collections = section.collections() if Prefs['bool_auto_update_collection_themes'] else []
 
-        # combine the items and collections into one list
-        # this is done so that we can process both items and collections in the same loop
-        all_items = media_items + collections
+            # combine the items and collections into one list
+            # this is done so that we can process both items and collections in the same loop
+            all_items = media_items + collections
+        elif section.type == 'show':
+            all_items = section.all() if Prefs['bool_auto_update_tv_themes'] else []
 
         for item in all_items:
             if item.ratingKey not in q.queue:

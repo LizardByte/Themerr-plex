@@ -18,8 +18,8 @@ from typing import Optional
 tmdb_base_url = 'http://127.0.0.1:32400/services/tmdb?uri='
 
 
-def get_tmdb_id_from_imdb_id(imdb_id):
-    # type: (str) -> Optional[int]
+def get_tmdb_id_from_external_id(external_id, database, item_type):
+    # type: (str, str, str) -> Optional[int]
     """
     Convert IMDB ID to TMDB ID.
 
@@ -27,8 +27,12 @@ def get_tmdb_id_from_imdb_id(imdb_id):
 
     Parameters
     ----------
-    imdb_id : str
-        IMDB ID to convert.
+    external_id : str
+        External ID to convert.
+    database : str
+        Database to search. Must be one of 'imdb' or 'tvdb'.
+    item_type : str
+        Item type to search. Must be one of 'movie' or 'tv'.
 
     Returns
     -------
@@ -37,25 +41,38 @@ def get_tmdb_id_from_imdb_id(imdb_id):
 
     Examples
     --------
-    >>> get_tmdb_id_from_imdb_id(imdb_id='tt1254207')
+    >>> get_tmdb_id_from_external_id(imdb_id='tt1254207', database='imdb', item_type='movie')
     10378
+    >>> get_tmdb_id_from_external_id(imdb_id='268592', database='tvdb', item_type='tv')
+    48866
     """
-    # according to https://www.themoviedb.org/talk/5f6a0500688cd000351c1712 we can search by imdb id
-    # https://api.themoviedb.org/3/find/tt0458290?api_key=###&external_source=imdb_id
-    find_imdb_item = 'find/{}?external_source=imdb_id'
+    if database.lower() not in ['imdb', 'tvdb']:
+        Log.Exception('Invalid database: {}'.format(database))
+        return
+    if item_type.lower() not in ['movie', 'tv']:
+        Log.Exception('Invalid item type: {}'.format(item_type))
+        return
 
-    url = '{}/{}'.format(tmdb_base_url, find_imdb_item.format(String.Quote(s=imdb_id, usePlus=True)))
+    # according to https://www.themoviedb.org/talk/5f6a0500688cd000351c1712 we can search by external id
+    # https://api.themoviedb.org/3/find/tt0458290?api_key=###&external_source=imdb_id
+    find_imdb_item = 'find/{}?external_source={}_id'
+
+    url = '{}/{}'.format(
+        tmdb_base_url,
+        find_imdb_item.format(String.Quote(s=external_id, usePlus=True), database.lower())
+    )
     try:
         tmdb_data = JSON.ObjectFromURL(
             url=url, sleep=2.0, headers=dict(Accept='application/json'), cacheTime=CACHE_1DAY, errors='strict')
     except Exception as e:
-        Log.Debug('Error converting IMDB ID to TMDB ID: {}'.format(e))
+        Log.Debug('Error converting external ID to TMDB ID: {}'.format(e))
     else:
         Log.Debug('TMDB data: {}'.format(tmdb_data))
         try:
-            tmdb_id = int(tmdb_data['movie_results'][0]['id'])  # this is already an integer, but let's force it
+            # this is already an integer, but let's force it
+            tmdb_id = int(tmdb_data['{}_results'.format(item_type.lower())][0]['id'])
         except (IndexError, KeyError, ValueError):
-            Log.Debug('Error converting IMDB ID to TMDB ID: {}'.format(tmdb_data))
+            Log.Debug('Error converting external ID to TMDB ID: {}'.format(tmdb_data))
         else:
             return tmdb_id
 

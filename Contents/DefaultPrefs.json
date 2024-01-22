@@ -49,6 +49,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "bool_auto_update_tv_themes",
+		"type": "bool",
+		"label": "Update tv show themes during automatic update",
+		"default": "True",
+		"secure": "false"
+	},
+	{
 		"id": "bool_auto_update_collection_themes",
 		"type": "bool",
 		"label": "Update collection themes during automatic update",

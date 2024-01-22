@@ -8,6 +8,7 @@ default_prefs = dict(
     bool_remove_unused_posters='False',
     bool_auto_update_items='True',
     bool_auto_update_movie_themes='True',
+    bool_auto_update_tv_themes='True',
     bool_auto_update_collection_themes='True',
     bool_update_collection_metadata_plex_movie='False',
     bool_update_collection_metadata_legacy='True',

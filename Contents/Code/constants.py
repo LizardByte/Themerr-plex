@@ -41,11 +41,11 @@ plugin_support_data_directory = os.path.join(plugin_support_directory, 'Data')
 themerr_data_directory = os.path.join(plugin_support_data_directory, plugin_identifier, 'DataItems')
 
 contributes_to = [
-    'tv.plex.agents.movie',
-    'com.plexapp.agents.imdb',
-    'com.plexapp.agents.themoviedb',
-    # 'com.plexapp.agents.thetvdb',  # not available as movie agent
-    'dev.lizardbyte.retroarcher-plex'
+    'tv.plex.agents.movie',  # new movie agent
+    'com.plexapp.agents.imdb',  # legacy movie agent
+    'com.plexapp.agents.themoviedb',  # movie and tv show agent
+    'com.plexapp.agents.thetvdb',  # tv show agent
+    'dev.lizardbyte.retroarcher-plex'  # retroarcher plugin
 ]
 
 guid_map = dict(
@@ -73,6 +73,7 @@ title_prefix = dict(
     game_franchises='[GAME FRANCHISE]: ',
     movies='[MOVIE]: ',
     movie_collections='[MOVIE COLLECTION]: ',
+    tv_shows='[TV SHOW]: ',
 )
 url_prefix = dict(
     games='https://www.igdb.com/games/',
@@ -80,6 +81,7 @@ url_prefix = dict(
     game_franchises='https://www.igdb.com/franchises/',
     movies='https://www.themoviedb.org/movie/',
     movie_collections='https://www.themoviedb.org/collection/',
+    tv_shows='https://www.themoviedb.org/tv/',
 )
 
 # two additional strings to fill in later, item title and item url
@@ -97,6 +99,8 @@ issue_urls = dict(
     movie_collections='{}&labels={}&template={}&title={}{}&{}={}{}'.format(
         base_url, issue_label, issue_template, title_prefix['movie_collections'], '{}', url_name,
         url_prefix['movie_collections'], '{}'),
+    tv_shows='{}&labels={}&template={}&title={}{}&{}={}{}'.format(
+        base_url, issue_label, issue_template, title_prefix['tv_shows'], '{}', url_name, url_prefix['tv_shows'], '{}'),
 )
 
 media_type_dict = dict(

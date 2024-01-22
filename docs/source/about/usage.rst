@@ -131,6 +131,15 @@ Description
 Default
    ``True``
 
+Update tv show themes during automatic update
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will update tv show themes during automatic updates.
+
+Default
+   ``True``
+
 Update collection themes during automatic update
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

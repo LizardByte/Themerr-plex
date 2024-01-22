@@ -15,13 +15,13 @@ def test_get_tmdb_id_from_imdb_id(tmdb_test_id):
     print(plexhints.CONTENTS)
     print(plexhints.ELEVATED_POLICY)
 
-    tmdb_id = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id=tmdb_test_id)
+    tmdb_id = tmdb_helper.get_tmdb_id_from_external_id(external_id=tmdb_test_id, database='imdb', item_type='movie')
     assert tmdb_id, "No tmdb_id found for {}".format(tmdb_test_id)
     assert isinstance(tmdb_id, int), "tmdb_id is not an int: {}".format(tmdb_id)
 
 
 def test_get_tmdb_id_from_imdb_id_invalid():
-    test = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id='invalid')
+    test = tmdb_helper.get_tmdb_id_from_external_id(external_id='invalid', database='imdb', item_type='movie')
     assert test is None, "tmdb_id found for invalid imdb_id: {}".format(test)
 
 
