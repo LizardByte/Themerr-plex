@@ -70,12 +70,12 @@ class MigrationHelper:
         ----------
         key : str
             The key to validate.
-        raise_exception : bool
+        raise_exception : py:class:`bool`
             Whether to raise an exception if the key is invalid.
 
         Returns
         -------
-        bool
+        py:class:`bool`
             Whether the key is valid.
 
         Raises
@@ -120,7 +120,7 @@ class MigrationHelper:
 
         Returns
         -------
-        Optional[bool]
+        Optional[py:class:`bool`]
             The migration status for the given key, or None if the key is not found.
 
         Examples

@@ -102,7 +102,7 @@ def item_exists(database_type, database, id):
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the item exists in the ThemerrDB, otherwise False.
 
     Examples

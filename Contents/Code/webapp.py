@@ -142,7 +142,7 @@ def start_server():
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the server is running, otherwise False.
 
     Examples
@@ -179,7 +179,7 @@ def stop_server():
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the server was shutdown, otherwise False.
 
     Examples

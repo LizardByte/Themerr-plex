@@ -107,7 +107,7 @@ def update_plex_item(rating_key):
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the item was updated successfully, False otherwise.
 
     Examples
@@ -249,7 +249,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the media was added successfully or already present, False otherwise.
 
     Examples
@@ -331,12 +331,12 @@ def change_lock_status(item, field, lock=False):
         The Plex item to unlock the field for.
     field : str
         The field to unlock.
-    lock : bool
+    lock : py:class:`bool`
         True to lock the field, False to unlock the field.
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the lock status matches the requested lock status, False otherwise.
 
     Examples
@@ -402,7 +402,7 @@ def upload_media(item, method, filepath=None, url=None):
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the theme was uploaded successfully, False otherwise.
 
     Examples

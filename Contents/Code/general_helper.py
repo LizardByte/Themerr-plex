@@ -169,7 +169,7 @@ def remove_uploaded_media(item, media_type):
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the themes were removed successfully, False otherwise.
 
     Examples

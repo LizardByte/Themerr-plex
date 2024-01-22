@@ -31,7 +31,7 @@ def nsbool(value):
 
     Parameters
     ----------
-    value : bool
+    value : py:class:`bool`
         The boolean value to format.
 
     Returns

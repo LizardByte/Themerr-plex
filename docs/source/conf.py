@@ -50,6 +50,7 @@ extensions = [
     'numpydoc',  # this automatically loads `sphinx.ext.autosummary` as well
     'sphinx.ext.autodoc',  # autodocument modules
     'sphinx.ext.autosectionlabel',
+    'sphinx.ext.intersphinx',  # link to other projects' documentation
     'sphinx.ext.todo',  # enable to-do sections
     'sphinx.ext.viewcode',  # add links to view source code
 ]
@@ -120,3 +121,14 @@ numpydoc_validation_checks = {'all', 'SA01'}  # Report warnings for all checks *
 # disable epub mimetype warnings
 # https://github.com/readthedocs/readthedocs.org/blob/eadf6ac6dc6abc760a91e1cb147cc3c5f37d1ea8/docs/conf.py#L235-L236
 suppress_warnings = ["epub.unknown_project_files"]
+
+python_version = '{}.{}'.format(sys.version_info.major, sys.version_info.minor)
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/{}/'.format(python_version), None),
+    'plexapi': ('https://docs.lizardbyte.dev/projects/python-plexapi-backport/en/latest/', None),
+}
+
+numpydoc_show_class_members = True
+numpydoc_show_inherited_class_members = False
+numpydoc_xref_param_type = True
