@@ -48,7 +48,7 @@ def run_threaded(target, daemon=None, args=(), **kwargs):
     ----------
     target : Callable
         The function to run in a thread.
-    daemon : Optional[bool]
+    daemon : Optional[py:class:`bool`]
         Whether the thread should be a daemon thread.
     args : Iterable
         The positional arguments to pass to the function.

@@ -234,7 +234,7 @@ class Themerr(Agent.Movies):
         defined in the `Locale
         <https://web.archive.org/web/https://dev.plexapp.com/docs/api/localekit.html#module-Locale>`_
         API.
-    primary_provider : bool
+    primary_provider : py:class:`bool`
         A boolean value defining whether the agent is a primary metadata provider or not. Primary providers can be
         selected as the main source of metadata for a particular media type. If an agent is secondary
         (``primary_provider`` is set to ``False``) it will only be able to contribute to data provided by another
@@ -291,7 +291,7 @@ class Themerr(Agent.Movies):
         lang : str
             A string identifying the user’s currently selected language. This will be one of the constants added to the
             agent’s ``languages`` attribute.
-        manual : bool
+        manual : py:class:`bool`
             A boolean value identifying whether the search was issued automatically during scanning, or manually by the
             user (in order to fix an incorrect match).
 
@@ -359,7 +359,7 @@ class Themerr(Agent.Movies):
         lang : str
             A string identifying which language should be used for the metadata. This will be one of the constants
             defined in the agent’s ``languages`` attribute.
-        force : bool
+        force : py:class:`bool`
             A boolean value identifying whether the user forced a full refresh of the metadata. If this argument is
             ``True``, all metadata should be refreshed, regardless of whether it has been populated previously.
 
