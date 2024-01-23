@@ -4,9 +4,9 @@
 import os
 
 
-def _check_themes(movies):
-    # ensure all movies have themes
-    for item in movies.all():
+def _check_themes(items):
+    # ensure all items have themes
+    for item in items:
         print(item.title)
         assert item.theme, "No theme found for {}".format(item.title)
 
@@ -38,5 +38,6 @@ def test_plugin_log_file_exceptions(plugin_log_file):
             "Unexpected exception: {}".format(exception))
 
 
-def test_movies(movies):
-    _check_themes(movies)
+def test_items(section):
+    items = section.all()
+    _check_themes(items=items)

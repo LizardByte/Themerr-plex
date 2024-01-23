@@ -22,7 +22,7 @@ if os.path.isdir(contents_dir):
 
     # local imports
     from Code import constants
-    from Code import Themerr
+    from Code import Themerr, ThemerrMovies, ThemerrTvShows
     from Code import themerr_db_helper
     from Code import webapp
 else:
@@ -31,6 +31,10 @@ else:
 # plex server setup
 SERVER_BASEURL = plexapi.CONFIG.get("auth.server_baseurl")
 SERVER_TOKEN = plexapi.CONFIG.get("auth.server_token")
+
+# constants
+MOVIE_SECTIONS = ["Movies", "Movies-imdb", "Movies-tmdb"]
+TV_SHOW_SECTIONS = ["TV Shows", "TV Shows-tmdb", "TV Shows-tvdb"]
 
 
 def wait_for_file(file_path, timeout=300):
@@ -46,19 +50,19 @@ def wait_for_file(file_path, timeout=300):
     assert found, "After {} seconds, {} file not found".format(timeout, file_path)
 
 
-def wait_for_themes(movies):
+def wait_for_themes(section):
     # ensure library is not refreshing
-    while movies.refreshing:
+    while section.refreshing:
         time.sleep(1)
 
     # wait for themes to be uploaded
     timer = 0
     with_themes = 0
-    total = len(movies.all())
+    total = len(section.all())
     while timer < 180 and with_themes < total:
         with_themes = 0
         try:
-            for item in movies.all():
+            for item in section.all():
                 if item.theme:
                     with_themes += 1
         except requests.ReadTimeout:
@@ -72,14 +76,19 @@ def wait_for_themes(movies):
 
 
 # basic fixtures
-@pytest.fixture
-def agent():
-    # type: () -> Agent
-    return Themerr()
+@pytest.fixture(params=['movies', 'tv_shows'], scope="function")
+def agent(request):
+    # type: (any) -> Agent
+    if request.param == 'movies':
+        return ThemerrMovies()
+    elif request.param == 'tv_shows':
+        return ThemerrTvShows()
+    else:
+        return Themerr()
 
 
-@pytest.fixture
-def test_client(scope='function'):
+@pytest.fixture(scope='function')
+def test_client():
     """Create a test client for testing webapp endpoints"""
     app = webapp.app
     app.config['TESTING'] = True
@@ -122,37 +131,67 @@ def sess():
 
 @pytest.fixture(scope="session")
 def plex(request, sess):
-    assert SERVER_BASEURL, "Required SERVER_BASEURL not specified."
+    assert SERVER_BASEURL is not None, "Required SERVER_BASEURL not specified."
 
     return PlexServer(SERVER_BASEURL, SERVER_TOKEN, session=sess)
 
 
-@pytest.fixture(params=["Movies", "Movies-imdb", "Movies-tmdb"], scope="session")
-def library_section_names(plex, request):
-    section = request.param
-    assert plex.library.section(section), "Required library section {} not found.".format(section)
-    return section
+@pytest.fixture(params=MOVIE_SECTIONS, scope="session")
+def movie_section_names(plex, request):
+    library_section = request.param
+    assert plex.library.section(library_section), "Required library section {} not found.".format(library_section)
+    return library_section
 
 
 @pytest.fixture(scope="session")
-def movies(library_section_names, plex):
-    section = library_section_names
-    library_movies = plex.library.section(section)
-    wait_for_themes(movies=library_movies)
-    yield library_movies
+def movies(movie_section_names, plex):
+    library_section = movie_section_names
+    library_items = plex.library.section(library_section)
+    wait_for_themes(section=library_items)
+    yield library_items
 
 
 @pytest.fixture(scope="session")
-def collections(library_section_names, movies, plex):
-    section = library_section_names
+def collections(movie_section_names, movies, plex):
+    library_section = movie_section_names
     try:
         return movies.collection("Test Collection")
     except NotFound:
         return plex.createCollection(
             title="Test Collection",
-            section=section,
+            section=library_section,
             items=movies.all()
         )
+
+
+@pytest.fixture(params=TV_SHOW_SECTIONS, scope="session")
+def tv_show_section_names(plex, request):
+    library_section = request.param
+    assert plex.library.section(library_section), "Required library section {} not found.".format(library_section)
+    return library_section
+
+
+@pytest.fixture(scope="session")
+def tv_shows(tv_show_section_names, plex):
+    library_section = tv_show_section_names
+    library_items = plex.library.section(library_section)
+    wait_for_themes(section=library_items)
+    yield library_items
+
+
+@pytest.fixture(params=MOVIE_SECTIONS + TV_SHOW_SECTIONS, scope="session")
+def section_names(plex, request):
+    library_section = request.param
+    assert plex.library.section(library_section), "Required library section {} not found.".format(library_section)
+    return library_section
+
+
+@pytest.fixture(scope="session")
+def section(section_names, plex):
+    library_section = section_names
+    library_items = plex.library.section(library_section)
+    wait_for_themes(section=library_items)
+    yield library_items
 
 
 @pytest.fixture(scope='function')

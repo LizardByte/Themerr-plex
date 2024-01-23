@@ -12,9 +12,9 @@ from Code import constants
 from Code import general_helper
 
 
-def test_get_media_upload_path(movies):
+def test_get_media_upload_path(section):
     test_items = [
-        movies.all()[0]
+        section.all()[0]
     ]
 
     media_types = ['art', 'posters', 'themes']
@@ -28,18 +28,18 @@ def test_get_media_upload_path(movies):
                 assert os.path.isdir(media_upload_path)
 
 
-def test_get_media_upload_path_invalid(movies):
+def test_get_media_upload_path_invalid(section):
     test_items = [
-        movies.all()[0]
+        section.all()[0]
     ]
 
     with pytest.raises(ValueError):
         general_helper.get_media_upload_path(item=test_items[0], media_type='invalid')
 
 
-def test_get_themerr_json_path(movies):
+def test_get_themerr_json_path(section):
     test_items = [
-        movies.all()[0]
+        section.all()[0]
     ]
 
     for item in test_items:
@@ -49,9 +49,9 @@ def test_get_themerr_json_path(movies):
                             'DataItems') in themerr_json_path
 
 
-def test_get_themerr_json_data(movies):
+def test_get_themerr_json_data(section):
     test_items = [
-        movies.all()[0]
+        section.all()[0]
     ]
 
     for item in test_items:
@@ -69,9 +69,9 @@ def test_get_themerr_settings_hash():
     assert len(themerr_settings_hash) == 64
 
 
-def test_remove_uploaded_media(movies):
+def test_remove_uploaded_media(section):
     test_items = [
-        movies.all()[0]
+        section.all()[0]
     ]
 
     for item in test_items:
@@ -99,9 +99,9 @@ def test_remove_uploaded_media_error_handler():
     )
 
 
-def test_update_themerr_data_file(movies):
+def test_update_themerr_data_file(section):
     test_items = [
-        movies.all()[0]
+        section.all()[0]
     ]
 
     new_themerr_data = {

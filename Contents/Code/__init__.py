@@ -272,9 +272,9 @@ class Themerr(object):
 
     def __init__(self, *args, **kwargs):
         super(Themerr, self).__init__(*args, **kwargs)
+        self.agent_type = "movies" if isinstance(self, Agent.Movies) else "tv_shows"
 
-    @staticmethod
-    def search(results, media, lang, manual):
+    def search(self, results, media, lang, manual):
         # type: (SearchResult, Union[Media.Movie, Media.TV_Show], str, bool) -> Optional[SearchResult]
         """
         Search for an item.
@@ -322,14 +322,18 @@ class Themerr(object):
         if media.primary_agent == 'dev.lizardbyte.retroarcher-plex':
             media_id = 'games-%s' % re.search(r'((igdb)-(\d+))', media.primary_metadata.id).group(1)
         else:
-            media_id = 'movies-%s-%s' % (media.primary_agent.rsplit('.', 1)[-1], media.primary_metadata.id)
+            media_id = '{}-{}-{}'.format(
+                self.agent_type,
+                media.primary_agent.rsplit('.', 1)[-1],
+                media.primary_metadata.id
+            )
             # e.g. = 'movies-imdb-tt0113189'
             # e.g. = 'movies-themoviedb-710'
 
         results.Append(MetadataSearchResult(
             id=media_id,
             name=media.primary_metadata.title,
-            year=media.primary_metadata.year,
+            year=getattr(media.primary_metadata, 'year', None),  # TV Shows don't have a year attribute
             score=100,
             lang=lang,  # no lang to get from db
             thumb=None  # no point in adding thumb since plex won't show it anywhere

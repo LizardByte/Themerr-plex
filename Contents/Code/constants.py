@@ -42,9 +42,10 @@ themerr_data_directory = os.path.join(plugin_support_data_directory, plugin_iden
 
 contributes_to = [
     'tv.plex.agents.movie',  # new movie agent
+    'tv.plex.agents.series',  # new tv show agent
     'com.plexapp.agents.imdb',  # legacy movie agent
-    'com.plexapp.agents.themoviedb',  # movie and tv show agent
-    'com.plexapp.agents.thetvdb',  # tv show agent
+    'com.plexapp.agents.themoviedb',  # legacy movie and tv show agent
+    'com.plexapp.agents.thetvdb',  # legacy tv show agent
     'dev.lizardbyte.retroarcher-plex'  # retroarcher plugin
 ]
 

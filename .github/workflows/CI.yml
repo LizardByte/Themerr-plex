@@ -181,14 +181,15 @@ jobs:
         env:
           PLEXAPI_PLEXAPI_TIMEOUT: "60"
         id: bootstrap
-        uses: LizardByte/plexhints@v2023.1226.203406
+        uses: LizardByte/plexhints@feat(action)-add-legacy-tv-agents  # todo - switch back to release version
         with:
           additional_server_queries_put: >-
             /system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
             /system/agents/com.plexapp.agents.themoviedb/config/1?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
+            /system/agents/com.plexapp.agents.themoviedb/config/2?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
+            /system/agents/com.plexapp.agents.themoviedb/config/2?order=com.plexapp.agents.thetvdb%2Cdev.lizardbyte.themerr-plex
           plugin_bundles_to_install: >-
             Themerr-plex.bundle
-          without_shows: true
           without_music: true
           without_photos: true
 
@@ -211,7 +212,6 @@ jobs:
         run: |
           python -m pytest \
             -rxXs \
-            --maxfail=1 \
             --tb=native \
             --verbose \
             --cov=Contents/Code \
