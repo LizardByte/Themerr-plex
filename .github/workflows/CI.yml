@@ -187,7 +187,7 @@ jobs:
             /system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
             /system/agents/com.plexapp.agents.themoviedb/config/1?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
             /system/agents/com.plexapp.agents.themoviedb/config/2?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
-            /system/agents/com.plexapp.agents.themoviedb/config/2?order=com.plexapp.agents.thetvdb%2Cdev.lizardbyte.themerr-plex
+            /system/agents/com.plexapp.agents.thetvdb/config/2?order=com.plexapp.agents.thetvdb%2Cdev.lizardbyte.themerr-plex
           plugin_bundles_to_install: >-
             Themerr-plex.bundle
           without_music: true

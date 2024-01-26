@@ -12,20 +12,18 @@ from Code import constants
 from Code import general_helper
 
 
-def test_get_media_upload_path(section):
+@pytest.mark.parametrize('media_type', ['art', 'posters', 'themes'])
+def test_get_media_upload_path(section, media_type):
     test_items = [
         section.all()[0]
     ]
 
-    media_types = ['art', 'posters', 'themes']
-
     for item in test_items:
-        for media_type in media_types:
-            media_upload_path = general_helper.get_media_upload_path(item=item, media_type=media_type)
-            assert media_upload_path.endswith(os.path.join('.bundle', 'Uploads', media_type))
-            # todo - test collections, with art and posters
-            if media_type == 'themes':
-                assert os.path.isdir(media_upload_path)
+        media_upload_path = general_helper.get_media_upload_path(item=item, media_type=media_type)
+        assert media_upload_path.endswith(os.path.join('.bundle', 'Uploads', media_type))
+        # todo - test collections, with art and posters
+        if media_type == 'themes':
+            assert os.path.isdir(media_upload_path)
 
 
 def test_get_media_upload_path_invalid(section):

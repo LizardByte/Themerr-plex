@@ -504,24 +504,46 @@ def get_database_info(item):
                 database_id = item.guid.split('://')[1].split('?')[0]
 
     elif item.type == 'show':
-        split_guid = item.guid.split('://')
-        agent = split_guid[0]
-        if agent == 'com.plexapp.agents.themoviedb':
-            database_type = 'tv_shows'
-            database = 'themoviedb'
-            database_id = item.guid.split('://')[1].split('?')[0]
-        elif agent == 'com.plexapp.agents.thetvdb':
-            database_type = 'tv_shows'
-            temp_database = 'thetvdb'
-            temp_database_id = item.guid.split('://')[1].split('?')[0]
+        database_type = 'tv_shows'
 
-            # ThemerrDB does not have TVDB IDs, so we need to convert it to TMDB ID
-            database_id = tmdb_helper.get_tmdb_id_from_external_id(
-                external_id=temp_database_id,
-                database='tvdb',
-                item_type='tv',
-            )
-            database = 'themoviedb' if database_id else None
+        if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
+            agent = 'tv.plex.agents.series'
+            for guid in item.guids:
+                split_guid = guid.id.split('://')
+                temp_database = guid_map[split_guid[0]]
+                temp_database_id = split_guid[1]
+
+                if temp_database == 'thetvdb':
+                    database_id = tmdb_helper.get_tmdb_id_from_external_id(
+                        external_id=temp_database_id,
+                        database='tvdb',
+                        item_type='tv',
+                    )
+                    if database_id:
+                        database = 'themoviedb'
+                        break
+
+                if temp_database == 'themoviedb':  # tmdb is our prefered db, so we break if found
+                    database_id = temp_database_id
+                    database = temp_database
+                    break
+        elif item.guid:
+            split_guid = item.guid.split('://')
+            agent = split_guid[0]
+            if agent == 'com.plexapp.agents.themoviedb':
+                database = 'themoviedb'
+                database_id = item.guid.split('://')[1].split('?')[0]
+            elif agent == 'com.plexapp.agents.thetvdb':
+                temp_database = 'thetvdb'
+                temp_database_id = item.guid.split('://')[1].split('?')[0]
+
+                # ThemerrDB does not have TVDB IDs, so we need to convert it to TMDB ID
+                database_id = tmdb_helper.get_tmdb_id_from_external_id(
+                    external_id=temp_database_id,
+                    database='tvdb',
+                    item_type='tv',
+                )
+                database = 'themoviedb' if database_id else None
 
     elif item.type == 'collection':
         # this is tricky since collections don't match up with any of the databases
