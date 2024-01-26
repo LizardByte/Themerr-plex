@@ -275,7 +275,7 @@ def cache_data():
                     external_id=database_id, database='imdb', item_type='movie')
                 database_id = tmdb_id if tmdb_id else None
 
-            elif item.type == 'show' and item_agent == 'com.plexapp.agents.tvdb':
+            elif item.type == 'show' and item_agent == 'com.plexapp.agents.thetvdb':
                 # try to get tmdb id from tvdb id
                 tmdb_id = tmdb_helper.get_tmdb_id_from_external_id(
                     external_id=database_id, database='tvdb', item_type='tv')
@@ -345,23 +345,11 @@ def cache_data():
 
             if item.theme:
                 theme_status = 'complete'
-
-                selected = (theme for theme in item.themes() if theme.selected).next()
-                user_provided = (getattr(selected, 'provider', None) == 'local')
-
-                if user_provided:
-                    themerr_provided = False
-                else:
-                    themerr_data = general_helper.get_themerr_json_data(item=item)
-                    themerr_provided = True if themerr_data else False
             else:
                 if issue_action == 'edit':
                     theme_status = 'failed'
                 else:
                     theme_status = 'missing'
-
-                user_provided = False
-                themerr_provided = False
 
             items[section.key]['items'].append(dict(
                 title=item.title,
@@ -372,10 +360,9 @@ def cache_data():
                 issue_action=issue_action,
                 issue_url=item_issue_url,
                 theme=True if item.theme else False,
+                theme_provider=general_helper.get_theme_provider(item=item),
                 theme_status=theme_status,
-                themerr_provided=themerr_provided,
                 type=item.type,
-                user_provided=user_provided,
                 year=year,
             ))
 

@@ -196,7 +196,7 @@ def update_plex_item(rating_key):
                 if item.isLocked(field='theme') and not (
                         item.type == 'show' and
                         Prefs['bool_overwrite_plex_provided_themes'] and
-                        general_helper.plex_provided_theme(item=item)
+                        general_helper.get_theme_provider(item=item) == 'plex'
                 ):
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:

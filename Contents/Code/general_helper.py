@@ -17,7 +17,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-import lxml.etree as ET
+from typing import Optional
 
 # local imports
 from constants import metadata_base_directory, metadata_type_map, themerr_data_directory
@@ -102,48 +102,43 @@ def get_media_upload_path(item, media_type):
     return theme_upload_path
 
 
-def plex_provided_theme(item):
-    # type: (any) -> bool
+def get_theme_provider(item):
+    # type: (any) -> Optional[str]
     """
-    Determine if the theme was provided by Plex.
+    Get the theme provider.
 
-    Open, and parse, the combined Info.xml file for the item specified by the ``item`` and determine if the theme was
-    provided by Plex.
+    Get the theme provider for the item specified by the ``item``.
 
     Parameters
     ----------
     item : any
-        The item to get the theme upload path for.
+        The item to get the theme provider for.
 
     Returns
     -------
-    bool
-        True if the theme is provided by Plex, False otherwise.
+    str
+        The theme provider.
     """
-    if item.type != 'show':
-        return False
+    provider_map = {
+        'local': 'user',
+        'com.plexapp.agents.plexthememusic': 'plex',
+    }
 
-    metadata_path = _get_metadata_path(item=item)
-    info_xml_path = os.path.join(metadata_path, 'Contents', '_combined', 'Info.xml')
+    if not item.themes():
+        return
 
-    if not os.path.isfile(info_xml_path):
-        return False
+    selected = (theme for theme in item.themes() if theme.selected).next()
 
-    try:
-        tree = ET.parse(info_xml_path)
+    if selected.provider in provider_map.keys():
+        provider = provider_map[selected.provider]
+    else:
+        provider = selected.provider
 
-        if tree.getroot().tag != 'TV_Show':
-            return False
+    if not provider:
+        themerr_data = get_themerr_json_data(item=item)
+        provider = 'themerr' if themerr_data else None
 
-        # theme is nested in TV_Show > themes > item tags
-        themes = tree.find('.//themes/item')
-        if themes.attrib.get('provider') == 'com.plexapp.agents.plexthememusic':
-            return True
-    except Exception as e:
-        Log.Error('Error parsing Info.xml file: %s' % e)
-        return False
-
-    return False
+    return provider
 
 
 def get_themerr_json_path(item):

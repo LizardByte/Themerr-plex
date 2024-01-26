@@ -136,10 +136,14 @@
                                         {% endif %}
                                     </td>
                                     <td class="{{ status_column_width }}">
-                                        {% if item['user_provided'] %}
+                                        {% if item['provider'] == 'plex' %}
+                                            <i class="fas fa-circle-chevron-right text-warning"></i> {{ _('Plex provided') }}
+                                        {% elif item['provider'] == 'user' %}
                                             <i class="fas fa-user text-info"></i> {{ _('User provided') }}
-                                        {% elif item['themerr_provided'] %}
+                                        {% elif item['provider'] == 'themerr' %}
                                             <i class="fas fa-check-circle text-success"></i> {{ _('Themerr provided') }}
+                                        {% elif item['provider'] != None %}
+                                            <i class="fas fa-question-circle text-secondary"></i> {{ item['provider'] }} {{ _('provided') }}
                                         {% elif item['theme_status'] == 'complete' %}
                                             <i class="fas fa-question-circle text-secondary"></i> {{ _('Unknown provider') }}
                                         {% elif item['theme_status'] == 'missing' %}
