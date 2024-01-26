@@ -180,6 +180,7 @@ jobs:
       - name: Bootstrap Plex server
         env:
           PLEXAPI_PLEXAPI_TIMEOUT: "60"
+          THEMERR_CI_TESTING: "true"
         id: bootstrap
         uses: LizardByte/plexhints@feat(action)-add-legacy-tv-agents  # todo - switch back to release version
         with:

@@ -193,7 +193,7 @@ def update_plex_item(rating_key):
                                     except Exception as e:
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                if item.isLocked(field='theme'):
+                if item.isLocked(field='theme') and not os.environ.get('THEMERR_CI_TESTING'):
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
