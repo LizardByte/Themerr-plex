@@ -2,6 +2,8 @@
 
 default_prefs = dict(
     bool_plex_movie_support='True',
+    bool_plex_series_support='True',
+    bool_overwrite_plex_provided_themes='False',
     bool_prefer_mp4a_codec='True',
     bool_remove_unused_theme_songs='True',
     bool_remove_unused_art='False',

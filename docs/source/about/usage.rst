@@ -66,6 +66,28 @@ Description
 Default
    ``True``
 
+Plex Series agent support
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will add themes to shows using the Plex Series agent. This is the new agent that is
+   not using the Plex plugin framework, so Themerr-plex cannot contribute to this agent with standard techniques.
+   Instead Themerr-plex will start a websocket server and listen for events from the Plex server. Whenever a show
+   is added or has it's metadata refreshed, Themerr-plex will attempt to add a theme song to the show (if the theme
+   song is available in ThemerrDB).
+
+Default
+   ``True``
+
+Overwrite Plex provided themes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will overwrite any TV Show theme songs provided by Plex.
+
+Default
+   ``False``
+
 Prefer MP4A AAC Codec
 ^^^^^^^^^^^^^^^^^^^^^
 

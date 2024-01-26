@@ -7,6 +7,20 @@
 		"secure": "false"
 	},
 	{
+		"id": "bool_plex_series_support",
+		"type": "bool",
+		"label": "Plex Series agent support (Add themes to the updated Plex Series agent)",
+		"default": "True",
+		"secure": "false"
+	},
+	{
+		"id": "bool_overwrite_plex_provided_themes",
+		"type": "bool",
+		"label": "Overwrite Plex provided themes",
+		"default": "False",
+		"secure": "false"
+	},
+	{
 		"id": "bool_prefer_mp4a_codec",
 		"type": "bool",
 		"label": "Prefer MP4A AAC Codec (Improves compatibility with Apple devices)",

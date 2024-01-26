@@ -16,6 +16,8 @@ else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
+# imports from Libraries\Shared
+import lxml.etree as ET
 
 # local imports
 from constants import metadata_base_directory, metadata_type_map, themerr_data_directory
@@ -24,6 +26,36 @@ from constants import metadata_base_directory, metadata_type_map, themerr_data_d
 legacy_keys = [
     'downloaded_timestamp'
 ]
+
+
+def _get_metadata_path(item):
+    # type: (any) -> str
+    """
+    Get the metadata path of the item.
+
+    Get the hashed path of the metadata directory for the item specified by the ``item``.
+
+    Parameters
+    ----------
+    item : any
+        The item to get the theme upload path for.
+
+    Returns
+    -------
+    str
+        The path to the metadata directory.
+
+    Examples
+    --------
+    >>> _get_metadata_path(item=...)
+    "...bundle"
+    """
+    guid = item.guid
+    full_hash = hashlib.sha1(guid).hexdigest()
+    metadata_path = os.path.join(
+        metadata_base_directory, metadata_type_map[item.type],
+        full_hash[0], full_hash[1:] + '.bundle')
+    return metadata_path
 
 
 def get_media_upload_path(item, media_type):
@@ -66,12 +98,52 @@ def get_media_upload_path(item, media_type):
             'media_type must be one of: {}'.format(allowed_media_types)
         )
 
-    guid = item.guid
-    full_hash = hashlib.sha1(guid).hexdigest()
-    theme_upload_path = os.path.join(
-        metadata_base_directory, metadata_type_map[item.type],
-        full_hash[0], full_hash[1:] + '.bundle', 'Uploads', media_type)
+    theme_upload_path = os.path.join(_get_metadata_path(item=item), media_type)
     return theme_upload_path
+
+
+def plex_provided_theme(item):
+    # type: (any) -> bool
+    """
+    Determine if the theme was provided by Plex.
+
+    Open, and parse, the combined Info.xml file for the item specified by the ``item`` and determine if the theme was
+    provided by Plex.
+
+    Parameters
+    ----------
+    item : any
+        The item to get the theme upload path for.
+
+    Returns
+    -------
+    bool
+        True if the theme is provided by Plex, False otherwise.
+    """
+    if item.type != 'show':
+        return False
+
+    metadata_path = _get_metadata_path(item=item)
+    info_xml_path = os.path.join(metadata_path, 'Contents', '_combined', 'Info.xml')
+
+    if not os.path.isfile(info_xml_path):
+        return False
+
+    try:
+        tree = ET.parse(info_xml_path)
+
+        if tree.getroot().tag != 'TV_Show':
+            return False
+
+        # theme is nested in TV_Show > themes > item tags
+        themes = tree.find('.//themes/item')
+        if themes.attrib.get('provider') == 'com.plexapp.agents.plexthememusic':
+            return True
+    except Exception as e:
+        Log.Error('Error parsing Info.xml file: %s' % e)
+        return False
+
+    return False
 
 
 def get_themerr_json_path(item):

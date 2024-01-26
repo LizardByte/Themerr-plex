@@ -193,7 +193,11 @@ def update_plex_item(rating_key):
                                     except Exception as e:
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                if item.isLocked(field='theme') and not os.environ.get('THEMERR_CI_TESTING'):
+                if item.isLocked(field='theme') and not (
+                        item.type == 'show' and
+                        Prefs['bool_overwrite_plex_provided_themes'] and
+                        general_helper.plex_provided_theme(item=item)
+                ):
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
@@ -669,7 +673,7 @@ def plex_listener_handler(data):
     Process events from ``plex_listener()``.
 
     Check if we need to add an item to the queue. This is used to automatically add themes to items from the
-    new Plex Movie agent, since metadata agents cannot extend it.
+    new Plex agents, since metadata agents cannot extend them.
 
     Parameters
     ----------
@@ -689,11 +693,12 @@ def plex_listener_handler(data):
 
             # known search types:
             # https://github.com/pkkid/python-plexapi/blob/8b3235445f6b3051c39ff6d6fc5d49f4e674d576/plexapi/utils.py#L35-L55
-            if (reverseSearchType(libtype=entry['type']) == 'movie'
+            if ((reverseSearchType(libtype=entry['type']) == 'movie'
+                 or reverseSearchType(libtype=entry['type']) == 'show')
                     and entry['state'] == 5
                     and entry['identifier'] == 'com.plexapp.plugins.library'):
                 # identifier always appears to be `com.plexapp.plugins.library` for updating library metadata
-                # entry['title'] = movie title
+                # entry['title'] = item title
                 # entry['itemID'] = rating key
 
                 rating_key = int(entry['itemID'])
@@ -736,6 +741,9 @@ def scheduled_update():
 
         if section.agent == 'tv.plex.agents.movie':
             if not Prefs['bool_plex_movie_support']:
+                continue
+        elif section.agent == 'tv.plex.agents.series':
+            if not Prefs['bool_plex_series_support']:
                 continue
         elif section.agent in contributes_to:
             # check if the agent is enabled
