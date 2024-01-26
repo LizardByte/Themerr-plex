@@ -98,7 +98,7 @@ def get_media_upload_path(item, media_type):
             'media_type must be one of: {}'.format(allowed_media_types)
         )
 
-    theme_upload_path = os.path.join(_get_metadata_path(item=item), media_type)
+    theme_upload_path = os.path.join(_get_metadata_path(item=item), 'Uploads', media_type)
     return theme_upload_path
 
 
