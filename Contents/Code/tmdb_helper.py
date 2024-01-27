@@ -12,14 +12,14 @@ else:  # the code is running outside of Plex
     from plexhints.util_kit import String  # util kit
 
 # imports from Libraries\Shared
-from typing import Optional
+from typing import Optional, Union
 
 # url borrowed from TheMovieDB.bundle
 tmdb_base_url = 'http://127.0.0.1:32400/services/tmdb?uri='
 
 
 def get_tmdb_id_from_external_id(external_id, database, item_type):
-    # type: (str, str, str) -> Optional[int]
+    # type: (Union[int, str], str, str) -> Optional[int]
     """
     Convert IMDB ID to TMDB ID.
 
@@ -59,7 +59,7 @@ def get_tmdb_id_from_external_id(external_id, database, item_type):
 
     url = '{}/{}'.format(
         tmdb_base_url,
-        find_imdb_item.format(String.Quote(s=external_id, usePlus=True), database.lower())
+        find_imdb_item.format(String.Quote(s=str(external_id), usePlus=True), database.lower())
     )
     try:
         tmdb_data = JSON.ObjectFromURL(
