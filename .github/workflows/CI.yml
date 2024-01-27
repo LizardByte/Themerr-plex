@@ -181,7 +181,7 @@ jobs:
         env:
           PLEXAPI_PLEXAPI_TIMEOUT: "60"
         id: bootstrap
-        uses: LizardByte/plexhints@feat(action)-add-legacy-tv-agents  # todo - switch back to release version
+        uses: LizardByte/plexhints@v2024.127.5219
         with:
           additional_server_queries_put: >-
             /system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
