@@ -694,10 +694,14 @@ def plex_listener_handler(data):
 
             # known search types:
             # https://github.com/pkkid/python-plexapi/blob/8b3235445f6b3051c39ff6d6fc5d49f4e674d576/plexapi/utils.py#L35-L55
-            if ((reverseSearchType(libtype=entry['type']) == 'movie'
-                 or reverseSearchType(libtype=entry['type']) == 'show')
-                    and entry['state'] == 5
-                    and entry['identifier'] == 'com.plexapp.plugins.library'):
+            if (
+                    (
+                        (reverseSearchType(libtype=entry['type']) == 'movie' and Prefs['bool_plex_movie_support']) or
+                        (reverseSearchType(libtype=entry['type']) == 'show' and Prefs['bool_plex_series_support'])
+                    ) and
+                    entry['state'] == 5 and
+                    entry['identifier'] == 'com.plexapp.plugins.library'
+            ):
                 # identifier always appears to be `com.plexapp.plugins.library` for updating library metadata
                 # entry['title'] = item title
                 # entry['itemID'] = rating key

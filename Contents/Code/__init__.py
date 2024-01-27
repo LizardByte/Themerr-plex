@@ -195,7 +195,7 @@ def Start():
     start_queue_threads()  # start queue threads
     Log.Debug('queue threads started.')
 
-    if Prefs['bool_plex_movie_support']:
+    if Prefs['bool_plex_movie_support'] or Prefs['bool_plex_series_support']:
         plex_listener()  # start watching plex
         Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
 
