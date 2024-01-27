@@ -21,8 +21,13 @@ def test_get_tmdb_id_from_external_id(tmdb_test_id, database, item_type):
     assert isinstance(tmdb_id, int), "tmdb_id is not an int: {}".format(tmdb_id)
 
 
-def test_get_tmdb_id_from_external_id_invalid():
-    test = tmdb_helper.get_tmdb_id_from_external_id(external_id='invalid', database='imdb', item_type='movie')
+@pytest.mark.parametrize('tmdb_test_id, database, item_type', [
+    ('invalid', 'imdb', 'movie'),
+    ('tt1254207', 'invalid', 'movie'),
+    ('invalid', 'imdb', 'game'),
+])
+def test_get_tmdb_id_from_external_id_invalid(tmdb_test_id, database, item_type):
+    test = tmdb_helper.get_tmdb_id_from_external_id(external_id=tmdb_test_id, database=database, item_type=item_type)
     assert test is None, "tmdb_id found for invalid imdb_id: {}".format(test)
 
 

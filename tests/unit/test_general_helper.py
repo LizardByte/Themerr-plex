@@ -12,6 +12,17 @@ from Code import constants
 from Code import general_helper
 
 
+def test_get_metadata_path(section):
+    test_items = [
+        section.all()[0]
+    ]
+
+    for item in test_items:
+        metadata_path = general_helper._get_metadata_path(item=item)
+        assert metadata_path.endswith('.bundle')
+        assert os.path.isdir(metadata_path)
+
+
 @pytest.mark.parametrize('media_type', ['art', 'posters', 'themes'])
 def test_get_media_upload_path(section, media_type):
     test_items = [
@@ -24,6 +35,18 @@ def test_get_media_upload_path(section, media_type):
         # todo - test collections, with art and posters
         if media_type == 'themes':
             assert os.path.isdir(media_upload_path)
+
+
+def test_get_theme_provider(section):
+    test_items = [
+        section.all()[0]
+    ]
+
+    for item in test_items:
+        theme_provider = general_helper.get_theme_provider(item=item)
+        assert theme_provider
+        assert isinstance(theme_provider, str)
+        assert theme_provider == 'themerr'
 
 
 def test_get_media_upload_path_invalid(section):
