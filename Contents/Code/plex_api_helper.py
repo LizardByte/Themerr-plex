@@ -193,10 +193,10 @@ def update_plex_item(rating_key):
                                     except Exception as e:
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                if item.isLocked(field='theme') and not (
+                if item.isLocked(field='theme') and (item.type != 'show' or (
                         item.type == 'show' and
-                        Prefs['bool_overwrite_plex_provided_themes'] and
-                        general_helper.get_theme_provider(item=item) == 'plex'
+                        not Prefs['bool_overwrite_plex_provided_themes'] and
+                        general_helper.get_theme_provider(item=item) == 'plex')
                 ):
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:

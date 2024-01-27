@@ -118,6 +118,11 @@ def get_theme_provider(item):
     -------
     str
         The theme provider.
+
+    Examples
+    --------
+    >>> get_theme_provider(item=...)
+    ...
     """
     provider_map = {
         'local': 'user',
