@@ -128,6 +128,8 @@ def get_theme_provider(item):
     provider_map = {
         'local': 'user',
         'com.plexapp.agents.plexthememusic': 'plex',
+        'tv.plex.agents.movies': 'plex',
+        'tv.plex.agents.series': 'plex',
     }
 
     if not item.themes():
