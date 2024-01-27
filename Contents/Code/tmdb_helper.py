@@ -55,11 +55,11 @@ def get_tmdb_id_from_external_id(external_id, database, item_type):
 
     # according to https://www.themoviedb.org/talk/5f6a0500688cd000351c1712 we can search by external id
     # https://api.themoviedb.org/3/find/tt0458290?api_key=###&external_source=imdb_id
-    find_imdb_item = 'find/{}?external_source={}_id'
+    find_url_suffix = 'find/{}?external_source={}_id'
 
     url = '{}/{}'.format(
         tmdb_base_url,
-        find_imdb_item.format(String.Quote(s=str(external_id), usePlus=True), database.lower())
+        find_url_suffix.format(String.Quote(s=str(external_id), usePlus=True), database.lower())
     )
     try:
         tmdb_data = JSON.ObjectFromURL(

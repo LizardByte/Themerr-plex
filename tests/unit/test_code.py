@@ -45,7 +45,7 @@ test_items = dict(
     ),
     e=dict(
         primary_agent='com.plexapp.agents.thetvdb',
-        rating_key=4,
+        rating_key=5,
         title='The 100',
         year=2014,
         id='268592',
