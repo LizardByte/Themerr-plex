@@ -17,6 +17,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
+from plexapi.base import PlexPartialObject
 from typing import Optional
 
 # local imports
@@ -29,7 +30,7 @@ legacy_keys = [
 
 
 def _get_metadata_path(item):
-    # type: (any) -> str
+    # type: (PlexPartialObject) -> str
     """
     Get the metadata path of the item.
 
@@ -37,7 +38,7 @@ def _get_metadata_path(item):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the theme upload path for.
 
     Returns
@@ -59,7 +60,7 @@ def _get_metadata_path(item):
 
 
 def get_media_upload_path(item, media_type):
-    # type: (any, str) -> str
+    # type: (PlexPartialObject, str) -> str
     """
     Get the path to the theme upload directory.
 
@@ -67,7 +68,7 @@ def get_media_upload_path(item, media_type):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the theme upload path for.
     media_type : str
         The media type to get the theme upload path for. Must be one of 'art', 'posters', or 'themes'.
@@ -103,7 +104,7 @@ def get_media_upload_path(item, media_type):
 
 
 def get_theme_provider(item):
-    # type: (any) -> Optional[str]
+    # type: (PlexPartialObject) -> Optional[str]
     """
     Get the theme provider.
 
@@ -111,7 +112,7 @@ def get_theme_provider(item):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the theme provider for.
 
     Returns
@@ -147,7 +148,7 @@ def get_theme_provider(item):
 
 
 def get_themerr_json_path(item):
-    # type: (any) -> str
+    # type: (PlexPartialObject) -> str
     """
     Get the path to the Themerr data file.
 
@@ -155,7 +156,7 @@ def get_themerr_json_path(item):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the Themerr data file path for.
 
     Returns
@@ -174,7 +175,7 @@ def get_themerr_json_path(item):
 
 
 def get_themerr_json_data(item):
-    # type: (any) -> dict
+    # type: (PlexPartialObject) -> dict
     """
     Get the Themerr data for the specified item.
 
@@ -183,7 +184,7 @@ def get_themerr_json_data(item):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to get the Themerr data for.
 
     Returns
@@ -226,7 +227,7 @@ def get_themerr_settings_hash():
 
 
 def remove_uploaded_media(item, media_type):
-    # type: (any, str) -> None
+    # type: (PlexPartialObject, str) -> None
     """
     Remove themes for the specified item.
 
@@ -234,7 +235,7 @@ def remove_uploaded_media(item, media_type):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to remove the themes from.
     media_type : str
         The media type to remove the themes from. Must be one of 'art', 'posters', or 'themes'.
@@ -274,7 +275,7 @@ def remove_uploaded_media_error_handler(func, path, exc_info):
 
 
 def update_themerr_data_file(item, new_themerr_data):
-    # type: (any, dict) -> None
+    # type: (PlexPartialObject, dict) -> None
     """
     Update the Themerr data file for the specified item.
 
@@ -282,7 +283,7 @@ def update_themerr_data_file(item, new_themerr_data):
 
     Parameters
     ----------
-    item : any
+    item : PlexPartialObject
         The item to update the Themerr data file for.
     new_themerr_data : dict
         The Themerr data to update the Themerr data file with.
