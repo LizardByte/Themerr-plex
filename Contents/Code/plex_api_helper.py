@@ -193,12 +193,13 @@ def update_plex_item(rating_key):
                                     except Exception as e:
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                if item.isLocked(field='theme') and (item.type != 'show' or (
-                        item.type == 'show' and
-                        not Prefs['bool_overwrite_plex_provided_themes'] and
-                        general_helper.get_theme_provider(item=item) == 'plex')
-                ):
+                if item.isLocked(field='theme'):
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
+                elif (
+                        not Prefs['bool_overwrite_plex_provided_themes'] and
+                        general_helper.get_theme_provider(item=item) == 'plex'
+                ):
+                    Log.Debug('Not overwriting Plex provided theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
                     try:
@@ -211,7 +212,7 @@ def update_plex_item(rating_key):
 
                         try:
                             skip = themerr_data['settings_hash'] == settings_hash \
-                                and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
+                                   and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
                         except KeyError:
                             skip = False
 
@@ -430,7 +431,7 @@ def upload_media(item, method, filepath=None, url=None):
                 else:
                     method(url=url)
         except BadRequest as e:
-            sleep_time = 2**count
+            sleep_time = 2 ** count
             Log.Error('%s: Error uploading media: %s' % (item.ratingKey, e))
             Log.Error('%s: Trying again in : %s' % (item.ratingKey, sleep_time))
             time.sleep(sleep_time)
