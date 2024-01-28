@@ -171,8 +171,9 @@
 		"id": "bool_webapp_require_login",
 		"type": "bool",
 		"label": "Require login to access Web UI",
-		"default": "False",
-		"secure": "false"
+		"default": "True",
+		"secure": "false",
+		"hidden": "true"
 	},
 	{
 		"id": "bool_webapp_log_werkzeug_messages",
