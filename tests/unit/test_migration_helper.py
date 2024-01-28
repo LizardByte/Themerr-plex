@@ -37,6 +37,8 @@ def migration_status_file(migration_helper_fixture):
 @pytest.mark.parametrize('key, raise_exception, expected_return, expected_raise', [
     (migration_helper_object.LOCKED_THEMES, False, True, None),
     (migration_helper_object.LOCKED_THEMES, True, True, None),
+    (migration_helper_object.LOCKED_COLLECTION_FIELDS, False, True, None),
+    (migration_helper_object.LOCKED_COLLECTION_FIELDS, True, True, None),
     ('invalid', False, False, None),
     ('invalid', True, False, AttributeError),
 ])
@@ -51,6 +53,7 @@ def test_validate_migration_key(migration_helper_fixture, key, raise_exception, 
 
 @pytest.mark.parametrize('key, expected', [
     (migration_helper_object.LOCKED_THEMES, None),
+    (migration_helper_object.LOCKED_COLLECTION_FIELDS, None),
     pytest.param('invalid', None, marks=pytest.mark.xfail(raises=AttributeError)),
 ])
 def test_get_migration_status(migration_helper_fixture, migration_status_file, key, expected):
@@ -60,6 +63,7 @@ def test_get_migration_status(migration_helper_fixture, migration_status_file, k
 
 @pytest.mark.parametrize('key', [
     migration_helper_object.LOCKED_THEMES,
+    migration_helper_object.LOCKED_COLLECTION_FIELDS,
     pytest.param('invalid', marks=pytest.mark.xfail(raises=AttributeError)),
 ])
 def test_set_migration_status(migration_helper_fixture, migration_status_file, key):
@@ -72,6 +76,7 @@ def test_set_migration_status(migration_helper_fixture, migration_status_file, k
 
 @pytest.mark.parametrize('key', [
     migration_helper_object.LOCKED_THEMES,
+    migration_helper_object.LOCKED_COLLECTION_FIELDS,
 ])
 def test_perform_migration(migration_helper_fixture, migration_status_file, key):
     # perform the migration twice, should return early on the second run
@@ -97,3 +102,21 @@ def test_migrate_locked_themes(section):
 
     for item in section.all():
         assert item.isLocked(field=field) is False, '{} for movie is still locked'.format(field)
+
+
+@pytest.mark.parametrize('field', [
+    'art',
+    'summary',
+    'thumb',
+])
+def test_migrate_locked_collection_fields(field, section):
+    # lock all is not working, so lock manually
+    for item in section.collections():
+        plex_api_helper.change_lock_status(item=item, field=field, lock=True)
+        assert item.isLocked(field=field) is True, '{} for collection is not locked'.format(field)
+
+    migration_helper_object.migrate_locked_collection_fields()
+    section.reload()
+
+    for item in section.collections():
+        assert item.isLocked(field=field) is False, '{} for collection is still locked'.format(field)

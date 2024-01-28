@@ -325,3 +325,28 @@ Description
 
 Default
    ``False``
+
+Migrate themes from < v0.3.0
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   Prior to v0.3.0, Themerr-plex uploaded themes were locked and there was no way to determine if a theme was supplied
+   by Themerr-plex. Therefore, if you used Themerr-plex prior to v0.3.0, you will need to enable this setting to
+   automatically unlock all existing themes (for agents that Themerr-plex supports). Once the migration has completed,
+   the unlock function will never run again.
+
+   If you see many of the ``Unknown provider`` status in the web UI, it is a good indication that you need to enable
+   this option, unless you have many themes provided by other tools.
+
+Default
+   ``False``
+
+Migrate collection metadata from < v0.3.0
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Description
+   Prior to v0.3.0, fields for collections modified by Themerr-plex were locked which leads to an issue in v0.3.0
+   and newer, since Themerr-plex will not update locked fields.
+
+Default
+   ``False``
