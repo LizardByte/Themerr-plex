@@ -12,7 +12,7 @@ except ImportError:
     pass
 else:  # the code is running outside of Plex
     from plexhints.log_kit import Log  # log kit
-    from plexhints.parse_kit import JSON, XML  # parse kit
+    from plexhints.parse_kit import JSON  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
@@ -28,7 +28,7 @@ import plexapi.server
 from plexapi.utils import reverseSearchType
 
 # local imports
-from constants import contributes_to, guid_map, media_type_dict
+from constants import contributes_to, guid_map, media_type_dict, plex_token, plex_url
 import general_helper
 import lizardbyte_db_helper
 import themerr_db_helper
@@ -45,18 +45,6 @@ q = queue.Queue()
 # disable auto-reload, because Themerr doesn't rely on it, so it will only slow down the app
 # when accessing a missing field
 os.environ["PLEXAPI_PLEXAPI_AUTORELOAD"] = "false"
-
-# the explicit IPv4 address is used because `localhost` can resolve to ::1, which `websocket` rejects
-plex_url = 'http://127.0.0.1:32400'
-plex_token = os.environ.get('PLEXTOKEN')
-
-plex_section_type_settings_map = dict(
-    album=9,
-    artist=8,
-    movie=1,
-    photo=13,
-    show=2,
-)
 
 
 def setup_plexapi():
@@ -692,28 +680,14 @@ def scheduled_update():
             # individual items that was matched with a supported agent...
             continue  # skip unsupported metadata agents
 
-        if section.agent == 'tv.plex.agents.movie':
-            if not Prefs['bool_plex_movie_support']:
-                continue
-        elif section.agent in contributes_to:
-            # check if the agent is enabled
-            if not plex_token:
-                Log.Error('Plex token not found in environment, cannot proceed.')
-                continue
+        if not plex_token:
+            Log.Error('Plex token not found in environment, cannot proceed.')
+            continue
 
-            # get the settings for this agent
-            settings_url = '{}/system/agents/{}/config/{}'.format(
-                plex_url, section.agent, plex_section_type_settings_map[section.type])
-            settings_data = XML.ElementFromURL(
-                url=settings_url,
-                cacheTime=0
-            )
-            Log.Debug('settings data: {}'.format(settings_data))
-
-            themerr_plex_element = settings_data.find(".//Agent[@name='Themerr-plex']")
-            if themerr_plex_element.get('enabled') != '1':  # Plex is using a string
-                Log.Debug('Themerr-plex is disabled for agent "{}"'.format(section.agent))
-                continue
+        # check if the agent is enabled
+        if not general_helper.continue_update(item_agent=section.agent, item_type=section.type):
+            Log.Debug('Themerr-plex is disabled for agent "{}"'.format(section.agent))
+            continue
 
         # get all the items in the section
         media_items = section.all() if Prefs['bool_auto_update_movie_themes'] else []
