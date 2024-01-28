@@ -743,7 +743,7 @@ def is_server_owner(user):
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the user is the owner of the Plex server, False otherwise.
 
     Examples
