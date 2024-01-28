@@ -225,20 +225,34 @@ def get_theme_provider(item):
     ...
     """
     provider_map = {
-        'local': 'user',
-        'com.plexapp.agents.localmedia': 'user',
-        'com.plexapp.agents.plexthememusic': 'plex',
-        'tv.plex.agents.movies': 'plex',
-        'tv.plex.agents.series': 'plex',
+        'local': 'user',  # new agents, local media
+        'com.plexapp.agents.localmedia': 'user',  # legacy agents, local media
+        'com.plexapp.agents.plexthememusic': 'plex',  # legacy agents
+    }
+
+    rating_key_map = {
+        'metadata://themes/tv.plex.agents.movies_': 'plex',  # new movie agent (placeholder if Plex adds theme support)
+        'metadata://themes/tv.plex.agents.series_': 'plex',  # new tv agent
+        'metadata://themes/com.plexapp.agents.plexthememusic_': 'plex',  # legacy agents
     }
 
     if not item.themes():
         return
 
+    provider = None
+
     selected = (theme for theme in item.themes() if theme.selected).next()
 
     if selected.provider in provider_map.keys():
         provider = provider_map[selected.provider]
+    elif selected.ratingKey.startswith(tuple(rating_key_map.keys())):
+        # new agents do not list a provider, so must match with rating keys if the theme
+
+        # find the rating key prefix in the rating key map
+        for rating_key_prefix in rating_key_map.keys():
+            if selected.ratingKey.startswith(rating_key_prefix):
+                provider = rating_key_map[rating_key_prefix]
+                break
     else:
         provider = selected.provider
 
