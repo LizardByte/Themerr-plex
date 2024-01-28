@@ -181,13 +181,14 @@ jobs:
         env:
           PLEXAPI_PLEXAPI_TIMEOUT: "60"
         id: bootstrap
-        uses: LizardByte/plexhints@v2024.127.5219
+        uses: LizardByte/plexhints@v2024.129.31313
         with:
-          additional_server_queries_put: >-
-            /system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
-            /system/agents/com.plexapp.agents.themoviedb/config/1?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
-            /system/agents/com.plexapp.agents.themoviedb/config/2?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
-            /system/agents/com.plexapp.agents.thetvdb/config/2?order=com.plexapp.agents.thetvdb%2Cdev.lizardbyte.themerr-plex
+          additional_server_queries: >-
+            put|/system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
+            put|/system/agents/com.plexapp.agents.themoviedb/config/1?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
+            put|/system/agents/com.plexapp.agents.themoviedb/config/2?order=com.plexapp.agents.themoviedb%2Cdev.lizardbyte.themerr-plex
+            put|/system/agents/com.plexapp.agents.thetvdb/config/2?order=com.plexapp.agents.thetvdb%2Cdev.lizardbyte.themerr-plex
+            get|/:/plugins/dev.lizardbyte.themerr-plex/prefs/set?bool_overwrite_plex_provided_themes=true
           plugin_bundles_to_install: >-
             Themerr-plex.bundle
           without_music: true
