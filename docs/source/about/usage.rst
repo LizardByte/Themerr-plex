@@ -305,11 +305,16 @@ Description
    If set to ``True``, the Web UI will require the user to log in with their Plex account before accessing the Web UI.
    Only the owner of the Plex Media Server will be able to log in.
 
-.. Attention::
-   Consider enabling this value if you plan to expose the Web UI to the outside world.
+.. danger::
+   Disabling this value will allow anyone with network access to the Web UI to access it.
+
+   For security reasons, this value is not configurable via the Web UI. You need to manually edit the plug-in's XML
+   preferences file. If you do not know how to do this, you should not disable this value.
+
+   Changing this value requires a Plex Media Server restart.
 
 Default
-   ``False``
+   ``True``
 
 Log all web server messages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
