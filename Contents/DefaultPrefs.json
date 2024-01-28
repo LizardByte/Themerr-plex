@@ -151,7 +151,14 @@
 	{
 		"id": "bool_migrate_locked_themes",
 		"type": "bool",
-		"label": "Migrate from < v0.3.0 (If you used Themerr before v0.3.0, set this to True)",
+		"label": "Migrate themes from < v0.3.0 (If you used Themerr before v0.3.0, set this to True)",
+		"default": "False",
+		"secure": "false"
+	},
+	{
+		"id": "bool_migrate_locked_collection_fields",
+		"type": "bool",
+		"label": "Migrate collection metadata from < v0.3.0 (If you used Themerr before v0.3.0, set this to True)",
 		"default": "False",
 		"secure": "false"
 	}

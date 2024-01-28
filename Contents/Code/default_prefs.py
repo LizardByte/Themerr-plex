@@ -22,4 +22,5 @@ default_prefs = dict(
     int_webapp_http_port='9494',
     bool_webapp_log_werkzeug_messages='False',
     bool_migrate_locked_themes='False',
+    bool_migrate_locked_collection_fields='False',
 )
