@@ -49,6 +49,7 @@ class MigrationHelper:
     """
     # Define the migration keys as class attributes for dot notation access
     LOCKED_THEMES = 'locked_themes'
+    LOCKED_COLLECTION_FIELDS = 'locked_collection_fields'
 
     def __init__(self):
         self.migration_status_file = os.path.join(themerr_data_directory, 'migration_status.json')
@@ -57,6 +58,7 @@ class MigrationHelper:
         # Map keys to their respective functions
         self.migration_functions = {
             self.LOCKED_THEMES: self.migrate_locked_themes,
+            self.LOCKED_COLLECTION_FIELDS: self.migrate_locked_collection_fields,
         }
 
     def _validate_migration_key(self, key, raise_exception=False):
@@ -189,12 +191,15 @@ class MigrationHelper:
             'tv.plex.agents.movie',
             'com.plexapp.agents.imdb',
             'com.plexapp.agents.themoviedb',
-            'dev.lizardbyte.retroarcher-plex'
+            'dev.lizardbyte.retroarcher-plex',
         )
 
         for section in sections:
             if section.agent not in contributes_to:
                 continue  # skip items with unsupported metadata agents for < v0.3.0
+
+            if section.type != 'movie':
+                continue  # skip non-movie sections
 
             field = 'theme'
 
@@ -220,6 +225,50 @@ class MigrationHelper:
             for item in all_items:
                 if item.isLocked(field=field):
                     plex_api_helper.change_lock_status(item=item, field=field, lock=False)
+
+    @staticmethod
+    def migrate_locked_collection_fields():
+        """
+        Unlock fields locked in collections.
+
+        Prior to v0.3.0, fields for collections modified by Themerr-plex were locked which leads to an issue in v0.3.0
+        and newer, since Themerr-plex will not update locked fields.
+        """
+        plex = plex_api_helper.setup_plexapi()
+
+        plex_library = plex.library
+
+        sections = plex_library.sections()
+
+        # never update this list, it needs to match what was available before v0.3.0
+        contributes_to = (
+            'tv.plex.agents.movie',
+            'com.plexapp.agents.imdb',
+            'com.plexapp.agents.themoviedb',
+            'dev.lizardbyte.retroarcher-plex',
+        )
+
+        for section in sections:
+            if section.agent not in contributes_to:
+                continue  # skip items with unsupported metadata agents for < v0.3.0
+
+            if section.type != 'movie':
+                continue  # skip non-movie sections
+
+            fields = [
+                'art',
+                'summary',
+                'thumb',
+            ]
+
+            # collections were added in v0.3.0, but collect them as well for anyone who may have used a nightly build
+            # get all collections in the section
+            collections = section.collections()
+
+            for item in collections:
+                for field in fields:
+                    if item.isLocked(field=field) and item.theme:  # only unlock fields for collections with themes
+                        plex_api_helper.change_lock_status(item=item, field=field, lock=False)
 
     def perform_migration(self, key):
         # type: (str) -> None
