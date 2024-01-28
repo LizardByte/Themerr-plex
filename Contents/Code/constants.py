@@ -62,6 +62,18 @@ metadata_type_map = dict(
     show='TV Shows'
 )
 
+# the explicit IPv4 address is used because `localhost` can resolve to ::1, which `websocket` rejects
+plex_url = 'http://127.0.0.1:32400'
+plex_token = os.environ.get('PLEXTOKEN')
+
+plex_section_type_settings_map = dict(
+    album=9,
+    artist=8,
+    movie=1,
+    photo=13,
+    show=2,
+)
+
 # issue url constants
 base_url = 'https://github.com/LizardByte/ThemerrDB/issues/new?assignees='
 issue_label = 'request-theme'

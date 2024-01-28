@@ -14,16 +14,111 @@ except ImportError:
 else:  # the code is running outside of Plex
     from plexhints.core_kit import Core  # core kit
     from plexhints.log_kit import Log  # log kit
+    from plexhints.parse_kit import XML  # parse kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 
 # local imports
-from constants import metadata_base_directory, metadata_type_map, themerr_data_directory
+from constants import (
+    contributes_to,
+    metadata_base_directory,
+    metadata_type_map,
+    plex_section_type_settings_map,
+    plex_url,
+    themerr_data_directory
+)
 
 # constants
 legacy_keys = [
     'downloaded_timestamp'
 ]
+
+
+def agent_enabled(item_agent, item_type):
+    # type: (str, str) -> bool
+    """
+    Check if the specified agent is enabled.
+
+    Parameters
+    ----------
+    item_agent : str
+        The agent to check.
+    item_type : str
+        The type of the item to check.
+
+    Returns
+    -------
+    py:class:`bool`
+        True if the agent is enabled, False otherwise.
+
+    Examples
+    --------
+    >>> agent_enabled(item_agent='com.plexapp.agents.imdb', item_type='movie')
+    True
+    >>> agent_enabled(item_agent='com.plexapp.agents.themoviedb', item_type='movie')
+    True
+    >>> agent_enabled(item_agent='com.plexapp.agents.themoviedb', item_type='show')
+    True
+    >>> agent_enabled(item_agent='com.plexapp.agents.thetvdb', item_type='show')
+    True
+    >>> agent_enabled(item_agent='dev.lizardbyte.retroarcher-plex', item_type='movie')
+    True
+    """
+    # get the settings for this agent
+    settings_url = '{}/system/agents/{}/config/{}'.format(
+        plex_url, item_agent, plex_section_type_settings_map[item_type])
+    settings_data = XML.ElementFromURL(
+        url=settings_url,
+        cacheTime=0
+    )
+    Log.Debug('settings data: {}'.format(settings_data))
+
+    themerr_plex_element = settings_data.find(".//Agent[@name='Themerr-plex']")
+
+    if themerr_plex_element.get('enabled') == '1':  # Plex is using a string
+        return True
+    else:
+        return False
+
+
+def continue_update(item_agent, item_type):
+    # type: (str, str) -> bool
+    """
+    Check if the specified agent should continue updating.
+
+    Parameters
+    ----------
+    item_agent : str
+        The agent to check.
+    item_type : str
+        The type of the item to check.
+
+    Returns
+    -------
+    py:class:`bool`
+        True if the agent should continue updating, False otherwise.
+
+    Examples
+    --------
+    >>> continue_update(item_agent='tv.plex.agents.movie', item_type='movie')
+    True
+    >>> continue_update(item_agent='com.plexapp.agents.imdb', item_type='movie')
+    True
+    >>> continue_update(item_agent='com.plexapp.agents.themoviedb', item_type='movie')
+    True
+    >>> continue_update(item_agent='com.plexapp.agents.themoviedb', item_type='show')
+    True
+    >>> continue_update(item_agent='com.plexapp.agents.thetvdb', item_type='show')
+    True
+    >>> continue_update(item_agent='dev.lizardbyte.retroarcher-plex', item_type='movie')
+    True
+    """
+    if item_agent == 'tv.plex.agents.movie':
+        return Prefs['bool_plex_movie_support']
+    elif item_agent in contributes_to:
+        return agent_enabled(item_agent=item_agent, item_type=item_type)
+    else:
+        return False
 
 
 def get_media_upload_path(item, media_type):

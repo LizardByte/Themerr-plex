@@ -12,6 +12,29 @@ from Code import constants
 from Code import general_helper
 
 
+@pytest.mark.parametrize('item_agent, item_type, expected', [
+    ('com.plexapp.agents.imdb', 'movie', True),
+    ('com.plexapp.agents.themoviedb', 'movie', True),
+    # ('com.plexapp.agents.themoviedb', 'show', True),
+    # ('com.plexapp.agents.thetvdb', 'show', True),
+])
+def test_agent_enabled(item_agent, item_type, expected):
+    assert general_helper.agent_enabled(item_agent=item_agent, item_type=item_type) is expected
+
+
+@pytest.mark.parametrize('item_agent, item_type, expected', [
+    ('tv.plex.agents.movie', 'movie', True),
+    ('com.plexapp.agents.imdb', 'movie', True),
+    ('com.plexapp.agents.themoviedb', 'movie', True),
+    # ('tv.plex.agents.series', 'show', True),
+    # ('com.plexapp.agents.themoviedb', 'show', True),
+    # ('com.plexapp.agents.thetvdb', 'show', True),
+    ('invalid', 'invalid', False),
+])
+def test_continue_update(item_agent, item_type, expected):
+    assert general_helper.continue_update(item_agent=item_agent, item_type=item_type) is expected
+
+
 def test_get_media_upload_path(movies):
     test_items = [
         movies.all()[0]
