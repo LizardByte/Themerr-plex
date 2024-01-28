@@ -319,3 +319,12 @@ Description
 
 Default
    ``False``
+
+Ignore locked fields
+^^^^^^^^^^^^^^^^^^^^
+
+Description
+   When enabled, Themerr-plex will ignore locked fields when updating themes and collection metadata.
+
+Default
+   ``False``

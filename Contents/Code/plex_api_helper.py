@@ -166,7 +166,7 @@ def update_plex_item(rating_key):
                         else:
                             add_media(item=item, media_type='art', media_url_id=data['backdrop_path'], media_url=url)
                         # update summary
-                        if item.isLocked(field='summary'):
+                        if item.isLocked(field='summary') and not Prefs['bool_ignore_locked_fields']:
                             Log.Debug('Not overwriting locked summary for collection: {}'.format(item.title))
                         else:
                             try:
@@ -181,7 +181,7 @@ def update_plex_item(rating_key):
                                     except Exception as e:
                                         Log.Error('{}: Error updating summary: {}'.format(item.ratingKey, e))
 
-                if item.isLocked(field='theme'):
+                if item.isLocked(field='theme') and not Prefs['bool_ignore_locked_fields']:
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
@@ -250,7 +250,7 @@ def add_media(item, media_type, media_url_id, media_file=None, media_url=None):
     settings_hash = general_helper.get_themerr_settings_hash()
     themerr_data = general_helper.get_themerr_json_data(item=item)
 
-    if item.isLocked(field=media_type_dict[media_type]['plex_field']):
+    if item.isLocked(field=media_type_dict[media_type]['plex_field']) and not Prefs['bool_ignore_locked_fields']:
         Log.Info('Not overwriting locked "{}" for {}: {}'.format(
             media_type_dict[media_type]['name'], item.type, item.title
         ))
