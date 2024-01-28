@@ -560,7 +560,7 @@ def is_logged_in():
 
     Returns
     -------
-    bool
+    py:class:`bool`
         True if the user is logged in, otherwise False.
 
     Examples
