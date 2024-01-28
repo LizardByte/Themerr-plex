@@ -260,13 +260,10 @@ def cache_data():
             og_db = database
             og_db_id = database_id
 
-            try:
-                year = item.year
-            except AttributeError:
-                year = None
+            year = getattr(item, 'year', None)
 
             # convert imdb id to tmdb id, so we can build the issue url properly
-            if item.type == 'movie' and (
+            if item.type == 'movie' and database_id and (
                     item_agent == 'com.plexapp.agents.imdb'
                     or database_id.startswith('tt')
             ):
@@ -275,36 +272,30 @@ def cache_data():
                     external_id=database_id, database='imdb', item_type='movie')
                 database_id = tmdb_id if tmdb_id else None
 
-            elif item.type == 'show' and item_agent == 'com.plexapp.agents.thetvdb':
-                # try to get tmdb id from tvdb id
-                tmdb_id = tmdb_helper.get_tmdb_id_from_external_id(
-                    external_id=database_id, database='tvdb', item_type='tv')
-                database_id = tmdb_id if tmdb_id else None
-
             item_issue_url = None
 
-            try:
-                issue_url = issue_urls[database_type]
-            except KeyError:
-                issue_url = None
+            issue_url = issue_urls.get(database_type)
 
             if issue_url:
                 if item.type == 'movie':
                     # override the id since ThemerrDB issues require the slug as part of the url
                     if item_agent == 'dev.lizardbyte.retroarcher-plex':
-                        # get the slug and name from LizardByte db
-                        try:
-                            db_data = JSON.ObjectFromURL(
-                                url='https://db.lizardbyte.dev/games/{}.json'.format(database_id),
-                                cacheTime=CACHE_1DAY,
-                                errors='strict'
-                            )
-                            issue_title = '{} ({})'.format(db_data['name'], year)
-                            database_id = db_data['slug']
-                        except Exception as e:
-                            Log.Error('Error getting game data from LizardByte db: {}'.format(e))
-                            issue_title = '{} ({})'.format(item.title, year)
-                            database_id = None
+                        issue_title = '{} ({})'.format(item.title, year)
+
+                        if database_id:
+                            # get the slug and name from LizardByte db
+                            try:
+                                db_data = JSON.ObjectFromURL(
+                                    url='https://db.lizardbyte.dev/games/{}.json'.format(database_id),
+                                    cacheTime=CACHE_1DAY,
+                                    errors='strict'
+                                )
+                            except Exception as e:
+                                Log.Error('Error getting game data from LizardByte db: {}'.format(e))
+                                database_id = None
+                            else:
+                                issue_title = '{} ({})'.format(db_data['name'], year)
+                                database_id = db_data['slug']
                     else:
                         issue_title = '{} ({})'.format(getattr(item, "originalTitle", None) or item.title, year)
                 elif item.type == 'show':
@@ -314,19 +305,20 @@ def cache_data():
 
                     # override the id since ThemerrDB issues require the slug as part of the url
                     if item_agent == 'dev.lizardbyte.retroarcher-plex':
-                        # get the slug and name from LizardByte db
-                        try:
-                            db_data = JSON.ObjectFromURL(
-                                url='https://db.lizardbyte.dev/{}/all.json'.format(
-                                    database_type.rsplit('_', 1)[-1]),
-                                cacheTime=CACHE_1DAY,
-                                errors='strict'
-                            )
-                            issue_title = db_data[str(database_id)]['name']
-                            database_id = db_data[str(database_id)]['slug']
-                        except Exception as e:
-                            Log.Error('Error getting collection data from LizardByte db: {}'.format(e))
-                            database_id = None
+                        if database_id:
+                            # get the slug and name from LizardByte db
+                            try:
+                                db_data = JSON.ObjectFromURL(
+                                    url='https://db.lizardbyte.dev/{}/all.json'.format(
+                                        database_type.rsplit('_', 1)[-1]),
+                                    cacheTime=CACHE_1DAY,
+                                    errors='strict'
+                                )
+                                issue_title = db_data[str(database_id)]['name']
+                                database_id = db_data[str(database_id)]['slug']
+                            except Exception as e:
+                                Log.Error('Error getting collection data from LizardByte db: {}'.format(e))
+                                database_id = None
 
                 if database_id:
                     # url encode the issue title
@@ -334,7 +326,7 @@ def cache_data():
 
                     item_issue_url = issue_url.format(issue_title, database_id)
 
-            if database_type and themerr_db_helper.item_exists(
+            if database_type and og_db and og_db_id and themerr_db_helper.item_exists(
                     database_type=database_type,
                     database=og_db,
                     id=og_db_id,

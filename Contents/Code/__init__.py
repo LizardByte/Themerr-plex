@@ -197,7 +197,7 @@ def Start():
 
     if Prefs['bool_plex_movie_support'] or Prefs['bool_plex_series_support']:
         plex_listener()  # start watching plex
-        Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
+        Log.Debug('plex_listener started, watching for activity from new Plex agents.')
 
     setup_scheduling()  # start scheduled tasks
     Log.Debug('scheduled tasks started.')

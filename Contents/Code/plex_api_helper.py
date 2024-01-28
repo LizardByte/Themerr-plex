@@ -518,10 +518,10 @@ def get_database_info(item):
                 temp_database = guid_map[split_guid[0]]
                 temp_database_id = split_guid[1]
 
-                if temp_database == 'thetvdb':
+                if temp_database == 'imdb' or temp_database == 'thetvdb':
                     database_id = tmdb_helper.get_tmdb_id_from_external_id(
                         external_id=temp_database_id,
-                        database='tvdb',
+                        database=split_guid[0],
                         item_type='tv',
                     )
                     if database_id:
