@@ -27,7 +27,7 @@ def get_tmdb_id_from_external_id(external_id, database, item_type):
 
     Parameters
     ----------
-    external_id : str
+    external_id : Union[int, str]
         External ID to convert.
     database : str
         Database to search. Must be one of 'imdb' or 'tvdb'.
