@@ -26,4 +26,5 @@ default_prefs = dict(
     bool_webapp_log_werkzeug_messages='False',
     bool_migrate_locked_themes='False',
     bool_migrate_locked_collection_fields='False',
+    bool_ignore_locked_fields='False',
 )

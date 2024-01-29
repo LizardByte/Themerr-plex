@@ -182,5 +182,12 @@
 		"label": "Migrate collection metadata from < v0.3.0 (If you used Themerr before v0.3.0, set this to True)",
 		"default": "False",
 		"secure": "false"
+	},
+	{
+		"id": "bool_ignore_locked_fields",
+		"type": "bool",
+		"label": "Ignore locked fields (Always upload media, even if fields are locked)",
+		"default": "False",
+		"secure": "false"
 	}
 ]
