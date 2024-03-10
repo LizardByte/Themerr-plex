@@ -16,9 +16,11 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-from constants import plugin_identifier, plugin_support_data_directory
 from typing import Optional
 import youtube_dl
+
+# local imports
+from constants import plugin_identifier, plugin_support_data_directory
 
 # get the plugin logger
 plugin_logger = logging.getLogger(plugin_identifier)
@@ -77,11 +79,11 @@ def process_youtube(url):
         try:
             cookies = json.loads(Prefs['str_youtube_cookies'])
             for cookie in cookies:
-                include_subdom = cookie['domain'].startswith('.')
+                include_subdomain = cookie['domain'].startswith('.')
                 expiry = int(cookie.get('expiry', 0))
                 values = [
                     cookie['domain'],
-                    nsbool(include_subdom),
+                    nsbool(include_subdomain),
                     cookie['path'],
                     nsbool(cookie['secure']),
                     str(expiry),

@@ -382,7 +382,7 @@ def remove_uploaded_media_error_handler(func, path, exc_info):
     ----------
     func : any
         The function that caused the error.
-    path : str
+    path : any
         The path that caused the error.
     exc_info : any
         The exception information.
