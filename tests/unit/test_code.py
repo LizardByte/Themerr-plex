@@ -5,7 +5,7 @@ import Code
 from Code import ValidatePrefs
 from Code import default_prefs
 from plexhints.agent_kit import Media
-from plexhints.model_kit import Movie
+from plexhints.model_kit import Movie, MetadataModel
 from plexhints.object_kit import MessageContainer, SearchResult
 from plexhints.prefs_kit import Prefs
 
@@ -34,7 +34,23 @@ test_items = dict(
         year=1995,
         id='tt0113189',
         category='movies',
-    )
+    ),
+    d=dict(
+        primary_agent='com.plexapp.agents.themoviedb',
+        rating_key=4,
+        title='The 100',
+        year=2014,
+        id='48866',
+        category='tv_shows',
+    ),
+    e=dict(
+        primary_agent='com.plexapp.agents.thetvdb',
+        rating_key=5,
+        title='The 100',
+        year=2014,
+        id='268592',
+        category='tv_shows',
+    ),
 )
 
 
@@ -81,9 +97,26 @@ def test_main():
 
 
 def test_themerr_agent_search(agent):
+    # if agent is for movies
+    supported_categories = []
+    if isinstance(agent, Code.ThemerrMovies):
+        supported_categories.append('movies')
+        supported_categories.append('games')
+    elif isinstance(agent, Code.ThemerrTvShows):
+        supported_categories.append('tv_shows')
+
     for key, item in test_items.items():
-        media = Media.Movie()
-        media.primary_metadata = Movie()
+        if item['category'] not in supported_categories:
+            continue
+
+        if isinstance(agent, Code.ThemerrMovies):
+            media = Media.Movie()
+            media.primary_metadata = Movie()
+        elif isinstance(agent, Code.ThemerrTvShows):
+            media = Media.TV_Show()
+            media.primary_metadata = MetadataModel()
+        else:
+            assert False, "Agent is not ThemerrMovies or ThemerrTvShows"
 
         media.primary_agent = item['primary_agent']
         media.primary_metadata.id = item['id']
@@ -95,7 +128,7 @@ def test_themerr_agent_search(agent):
         if item['category'] == 'games':
             database = item['id'][1:-1].split('-')[0]
             item_id = item['id'][1:-1].split('-')[-1]
-        elif item['category'] == 'movies':
+        elif item['category'] == 'movies' or item['category'] == 'tv_shows':
             database = item['primary_agent'].split('.')[-1]
 
         results = agent.search(results=SearchResult(), media=media, lang='en', manual=False)
@@ -118,7 +151,7 @@ def test_themerr_agent_update(agent):
         if item['category'] == 'games':
             database = item['id'][1:-1].split('-')[0]
             item_id = item['id'][1:-1].split('-')[-1]
-        elif item['category'] == 'movies':
+        elif item['category'] == 'movies' or item['category'] == 'tv_shows':
             database = item['primary_agent'].split('.')[-1]
 
         media.id = item['rating_key']

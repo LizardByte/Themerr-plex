@@ -14,10 +14,11 @@ def test_update_cache(empty_themerr_db_cache):
     assert "games" in themerr_db_helper.database_cache, 'Cache does not contain games'
     assert "game_collections" in themerr_db_helper.database_cache, 'Cache does not contain game_collections'
     assert "game_franchises" in themerr_db_helper.database_cache, 'Cache does not contain game_franchises'
+    assert "tv_shows" in themerr_db_helper.database_cache, 'Cache does not contain tv_shows'
 
 
-def test_item_exists(empty_themerr_db_cache, movies):
-    for item in movies.all():
+def test_item_exists(empty_themerr_db_cache, section):
+    for item in section.all():
         database_info = plex_api_helper.get_database_info(item=item)
 
         database_type = database_info[0]

@@ -18,12 +18,12 @@ else:  # the code is running outside of Plex
     from plexhints.decorator_kit import handler  # decorator kit
     from plexhints.locale_kit import Locale
     from plexhints.log_kit import Log  # log kit
-    from plexhints.model_kit import Movie  # model kit
+    from plexhints.model_kit import MetadataModel  # model kit
     from plexhints.object_kit import MessageContainer, MetadataSearchResult, SearchResult  # object kit
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
-from typing import Optional
+from typing import Optional, Union
 
 try:
     # get the original Python builtins module
@@ -195,9 +195,9 @@ def Start():
     start_queue_threads()  # start queue threads
     Log.Debug('queue threads started.')
 
-    if Prefs['bool_plex_movie_support']:
+    if Prefs['bool_plex_movie_support'] or Prefs['bool_plex_series_support']:
         plex_listener()  # start watching plex
-        Log.Debug('plex_listener started, watching for activity from new Plex Movie agent.')
+        Log.Debug('plex_listener started, watching for activity from new Plex agents.')
 
     setup_scheduling()  # start scheduled tasks
     Log.Debug('scheduled tasks started.')
@@ -216,9 +216,9 @@ def main():
     pass
 
 
-class Themerr(Agent.Movies):
+class Themerr(object):
     """
-    Class representing the Themerr-plex Movie Agent.
+    Class representing the Themerr-plex Agent.
 
     This class defines the metadata agent. See the archived Plex documentation
     `Defining an agent class
@@ -270,9 +270,12 @@ class Themerr(Agent.Movies):
     accepts_from = []
     contributes_to = contributes_to
 
-    @staticmethod
-    def search(results, media, lang, manual):
-        # type: (SearchResult, Media.Movie, str, bool) -> Optional[SearchResult]
+    def __init__(self, *args, **kwargs):
+        super(Themerr, self).__init__(*args, **kwargs)
+        self.agent_type = "movies" if isinstance(self, Agent.Movies) else "tv_shows"
+
+    def search(self, results, media, lang, manual):
+        # type: (SearchResult, Union[Media.Movie, Media.TV_Show], str, bool) -> Optional[SearchResult]
         """
         Search for an item.
 
@@ -286,7 +289,7 @@ class Themerr(Agent.Movies):
         ----------
         results : SearchResult
             An empty container that the developer should populate with potential matches.
-        media : Media.Movie
+        media : Union[Media.Movie, Media.TV_Show]
             An object containing hints to be used when performing the search.
         lang : str
             A string identifying the user’s currently selected language. This will be one of the constants added to the
@@ -319,14 +322,18 @@ class Themerr(Agent.Movies):
         if media.primary_agent == 'dev.lizardbyte.retroarcher-plex':
             media_id = 'games-%s' % re.search(r'((igdb)-(\d+))', media.primary_metadata.id).group(1)
         else:
-            media_id = 'movies-%s-%s' % (media.primary_agent.rsplit('.', 1)[-1], media.primary_metadata.id)
+            media_id = '{}-{}-{}'.format(
+                self.agent_type,
+                media.primary_agent.rsplit('.', 1)[-1],
+                media.primary_metadata.id
+            )
             # e.g. = 'movies-imdb-tt0113189'
             # e.g. = 'movies-themoviedb-710'
 
         results.Append(MetadataSearchResult(
             id=media_id,
             name=media.primary_metadata.title,
-            year=media.primary_metadata.year,
+            year=getattr(media.primary_metadata, 'year', None),  # TV Shows don't have a year attribute
             score=100,
             lang=lang,  # no lang to get from db
             thumb=None  # no point in adding thumb since plex won't show it anywhere
@@ -339,7 +346,7 @@ class Themerr(Agent.Movies):
 
     @staticmethod
     def update(metadata, media, lang, force):
-        # type: (Movie, Media.Movie, str, bool) -> Optional[Movie]
+        # type: (MetadataModel, Union[Media.Movie, Media.TV_Show], str, bool) -> MetadataModel
         """
         Update metadata for an item.
 
@@ -351,10 +358,10 @@ class Themerr(Agent.Movies):
 
         Parameters
         ----------
-        metadata : object
+        metadata : MetadataModel
             A pre-initialized metadata object if this is the first time the item is being updated, or the existing
             metadata object if the item is being refreshed.
-        media : object
+        media : Union[Media.Movie, Media.TV_Show]
             An object containing information about the media hierarchy in the database.
         lang : str
             A string identifying which language should be used for the metadata. This will be one of the constants
@@ -362,6 +369,11 @@ class Themerr(Agent.Movies):
         force : py:class:`bool`
             A boolean value identifying whether the user forced a full refresh of the metadata. If this argument is
             ``True``, all metadata should be refreshed, regardless of whether it has been populated previously.
+
+        Returns
+        -------
+        MetadataModel
+            The metadata object.
 
         Examples
         --------
@@ -375,3 +387,11 @@ class Themerr(Agent.Movies):
         update_plex_item(rating_key=rating_key)
 
         return metadata
+
+
+class ThemerrMovies(Themerr, Agent.Movies):
+    agent_type_verbose = "Movies"
+
+
+class ThemerrTvShows(Themerr, Agent.TV_Shows):
+    agent_type_verbose = "TV"

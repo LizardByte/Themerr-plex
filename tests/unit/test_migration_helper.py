@@ -86,22 +86,22 @@ def test_perform_migration(migration_helper_fixture, migration_status_file, key)
         assert migration_status is True, 'Migration status was not set to True'
 
 
-def test_migrate_locked_themes(movies):
+def test_migrate_locked_themes(section):
     field = 'theme'
 
     # lock all is not working
-    # movies.lockAllField(field=field, libtype='movie')
-    # movies.reload()
+    # section.lockAllField(field=field, libtype='movie')
+    # section.reload()
 
-    for movie in movies.all():
-        plex_api_helper.change_lock_status(item=movie, field=field, lock=True)
-        assert movie.isLocked(field=field) is True, '{} for movie is not locked'.format(field)
+    for item in section.all():
+        plex_api_helper.change_lock_status(item=item, field=field, lock=True)
+        assert item.isLocked(field=field) is True, '{} for movie is not locked'.format(field)
 
     migration_helper_object.migrate_locked_themes()
-    movies.reload()
+    section.reload()
 
-    for movie in movies.all():
-        assert movie.isLocked(field=field) is False, '{} for movie is still locked'.format(field)
+    for item in section.all():
+        assert item.isLocked(field=field) is False, '{} for movie is still locked'.format(field)
 
 
 @pytest.mark.parametrize('field', [
@@ -109,14 +109,14 @@ def test_migrate_locked_themes(movies):
     'summary',
     'thumb',
 ])
-def test_migrate_locked_collection_fields(field, movies):
+def test_migrate_locked_collection_fields(field, section):
     # lock all is not working, so lock manually
-    for item in movies.collections():
+    for item in section.collections():
         plex_api_helper.change_lock_status(item=item, field=field, lock=True)
         assert item.isLocked(field=field) is True, '{} for collection is not locked'.format(field)
 
     migration_helper_object.migrate_locked_collection_fields()
-    movies.reload()
+    section.reload()
 
-    for item in movies.collections():
+    for item in section.collections():
         assert item.isLocked(field=field) is False, '{} for collection is still locked'.format(field)

@@ -7,9 +7,9 @@ import pytest
 from Code import plex_api_helper
 
 
-def test_all_themes_unlocked(movies):
+def test_all_themes_unlocked(section):
     field = 'theme'
-    for item in movies.all():
+    for item in section.all():
         assert not item.isLocked(field=field)
 
 
@@ -18,9 +18,9 @@ def test_all_themes_unlocked(movies):
     True,  # verify changing the lock status to True works
     False,  # verify changing the lock status to False works
 ])
-def test_change_lock_status(movies, lock):
+def test_change_lock_status(section, lock):
     field = 'theme'
-    for item in movies.all():
+    for item in section.all():
         change_status = plex_api_helper.change_lock_status(item, field=field, lock=lock)
         assert change_status, 'change_lock_status did not return True'
         assert item.isLocked(field=field) == lock, 'Failed to change lock status to {}'.format(lock)

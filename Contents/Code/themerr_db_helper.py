@@ -25,6 +25,7 @@ db_field_name = dict(
     game_franchises={'igdb': 'id'},
     movies={'themoviedb': 'id', 'imdb': 'imdb_id'},
     movie_collections={'themoviedb': 'id'},
+    tv_shows={'themoviedb': 'id'},
 )
 
 lock = Lock()

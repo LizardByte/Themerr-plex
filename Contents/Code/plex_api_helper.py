@@ -183,6 +183,11 @@ def update_plex_item(rating_key):
 
                 if item.isLocked(field='theme') and not Prefs['bool_ignore_locked_fields']:
                     Log.Debug('Not overwriting locked theme for {}: {}'.format(item.type, item.title))
+                elif (
+                        not Prefs['bool_overwrite_plex_provided_themes'] and
+                        general_helper.get_theme_provider(item=item) == 'plex'
+                ):
+                    Log.Debug('Not overwriting Plex provided theme for {}: {}'.format(item.type, item.title))
                 else:
                     # get youtube_url
                     try:
@@ -195,7 +200,7 @@ def update_plex_item(rating_key):
 
                         try:
                             skip = themerr_data['settings_hash'] == settings_hash \
-                                and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
+                                   and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
                         except KeyError:
                             skip = False
 
@@ -414,7 +419,7 @@ def upload_media(item, method, filepath=None, url=None):
                 else:
                     method(url=url)
         except BadRequest as e:
-            sleep_time = 2**count
+            sleep_time = 2 ** count
             Log.Error('%s: Error uploading media: %s' % (item.ratingKey, e))
             Log.Error('%s: Trying again in : %s' % (item.ratingKey, sleep_time))
             time.sleep(sleep_time)
@@ -490,6 +495,48 @@ def get_database_info(item):
                 database_type = 'movies'
                 database = 'imdb'
                 database_id = item.guid.split('://')[1].split('?')[0]
+
+    elif item.type == 'show':
+        database_type = 'tv_shows'
+
+        if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
+            agent = 'tv.plex.agents.series'
+            for guid in item.guids:
+                split_guid = guid.id.split('://')
+                temp_database = guid_map[split_guid[0]]
+                temp_database_id = split_guid[1]
+
+                if temp_database == 'imdb' or temp_database == 'thetvdb':
+                    database_id = tmdb_helper.get_tmdb_id_from_external_id(
+                        external_id=temp_database_id,
+                        database=split_guid[0],
+                        item_type='tv',
+                    )
+                    if database_id:
+                        database = 'themoviedb'
+                        break
+
+                if temp_database == 'themoviedb':  # tmdb is our prefered db, so we break if found
+                    database_id = temp_database_id
+                    database = temp_database
+                    break
+        elif item.guid:
+            split_guid = item.guid.split('://')
+            agent = split_guid[0]
+            if agent == 'com.plexapp.agents.themoviedb':
+                database = 'themoviedb'
+                database_id = item.guid.split('://')[1].split('?')[0]
+            elif agent == 'com.plexapp.agents.thetvdb':
+                temp_database = 'thetvdb'
+                temp_database_id = item.guid.split('://')[1].split('?')[0]
+
+                # ThemerrDB does not have TVDB IDs, so we need to convert it to TMDB ID
+                database_id = tmdb_helper.get_tmdb_id_from_external_id(
+                    external_id=temp_database_id,
+                    database='tvdb',
+                    item_type='tv',
+                )
+                database = 'themoviedb' if database_id else None
 
     elif item.type == 'collection':
         # this is tricky since collections don't match up with any of the databases
@@ -635,11 +682,16 @@ def plex_listener_handler(data):
 
             # known search types:
             # https://github.com/pkkid/python-plexapi/blob/8b3235445f6b3051c39ff6d6fc5d49f4e674d576/plexapi/utils.py#L35-L55
-            if (reverseSearchType(libtype=entry['type']) == 'movie'
-                    and entry['state'] == 5
-                    and entry['identifier'] == 'com.plexapp.plugins.library'):
+            if (
+                    (
+                        (reverseSearchType(libtype=entry['type']) == 'movie' and Prefs['bool_plex_movie_support']) or
+                        (reverseSearchType(libtype=entry['type']) == 'show' and Prefs['bool_plex_series_support'])
+                    ) and
+                    entry['state'] == 5 and
+                    entry['identifier'] == 'com.plexapp.plugins.library'
+            ):
                 # identifier always appears to be `com.plexapp.plugins.library` for updating library metadata
-                # entry['title'] = movie title
+                # entry['title'] = item title
                 # entry['itemID'] = rating key
 
                 rating_key = int(entry['itemID'])
@@ -689,15 +741,20 @@ def scheduled_update():
             Log.Debug('Themerr-plex is disabled for agent "{}"'.format(section.agent))
             continue
 
+        all_items = []
+
         # get all the items in the section
-        media_items = section.all() if Prefs['bool_auto_update_movie_themes'] else []
+        if section.type == 'movie':
+            media_items = section.all() if Prefs['bool_auto_update_movie_themes'] else []
 
-        # get all collections in the section
-        collections = section.collections() if Prefs['bool_auto_update_collection_themes'] else []
+            # get all collections in the section
+            collections = section.collections() if Prefs['bool_auto_update_collection_themes'] else []
 
-        # combine the items and collections into one list
-        # this is done so that we can process both items and collections in the same loop
-        all_items = media_items + collections
+            # combine the items and collections into one list
+            # this is done so that we can process both items and collections in the same loop
+            all_items = media_items + collections
+        elif section.type == 'show':
+            all_items = section.all() if Prefs['bool_auto_update_tv_themes'] else []
 
         for item in all_items:
             if item.ratingKey not in q.queue:

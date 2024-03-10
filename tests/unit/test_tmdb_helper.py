@@ -8,20 +8,26 @@ import pytest
 from Code import tmdb_helper
 
 
-@pytest.mark.parametrize('tmdb_test_id', [
-    'tt1254207',
+@pytest.mark.parametrize('tmdb_test_id, database, item_type', [
+    ('tt1254207', 'imdb', 'movie'),
+    ('268592', 'tvdb', 'tv'),
 ])
-def test_get_tmdb_id_from_imdb_id(tmdb_test_id):
+def test_get_tmdb_id_from_external_id(tmdb_test_id, database, item_type):
     print(plexhints.CONTENTS)
     print(plexhints.ELEVATED_POLICY)
 
-    tmdb_id = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id=tmdb_test_id)
+    tmdb_id = tmdb_helper.get_tmdb_id_from_external_id(external_id=tmdb_test_id, database=database, item_type=item_type)
     assert tmdb_id, "No tmdb_id found for {}".format(tmdb_test_id)
     assert isinstance(tmdb_id, int), "tmdb_id is not an int: {}".format(tmdb_id)
 
 
-def test_get_tmdb_id_from_imdb_id_invalid():
-    test = tmdb_helper.get_tmdb_id_from_imdb_id(imdb_id='invalid')
+@pytest.mark.parametrize('tmdb_test_id, database, item_type', [
+    ('invalid', 'imdb', 'movie'),
+    ('tt1254207', 'invalid', 'movie'),
+    ('invalid', 'imdb', 'game'),
+])
+def test_get_tmdb_id_from_external_id_invalid(tmdb_test_id, database, item_type):
+    test = tmdb_helper.get_tmdb_id_from_external_id(external_id=tmdb_test_id, database=database, item_type=item_type)
     assert test is None, "tmdb_id found for invalid imdb_id: {}".format(test)
 
 
