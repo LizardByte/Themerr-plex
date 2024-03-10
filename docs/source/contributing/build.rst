@@ -18,14 +18,14 @@ Setup venv
 ----------
 It is recommended to setup and activate a `venv`_.
 
-Apply Patches
--------------
-Patch YouTube-DL
-   .. code-block:: bash
-
-      pushd ./third-party/youtube-dl
-      git apply -v ../../patches/youtube_dl-compat.patch
-      popd
+.. Apply Patches
+.. -------------
+.. Patch YouTube-DL
+..    .. code-block:: bash
+..
+..       pushd ./third-party/youtube-dl
+..       git apply -v ../../patches/youtube_dl-compat.patch
+..       popd
 
 Install Requirements
 --------------------
