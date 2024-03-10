@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-10 03:51+0000\n"
-"PO-Revision-Date: 2024-03-10 04:34\n"
+"PO-Revision-Date: 2024-03-10 15:13\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -64,7 +64,7 @@ msgstr "Aucun ID connu"
 
 #: Contents/Resources/web/templates/home.html:140
 msgid "Plex provided"
-msgstr ""
+msgstr "Plex fourni"
 
 #: Contents/Resources/web/templates/home.html:142
 msgid "User provided"
@@ -76,7 +76,7 @@ msgstr "Fourni par Themerr"
 
 #: Contents/Resources/web/templates/home.html:146
 msgid "provided"
-msgstr ""
+msgstr "prévu"
 
 #: Contents/Resources/web/templates/home.html:148
 msgid "Unknown provider"
