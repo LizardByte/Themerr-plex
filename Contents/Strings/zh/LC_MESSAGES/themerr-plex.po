@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2024-03-10 03:51+0000\n"
+"PO-Revision-Date: 2024-03-10 16:28\n"
+"Last-Translator: \n"
+"Language-Team: Chinese Simplified\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: zh_CN\n"
+
+#: Contents/Resources/web/templates/home.html:34
+msgid "Games"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:35
+msgid "Movies"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:77
+msgid "Collections"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:97
+msgid "Title"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:98
+msgid "Type"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:99
+msgid "Year"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:100
+msgid "Contribute"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:101
+msgid "Status"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:117
+msgid "Add"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:120
+msgid "Edit"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:135
+msgid "No known ID"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:140
+msgid "Plex provided"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:142
+msgid "User provided"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:144
+msgid "Themerr provided"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:146
+msgid "provided"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:148
+msgid "Unknown provider"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:150
+msgid "Missing from ThemerrDB"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:152
+msgid "Failed to download"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:154
+msgid "Unknown status"
+msgstr ""
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr ""
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr ""
+
