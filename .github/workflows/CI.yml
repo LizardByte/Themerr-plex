@@ -61,6 +61,7 @@ jobs:
           python-version: '2.7'
 
       - name: Patch third-party deps
+        if: false  # disabled
         shell: bash
         working-directory: Themerr-plex.bundle/third-party
         run: |

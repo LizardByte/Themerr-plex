@@ -50,14 +50,14 @@ python2 -m pip --no-python-version-warning --disable-pip-version-check install -
 python2 ./scripts/build_plist.py
 _BUILD
 
-# patch youtube-dl, cannot use git apply because we don't pass in any git files
-WORKDIR /build/Contents/Libraries/Shared
-RUN <<_PATCH
-#!/bin/bash
-set -e
-patch_dir=/build/patches
-patch -p1 < "${patch_dir}/youtube_dl-compat.patch"
-_PATCH
+## patch youtube-dl, cannot use git apply because we don't pass in any git files
+#WORKDIR /build/Contents/Libraries/Shared
+#RUN <<_PATCH
+##!/bin/bash
+#set -e
+#patch_dir=/build/patches
+#patch -p1 < "${patch_dir}/youtube_dl-compat.patch"
+#_PATCH
 
 WORKDIR /build
 
