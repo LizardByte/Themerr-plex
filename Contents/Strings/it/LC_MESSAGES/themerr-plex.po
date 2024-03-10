@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-12-10 23:36\n"
+"POT-Creation-Date: 2024-03-10 03:51+0000\n"
+"PO-Revision-Date: 2024-03-10 10:50\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -60,35 +60,43 @@ msgstr "Modifica"
 
 #: Contents/Resources/web/templates/home.html:135
 msgid "No known ID"
-msgstr "ID non noto"
+msgstr "ID sconosciuto"
 
 #: Contents/Resources/web/templates/home.html:140
+msgid "Plex provided"
+msgstr "Plex fornito"
+
+#: Contents/Resources/web/templates/home.html:142
 msgid "User provided"
 msgstr "Utente fornito"
 
-#: Contents/Resources/web/templates/home.html:142
+#: Contents/Resources/web/templates/home.html:144
 msgid "Themerr provided"
 msgstr "Themerr fornito"
 
-#: Contents/Resources/web/templates/home.html:144
+#: Contents/Resources/web/templates/home.html:146
+msgid "provided"
+msgstr "fornito"
+
+#: Contents/Resources/web/templates/home.html:148
 msgid "Unknown provider"
 msgstr "Provider sconosciuto"
 
-#: Contents/Resources/web/templates/home.html:146
+#: Contents/Resources/web/templates/home.html:150
 msgid "Missing from ThemerrDB"
 msgstr "Manca da ThemerrDB"
 
-#: Contents/Resources/web/templates/home.html:148
+#: Contents/Resources/web/templates/home.html:152
 msgid "Failed to download"
-msgstr "Impossibile scaricare"
+msgstr "Download non riuscito"
 
-#: Contents/Resources/web/templates/home.html:150
+#: Contents/Resources/web/templates/home.html:154
 msgid "Unknown status"
 msgstr "Stato sconosciuto"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "Il database è in fase di caching, riprova presto."
+msgstr "Il database è in fase di caching, riprova più tardi."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
@@ -96,7 +104,7 @@ msgstr "Dona"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "Sponsor GitHub"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
