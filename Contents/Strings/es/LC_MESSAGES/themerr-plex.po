@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2023-11-17 01:01+0000\n"
-"PO-Revision-Date: 2023-12-10 22:37\n"
+"POT-Creation-Date: 2024-03-10 03:51+0000\n"
+"PO-Revision-Date: 2024-03-10 04:34\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -63,26 +63,34 @@ msgid "No known ID"
 msgstr "Sin identificación conocida"
 
 #: Contents/Resources/web/templates/home.html:140
+msgid "Plex provided"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:142
 msgid "User provided"
 msgstr "Proporcionado por el usuario"
 
-#: Contents/Resources/web/templates/home.html:142
+#: Contents/Resources/web/templates/home.html:144
 msgid "Themerr provided"
 msgstr "Proporcionado por Themerr"
 
-#: Contents/Resources/web/templates/home.html:144
+#: Contents/Resources/web/templates/home.html:146
+msgid "provided"
+msgstr ""
+
+#: Contents/Resources/web/templates/home.html:148
 msgid "Unknown provider"
 msgstr "Proveedor desconocido"
 
-#: Contents/Resources/web/templates/home.html:146
+#: Contents/Resources/web/templates/home.html:150
 msgid "Missing from ThemerrDB"
 msgstr "Falta en ThemerrDB"
 
-#: Contents/Resources/web/templates/home.html:148
+#: Contents/Resources/web/templates/home.html:152
 msgid "Failed to download"
 msgstr "Error de descarga"
 
-#: Contents/Resources/web/templates/home.html:150
+#: Contents/Resources/web/templates/home.html:154
 msgid "Unknown status"
 msgstr "Estado desconocido"
 
