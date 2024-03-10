@@ -29,6 +29,7 @@
    code_docs/migration_helper
    code_docs/plex_api_helper
    code_docs/scheduled_tasks
+   code_docs/themerr_db_helper
    code_docs/tmdb_helper
    code_docs/webapp
    code_docs/youtube_dl_helper
