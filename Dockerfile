@@ -66,7 +66,7 @@ RUN <<_NPM
 #!/bin/bash
 set -e
 npm install
-mv ./node_modules ./Contents/Resources/web
+npm run build
 _NPM
 
 # clean

@@ -90,7 +90,7 @@ jobs:
         working-directory: Themerr-plex.bundle
         run: |
           npm install
-          mv ./node_modules ./Contents/Resources/web
+          npm run build
 
       - name: Build plist
         shell: bash
