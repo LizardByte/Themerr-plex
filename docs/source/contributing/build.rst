@@ -2,7 +2,7 @@
 
 Build
 =====
-Compiling Themerr-plex is fairly simple; however it is recommended to use Python 2.7 since the Plex framework is using
+Compiling Themerr-plex is fairly simple; however you need to use Python 2.7 since the Plex framework is using
 Python 2.7.
 
 Clone
@@ -53,17 +53,7 @@ Install npm dependencies.
    .. code-block:: bash
 
       npm install
-
-Move modules directory.
-   Linux/macOS
-      .. code-block:: bash
-
-         mv ./node_modules ./Contents/Resources/web
-
-   Windows
-      .. code-block:: batch
-
-         move .\node_modules .\Contents\Resources\web
+      npm run build
 
 Remote Build
 ------------
