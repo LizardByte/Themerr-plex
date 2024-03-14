@@ -129,8 +129,9 @@
                                     <td class="{{ contribute_column_width }}">
                                         {% if item['issue_url'] != None %}
                                             <a href="{{ item['issue_url'] }}" target="_blank"
-                                               class="btn btn-sm py-0 px-1 {{ contribute_button_color }}"
-                                               role="button">{{ contribute_button_text }}</a>
+                                                class="btn btn-sm py-0 px-1 {{ contribute_button_color }}"
+                                                rel="noopener noreferrer"
+                                                role="button">{{ contribute_button_text }}</a>
                                         {% else %}
                                             {{ _('No known ID') }}
                                         {% endif %}
