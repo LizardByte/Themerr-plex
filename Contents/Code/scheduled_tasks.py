@@ -113,9 +113,10 @@ def setup_scheduling():
             job_func=run_threaded,
             target=scheduled_update
         )
-        schedule.every(max(15, int(Prefs['int_update_database_cache_interval']))).minutes.do(
-            job_func=run_threaded,
-            target=cache_data
-        )
+
+    schedule.every(max(15, int(Prefs['int_update_database_cache_interval']))).minutes.do(
+        job_func=run_threaded,
+        target=cache_data
+    )
 
     run_threaded(target=schedule_loop, daemon=True)  # start the schedule loop in a thread
