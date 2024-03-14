@@ -343,6 +343,8 @@ def cache_data():
                 else:
                     theme_status = 'missing'
 
+            theme_provider = general_helper.get_theme_provider(item=item)
+
             items[section.key]['items'].append(dict(
                 title=item.title,
                 agent=item_agent,
@@ -352,7 +354,7 @@ def cache_data():
                 issue_action=issue_action,
                 issue_url=item_issue_url,
                 theme=True if item.theme else False,
-                theme_provider=general_helper.get_theme_provider(item=item),
+                theme_provider=theme_provider,
                 theme_status=theme_status,
                 type=item.type,
                 year=year,
