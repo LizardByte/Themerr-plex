@@ -237,11 +237,19 @@ def get_theme_provider(item):
     }
 
     if not item.themes():
+        Log.Debug('No themes found for item: {}'.format(item.title))
         return
 
     provider = None
 
-    selected = (theme for theme in item.themes() if theme.selected).next()
+    selected = None
+    for theme in item.themes():
+        if getattr(theme, 'selected'):
+            selected = theme
+            break
+    if not selected:
+        Log.Debug('No selected theme found for item: {}'.format(item.title))
+        return
 
     if selected.provider in provider_map.keys():
         provider = provider_map[selected.provider]
