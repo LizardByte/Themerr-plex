@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2024-03-10 03:51+0000\n"
-"PO-Revision-Date: 2024-03-10 15:13\n"
+"POT-Creation-Date: 2024-03-15 14:05+0000\n"
+"PO-Revision-Date: 2024-03-15 21:02\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -18,79 +18,95 @@ msgstr ""
 "X-Crowdin-File-ID: 5784\n"
 "Language: es_ES\n"
 
-#: Contents/Resources/web/templates/home.html:34
+#: Contents/Resources/web/templates/home.html:35
 msgid "Games"
 msgstr "Juegos"
 
-#: Contents/Resources/web/templates/home.html:35
+#: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
 msgstr "Películas"
 
-#: Contents/Resources/web/templates/home.html:77
+#: Contents/Resources/web/templates/home.html:39
+msgid "Shows"
+msgstr "Series"
+
+#: Contents/Resources/web/templates/home.html:41
+msgid "Artists"
+msgstr "Artistas"
+
+#: Contents/Resources/web/templates/home.html:43
+msgid "Photos"
+msgstr "Fotos"
+
+#: Contents/Resources/web/templates/home.html:45
+msgid "Items"
+msgstr "Elementos"
+
+#: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
 msgstr "Colecciones"
 
-#: Contents/Resources/web/templates/home.html:97
+#: Contents/Resources/web/templates/home.html:108
 msgid "Title"
 msgstr "Título"
 
-#: Contents/Resources/web/templates/home.html:98
+#: Contents/Resources/web/templates/home.html:109
 msgid "Type"
 msgstr "Tipo"
 
-#: Contents/Resources/web/templates/home.html:99
+#: Contents/Resources/web/templates/home.html:110
 msgid "Year"
 msgstr "Año"
 
-#: Contents/Resources/web/templates/home.html:100
+#: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
 msgstr "Contribuir"
 
-#: Contents/Resources/web/templates/home.html:101
+#: Contents/Resources/web/templates/home.html:112
 msgid "Status"
 msgstr "Estado"
 
-#: Contents/Resources/web/templates/home.html:117
+#: Contents/Resources/web/templates/home.html:128
 msgid "Add"
 msgstr "Añadir"
 
-#: Contents/Resources/web/templates/home.html:120
+#: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
 msgstr "Editar"
 
-#: Contents/Resources/web/templates/home.html:135
+#: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
 msgstr "Sin identificación conocida"
 
-#: Contents/Resources/web/templates/home.html:140
+#: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
 msgstr "Plex proporcionado"
 
-#: Contents/Resources/web/templates/home.html:142
+#: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
 msgstr "Proporcionado por el usuario"
 
-#: Contents/Resources/web/templates/home.html:144
+#: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
 msgstr "Proporcionado por Themerr"
 
-#: Contents/Resources/web/templates/home.html:146
+#: Contents/Resources/web/templates/home.html:158
 msgid "provided"
 msgstr "proporcionado"
 
-#: Contents/Resources/web/templates/home.html:148
+#: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
 msgstr "Proveedor desconocido"
 
-#: Contents/Resources/web/templates/home.html:150
+#: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
 msgstr "Falta en ThemerrDB"
 
-#: Contents/Resources/web/templates/home.html:152
+#: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
 msgstr "Error de descarga"
 
-#: Contents/Resources/web/templates/home.html:154
+#: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
 msgstr "Estado desconocido"
 

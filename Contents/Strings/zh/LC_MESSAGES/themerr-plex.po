@@ -5,136 +5,136 @@ msgstr ""
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
 "PO-Revision-Date: 2024-03-15 21:02\n"
 "Last-Translator: \n"
-"Language-Team: Swedish\n"
+"Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: sv-SE\n"
+"X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: sv_SE\n"
+"Language: zh_CN\n"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr "Spel"
+msgstr "游戏"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr "Filmer"
+msgstr "电影"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "Serier"
+msgstr "显示"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr "Artister"
+msgstr "艺人"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr "Foton"
+msgstr "照片"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr "Objekt"
+msgstr "项目"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "Samlingar"
+msgstr "A. 收款情况"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr "Titel"
+msgstr "标题"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr "Typ"
+msgstr "类型"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr "Årtal"
+msgstr "年份"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr "Bidra"
+msgstr "贡献"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr "Status"
+msgstr "状态"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr "Lägg till"
+msgstr "添加"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr "Redigera"
+msgstr "编辑"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "Inget känt ID"
+msgstr "没有已知的ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex tillhandahålls"
+msgstr "提供的Plex值"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr "Användarbidrag"
+msgstr "用户提供"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Themerrs bidrag"
+msgstr "提供了Themerr"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr "förutsatt"
+msgstr "提供"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "Andra bidrag"
+msgstr "未知的提供商"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "Saknas från ThemerrDB"
+msgstr "从ThemerrDB 丢失"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr "Misslyckades med att ladda ner"
+msgstr "下载失败"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr "Status okänd"
+msgstr "未知状态"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "Databasen håller på att cachas, var god försök senare."
+msgstr "数据库正在缓存，请稍后再试。"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Donera"
+msgstr "捐助"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub-sponsorer"
+msgstr "GitHub Sponsors"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Support"
+msgstr "支持"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Dokumentation"
+msgstr "文档"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Online support"
+msgstr "支持中心"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Hem"
+msgstr "首页"
 
