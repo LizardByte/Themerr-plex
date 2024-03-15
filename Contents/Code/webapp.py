@@ -247,6 +247,7 @@ def cache_data():
                 len(collections_with_themes) / len(collections) * 100) if len(collections_with_themes) else 0,
             collections_enabled=Prefs['bool_auto_update_collection_themes'],
             total_count=len(all_items),
+            type=section.type,
         )
 
         for item in all_items:

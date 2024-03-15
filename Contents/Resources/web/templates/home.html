@@ -31,8 +31,19 @@
             </div>
 
             <!-- Primary progress bar -->
-            {% set library_type = _('Games') if items[section]['agent'] == 'dev.lizardbyte.retroarcher-plex'
-              else _('Movies') %}
+            {% if items[section]['agent'] == 'dev.lizardbyte.retroarcher-plex' %}
+                {% set library_type = _('Games') %}
+            {% elif items[section]['type'] == 'movie' %}
+                {% set library_type = _('Movies') %}
+            {% elif items[section]['type'] == 'show' %}
+                {% set library_type = _('Shows') %}
+            {% elif items[section]['type'] == 'artist' %}
+                {% set library_type = _('Artists') %}
+            {% elif items[section]['type'] == 'photo' %}
+                {% set library_type = _('Photos') %}
+            {% else %}
+                {% set library_type = _('Items') %}
+            {% endif %}
             {% if items[section]['media_percent_complete'] == 100 %}
                 {% set progress_bar_color = 'bg-success' %}
             {% elif items[section]['media_percent_complete'] > 50 %}
