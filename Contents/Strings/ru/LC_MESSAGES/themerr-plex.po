@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2024-03-15 15:59\n"
+"PO-Revision-Date: 2024-03-15 21:02\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -28,19 +28,19 @@ msgstr "Фильмы"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr ""
+msgstr "Сериалы"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr ""
+msgstr "Художники"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr ""
+msgstr "Фото"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr ""
+msgstr "Предметы"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
