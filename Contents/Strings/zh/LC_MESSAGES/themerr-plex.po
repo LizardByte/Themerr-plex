@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2024-03-15 15:59\n"
+"PO-Revision-Date: 2024-03-15 21:02\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -20,121 +20,121 @@ msgstr ""
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr ""
+msgstr "游戏"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr ""
+msgstr "电影"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr ""
+msgstr "显示"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr ""
+msgstr "艺人"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr ""
+msgstr "照片"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr ""
+msgstr "项目"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr ""
+msgstr "A. 收款情况"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr ""
+msgstr "年份"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr ""
+msgstr "贡献"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr ""
+msgstr "添加"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr ""
+msgstr "没有已知的ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr ""
+msgstr "提供的Plex值"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr ""
+msgstr "用户提供"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr ""
+msgstr "提供了Themerr"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr ""
+msgstr "提供"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr ""
+msgstr "未知的提供商"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr ""
+msgstr "从ThemerrDB 丢失"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr ""
+msgstr "下载失败"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr ""
+msgstr "未知状态"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr ""
+msgstr "数据库正在缓存，请稍后再试。"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr ""
+msgstr "捐助"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr ""
+msgstr "GitHub Sponsors"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr ""
+msgstr "支持"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr ""
+msgstr "文档"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr ""
+msgstr "支持中心"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr ""
+msgstr "首页"
 
