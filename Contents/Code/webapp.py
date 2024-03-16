@@ -54,7 +54,7 @@ babel = Babel(
     default_locale='en',
     default_timezone='UTC',
     default_domain='themerr-plex',
-    configure_jinja=True
+    configure_jinja=True,
 )
 
 app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.path.join(plugin_directory, 'Contents', 'Strings')
@@ -130,7 +130,9 @@ def get_locale():
     >>> get_locale()
     en
     """
-    return Prefs['enum_webapp_locale']
+    locale = Prefs['enum_webapp_locale']
+    Log.Debug('Getting locale: %s' % locale)
+    return locale
 
 
 def start_server():

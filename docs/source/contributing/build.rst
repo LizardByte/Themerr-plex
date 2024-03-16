@@ -39,6 +39,12 @@ Development Requirements
 
       python -m pip install -r requirements-dev.txt
 
+Compile Translations
+--------------------
+   .. code-block:: bash
+
+      python ./scripts/_locale.py --compile
+
 Build Plist
 -----------
    .. code-block:: bash

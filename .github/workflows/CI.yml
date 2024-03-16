@@ -81,10 +81,17 @@ jobs:
           python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip setuptools
 
           # install dev requirements
-          python -m pip install --upgrade -r requirements-dev.txt
+          python -m pip install --upgrade \
+            -r requirements-build.txt \
+            -r requirements-dev.txt
 
-          python -m pip install --upgrade --target=./Contents/Libraries/Shared -r \
-            requirements.txt --no-warn-script-location
+          python -m pip install --upgrade --target=./Contents/Libraries/Shared \
+            -r requirements.txt --no-warn-script-location
+
+      - name: Compile Locale Translations
+        working-directory: Themerr-plex.bundle
+        run: |
+          python ./scripts/_locale.py --compile
 
       - name: Install npm packages
         working-directory: Themerr-plex.bundle

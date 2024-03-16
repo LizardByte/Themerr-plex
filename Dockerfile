@@ -46,7 +46,10 @@ RUN <<_BUILD
 #!/bin/bash
 set -e
 python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
+  -r requirements-build.txt
+python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
   --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
+python2 ./scripts/_locale.py --compile
 python2 ./scripts/build_plist.py
 _BUILD
 
