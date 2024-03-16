@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2024-03-15 21:02\n"
+"PO-Revision-Date: 2024-03-16 18:25\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "电影"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "显示"
+msgstr "电视"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
@@ -44,7 +44,7 @@ msgstr "项目"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "A. 收款情况"
+msgstr "合集"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
@@ -76,11 +76,11 @@ msgstr "编辑"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "没有已知的ID"
+msgstr "未知ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "提供的Plex值"
+msgstr "Plex提供"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
@@ -88,7 +88,7 @@ msgstr "用户提供"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "提供了Themerr"
+msgstr "Themerr提供"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
@@ -96,11 +96,11 @@ msgstr "提供"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "未知的提供商"
+msgstr "未知提供者"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "从ThemerrDB 丢失"
+msgstr "不在ThemerrDB中"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
@@ -116,7 +116,7 @@ msgstr "数据库正在缓存，请稍后再试。"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "捐助"
+msgstr "捐赠"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
@@ -136,5 +136,5 @@ msgstr "支持中心"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "首页"
+msgstr "主页"
 
