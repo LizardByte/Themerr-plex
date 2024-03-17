@@ -103,10 +103,11 @@ def get_tmdb_id_from_collection(search_query):
     """
     # /search/collection?query=James%20Bond%20Collection&include_adult=false&language=en-US&page=1"
     query_url = 'search/collection?query={}'
+    query_item = search_query.split('&', 1)[0]
 
     # Plex returns 500 error if spaces are in collection query, same with `_`, `+`, and `%20`... so use `-`
     url = '{}/{}'.format(tmdb_base_url, query_url.format(String.Quote(
-        s=search_query.replace(' ', '-'), usePlus=True)))
+        s=search_query.replace(' ', '-'), usePlus=False)))
     try:
         tmdb_data = JSON.ObjectFromURL(
             url=url, sleep=2.0, headers=dict(Accept='application/json'), cacheTime=CACHE_1DAY, errors='strict')
@@ -119,8 +120,8 @@ def get_tmdb_id_from_collection(search_query):
         end_string = 'Collection'  # collection names on themoviedb end with 'Collection'
         try:
             for result in tmdb_data['results']:
-                if result['name'].lower() == search_query.lower() or \
-                        '{} {}'.format(search_query.lower(), end_string).lower() == result['name'].lower():
+                if result['name'].lower() == query_item.lower() or \
+                        '{} {}'.format(query_item.lower(), end_string).lower() == result['name'].lower():
                     collection_id = int(result['id'])
         except (IndexError, KeyError, ValueError):
             Log.Debug('Error searching for collection {}: {}'.format(search_query, tmdb_data))

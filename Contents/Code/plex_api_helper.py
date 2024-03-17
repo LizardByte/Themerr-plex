@@ -556,7 +556,13 @@ def get_database_info(item):
         else:
             database = 'themoviedb'
             database_type = 'movie_collections'
-            database_id = tmdb_helper.get_tmdb_id_from_collection(search_query=item.title)
+
+            # we need to get the library language for the library that this item belongs to
+            library_language = plex.library.sectionByID(item.librarySectionID).language
+
+            database_id = tmdb_helper.get_tmdb_id_from_collection(
+                search_query='{}&language={}'.format(item.title, library_language)
+            )
 
     Log.Debug('Database info for item: {}, database_info: {}'.format(
         item.title, (database_type, database, agent, database_id)))
