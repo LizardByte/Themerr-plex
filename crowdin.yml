@@ -18,5 +18,19 @@
         "en-US": "en_US"
       }
     }
+  },
+  {
+    "source": "/Contents/Strings/en.json",
+    "translation": "/Contents/Strings/%two_letters_code%.%file_extension%",
+    "translation_replace": {
+      "en": "themerr-plex"
+    },
+    "languages_mapping": {
+      "two_letters_code": {
+        # map non-two letter codes here, left side is crowdin designation, right side is plex designation
+        "en-GB": "en-gb",
+        "en-US": "en-us"
+      }
+    }
   }
 ]
