@@ -2,140 +2,140 @@
 	{
 		"id": "bool_plex_movie_support",
 		"type": "bool",
-		"label": "Plex Movie agent support (Add themes to the updated Plex Movie agent)",
+		"label": "bool_plex_movie_support",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_plex_series_support",
 		"type": "bool",
-		"label": "Plex Series agent support (Add themes to the updated Plex Series agent)",
+		"label": "bool_plex_series_support",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_overwrite_plex_provided_themes",
 		"type": "bool",
-		"label": "Overwrite Plex provided themes",
+		"label": "bool_overwrite_plex_provided_themes",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_prefer_mp4a_codec",
 		"type": "bool",
-		"label": "Prefer MP4A AAC Codec (Improves compatibility with Apple devices)",
+		"label": "bool_prefer_mp4a_codec",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_remove_unused_theme_songs",
 		"type": "bool",
-		"label": "Remove unused theme songs (frees up space in your Plex metadata directory)",
+		"label": "bool_remove_unused_theme_songs",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_remove_unused_art",
 		"type": "bool",
-		"label": "Remove unused art (applies to collections, frees up space in your Plex metadata directory)",
+		"label": "bool_remove_unused_art",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_remove_unused_posters",
 		"type": "bool",
-		"label": "Remove unused posters (applies to collections, frees up space in your Plex metadata directory)",
+		"label": "bool_remove_unused_posters",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_auto_update_items",
 		"type": "bool",
-		"label": "Automatically update items (only items changed or previously missing in ThemerrDB)",
+		"label": "bool_auto_update_items",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_auto_update_movie_themes",
 		"type": "bool",
-		"label": "Update movie themes during automatic update",
+		"label": "bool_auto_update_movie_themes",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_auto_update_tv_themes",
 		"type": "bool",
-		"label": "Update tv show themes during automatic update",
+		"label": "bool_auto_update_tv_themes",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_auto_update_collection_themes",
 		"type": "bool",
-		"label": "Update collection themes during automatic update",
+		"label": "bool_auto_update_collection_themes",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "bool_update_collection_metadata_plex_movie",
 		"type": "bool",
-		"label": "Update collection metadata for Plex Movie agent (Updates poster, art, and summary)",
+		"label": "bool_update_collection_metadata_plex_movie",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_update_collection_metadata_legacy",
 		"type": "bool",
-		"label": "Update collection metadata for legacy agents (Updates poster, art, and summary)",
+		"label": "bool_update_collection_metadata_legacy",
 		"default": "True",
 		"secure": "false"
 	},
 	{
 		"id": "int_update_themes_interval",
 		"type": "text",
-		"label": "Interval for automatic update task, in minutes (min: 15)",
+		"label": "int_update_themes_interval",
 		"default": "60",
 		"secure": "false"
 	},
 	{
 		"id": "int_update_database_cache_interval",
 		"type": "text",
-		"label": "Interval for database cache update task, in minutes (min: 15)",
+		"label": "int_update_database_cache_interval",
 		"default": "60",
 		"secure": "false"
 	},
 	{
 		"id": "int_plexapi_plexapi_timeout",
 		"type": "text",
-		"label": "PlexAPI Timeout, in seconds (min: 1)",
+		"label": "int_plexapi_plexapi_timeout",
 		"default": "180",
 		"secure": "false"
 	},
 	{
 		"id": "int_plexapi_upload_retries_max",
 		"type": "text",
-		"label": "Max Retries, integer (min: 0)",
+		"label": "int_plexapi_upload_retries_max",
 		"default": "6",
 		"secure": "false"
 	},
 	{
 		"id": "int_plexapi_upload_threads",
 		"type": "text",
-		"label": "Multiprocessing Threads, integer (min: 1)",
+		"label": "int_plexapi_upload_threads",
 		"default": "3",
 		"secure": "false"
 	},
 	{
 		"id": "str_youtube_cookies",
 		"type": "text",
-		"label": "YouTube Cookies (JSON format)",
+		"label": "str_youtube_cookies",
 		"default": "",
 		"secure": "true"
 	},
 	{
 		"id": "enum_webapp_locale",
 		"type": "enum",
-		"label": "Web UI Locale",
+		"label": "enum_webapp_locale",
 		"default": "en",
 		"values": [
 			"de",
@@ -153,42 +153,42 @@
 	{
 		"id": "str_webapp_http_host",
 		"type": "text",
-		"label": "Web UI Host Address (requires Plex Media Server restart)",
+		"label": "str_webapp_http_host",
 		"default": "0.0.0.0",
 		"secure": "false"
 	},
 	{
 		"id": "int_webapp_http_port",
 		"type": "text",
-		"label": "Web UI Port (requires Plex Media Server restart)",
+		"label": "int_webapp_http_port",
 		"default": "9494",
 		"secure": "false"
 	},
 	{
 		"id": "bool_webapp_log_werkzeug_messages",
 		"type": "bool",
-		"label": "Log all web server messages (requires Plex Media Server restart)",
+		"label": "bool_webapp_log_werkzeug_messages",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_migrate_locked_themes",
 		"type": "bool",
-		"label": "Migrate themes from < v0.3.0 (If you used Themerr before v0.3.0, set this to True)",
+		"label": "bool_migrate_locked_themes",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_migrate_locked_collection_fields",
 		"type": "bool",
-		"label": "Migrate collection metadata from < v0.3.0 (If you used Themerr before v0.3.0, set this to True)",
+		"label": "bool_migrate_locked_collection_fields",
 		"default": "False",
 		"secure": "false"
 	},
 	{
 		"id": "bool_ignore_locked_fields",
 		"type": "bool",
-		"label": "Ignore locked fields (Always upload media, even if fields are locked)",
+		"label": "bool_ignore_locked_fields",
 		"default": "False",
 		"secure": "false"
 	}
