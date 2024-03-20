@@ -21,6 +21,7 @@
   },
   {
     "source": "/Contents/Strings/en.json",
+    "dest": "/themerr-plex.json",
     "translation": "/Contents/Strings/%two_letters_code%.%file_extension%",
     "languages_mapping": {
       "two_letters_code": {
