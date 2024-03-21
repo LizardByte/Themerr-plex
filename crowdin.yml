@@ -17,11 +17,12 @@
         "en-GB": "en_GB",
         "en-US": "en_US"
       }
-    }
+    },
+    "update_option": "update_as_unapproved"
   },
   {
     "source": "/Contents/Strings/en.json",
-    "dest": "/themerr-plex.json",
+    "dest": "/Contents/Strings/themerr-plex.json",
     "translation": "/Contents/Strings/%two_letters_code%.%file_extension%",
     "languages_mapping": {
       "two_letters_code": {
@@ -29,6 +30,7 @@
         "en-GB": "en-gb",
         "en-US": "en-us"
       }
-    }
+    },
+    "update_option": "update_as_unapproved"
   }
 ]
