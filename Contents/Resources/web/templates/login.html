@@ -1,0 +1,75 @@
+{# Reference: https://github.com/Tautulli/Tautulli/blob/d019efcf911b4806618761c2da48bab7d04031ec/data/interfaces/default/login.html #}
+
+{% extends 'base.html' %}
+{% block modals %}
+{% endblock modals %}
+
+{% block content %}
+<div class="container px-auto my-5">
+    <div class="row">
+        <div class="login-container text-center">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="sign-in-alert" class="alert alert-danger" style="display: none"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button id="sign-in-plex" class="btn btn-primary login-button"><i class="fa fa-sign-in"></i>&nbsp;
+                        Sign In with Plex</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/plexauth.js') }}"></script>
+<script>
+    function OAuthSuccessCallback(authToken) {
+        signIn(authToken);
+    }
+    function OAuthErrorCallback() {
+        $('#sign-in-alert').text('Error communicating with Plex.tv.').show();
+    }
+
+    $('#sign-in-plex').click(function () {
+        PlexOAuth(OAuthSuccessCallback, OAuthErrorCallback);
+    });
+
+    function signIn(token) {
+        $('.login-container button').prop('disabled', true);
+        $('#sign-in-plex').html('<i class="fa fa-refresh fa-spin"></i>&nbsp; Sign In with Plex');
+
+        var data = {
+            token: token
+        };
+        var x_plex_headers = getPlexHeaders();
+        data = $.extend(data, x_plex_headers);
+
+        $.ajax({
+            url: '{{ url_for("login") }}',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            statusCode: {
+                200: function (xhr, status) {
+                    window.location = "{{ redirect_uri }}";
+                },
+                401: function (xhr, status) {
+                    $('#sign-in-alert').text('Invalid Plex account, or the account is not the owner of the server.').show();
+                },
+                429: function (xhr, status) {
+                    var retry = Math.ceil(xhr.getResponseHeader('Retry-After') / 60);
+                    $('#sign-in-alert').text(`Too many login attempts. Try again in ${retry} minute(s).`).show();
+                }
+            },
+            complete: function () {
+                $('.login-container button').prop('disabled', false);
+                $('#sign-in-plex').html('<i class="fa fa-sign-in"></i>&nbsp; Sign In with Plex');
+            }
+        });
+    }
+</script>
+{% endblock scripts %}
