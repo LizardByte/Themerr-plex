@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2024-03-15 14:05+0000\n"
+"PO-Revision-Date: 2024-04-05 17:47\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: ja_JP\n"
+
+#: Contents/Resources/web/templates/home.html:35
+msgid "Games"
+msgstr "ゲーム"
+
+#: Contents/Resources/web/templates/home.html:37
+msgid "Movies"
+msgstr "映画"
+
+#: Contents/Resources/web/templates/home.html:39
+msgid "Shows"
+msgstr "表示"
+
+#: Contents/Resources/web/templates/home.html:41
+msgid "Artists"
+msgstr "アーティスト"
+
+#: Contents/Resources/web/templates/home.html:43
+msgid "Photos"
+msgstr "写真"
+
+#: Contents/Resources/web/templates/home.html:45
+msgid "Items"
+msgstr "アイテム"
+
+#: Contents/Resources/web/templates/home.html:88
+msgid "Collections"
+msgstr "コレクション"
+
+#: Contents/Resources/web/templates/home.html:108
+msgid "Title"
+msgstr "タイトル"
+
+#: Contents/Resources/web/templates/home.html:109
+msgid "Type"
+msgstr "タイプ"
+
+#: Contents/Resources/web/templates/home.html:110
+msgid "Year"
+msgstr "年"
+
+#: Contents/Resources/web/templates/home.html:111
+msgid "Contribute"
+msgstr "貢献"
+
+#: Contents/Resources/web/templates/home.html:112
+msgid "Status"
+msgstr "ステータス"
+
+#: Contents/Resources/web/templates/home.html:128
+msgid "Add"
+msgstr "追加"
+
+#: Contents/Resources/web/templates/home.html:131
+msgid "Edit"
+msgstr "編集"
+
+#: Contents/Resources/web/templates/home.html:147
+msgid "No known ID"
+msgstr "既知のIDがありません"
+
+#: Contents/Resources/web/templates/home.html:152
+msgid "Plex provided"
+msgstr "プレックスが提供されました"
+
+#: Contents/Resources/web/templates/home.html:154
+msgid "User provided"
+msgstr "ユーザーが提供されました"
+
+#: Contents/Resources/web/templates/home.html:156
+msgid "Themerr provided"
+msgstr "Themerr provided"
+
+#: Contents/Resources/web/templates/home.html:158
+msgid "provided"
+msgstr "提供された"
+
+#: Contents/Resources/web/templates/home.html:160
+msgid "Unknown provider"
+msgstr "不明なプロバイダー"
+
+#: Contents/Resources/web/templates/home.html:162
+msgid "Missing from ThemerrDB"
+msgstr "ThemerrDB から欠落しています"
+
+#: Contents/Resources/web/templates/home.html:164
+msgid "Failed to download"
+msgstr "ダウンロードに失敗しました"
+
+#: Contents/Resources/web/templates/home.html:166
+msgid "Unknown status"
+msgstr "不明な状態"
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr "データベースをキャッシュしています。しばらくしてからもう一度お試しください。"
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr "寄付"
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr "GitHub Sponsors"
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr "サポート"
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr "ドキュメント"
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr "サポートセンター"
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr "ホーム"
+
