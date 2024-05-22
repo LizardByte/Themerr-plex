@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2024-03-15 14:05+0000\n"
+"PO-Revision-Date: 2024-04-18 23:07\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: pt_PT\n"
+
+#: Contents/Resources/web/templates/home.html:35
+msgid "Games"
+msgstr "Partidas"
+
+#: Contents/Resources/web/templates/home.html:37
+msgid "Movies"
+msgstr "Filmes"
+
+#: Contents/Resources/web/templates/home.html:39
+msgid "Shows"
+msgstr "Séries"
+
+#: Contents/Resources/web/templates/home.html:41
+msgid "Artists"
+msgstr "artistas"
+
+#: Contents/Resources/web/templates/home.html:43
+msgid "Photos"
+msgstr "Fotos"
+
+#: Contents/Resources/web/templates/home.html:45
+msgid "Items"
+msgstr "itens"
+
+#: Contents/Resources/web/templates/home.html:88
+msgid "Collections"
+msgstr "Coleções"
+
+#: Contents/Resources/web/templates/home.html:108
+msgid "Title"
+msgstr "Título"
+
+#: Contents/Resources/web/templates/home.html:109
+msgid "Type"
+msgstr "tipo"
+
+#: Contents/Resources/web/templates/home.html:110
+msgid "Year"
+msgstr "ano"
+
+#: Contents/Resources/web/templates/home.html:111
+msgid "Contribute"
+msgstr "Contribuir"
+
+#: Contents/Resources/web/templates/home.html:112
+msgid "Status"
+msgstr "SItuação"
+
+#: Contents/Resources/web/templates/home.html:128
+msgid "Add"
+msgstr "Adicionar"
+
+#: Contents/Resources/web/templates/home.html:131
+msgid "Edit"
+msgstr "Alterar"
+
+#: Contents/Resources/web/templates/home.html:147
+msgid "No known ID"
+msgstr "Nenhum ID conhecido"
+
+#: Contents/Resources/web/templates/home.html:152
+msgid "Plex provided"
+msgstr "Plex fornecido"
+
+#: Contents/Resources/web/templates/home.html:154
+msgid "User provided"
+msgstr "Usuário fornecido"
+
+#: Contents/Resources/web/templates/home.html:156
+msgid "Themerr provided"
+msgstr "Themerr fornecido"
+
+#: Contents/Resources/web/templates/home.html:158
+msgid "provided"
+msgstr "fornecido"
+
+#: Contents/Resources/web/templates/home.html:160
+msgid "Unknown provider"
+msgstr "Provedor desconhecido"
+
+#: Contents/Resources/web/templates/home.html:162
+msgid "Missing from ThemerrDB"
+msgstr "Faltando do ThemerrDB"
+
+#: Contents/Resources/web/templates/home.html:164
+msgid "Failed to download"
+msgstr "Falha ao baixar"
+
+#: Contents/Resources/web/templates/home.html:166
+msgid "Unknown status"
+msgstr "Status desconhecido"
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr "Banco de dados está sendo armazenado em cache, por favor, tente novamente em breve."
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr "Doar"
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr "GitHub Sponsors"
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr "SUPORTE"
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr "Documentação"
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr "Centro de Suporte"
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr "Residencial"
+
