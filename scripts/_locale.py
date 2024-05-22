@@ -25,6 +25,8 @@ target_locales = [
     'es',  # Spanish
     'fr',  # French
     'it',  # Italian
+    'ja',  # Japanese
+    'pt',  # Portuguese
     'ru',  # Russian
     'sv',  # Swedish
     'zh',  # Chinese Simplified
