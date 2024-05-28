@@ -22,10 +22,10 @@ name: CI Docker
 
 on:
   pull_request:
-    branches: [master, nightly]
+    branches: [master]
     types: [opened, synchronize, reopened]
   push:
-    branches: [master, nightly]
+    branches: [master]
   workflow_dispatch:
 
 concurrency:
@@ -103,7 +103,6 @@ jobs:
       - check_dockerfiles
     outputs:
       publish_release: ${{ steps.setup_release.outputs.publish_release }}
-      release_build: ${{ steps.setup_release.outputs.release_build }}
       release_commit: ${{ steps.setup_release.outputs.release_commit }}
       release_tag: ${{ steps.setup_release.outputs.release_tag }}
       release_version: ${{ steps.setup_release.outputs.release_version }}
@@ -114,7 +113,7 @@ jobs:
 
       - name: Setup Release
         id: setup_release
-        uses: LizardByte/setup-release-action@v2024.520.181643
+        uses: LizardByte/setup-release-action@v2024.524.1411
         with:
           dotnet: ${{ needs.check_dockerfiles.outputs.dotnet }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -211,8 +210,6 @@ jobs:
           if [[ $GITHUB_REF == refs/heads/master ]]; then
             TAGS="${TAGS},${BASE_TAG}:latest${{ matrix.tag }},ghcr.io/${BASE_TAG}:latest${{ matrix.tag }}"
             TAGS="${TAGS},${BASE_TAG}:master${{ matrix.tag }},ghcr.io/${BASE_TAG}:master${{ matrix.tag }}"
-          elif [[ $GITHUB_REF == refs/heads/nightly ]]; then
-            TAGS="${TAGS},${BASE_TAG}:nightly${{ matrix.tag }},ghcr.io/${BASE_TAG}:nightly${{ matrix.tag }}"
           else
             TAGS="${TAGS},${BASE_TAG}:test${{ matrix.tag }},ghcr.io/${BASE_TAG}:test${{ matrix.tag }}"
           fi
@@ -363,7 +360,7 @@ jobs:
 
       - name: Create/Update GitHub Release
         if: ${{ needs.setup_release.outputs.publish_release == 'true' && steps.prepare.outputs.artifacts == 'true' }}
-        uses: LizardByte/create-release-action@v2024.520.180003
+        uses: LizardByte/create-release-action@v2024.524.143912
         with:
           allowUpdates: true
           artifacts: "*artifacts/*"
