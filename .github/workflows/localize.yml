@@ -23,7 +23,7 @@ jobs:
           submodules: recursive
 
       - name: Set up Python
-        uses: LizardByte/setup-python-action@v2024.202.205923
+        uses: LizardByte/setup-python-action@v2024.520.215755
         with:
           python-version: '2.7'
 
