@@ -1,6 +1,8 @@
 ---
 codecov:
   branch: master
+  notify:
+    after_n_builds: 3
 
 coverage:
   status:
