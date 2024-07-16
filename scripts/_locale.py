@@ -29,6 +29,7 @@ target_locales = [
     'pt',  # Portuguese
     'ru',  # Russian
     'sv',  # Swedish
+    'tr',  # Turkish
     'zh',  # Chinese Simplified
 ]
 
