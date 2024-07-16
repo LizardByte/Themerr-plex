@@ -231,14 +231,50 @@ jobs:
           fi
           cat "${log_file}"
 
-      - name: Upload coverage
-        # any except canceled or skipped
+      - name: Upload coverage artifact
         if: >-
           always() &&
-          (steps.test.outcome == 'success' || steps.test.outcome == 'failure') &&
-          startsWith(github.repository, 'LizardByte/')
+          (steps.test.outcome == 'success' || steps.test.outcome == 'failure')
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.os }}
+          path: .coverage
+
+  coverage:
+    if: >-
+      always() &&
+      (needs.pytest.result == 'success' || needs.pytest.result == 'failure') &&
+      startsWith(github.repository, 'LizardByte/')
+    name: Coverage-${{ matrix.flag }}
+    needs: pytest
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - build_os: ubuntu-latest
+            flag: Linux
+          - build_os: macos-latest
+            flag: macOS
+          - build_os: windows-latest
+            flag: Windows
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-${{ matrix.build_os }}
+          path: _coverage
+
+      - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
+          disable_search: true
           fail_ci_if_error: true
-          flags: ${{ runner.os }}
+          files: ./_coverage/.coverage
+          flags: ${{ matrix.flag }}
           token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
