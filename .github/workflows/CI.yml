@@ -215,6 +215,7 @@ jobs:
             -rxXs \
             --tb=native \
             --verbose \
+            --color=yes \
             --cov=Contents/Code \
             tests
 
