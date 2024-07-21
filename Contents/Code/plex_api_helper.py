@@ -598,6 +598,58 @@ def get_plex_item(rating_key):
     return item
 
 
+def get_user_info(token):
+    # type: (str) -> Optional[MyPlexAccount]
+    """
+    Get the Plex user info.
+
+    Parameters
+    ----------
+    token : str
+        The Plex token.
+
+    Returns
+    -------
+    Optional[MyPlexAccount]
+        The Plex user info.
+
+    Examples
+    --------
+    >>> get_user_info(token='...')
+    ...
+    """
+    try:
+        return MyPlexAccount(token=token)
+    except Exception as e:
+        Log.Error('Error getting user info: {}'.format(e))
+        return None
+
+
+def is_server_owner(user):
+    # type: (MyPlexAccount) -> bool
+    """
+    Check if the user is the owner of the Plex server.
+
+    Parameters
+    ----------
+    user : MyPlexAccount
+        The Plex user info.
+
+    Returns
+    -------
+    py:class:`bool`
+        True if the user is the owner of the Plex server, False otherwise.
+
+    Examples
+    --------
+    >>> is_server_owner(user=...)
+    ...
+    """
+    plex = setup_plexapi()
+
+    return plex.account().username in {user.email, user.username}
+
+
 def process_queue():
     # type: () -> None
     """
@@ -766,54 +818,3 @@ def scheduled_update():
         for item in all_items:
             if item.ratingKey not in q.queue:
                 q.put(item=item.ratingKey)
-
-
-def get_user_info(token):
-    # type: (str) -> Optional[MyPlexAccount]
-    """
-    Get the Plex user info.
-
-    Parameters
-    ----------
-    token : str
-        The Plex token.
-
-    Returns
-    -------
-    Optional[MyPlexAccount]
-        The Plex user info.
-
-    Examples
-    --------
-    >>> get_user_info(token='...')
-    ...
-    """
-    try:
-        return MyPlexAccount(token=token)
-    except Exception:
-        return None
-
-
-def is_server_owner(user):
-    # type: (MyPlexAccount) -> bool
-    """
-    Check if the user is the owner of the Plex server.
-
-    Parameters
-    ----------
-    user : MyPlexAccount
-        The Plex user info.
-
-    Returns
-    -------
-    py:class:`bool`
-        True if the user is the owner of the Plex server, False otherwise.
-
-    Examples
-    --------
-    >>> is_server_owner(user=...)
-    ...
-    """
-    plex = setup_plexapi()
-
-    return plex.account().username in {user.email, user.username}

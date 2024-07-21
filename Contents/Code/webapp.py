@@ -8,6 +8,7 @@ import json
 import logging
 import os
 from threading import Lock, Thread
+from typing import Optional
 import uuid
 
 # plex debugging
@@ -62,7 +63,7 @@ def render_template(*args, **kwargs):
     >>> render_template('home.html', title='Home', items=items)
     """
     kwargs['Prefs'] = Prefs
-    kwargs['is_logged_in'] = is_logged_in
+    kwargs['is_logged_in'] = is_logged_in()
     return flask_render_template(*args, **kwargs)
 
 
@@ -574,8 +575,8 @@ def is_logged_in():
         return False
 
     token = session["token"]
-    user = get_user_info(token)
-    logged_in = user and is_server_owner(user)
+    user = get_user_info(token=token)
+    logged_in = user and is_server_owner(user=user)
     return logged_in
 
 
@@ -600,7 +601,7 @@ def logout():
 
 @app.before_request
 def check_login_status():
-    # type: () -> None
+    # type: () -> Optional[flask.redirect]
     """
     Check if the user is logged in.
 
