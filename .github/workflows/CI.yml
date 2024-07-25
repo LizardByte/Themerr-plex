@@ -180,7 +180,7 @@ jobs:
         env:
           PLEXAPI_PLEXAPI_TIMEOUT: "60"
         id: bootstrap
-        uses: LizardByte/plexhints@v2024.715.173608
+        uses: LizardByte/plexhints@v2024.725.1918
         with:
           additional_server_queries: >-
             put|/system/agents/com.plexapp.agents.imdb/config/1?order=com.plexapp.agents.imdb%2Cdev.lizardbyte.themerr-plex
