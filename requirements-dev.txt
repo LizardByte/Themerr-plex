@@ -2,7 +2,7 @@
 flake8==3.9.2;python_version<"3"
 m2r2==0.3.2;python_version<"3"
 numpydoc==0.9.2;python_version<"3"
-plexhints==2023.1211.160853  # type hinting library for plex development
+plexhints==2024.726.1720  # type hinting library for plex development
 plexapi-backport[alert]==4.15.10
 pytest==4.6.11;python_version<"3"
 pytest-cov==2.12.1;python_version<"3"
