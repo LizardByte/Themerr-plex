@@ -126,6 +126,13 @@
 		"secure": "false"
 	},
 	{
+		"id": "int_youtube_retries_max",
+		"type": "text",
+		"label": "int_youtube_retries_max",
+		"default": "8",
+		"secure": "false"
+	},
+	{
 		"id": "str_youtube_cookies",
 		"type": "text",
 		"label": "str_youtube_cookies",

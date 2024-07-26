@@ -5,6 +5,7 @@ import logging
 import json
 import os
 import tempfile
+import time
 
 # plex debugging
 try:
@@ -16,6 +17,7 @@ else:  # the code is running outside of Plex
     from plexhints.prefs_kit import Prefs  # prefs kit
 
 # imports from Libraries\Shared
+import requests
 from typing import Optional
 import youtube_dl
 
@@ -26,7 +28,7 @@ from constants import plugin_identifier, plugin_support_data_directory
 plugin_logger = logging.getLogger(plugin_identifier)
 
 
-def nsbool(value):
+def ns_bool(value):
     # type: (bool) -> str
     """
     Format a boolean value for a Netscape cookie jar file.
@@ -69,8 +71,9 @@ def process_youtube(url):
     cookie_jar_file.write('# Netscape HTTP Cookie File\n')
 
     youtube_dl_params = dict(
-        cookiefile=cookie_jar_file.name,
+        cookiefile=cookie_jar_file.name if Prefs['str_youtube_cookies'] else None,
         logger=plugin_logger,
+        noplaylist=True,
         socket_timeout=10,
         youtube_include_dash_manifest=False,
     )
@@ -83,9 +86,9 @@ def process_youtube(url):
                 expiry = int(cookie.get('expiry', 0))
                 values = [
                     cookie['domain'],
-                    nsbool(include_subdomain),
+                    ns_bool(include_subdomain),
                     cookie['path'],
-                    nsbool(cookie['secure']),
+                    ns_bool(cookie['secure']),
                     str(expiry),
                     cookie['name'],
                     cookie['value']
@@ -100,38 +103,42 @@ def process_youtube(url):
     try:
         ydl = youtube_dl.YoutubeDL(params=youtube_dl_params)
 
-        with ydl:
-            try:
-                result = ydl.extract_info(
-                    url=url,
-                    download=False  # We just want to extract the info
-                )
-            except Exception as exc:
-                if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
-                    Log.Info('YDL returned YT error while downloading {}: {}'.format(url, exc))
-                else:
-                    Log.Exception('YDL returned an unexpected error while downloading {}: {}'.format(url, exc))
-                return None
+        audio_url = None
 
-            if 'entries' in result:
-                # Can be a playlist or a list of videos
-                video_data = result['entries'][0]
-            else:
-                # Just a video
-                video_data = result
+        count = 0
+        while count <= max(0, int(Prefs['int_youtube_retries_max'])):
+            sleep_time = 2 ** count
+            time.sleep(sleep_time)
+            with ydl:
+                try:
+                    result = ydl.extract_info(
+                        url=url,
+                        download=False  # We just want to extract the info
+                    )
+                except Exception as exc:
+                    if isinstance(exc, youtube_dl.utils.ExtractorError) and exc.expected:
+                        Log.Info('YDL returned YT error while downloading {}: {}'.format(url, exc))
+                    else:
+                        Log.Exception('YDL returned an unexpected error while downloading {}: {}'.format(url, exc))
+                    count += 1
+                    continue
 
-        selected = {
-            'opus': {
-                'size': 0,
-                'audio_url': None
-            },
-            'mp4a': {
-                'size': 0,
-                'audio_url': None
-            },
-        }
-        if video_data:
-            for fmt in video_data['formats']:  # loop through formats, select largest audio size for better quality
+                # If a playlist was provided, select the first video
+                video_data = result['entries'][0] if 'entries' in result else result if result else {}
+
+            selected = {
+                'opus': {
+                    'size': 0,
+                    'audio_url': None
+                },
+                'mp4a': {
+                    'size': 0,
+                    'audio_url': None
+                },
+            }
+
+            # loop through formats, select the largest audio size for better quality
+            for fmt in video_data.get('formats', []):
                 if 'audio only' in fmt['format']:
                     if 'opus' == fmt['acodec']:
                         temp_codec = 'opus'
@@ -145,20 +152,25 @@ def process_youtube(url):
                         selected[temp_codec]['size'] = filesize
                         selected[temp_codec]['audio_url'] = fmt['url']
 
-        audio_url = None
-
-        if 0 < selected['opus']['size'] > selected['mp4a']['size']:
-            audio_url = selected['opus']['audio_url']
-        elif 0 < selected['mp4a']['size'] > selected['opus']['size']:
-            audio_url = selected['mp4a']['audio_url']
-
-        if audio_url and Prefs['bool_prefer_mp4a_codec']:  # mp4a codec is preferred
-            if selected['mp4a']['audio_url']:  # mp4a codec is available
-                audio_url = selected['mp4a']['audio_url']
-            elif selected['opus']['audio_url']:  # fallback to opus :(
+            if 0 < selected['opus']['size'] > selected['mp4a']['size']:
                 audio_url = selected['opus']['audio_url']
+            elif 0 < selected['mp4a']['size'] > selected['opus']['size']:
+                audio_url = selected['mp4a']['audio_url']
 
-        return audio_url  # return None or url found
+            if audio_url and Prefs['bool_prefer_mp4a_codec']:  # mp4a codec is preferred
+                if selected['mp4a']['audio_url']:  # mp4a codec is available
+                    audio_url = selected['mp4a']['audio_url']
+                elif selected['opus']['audio_url']:  # fallback to opus :(
+                    audio_url = selected['opus']['audio_url']
+
+            if audio_url:
+                validate = requests.get(url=audio_url, stream=True)
+                if validate.status_code != 200:
+                    Log.Warn('Failed to validate audio URL for video {}'.format(url))
+                    count += 1
+                    continue
+
+            return audio_url  # return None or url found
     finally:
         try:
             os.remove(cookie_jar_file.name)
