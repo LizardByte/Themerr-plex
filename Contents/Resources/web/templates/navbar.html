@@ -58,6 +58,13 @@
                                href="/">
                             <i class="fa-solid fa-fw fa-house"></i> {{ _('Home') }}
                         </a></li>
+
+                        {% if Prefs['bool_webapp_require_login'] and is_logged_in() %}
+                            <li><a class="nav-item nav-link"
+                                   href="/logout">
+                                <i class="fa-solid fa-fw fa-sign-out"></i> {{ _('Logout') }}
+                            </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
