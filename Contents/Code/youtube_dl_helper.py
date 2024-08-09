@@ -4,8 +4,10 @@
 import logging
 import json
 import os
+import re
 import tempfile
 import time
+import urlparse
 
 # plex debugging
 try:
@@ -26,6 +28,37 @@ from constants import plugin_identifier, plugin_support_data_directory
 
 # get the plugin logger
 plugin_logger = logging.getLogger(plugin_identifier)
+
+
+def build_fallback_playback_url(playback_url):
+    # type: (str) -> Optional[str]
+    """
+    Build a fallback URL for a YouTube video.
+
+    Parameters
+    ----------
+    playback_url : str
+        The playback URL of the YouTube audio/video format.
+
+    Returns
+    -------
+    Optional[str]
+        The fallback URL of the playback URL.
+    """
+    query = youtube_dl.utils.parse_qs(url=playback_url)
+    mn = query.get('mn', [''])[0]
+    fvip = query.get('fvip', [''])[0]
+
+    mn = youtube_dl.utils.str_or_none(mn, '').split(',')
+    if len(mn) > 1 and mn[1] and fvip:
+        fmt_url_parsed = urlparse.urlparse(playback_url)
+        new_netloc = re.sub(
+            r'\d+', fvip, fmt_url_parsed.netloc.split('---')[0]) + '---' + mn[1] + '.googlevideo.com'
+
+        return youtube_dl.utils.update_url_query(
+            url=fmt_url_parsed._replace(netloc=new_netloc).geturl(),
+            query={'fallback_count': '1'},
+        )
 
 
 def ns_bool(value):
@@ -165,8 +198,26 @@ def process_youtube(url):
 
             if audio_url:
                 validate = requests.get(url=audio_url, stream=True)
-                if validate.status_code != 200:
+                if validate.status_code == 200:
+                    return audio_url
+                else:
                     Log.Warn('Failed to validate audio URL for video {}'.format(url))
+
+                    # build a fallback URL
+                    fallback_url = build_fallback_playback_url(playback_url=audio_url)
+                    if fallback_url:
+                        audio_url = fallback_url
+                        Log.Warn('Trying fallback URL for video {}'.format(url))
+                        validate = requests.get(url=audio_url, stream=True)
+                        if validate.status_code == 200:
+                            return audio_url
+                        else:
+                            Log.Warn('Failed to validate fallback URL for video {}'.format(url))
+                            audio_url = None
+                    else:
+                        Log.Warn('Failed to build fallback URL for video {}'.format(url))
+                        audio_url = None
+
                     count += 1
                     continue
 
