@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+"""
+Themerr-plex.py
+
+Responsible for starting Themerr Plex.
+"""
+# standard imports
+import argparse
+import os
+import sys
+import time
+from typing import Union
+
+# local imports
+import common
+from common import config
+from common import definitions
+from common import helpers
+from common import locales
+from common import logger
+from common import threads
+
+app_name = 'themerr-plex'
+
+# locales
+_ = locales.get_text()
+
+# get logger
+log = logger.get_logger(name=app_name)
+
+
+class IntRange(object):
+    """
+    Custom IntRange class for argparse.
+
+    Prevents printing out large list of possible choices for integer ranges.
+
+    Parameters
+    ----------
+    stop : int
+        Range maximum value.
+    start : int, default = 0
+        Range minimum value.
+
+    Methods
+    -------
+    __call__:
+        Validate that value is within accepted range.
+
+    Examples
+    --------
+    >>> IntRange(0, 10)
+    <themerr-plex.IntRange object at 0x...>
+    """
+    def __init__(self, stop: int, start: int = 0,):
+        """
+        Initialize the IntRange class object.
+
+        If stop is less than start, the values will be corrected automatically.
+        """
+        if stop < start:
+            stop, start = start, stop
+        self.start, self.stop = start, stop
+
+    def __call__(self, value: Union[int, str]) -> int:
+        """
+        Validate that value is within accepted range.
+
+        Validate the provided value is within the range of the `IntRange()` object.
+
+        Parameters
+        ----------
+        value : Union[int, str]
+            The value to validate.
+
+        Returns
+        -------
+        int
+            The original value.
+
+        Raises
+        ------
+        argparse.ArgumentTypeError
+            If provided value is outside the accepted range.
+
+        Examples
+        --------
+        >>> IntRange(0, 10).__call__(5)
+        5
+
+        >>> IntRange(0, 10).__call__(15)
+        Traceback (most recent call last):
+            ...
+        argparse.ArgumentTypeError: Value outside of range: (0, 10)
+        """
+        value = int(value)
+        if value < self.start or value >= self.stop:
+            raise argparse.ArgumentTypeError(f'Value outside of range: ({self.start}, {self.stop})')
+        return value
+
+
+def main():
+    """
+    Application entry point.
+
+    Parses arguments and initializes the application.
+
+    Examples
+    --------
+    >>> if __name__ == "__main__":
+    ...     main()
+    """
+    # Fixed paths
+    if definitions.Modes.FROZEN:  # only when using the pyinstaller build
+
+        if definitions.Modes.SPLASH:
+            import pyi_splash  # module cannot be installed outside of pyinstaller builds
+            pyi_splash.update_text("Attempting to start Themerr-plex")
+
+    # Set up and gather command line arguments
+    # todo... fix translations for '--help' command
+    parser = argparse.ArgumentParser(description=_('Themerr-plex is an application that manages theme songs for Plex.\n'
+                                                   'Arguments supplied here are meant to be temporary.'))
+
+    parser.add_argument('--config', help=_('Specify a config file to use'))
+    parser.add_argument('--debug', action='store_true', help=_('Use debug logging level'))
+    parser.add_argument('--dev', action='store_true', help=_('Start Themerr-plex in the development environment'))
+    parser.add_argument('--docker_healthcheck', action='store_true', help=_('Health check the container and exit'))
+    parser.add_argument('--nolaunch', action='store_true', help=_('Do not open Themerr-plex in browser'))
+    parser.add_argument('-p', '--port', default=9494, type=IntRange(21, 65535),
+                        help=_('Force Themerr-plex to run on a specified port, default=9494')
+                        )
+    parser.add_argument('-q', '--quiet', action='store_true', help=_('Turn off console logging'))
+    parser.add_argument('-v', '--version', action='store_true', help=_('Print the version details and exit'))
+
+    args = parser.parse_args()
+
+    if args.docker_healthcheck:
+        status = helpers.docker_healthcheck()
+        exit_code = int(not status)
+        sys.exit(exit_code)
+
+    if args.version:
+        print('version arg is not yet implemented')
+        sys.exit()
+
+    if args.config:
+        config_file = args.config
+    else:
+        config_file = os.path.join(definitions.Paths.CONFIG_DIR, definitions.Files.CONFIG)
+    if args.debug:
+        common.DEBUG = True
+    if args.dev:
+        common.DEV = True
+    if args.quiet:
+        common.QUIET = True
+
+    # initialize Themerr-plex
+    # logging should not occur until after initialize
+    # any submodules that require translations need to be imported after config is initialize
+    common.initialize(config_file=config_file)
+
+    if args.config:
+        log.info(msg=f"Themerr-plex is using custom config file: {config_file}.")
+    if args.debug:
+        log.info(msg="Themerr-plex will log debug messages.")
+    if args.dev:
+        log.info(msg="Themerr-plex is running in the dev environment.")
+    if args.quiet:
+        log.info(msg="Themerr-plex is running in quiet mode. Nothing will be printed to console.")
+
+    if args.port:
+        config.CONFIG['Network']['HTTP_PORT'] = args.port
+        config.CONFIG.write()
+
+    if config.CONFIG['General']['SYSTEM_TRAY']:
+        from common import tray_icon  # submodule requires translations so importing after initialization
+        # also do not import if not required by config options
+
+        tray_icon.tray_run_threaded()
+
+    # start the webapp
+    if definitions.Modes.SPLASH:  # pyinstaller build only, not darwin platforms
+        pyi_splash.update_text("Starting the webapp")
+        time.sleep(3)  # show splash screen for a min of 3 seconds
+        pyi_splash.close()  # close the splash screen
+    from common import webapp  # import at use due to translations
+    from plex import plexapi  # import at use due to config
+    from themerr import scheduled_tasks
+
+    threads.run_in_thread(target=webapp.start_webapp, name='Flask', daemon=True).start()
+
+    # this should be after starting flask app
+    if config.CONFIG['General']['LAUNCH_BROWSER'] and not args.nolaunch:
+        helpers.open_url_in_browser(url=webapp.URL)
+
+    # start plex listener
+    plexapi.start_queue_threads()
+    plexapi.plex_listener()
+
+    # scheduled tasks
+    scheduled_tasks.setup_scheduling()
+
+    wait()  # wait for signal
+
+
+def wait():
+    """
+    Wait for signal.
+
+    Endlessly loop while `common.SIGNAL = None`.
+    If `common.SIGNAL` is changed to `shutdown` or `restart` `common.stop()` will be executed.
+    If KeyboardInterrupt signal is detected `common.stop()` will be executed.
+
+    Examples
+    --------
+    >>> wait()
+    """
+    log.info("Themerr-plex is ready!")
+
+    while True:  # wait endlessly for a signal
+        if not common.SIGNAL:
+            try:
+                time.sleep(1)
+            except KeyboardInterrupt:
+                common.SIGNAL = 'shutdown'
+        else:
+            log.info(f'Received signal: {common.SIGNAL}')
+
+            if common.SIGNAL == 'shutdown':
+                common.stop()
+            elif common.SIGNAL == 'restart':
+                common.stop(restart=True)
+            else:
+                log.error('Unknown signal. Shutting down...')
+                common.stop()
+
+            break
+
+
+if __name__ == "__main__":
+    main()

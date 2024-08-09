@@ -20,16 +20,17 @@
 
 .. toctree::
    :maxdepth: 0
-   :caption: Plugin Code
+   :caption: Source Code
    :titlesonly:
 
-   code_docs/main
-   code_docs/general_helper
-   code_docs/lizardbyte_db_helper
-   code_docs/migration_helper
-   code_docs/plex_api_helper
-   code_docs/scheduled_tasks
-   code_docs/themerr_db_helper
-   code_docs/tmdb_helper
-   code_docs/webapp
-   code_docs/youtube_dl_helper
+   src/themerr_plex
+   src/common/common
+   src/common/config
+   src/common/crypto
+   src/common/definitions
+   src/common/helpers
+   src/common/locales
+   src/common/logger
+   src/common/threads
+   src/common/tray_icon
+   src/common/webapp
