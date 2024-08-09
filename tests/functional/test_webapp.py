@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # standard imports
 import os
 
@@ -7,19 +5,19 @@ import os
 import pytest
 
 # local imports
-from Code import webapp
+from themerr import cache
 
 
 @pytest.fixture(scope='function')
 def remove_themerr_db_cache_file():
-    _backup_file_name = "{}.bak".format(webapp.database_cache_file)
+    _backup_file_name = "{}.bak".format(cache.database_cache_file)
 
     # rename the file, so it is not found
-    os.rename(webapp.database_cache_file, _backup_file_name)
+    os.rename(cache.database_cache_file, _backup_file_name)
     yield
 
     # rename the file back
-    os.rename(_backup_file_name, webapp.database_cache_file)
+    os.rename(_backup_file_name, cache.database_cache_file)
 
 
 def test_home(test_client):

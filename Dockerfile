@@ -1,93 +1,106 @@
-# syntax=docker/dockerfile:1.4
 # artifacts: false
-# platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-FROM ubuntu:22.04 AS buildstage
+# platforms: linux/amd64,linux/arm64/v8
+FROM python:3.12-slim-bookworm AS base
 
-# build args
-ARG BUILD_VERSION
-ARG COMMIT
-ARG GITHUB_SHA=$COMMIT
-# note: BUILD_VERSION may be blank, COMMIT is also available
-# note: build_plist.py uses BUILD_VERSION and GITHUB_SHA
+FROM base AS build
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# install dependencies
+
+# install build dependencies
 RUN <<_DEPS
 #!/bin/bash
 set -e
+
+dependencies=(
+  "build-essential"
+  "libjpeg-dev"  # pillow
+  "npm"  # web dependencies
+  "pkg-config"
+  "libopenblas-dev"
+  "zlib1g-dev"  # pillow
+)
 apt-get update -y
-apt-get install -y --no-install-recommends \
-  npm=8.5.* \
-  patch \
-  python2=2.7.18* \
-  python-pip=20.3.4*
+apt-get install -y --no-install-recommends "${dependencies[@]}"
 apt-get clean
 rm -rf /var/lib/apt/lists/*
 _DEPS
 
-# create build dir and copy GitHub repo there
-COPY --link . /build
+# python virtualenv
+RUN python -m venv /opt/venv
+# use the virtualenv:
+ENV PATH="/opt/venv/bin:$PATH"
 
-# set build dir
+# setup app directory
 WORKDIR /build
+COPY . .
 
-# update pip
-RUN <<_PIP
+# setup python requirements
+RUN <<_REQUIREMENTS
 #!/bin/bash
 set -e
-python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  pip setuptools requests
-# requests required to install python-plexapi
-# dev requirements not necessary for docker image, significantly speeds up build since lxml doesn't need to build
-_PIP
+python -m pip install --no-cache-dir --upgrade pip setuptools wheel
+python -m pip install --no-cache-dir -r requirements.txt
+_REQUIREMENTS
 
-# build plugin
-RUN <<_BUILD
-#!/bin/bash
-set -e
-python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  -r requirements-build.txt
-python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
-python2 ./scripts/_locale.py --compile
-python2 ./scripts/build_plist.py
-_BUILD
-
-## patch youtube-dl, cannot use git apply because we don't pass in any git files
-#WORKDIR /build/Contents/Libraries/Shared
-#RUN <<_PATCH
-##!/bin/bash
-#set -e
-#patch_dir=/build/patches
-#patch -p1 < "${patch_dir}/youtube_dl-compat.patch"
-#_PATCH
-
-WORKDIR /build
+# compile locales
+RUN python scripts/_locale.py --compile
 
 # setup npm and dependencies
 RUN <<_NPM
 #!/bin/bash
 set -e
 npm install
-mv ./node_modules ./Contents/Resources/web
+mv -f ./node_modules/ ./web/
 _NPM
 
-# clean
-RUN <<_CLEAN
+# compile docs
+WORKDIR /build/docs
+RUN sphinx-build -M html source build
+
+FROM base AS app
+
+# copy app from builder
+COPY --from=build /build/ /app/
+
+# copy python venv
+COPY --from=build /opt/venv/ /opt/venv/
+# use the venv
+ENV PATH="/opt/venv/bin:$PATH"
+# site-packages are in /opt/venv/lib/python<version>/site-packages/
+
+# setup remaining env variables
+ENV THEMERR_DOCKER=True
+
+# network setup
+EXPOSE 9494
+
+# setup user
+ARG PGID=1000
+ENV PGID=${PGID}
+ARG PUID=1000
+ENV PUID=${PUID}
+ENV TZ="UTC"
+ARG UNAME=lizard
+ENV UNAME=${UNAME}
+
+ENV HOME=/home/$UNAME
+
+# setup user
+RUN <<_SETUP_USER
 #!/bin/bash
 set -e
-rm -rf ./patches/
-rm -rf ./scripts/
-# list contents
-ls -a
-_CLEAN
+groupadd -f -g "${PGID}" "${UNAME}"
+useradd -lm -d ${HOME} -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}"
+mkdir -p ${HOME}/.config/themerr-plex
+ln -s ${HOME}/.config/themerr-plex /config
+chown -R ${UNAME} ${HOME}
+_SETUP_USER
 
-FROM scratch AS deploy
+# mounts
+VOLUME /config
 
-# variables
-ARG PLUGIN_NAME="Themerr-plex.bundle"
-ARG PLUGIN_DIR="/config/Library/Application Support/Plex Media Server/Plug-ins"
+USER ${UNAME}
+WORKDIR ${HOME}
 
-# add files from buildstage
-# trailing slash on build directory copies the contents of the directory, instead of the directory itself
-COPY --link --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME
+ENTRYPOINT ["python", "./src/themerr_plex.py"]
+HEALTHCHECK --start-period=90s CMD python ./src/themerr_plex.py --docker_healthcheck || exit 1
