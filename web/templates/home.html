@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% block head %}
+{% endblock head %}
+{% block modals %}
+{% endblock modals %}
+
+{% block content %}
+<div class="container px-auto my-5">
+    <div class="col-lg-12 mx-auto" id="themerr-container" style="min-width: 335px">
+
+        {# constants #}
+        {% set title_column_width = 'col-6' %}
+        {% set type_column_width = 'col-2' %}
+        {% set year_column_width = 'col-1' %}
+        {% set contribute_column_width = 'col-1' %}
+        {% set status_column_width = 'col-2' %}
+
+        {% for section in items %}
+        <!-- Library sections -->
+        <section class="py-5 offset-anchor" id="section_{{ items[section]['key'] }}">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                    <!-- Section title -->
+                    <h1 class="text-white">{{ items[section]['title'] }}</h1>
+                    <!-- Collapse/Expand button -->
+                    <h2><a class="text-black" role="button" data-bs-toggle="collapse"
+                           data-bs-target="#section_{{ items[section]['key'] }}_collapse" aria-expanded="false"
+                           aria-controls="section_{{ items[section]['key'] }}_collapse"
+                           onclick="toggleArrow(this)">
+                           <i class="text-white fas fa-caret-up" id="section_{{ items[section]['key'] }}_arrow"></i>
+                    </a></h2>
+                </div>
+            </div>
+
+            <!-- Primary progress bar -->
+            {% if items[section]['agent'] == 'dev.lizardbyte.retroarcher-plex' %}
+                {% set library_type = _('Games') %}
+            {% elif items[section]['type'] == 'movie' %}
+                {% set library_type = _('Movies') %}
+            {% elif items[section]['type'] == 'show' %}
+                {% set library_type = _('Shows') %}
+            {% elif items[section]['type'] == 'artist' %}
+                {% set library_type = _('Artists') %}
+            {% elif items[section]['type'] == 'photo' %}
+                {% set library_type = _('Photos') %}
+            {% else %}
+                {% set library_type = _('Items') %}
+            {% endif %}
+            {% if items[section]['media_percent_complete'] == 100 %}
+                {% set progress_bar_color = 'bg-success' %}
+            {% elif items[section]['media_percent_complete'] > 50 %}
+                {% set progress_bar_color = 'bg-warning' %}
+            {% else %}
+                {% set progress_bar_color = 'bg-danger' %}
+            {% endif %}
+            <div class="row">
+                <div class="col-12 pb-1">
+                    <div class="progress">
+                        <div class="progress-bar {{ progress_bar_color }} text-black" role="progressbar"
+                             style="width: {{ items[section]['media_percent_complete'] }}%"
+                             aria-valuenow="{{ items[section]['media_percent_complete'] }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                             {{ library_type }} - {{ items[section]['media_percent_complete'] }}%
+                        </div>
+                        <!-- set the remainder to gray -->
+                        <div class="progress-bar bg-secondary" role="progressbar"
+                             style="width: {{ 100 - items[section]['media_percent_complete'] }}%"
+                             aria-valuenow="{{ 100 - items[section]['media_percent_complete'] }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Collections progress bar -->
+            {% if items[section]['collection_count'] > 0 %}
+                {% if items[section]['collection_percent_complete'] == 100 %}
+                    {% set progress_bar_color = 'bg-success' %}
+                {% elif items[section]['collection_percent_complete'] > 50 %}
+                    {% set progress_bar_color = 'bg-warning' %}
+                {% else %}
+                    {% set progress_bar_color = 'bg-danger' %}
+                {% endif %}
+                <div class="row">
+                    <div class="col-12 pb-1">
+                        <div class="progress">
+                            <div class="progress-bar {{ progress_bar_color }} text-black" role="progressbar"
+                                 style="width: {{ items[section]['collection_percent_complete'] }}%"
+                                 aria-valuenow="{{ items[section]['collection_percent_complete'] }}"
+                                 aria-valuemin="0" aria-valuemax="100">
+                                 {{ _('Collections') }} - {{ items[section]['collection_percent_complete'] }}%
+                            </div>
+                            <!-- set the remainder to gray -->
+                            <div class="progress-bar bg-secondary" role="progressbar"
+                                 style="width: {{ 101 - items[section]['collection_percent_complete'] }}%"
+                                 aria-valuenow="{{ 101 - items[section]['collection_percent_complete'] }}"
+                                 aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="collapse show" id="section_{{ items[section]['key'] }}_collapse">
+                        <table class="table table-sm table-bordered border-dark caption-top">
+                            <caption>{{ items[section]['title'] }}</caption>
+                            <tr class="d-flex table-dark">
+                                <th class="{{ title_column_width }}">{{ _('Title') }}</th>
+                                <th class="{{ type_column_width }}">{{ _('Type') }}</th>
+                                <th class="{{ year_column_width }}">{{ _('Year') }}</th>
+                                <th class="{{ contribute_column_width }}">{{ _('Contribute') }}</th>
+                                <th class="{{ status_column_width }}">{{ _('Status') }}</th>
+                            </tr>
+
+                            {% for item in items[section]['items'] %}
+                                {% if item['theme_status'] == 'complete' %}
+                                    {% set theme_status_color = 'table-success' %}
+                                {% elif item['theme_status'] == 'missing' %}
+                                    {% set theme_status_color = 'table-danger' %}
+                                {% elif item['theme_status'] == 'failed' %}
+                                    {% set theme_status_color = 'table-warning' %}
+                                {% else %}
+                                    {% set theme_status_color = 'table-danger' %}
+                                {% endif %}
+
+                                {% if item['issue_action'] == 'add' %}
+                                    {% set contribute_button_color = 'btn-warning' %}
+                                    {% set contribute_button_text = _('Add') %}
+                                {% elif item['issue_action'] == 'edit' %}
+                                    {% set contribute_button_color = 'btn-info' %}
+                                    {% set contribute_button_text = _('Edit') %}
+                                {% else %}
+                                    {% set contribute_button_color = 'btn-danger' %}
+                                {% endif %}
+
+                                <tr class="d-flex {{ theme_status_color }} border-dark border-opacity-75">
+                                    <td class="{{ title_column_width }}">{{ item['title'] }}</td>
+                                    <td class="{{ type_column_width }}">{{ item['type'] }}</td>
+                                    <td class="{{ year_column_width }}">{{ item['year'] }}</td>
+                                    <td class="{{ contribute_column_width }}">
+                                        {% if item['issue_url'] != None %}
+                                            <a href="{{ item['issue_url'] }}" target="_blank"
+                                                class="btn btn-sm py-0 px-1 {{ contribute_button_color }}"
+                                                rel="noopener noreferrer"
+                                                role="button">{{ contribute_button_text }}</a>
+                                        {% else %}
+                                            {{ _('No known ID') }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="{{ status_column_width }}">
+                                        {% if item['theme_provider'] == 'plex' %}
+                                            <i class="fas fa-circle-chevron-right text-warning"></i> {{ _('Plex provided') }}
+                                        {% elif item['theme_provider'] == 'user' %}
+                                            <i class="fas fa-user text-info"></i> {{ _('User provided') }}
+                                        {% elif item['theme_provider'] == 'themerr' %}
+                                            <i class="fas fa-check-circle text-success"></i> {{ _('Themerr provided') }}
+                                        {% elif item['theme_provider'] != None %}
+                                            <i class="fas fa-question-circle text-secondary"></i> {{ item['provider'] }} {{ _('provided') }}
+                                        {% elif item['theme_status'] == 'complete' %}
+                                            <i class="fas fa-question-circle text-secondary"></i> {{ _('Unknown provider') }}
+                                        {% elif item['theme_status'] == 'missing' %}
+                                            <i class="fas fa-times-circle text-danger"></i> {{ _('Missing from ThemerrDB') }}
+                                        {% elif item['theme_status'] == 'failed' %}
+                                            <i class="fas fa-exclamation-circle text-warning"></i> {{ _('Failed to download') }}
+                                        {% else %}
+                                            <i class="fas fa-exclamation-circle text-danger"></i> {{ _('Unknown status') }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<!-- toggle collapse arrow -->
+<script>
+    function toggleArrow(element) {
+        let arrow = element.querySelector('.fas')
+        if (arrow.classList.contains('fa-caret-up')) {
+            arrow.classList.remove('fa-caret-up')
+            arrow.classList.add('fa-caret-down')
+        } else {
+            arrow.classList.remove('fa-caret-down')
+            arrow.classList.add('fa-caret-up')
+        }
+    }
+</script>
+{% endblock scripts %}

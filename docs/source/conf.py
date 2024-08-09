@@ -19,20 +19,18 @@ import sys
 script_dir = os.path.dirname(os.path.abspath(__file__))  # the directory of this file
 source_dir = os.path.dirname(script_dir)  # the source folder directory
 root_dir = os.path.dirname(source_dir)  # the root folder directory
+src_dir = os.path.join(root_dir, 'src')  # the src folder directory
 
-
-paths = [
-    os.path.join(root_dir, 'Contents', 'Libraries', 'Shared'),  # location of plugin dependencies
-    os.path.join(root_dir, 'Contents'),  # location of "Code" module, aka the Plugin
-]
-
-for directory in paths:
-    sys.path.insert(0, directory)
+try:
+    sys.path.insert(0, src_dir)
+    from common import definitions  # put this in a try/except to prevent flake8 warning
+except Exception as e:
+    print(f"Unable to import definitions from {root_dir}: {e}")
+    sys.exit(1)
 
 # -- Project information -----------------------------------------------------
-project = 'Themerr-plex'
-project_copyright = '%s, %s' % (datetime.now().year, project)
-epub_copyright = project_copyright
+project = definitions.Names().name
+project_copyright = f'{datetime.now().year}, {project}'
 author = 'ReenigneArcher'
 
 # The full version, including alpha/beta/rc tags
@@ -46,7 +44,7 @@ version = os.getenv('READTHEDOCS_VERSION', 'dirty')
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'm2r2',  # enable markdown files
+    'myst_parser',  # enable markdown files
     'numpydoc',  # this automatically loads `sphinx.ext.autosummary` as well
     'sphinx.ext.autodoc',  # autodocument modules
     'sphinx.ext.autosectionlabel',
@@ -64,7 +62,10 @@ extensions = [
 exclude_patterns = ['toc.rst']
 
 # Extensions to include.
-source_suffix = ['.rst', '.md']
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
 # Change default contents file
 master_doc = 'index'
@@ -72,8 +73,8 @@ master_doc = 'index'
 # -- Options for HTML output -------------------------------------------------
 
 # images
-html_favicon = os.path.join(root_dir, 'Contents', 'Resources', 'web', 'images', 'favicon.ico')
-html_logo = os.path.join(root_dir, 'Contents', 'Resources', 'icon-default.png')
+html_favicon = os.path.join(definitions.Paths().ROOT_DIR, 'web', 'images', 'favicon.ico')
+html_logo = os.path.join(definitions.Paths().ROOT_DIR, 'web', 'images', 'icon-default.png')
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -91,23 +92,11 @@ html_logo = os.path.join(root_dir, 'Contents', 'Resources', 'icon-default.png')
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 
 html_theme_options = {
-    'analytics_id': 'G-SSW90X5YZX',  # Provided by Google in your dashboard
-    'analytics_anonymize_ip': False,
-    'logo_only': False,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': True,
-    'vcs_pageview_mode': 'blob',
-    'style_nav_header_background': '#151515',
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False,
+    "top_of_page_button": "edit",
+    "source_edit_link": "https://github.com/lizardbyte/themerr-plex/blob/master/docs/source/{filename}",
 }
 
 # extension config options
@@ -122,11 +111,11 @@ numpydoc_validation_checks = {'all', 'SA01'}  # Report warnings for all checks *
 # https://github.com/readthedocs/readthedocs.org/blob/eadf6ac6dc6abc760a91e1cb147cc3c5f37d1ea8/docs/conf.py#L235-L236
 suppress_warnings = ["epub.unknown_project_files"]
 
-python_version = '{}.{}'.format(sys.version_info.major, sys.version_info.minor)
+python_version = f'{sys.version_info.major}.{sys.version_info.minor}'
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/{}/'.format(python_version), None),
-    'plexapi': ('https://docs.lizardbyte.dev/projects/python-plexapi-backport/en/latest/', None),
+    'plexapi': ('https://python-plexapi.readthedocs.io/en/latest/', None),
 }
 
 numpydoc_show_class_members = True

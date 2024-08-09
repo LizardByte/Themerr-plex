@@ -6,9 +6,9 @@ on:
     branches: [master]
     paths:  # prevents workflow from running unless these files change
       - '.github/workflows/localize.yml'
-      - 'Contents/Strings/Themerr-plex.po'
-      - 'Contents/Code/**.py'
-      - 'Contents/Resources/web/templates/**'
+      - 'locale/themerr-plex.po'
+      - 'src/**.py'
+      - 'web/templates/**'
   workflow_dispatch:
 
 jobs:
@@ -19,18 +19,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Set up Python
-        uses: LizardByte/setup-python-action@v2024.609.5111
+      - name: Install Python
+        uses: actions/setup-python@v5  # https://github.com/actions/setup-python
         with:
-          python-version: '2.7'
+          python-version: '3.12'
 
-      - name: Set up Python Dependencies
+      - name: Setup Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools requests
-          python -m pip install -r requirements.txt  # requests is required to install python-plexapi
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -r requirements.txt
 
       - name: Update Strings
         run: |
@@ -42,14 +40,14 @@ jobs:
           git config --global pager.diff false
 
           # print the git diff
-          git diff Contents/Strings/themerr-plex.po
+          git diff locale/themerr-plex.po
 
           # set the variable with minimal output, replacing `\t` with ` `
-          OUTPUT=$(git diff --numstat Contents/Strings/themerr-plex.po | sed -e "s#\t# #g")
+          OUTPUT=$(git diff --numstat locale/themerr-plex.po | sed -e "s#\t# #g")
           echo "git_diff=${OUTPUT}" >> $GITHUB_ENV
 
       - name: git reset
-        if: ${{ env.git_diff == '1 1 Contents/Strings/themerr-plex.po' }}  # only run if more than 1 line changed
+        if: ${{ env.git_diff == '1 1 locale/themerr-plex.po' }}  # only run if more than 1 line changed
         run: |
           git reset --hard
 
@@ -61,7 +59,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           add-paths: |
-            Contents/Strings/*.po
+            locale/*.po
           token: ${{ secrets.GH_BOT_TOKEN }}  # must trigger PR tests
           commit-message: "chore(l10n): new babel updates"
           branch: localize/update
