@@ -54,7 +54,7 @@ def test_validate_migration_key(migration_helper_fixture, key, raise_exception, 
 @pytest.mark.parametrize('key, expected', [
     (migration_helper_object.LOCKED_THEMES, None),
     (migration_helper_object.LOCKED_COLLECTION_FIELDS, None),
-    pytest.param('invalid', None, marks=pytest.mark.xfail(raises=AttributeError)),
+    pytest.param('invalid', None, marks=pytest.mark.xfail(raises=AttributeError, reason="Cannot migrate in CI")),
 ])
 def test_get_migration_status(migration_helper_fixture, migration_status_file, key, expected):
     migration_status = migration_helper_fixture.get_migration_status(key=key)
@@ -64,7 +64,7 @@ def test_get_migration_status(migration_helper_fixture, migration_status_file, k
 @pytest.mark.parametrize('key', [
     migration_helper_object.LOCKED_THEMES,
     migration_helper_object.LOCKED_COLLECTION_FIELDS,
-    pytest.param('invalid', marks=pytest.mark.xfail(raises=AttributeError)),
+    pytest.param('invalid', marks=pytest.mark.xfail(raises=AttributeError, reason="Cannot migrate in CI")),
 ])
 def test_set_migration_status(migration_helper_fixture, migration_status_file, key):
     # perform the test twice, to load an existing migration file

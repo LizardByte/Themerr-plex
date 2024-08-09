@@ -406,7 +406,7 @@ def upload_media(item, method, filepath=None, url=None):
     ...
     """
     count = 0
-    while count <= int(Prefs['int_plexapi_upload_retries_max']):
+    while count <= max(0, int(Prefs['int_plexapi_upload_retries_max'])):
         try:
             if filepath:
                 if method == item.uploadTheme:

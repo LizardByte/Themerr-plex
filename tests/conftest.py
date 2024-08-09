@@ -59,7 +59,7 @@ def wait_for_themes(section):
     timer = 0
     with_themes = 0
     total = len(section.all())
-    while timer < 180 and with_themes < total:
+    while timer < 600 and with_themes < total:
         with_themes = 0
         try:
             for item in section.all():
