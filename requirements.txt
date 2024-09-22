@@ -1,20 +1,22 @@
-# these requirements must support python 2.7
-# it is doubtful that Plex will ever update to Python 3+
-flask==1.1.4;python_version<"3"
-flask-babel==1.0.0;python_version<"3"
-future==0.18.3
-plexapi-backport[alert]==4.15.10  # custom python-plexapi supporting python 2.7
-polib==1.2.0;python_version<"3"
-requests==2.27.1;python_version<"3"  # 2.27 is last version supporting Python 2.7
-schedule==0.6.0;python_version<"3"
-six==1.16.0;python_version<"3"
-typing==3.10.0.0
-werkzeug==1.0.1;python_version<"3"
-
-# youtube_dl is not capable or willing to create a new release so have to install from git
-# youtube_dl==2021.12.17
-./third-party/youtube-dl
-
-# required for websocket to pass tests
-pysocks==1.7.1;python_version<"3"
-win-inet-pton==1.1.0;python_version<"3" and platform_system=="Windows"
+babel==2.16.0
+configobj==5.0.8
+cryptography==43.0.0
+flask==3.0.3
+flask-babel==4.0.0
+flask-wtf==1.2.1
+furo==2024.8.6
+future==1.0.0
+myst-parser==4.0.0
+numpydoc==1.7.0
+pillow==9.5.0
+plexapi[alert]==4.15.15
+polib==1.2.0
+pyopenssl==24.2.1
+pystray==0.19.5
+requests==2.32.3
+requests-cache==1.2.1
+schedule==1.2.2
+six==1.16.0  # TODO: probably won't need this
+sphinx==7.4.7
+werkzeug==3.0.3
+yt-dlp==2024.8.6
