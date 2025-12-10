@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2024-06-16 19:21\n"
+"PO-Revision-Date: 2025-12-10 15:53\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -80,7 +80,7 @@ msgstr "Bilinen kimlik yok"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex sağladı"
+msgstr "Plex tarafından sağlanan"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
@@ -88,7 +88,7 @@ msgstr "Kullanıcı tarafından sağlanan"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Themerr şunları sağladı"
+msgstr "Themerr tarafından sağlanan"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
@@ -100,7 +100,7 @@ msgstr "Bilinmeyen sağlayıcı"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "ThemerrDB'den eksik"
+msgstr "ThemerrDB'de eksik"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
