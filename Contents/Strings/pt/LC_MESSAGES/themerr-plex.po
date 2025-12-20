@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2024-04-18 23:07\n"
+"PO-Revision-Date: 2025-12-20 02:43\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -116,7 +116,7 @@ msgstr "Banco de dados está sendo armazenado em cache, por favor, tente novamen
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Doar"
+msgstr "Doe"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
