@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2024-03-15 14:05+0000\n"
+"PO-Revision-Date: 2025-12-20 02:43\n"
+"Last-Translator: \n"
+"Language-Team: Bulgarian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: bg\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: bg_BG\n"
+
+#: Contents/Resources/web/templates/home.html:35
+msgid "Games"
+msgstr "Игри"
+
+#: Contents/Resources/web/templates/home.html:37
+msgid "Movies"
+msgstr "Филми"
+
+#: Contents/Resources/web/templates/home.html:39
+msgid "Shows"
+msgstr "Изложби"
+
+#: Contents/Resources/web/templates/home.html:41
+msgid "Artists"
+msgstr "Художници"
+
+#: Contents/Resources/web/templates/home.html:43
+msgid "Photos"
+msgstr "Снимки"
+
+#: Contents/Resources/web/templates/home.html:45
+msgid "Items"
+msgstr "Елементи"
+
+#: Contents/Resources/web/templates/home.html:88
+msgid "Collections"
+msgstr "Колекции"
+
+#: Contents/Resources/web/templates/home.html:108
+msgid "Title"
+msgstr "Заглавие"
+
+#: Contents/Resources/web/templates/home.html:109
+msgid "Type"
+msgstr "Тип"
+
+#: Contents/Resources/web/templates/home.html:110
+msgid "Year"
+msgstr "Година"
+
+#: Contents/Resources/web/templates/home.html:111
+msgid "Contribute"
+msgstr "Дайте своя принос"
+
+#: Contents/Resources/web/templates/home.html:112
+msgid "Status"
+msgstr "Статус"
+
+#: Contents/Resources/web/templates/home.html:128
+msgid "Add"
+msgstr "Добавяне на"
+
+#: Contents/Resources/web/templates/home.html:131
+msgid "Edit"
+msgstr "Редактиране на"
+
+#: Contents/Resources/web/templates/home.html:147
+msgid "No known ID"
+msgstr "Без известен идентификатор"
+
+#: Contents/Resources/web/templates/home.html:152
+msgid "Plex provided"
+msgstr "Предоставен Plex"
+
+#: Contents/Resources/web/templates/home.html:154
+msgid "User provided"
+msgstr "Предоставен от потребителя"
+
+#: Contents/Resources/web/templates/home.html:156
+msgid "Themerr provided"
+msgstr "Themerr предостави"
+
+#: Contents/Resources/web/templates/home.html:158
+msgid "provided"
+msgstr "предоставя"
+
+#: Contents/Resources/web/templates/home.html:160
+msgid "Unknown provider"
+msgstr "Неизвестен доставчик"
+
+#: Contents/Resources/web/templates/home.html:162
+msgid "Missing from ThemerrDB"
+msgstr "Липсва в ThemerrDB"
+
+#: Contents/Resources/web/templates/home.html:164
+msgid "Failed to download"
+msgstr "Неуспешно изтегляне"
+
+#: Contents/Resources/web/templates/home.html:166
+msgid "Unknown status"
+msgstr "Неизвестен статус"
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr "Базата данни се кешира, моля, опитайте отново скоро."
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr "Дарете"
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr "Спонсори на GitHub"
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr "Подкрепа"
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr "Документи"
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr "Център за поддръжка"
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr "Начало"
+
