@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2024-03-15 14:05+0000\n"
+"PO-Revision-Date: 2025-12-20 02:43\n"
+"Last-Translator: \n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: uk_UA\n"
+
+#: Contents/Resources/web/templates/home.html:35
+msgid "Games"
+msgstr "Ігри"
+
+#: Contents/Resources/web/templates/home.html:37
+msgid "Movies"
+msgstr "Фільми"
+
+#: Contents/Resources/web/templates/home.html:39
+msgid "Shows"
+msgstr "Шоу"
+
+#: Contents/Resources/web/templates/home.html:41
+msgid "Artists"
+msgstr "Виконавці"
+
+#: Contents/Resources/web/templates/home.html:43
+msgid "Photos"
+msgstr "Фотографії"
+
+#: Contents/Resources/web/templates/home.html:45
+msgid "Items"
+msgstr "Елементи"
+
+#: Contents/Resources/web/templates/home.html:88
+msgid "Collections"
+msgstr "Колекції"
+
+#: Contents/Resources/web/templates/home.html:108
+msgid "Title"
+msgstr "Заголовок"
+
+#: Contents/Resources/web/templates/home.html:109
+msgid "Type"
+msgstr "Тип"
+
+#: Contents/Resources/web/templates/home.html:110
+msgid "Year"
+msgstr "Рік"
+
+#: Contents/Resources/web/templates/home.html:111
+msgid "Contribute"
+msgstr "Зробити внесок"
+
+#: Contents/Resources/web/templates/home.html:112
+msgid "Status"
+msgstr "Статус"
+
+#: Contents/Resources/web/templates/home.html:128
+msgid "Add"
+msgstr "Додати"
+
+#: Contents/Resources/web/templates/home.html:131
+msgid "Edit"
+msgstr "Редагувати"
+
+#: Contents/Resources/web/templates/home.html:147
+msgid "No known ID"
+msgstr "Невідомий ID"
+
+#: Contents/Resources/web/templates/home.html:152
+msgid "Plex provided"
+msgstr "Надано Plex"
+
+#: Contents/Resources/web/templates/home.html:154
+msgid "User provided"
+msgstr "Надано користувачем"
+
+#: Contents/Resources/web/templates/home.html:156
+msgid "Themerr provided"
+msgstr "Надано Themerr"
+
+#: Contents/Resources/web/templates/home.html:158
+msgid "provided"
+msgstr "надано"
+
+#: Contents/Resources/web/templates/home.html:160
+msgid "Unknown provider"
+msgstr "Невідомий постачальник"
+
+#: Contents/Resources/web/templates/home.html:162
+msgid "Missing from ThemerrDB"
+msgstr "Відсутній у ThemerrDB"
+
+#: Contents/Resources/web/templates/home.html:164
+msgid "Failed to download"
+msgstr "Не вдалося завантажити"
+
+#: Contents/Resources/web/templates/home.html:166
+msgid "Unknown status"
+msgstr "Невідомий статус"
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr "База даних кешується, будь ласка, повторіть спробу пізніше."
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr "Підтримати проєкт"
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr "Спонсори GitHub"
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr "Підтримка"
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr "Документація"
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr "Служба Підтримки"
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr "Головна"
+
