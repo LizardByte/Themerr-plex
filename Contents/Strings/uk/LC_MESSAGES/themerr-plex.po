@@ -3,138 +3,138 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2025-12-10 15:53\n"
+"PO-Revision-Date: 2025-12-20 02:43\n"
 "Last-Translator: \n"
-"Language-Team: Turkish\n"
+"Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: tr\n"
+"X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: tr_TR\n"
+"Language: uk_UA\n"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr "Oyunlar"
+msgstr "Ігри"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr "Filmler"
+msgstr "Фільми"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "Gösteriler"
+msgstr "Шоу"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr "Sanatçılar"
+msgstr "Виконавці"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr "Fotoğraflar"
+msgstr "Фотографії"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr "Eşyalar"
+msgstr "Елементи"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "Koleksiyonlar"
+msgstr "Колекції"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr "Başlık"
+msgstr "Заголовок"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr "Tip"
+msgstr "Тип"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr "Yıl"
+msgstr "Рік"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr "Katkıda bulunun"
+msgstr "Зробити внесок"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr "Durum"
+msgstr "Статус"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr "Ekle"
+msgstr "Додати"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr "Düzenle"
+msgstr "Редагувати"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "Bilinen kimlik yok"
+msgstr "Невідомий ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex tarafından sağlanan"
+msgstr "Надано Plex"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr "Kullanıcı tarafından sağlanan"
+msgstr "Надано користувачем"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Themerr tarafından sağlanan"
+msgstr "Надано Themerr"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr "sağlanan"
+msgstr "надано"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "Bilinmeyen sağlayıcı"
+msgstr "Невідомий постачальник"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "ThemerrDB'de eksik"
+msgstr "Відсутній у ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr "İndirilemedi"
+msgstr "Не вдалося завантажити"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr "Bilinmeyen durum"
+msgstr "Невідомий статус"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "Veritabanı önbelleğe alınıyor, lütfen yakında tekrar deneyin."
+msgstr "База даних кешується, будь ласка, повторіть спробу пізніше."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Bağış"
+msgstr "Підтримати проєкт"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsorları"
+msgstr "Спонсори GitHub"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Destek"
+msgstr "Підтримка"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Dokümanlar"
+msgstr "Документація"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Destek Merkezi"
+msgstr "Служба Підтримки"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Ana Sayfa"
+msgstr "Головна"
 

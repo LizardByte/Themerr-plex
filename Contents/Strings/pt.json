@@ -20,7 +20,7 @@
   "str_youtube_cookies": "Cookies do YouTube (formato JSON)",
   "enum_webapp_locale": "Web UI Locale",
   "str_webapp_http_host": "Endereço de Host da Web (requer reinicialização Plex Media Server)",
-  "int_webapp_http_port": "Porta da Web UI (requer Plex Media Server reiniciar)",
+  "int_webapp_http_port": "Porta Web UI (requer reinicialização do Plex Media Server)",
   "bool_webapp_log_werkzeug_messages": "Registrar todas as mensagens do servidor web (requer Plex Media Server reiniciar)",
   "bool_migrate_locked_themes": "Migre temas de < v0.3.0 (Se você usou o Themerr antes da v0.3.0, defina isso como Verdade)",
   "bool_migrate_locked_collection_fields": "Migrar metadados da coleção de < v0.3.0 (Se você usou Themerr antes da v0.3.0, defina isto como Verdade)",

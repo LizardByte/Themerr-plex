@@ -3,138 +3,138 @@ msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
-"PO-Revision-Date: 2025-12-10 15:53\n"
+"PO-Revision-Date: 2025-11-17 08:13\n"
 "Last-Translator: \n"
-"Language-Team: Turkish\n"
+"Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: tr\n"
+"X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: tr_TR\n"
+"Language: zh_TW\n"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr "Oyunlar"
+msgstr "遊戲"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr "Filmler"
+msgstr "電影"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "Gösteriler"
+msgstr "節目"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr "Sanatçılar"
+msgstr "藝術家"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr "Fotoğraflar"
+msgstr "圖片"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr "Eşyalar"
+msgstr "項目"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "Koleksiyonlar"
+msgstr "收藏集"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr "Başlık"
+msgstr "標題"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr "Tip"
+msgstr "類型"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr "Yıl"
+msgstr "年份"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr "Katkıda bulunun"
+msgstr "貢獻"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr "Durum"
+msgstr "狀態"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr "Ekle"
+msgstr "新增"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr "Düzenle"
+msgstr "編輯"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "Bilinen kimlik yok"
+msgstr "無已知 ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex tarafından sağlanan"
+msgstr "Plex 提供"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr "Kullanıcı tarafından sağlanan"
+msgstr "使用者提供"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Themerr tarafından sağlanan"
+msgstr "Themerr 提供"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr "sağlanan"
+msgstr "提供"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "Bilinmeyen sağlayıcı"
+msgstr "未知提供者"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "ThemerrDB'de eksik"
+msgstr "從 ThemerrDB 遺失"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr "İndirilemedi"
+msgstr "下載失敗"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr "Bilinmeyen durum"
+msgstr "狀態不明"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "Veritabanı önbelleğe alınıyor, lütfen yakında tekrar deneyin."
+msgstr "資料庫正在快取，請稍後再試。"
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Bağış"
+msgstr "捐贈"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsorları"
+msgstr "GitHub 贊助"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Destek"
+msgstr "支援"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Dokümanlar"
+msgstr "文件"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Destek Merkezi"
+msgstr "支援中心"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Ana Sayfa"
+msgstr "首頁"
 
