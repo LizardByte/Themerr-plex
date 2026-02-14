@@ -5,14 +5,20 @@ from functools import partial
 import os
 import sys
 import time
+from mock import patch
 
 # lib imports
 import plexapi
 from plexapi.exceptions import NotFound
 from plexapi.server import PlexServer
 from plexhints.agent_kit import Agent
+from plexhints.prefs_kit import _PreferenceSet
 import pytest
 import requests
+
+# create a fake directory for plexhints
+if not os.path.exists('plexhints'):
+    os.mkdir('plexhints')
 
 # add Contents directory to the system path
 pytest.root_dir = root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -87,6 +93,18 @@ def agent(request):
         return Themerr()
 
 
+# extend the _PreferenceSet class, and give it a setter
+class PreferenceSet(_PreferenceSet):
+    def __setitem__(self, key, value):
+        self.update_user_values(**{key: value})
+
+
+@pytest.fixture(scope='function')
+def prefs_webapp_patch():
+    with patch('Code.webapp.Prefs', new_callable=lambda: PreferenceSet('test_webapp_prefs')) as mock_prefs:
+        yield mock_prefs
+
+
 @pytest.fixture(scope='function')
 def test_client():
     """Create a test client for testing webapp endpoints"""
@@ -102,6 +120,13 @@ def test_client():
             yield test_client  # this is where the testing happens!
 
 
+@pytest.fixture(scope='function')
+def test_client_login_disabled(test_client, prefs_webapp_patch):
+    """Create a test client for testing webapp endpoints with login disabled"""
+    webapp.Prefs['bool_webapp_require_login'] = False  # disable login requirement
+    yield test_client
+
+
 # plex server fixtures
 @pytest.fixture(scope="session")
 def plugin_logs():
@@ -111,7 +136,6 @@ def plugin_logs():
     yield plugin_logs
 
 
-# plex server fixtures
 @pytest.fixture(scope="session")
 def plugin_log_file():
     # the primary plugin log file
@@ -134,6 +158,11 @@ def plex(request, sess):
     assert SERVER_BASEURL is not None, "Required SERVER_BASEURL not specified."
 
     return PlexServer(SERVER_BASEURL, SERVER_TOKEN, session=sess)
+
+
+@pytest.fixture(scope="session")
+def plex_token():
+    return SERVER_TOKEN
 
 
 @pytest.fixture(params=MOVIE_SECTIONS, scope="session")

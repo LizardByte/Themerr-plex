@@ -163,7 +163,8 @@ cython_debug/
 Contents/Info.plist
 
 # Remove plexhints files
-plexhints-temp
+plexhints/
+plexhints-temp/
 *cache.sqlite
 
 # Remove python modules
