@@ -1,0 +1,282 @@
+body {
+   padding-top: 80px;
+}
+
+/*Apply to elements that serve as anchors*/
+.offset-anchor {
+    border-top: 80px solid transparent;
+    margin: -80px 0 0;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+
+/*Because offset-anchor causes sections to overlap the bottom of previous ones,*/
+/*we need to put content higher so links aren't blocked by the transparent border.*/
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar {
+    min-height: 80px;
+    border-bottom: 1px solid white;
+}
+
+.navbar-brand {
+    font-size: 1.75rem;
+}
+
+.nav-link {
+    font-size: 1.25rem;
+}
+
+.nav-link-sm {
+    font-size: 1rem;
+}
+
+.bg-dark {
+    --bs-bg-opacity: 1;
+    background-color: #151515 !important;
+}
+
+.bg-dark-gray {
+    --bs-bg-opacity: 1;
+    background-color: #303436 !important;
+}
+
+.carousel-overlay-title {
+    position: absolute;
+    top: 20vh;
+    right: 10vw;
+    padding: 1rem;
+    text-shadow: 2px 2px 5px black;
+    user-select: none;
+    z-index: 1;
+}
+
+.carousel-overlay-subtitle {
+    position: absolute;
+    top: 30vh;
+    right: 10vw;
+    padding: 1rem;
+    text-shadow: 2px 2px 5px black;
+    user-select: none;
+    z-index: 1;
+}
+
+.carousel-item.active, .carousel-item .view {
+    height: 50vh !important;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    width:100% !important;
+    height: 100% !important;
+}
+
+.content h1 {
+    font-size: 55px;
+}
+
+@media screen and (max-width: 320px) {
+    .content h1 {
+        font-size: 30px;
+    }
+}
+
+@media screen and (min-width: 321px) and (max-width: 768px) {
+    .content h1 {
+      font-size: 30px;
+    }
+}
+
+.content h5 {
+    font-size: 23px;
+    margin-left: 80px;
+    margin-right: 80px;
+}
+
+@media screen and (max-width: 320px) {
+    .content h5 {
+        font-size: 18px;
+        margin-left: 20px;
+        margin-right: 20px
+    }
+}
+
+@media screen and (min-width: 321px) and (max-width: 768px) {
+    .content h5 {
+        font-size: 18px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+
+.widgetbot {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.feedback {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+iframe.feedback {
+    width: 100vw;
+    min-height: calc(100vh - 80px - 72px); /* subtract navbar and footer height */
+}
+
+@media screen and (min-width: 321px) and (max-width: 768px) {
+    iframe.feedback {
+        min-height: calc(100vh - 80px - 93px); /* subtract navbar and footer height */
+    }
+}
+
+@media screen and (max-width: 320px) {
+    iframe.feedback {
+        min-height: calc(100vh - 80px - 114px); /* subtract navbar and footer height */
+    }
+}
+
+/*card image hover*/
+.hover-zoom {
+    overflow: hidden;
+}
+
+.hover-zoom img {
+    transition: all 1.5s ease;
+}
+
+.hover-zoom:hover img {
+    transform: scale(1.1);
+}
+
+/*settings page*/
+
+.advanced-setting {
+    /*display: none;*/
+}
+
+div.advanced-setting {
+    border-left: 1px solid #cc7b19;
+}
+
+li.advanced-setting {
+    border-left: 1px solid #cc7b19;
+}
+
+.beta-setting {
+    /*display: none;*/
+}
+
+div.beta-setting {
+    border-left: 1px solid #b30016;
+}
+
+li.beta-setting {
+    border-left: 1px solid #b30016;
+}
+
+.form-group,
+.checkbox {
+    padding-left: 10px;
+    margin-left: -10px;
+    margin-bottom: 15px;
+}
+
+.settings-alert {
+    /*float: left;*/
+    padding: 0;
+    margin: 5px 0;
+    border: 0;
+    position: relative;
+}
+
+.settings-alert ul {
+    padding: 0;
+}
+
+.settings-alert ul li {
+    list-style: none;
+    padding: 5px 12px;
+    margin: 0;
+    border: 1px solid #ebccd1;
+    border-radius: 4px;
+}
+
+.settings-alert ul li:before {
+    content: "\f071";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 5px;
+}
+
+.form-control,
+.form-select,
+.form-select option {
+    border-radius: 4px;
+    background-color: #151515;
+    border-width: 0;
+    color: white;
+}
+
+.alert_placeholder {
+    /* borrowed from widgetbot */
+    display: flex;
+    flex-direction: column-reverse;
+    position: fixed;
+    z-index: 3147482999;  /* display above widgetbot */
+    padding: 7px 0px 20px;
+    width: 350px;
+    max-height: calc(70% - 100px);
+    right: 20px;
+    bottom: 76px;
+}
+
+.form-control:disabled {
+    background-color: dimgray;
+}
+
+.form-control:focus {
+    background-color: #151515;
+    color: white;
+}
+
+.form-check-input:not(:checked):disabled {
+    background-color: dimgray;
+}
+
+.form-check-input:not(:checked):enabled {
+    background-color: #151515;
+}
+
+/* Style the background video */
+#backgroundVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1000;
+}
+
+/* transparent background video overlay */
+.backgroundVideoOverlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: black;
+    opacity: 0.8;
+    z-index: -999;
+}
+
+.progress-bar:first-child {
+    overflow: visible;
+    z-index: 999;
+}

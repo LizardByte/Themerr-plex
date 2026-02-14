@@ -1,5 +1,8 @@
-# -*- coding: utf-8 -*-
+"""
+tests/conftest.py
 
+Fixtures for pytest.
+"""
 # standard imports
 from functools import partial
 import os
@@ -10,44 +13,32 @@ import time
 import plexapi
 from plexapi.exceptions import NotFound
 from plexapi.server import PlexServer
-from plexhints.agent_kit import Agent
 import pytest
 import requests
 
 # add Contents directory to the system path
 pytest.root_dir = root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-pytest.contents_dir = contents_dir = os.path.join(root_dir, 'Contents')
-if os.path.isdir(contents_dir):
-    sys.path.append(contents_dir)
+pytest.src_dir = src_dir = os.path.join(root_dir, 'src')
+
+if os.path.isdir(src_dir):  # avoid flake8 E402 warning
+    sys.path.insert(0, src_dir)
 
     # local imports
-    from Code import constants
-    from Code import Themerr, ThemerrMovies, ThemerrTvShows
-    from Code import themerr_db_helper
-    from Code import webapp
+    import common
+    from common import config
+    from common import definitions
+    from common import webapp
+    from themerr import themerr_db
 else:
-    raise Exception('Contents directory not found')
+    raise Exception('src directory not found')
 
 # plex server setup
 SERVER_BASEURL = plexapi.CONFIG.get("auth.server_baseurl")
 SERVER_TOKEN = plexapi.CONFIG.get("auth.server_token")
 
 # constants
-MOVIE_SECTIONS = ["Movies", "Movies-imdb", "Movies-tmdb"]
-TV_SHOW_SECTIONS = ["TV Shows", "TV Shows-tmdb", "TV Shows-tvdb"]
-
-
-def wait_for_file(file_path, timeout=300):
-    # type: (str, int) -> None
-    found = False
-    count = 0
-    while not found and count < timeout:  # plugin takes a little while to start on macOS
-        count += 1
-        if os.path.isfile(file_path):
-            found = True
-        else:
-            time.sleep(1)
-    assert found, "After {} seconds, {} file not found".format(timeout, file_path)
+MOVIE_SECTIONS = ["Movies"]
+TV_SHOW_SECTIONS = ["TV Shows"]
 
 
 def wait_for_themes(section):
@@ -75,23 +66,39 @@ def wait_for_themes(section):
         "Not all themes were uploaded in time, themes uploaded: {}/{}".format(with_themes, total))
 
 
-# basic fixtures
-@pytest.fixture(params=['movies', 'tv_shows'], scope="function")
-def agent(request):
-    # type: (any) -> Agent
-    if request.param == 'movies':
-        return ThemerrMovies()
-    elif request.param == 'tv_shows':
-        return ThemerrTvShows()
-    else:
-        return Themerr()
+@pytest.fixture(scope='function')
+def test_config_file():
+    """Set a test config file path"""
+    test_config_file = os.path.join(definitions.Paths.CONFIG_DIR, 'test_config.ini')  # use a dummy ini file
+
+    yield test_config_file
 
 
 @pytest.fixture(scope='function')
-def test_client():
+def test_config_object(test_config_file):
+    """Create a test config object"""
+    test_config_object = config.create_config(config_file=test_config_file)
+
+    config.CONFIG = test_config_object
+
+    yield test_config_object
+
+
+@pytest.fixture(scope='function')
+def test_common_init(test_config_file):
+    test_common_init = common.initialize(config_file=test_config_file)
+
+    yield test_common_init
+
+    common._INITIALIZED = False
+    common.SIGNAL = 'shutdown'
+
+
+@pytest.fixture(scope='function')
+def test_client(test_common_init):
     """Create a test client for testing webapp endpoints"""
     app = webapp.app
-    app.config['TESTING'] = True
+    app.testing = True
 
     client = app.test_client()
 
@@ -103,25 +110,6 @@ def test_client():
 
 
 # plex server fixtures
-@pytest.fixture(scope="session")
-def plugin_logs():
-    # list contents of the plugin logs directory
-    plugin_logs = os.listdir(os.environ['PLEX_PLUGIN_LOG_PATH'])
-
-    yield plugin_logs
-
-
-# plex server fixtures
-@pytest.fixture(scope="session")
-def plugin_log_file():
-    # the primary plugin log file
-    plugin_log_file = os.path.join(os.environ['PLEX_PLUGIN_LOG_PATH'], "{}.log".format(constants.plugin_identifier))
-
-    wait_for_file(file_path=plugin_log_file, timeout=300)
-
-    yield plugin_log_file
-
-
 @pytest.fixture(scope="session")
 def sess():
     session = requests.Session()
@@ -196,6 +184,6 @@ def section(section_names, plex):
 
 @pytest.fixture(scope='function')
 def empty_themerr_db_cache():
-    themerr_db_helper.database_cache = {}  # reset the cache
-    themerr_db_helper.last_cache_update = 0
+    themerr_db.database_cache = {}  # reset the cache
+    themerr_db.last_cache_update = 0
     return

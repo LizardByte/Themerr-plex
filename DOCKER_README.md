@@ -1,28 +1,99 @@
-### lizardbyte/themerr-plex
+# Docker
 
-This is a [docker-mod](https://linuxserver.github.io/docker-mods/) for
-[plex](https://hub.docker.com/r/linuxserver/plex) which adds [Themerr-plex](https://github.com/LizardByte/Themerr-plex)
-to plex as a plugin, to be downloaded/updated during container start.
+## lizardbyte/themerr-plex
 
-This image extends the plex image, and is not intended to be created as a separate container.
+### Using docker run
+Create and run the container (substitute your `<values>`):
 
-### Installation
+```bash
+docker run -d \
+  --name=themerr-plex \
+  --restart=unless-stopped
+  -v <path to data>:/config \
+  -e PUID=<uid> \
+  -e PGID=<gid> \
+  -e TZ=<timezone> \
+  -p 9494:9494 \
+  lizardbyte/themerr-plex
+```
 
-In plex docker arguments, set an environment variable `DOCKER_MODS=lizardbyte/themerr-plex:latest` or
-`DOCKER_MODS=ghcr.io/lizardbyte/themerr-plex:latest`
+To update the container it must be removed and recreated:
 
-If adding multiple mods, enter them in an array separated by `|`, such as
-`DOCKER_MODS=lizardbyte/themerr-plex:latest|linuxserver/mods:other-plex-mod`
+```bash
+# Stop the container
+docker stop themerr-plex
+# Remove the container
+docker rm themerr-plex
+# Pull the latest update
+docker pull lizardbyte/themerr-plex
+# Run the container with the same parameters as before
+docker run -d ...
+```
 
-### Supported Architectures
+### Using docker-compose
 
-Specifying `lizardbyte/themerr-plex:latest` or `ghcr.io/lizardbyte/themerr-plex:latest` should retrieve the correct
-image for your architecture.
+Create a `docker-compose.yml` file with the following contents (substitute your `<values>`):
 
-The architectures supported by this image are:
+```yaml
+version: '3'
+services:
+  themerr-plex:
+    image: lizardbyte/themerr-plex
+    container_name: themerr-plex
+    restart: unless-stopped
+    volumes:
+      - <path to data>:/config
+    environment:
+      - PUID=<uid>
+      - PGID=<gid>
+      - TZ=<timezone>
+    ports:
+      - 9494:9494
+```
 
-| Architecture | Available |
-|:------------:|:---------:|
-|    x86-64    |     ✅     |
-|    arm64     |     ✅     |
-|    armhf     |     ✅     |
+Create and start the container (run the command from the same folder as your `docker-compose.yml` file):
+
+```bash
+docker-compose up -d
+```
+
+To update the container:
+```bash
+# Pull the latest update
+docker-compose pull
+# Update and restart the container
+docker-compose up -d
+```
+
+### Parameters
+You must substitute the `<values>` with your own settings.
+
+Parameters are split into two halves separated by a colon. The left side represents the host and the right side the
+container.
+
+**Example:** `-p external:internal` - This shows the port mapping from internal to external of the container.
+Therefore `-p 9696:9696` would expose port `9696` from inside the container to be accessible from the host's IP on port
+`9696` (e.g. `http://<host_ip>:9696`). The internal port must be `9696`, but the external port may be changed
+(e.g. `-p 8080:9696`).
+
+
+| Parameter                   | Function                                                                             | Example Value        | Required |
+|-----------------------------|--------------------------------------------------------------------------------------|----------------------|:--------:|
+| `-p <port>:9494`            | Web UI Port                                                                          | `9494`               |   True   |
+| `-v <path to data>:/config` | Volume mapping                                                                       | `/home/themerr-plex` |   True   |
+| `-e PUID=<uid>`             | User ID                                                                              | `1001`               |  False   |
+| `-e PGID=<gid>`             | Group ID                                                                             | `1001`               |  False   |
+| `-e TZ=<timezone>`          | Lookup TZ value [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | `America/New_York`   |   True   |
+
+### User / Group Identifiers:
+
+When using data volumes (-v flags) permissions issues can arise between the host OS and the container. To avoid this
+issue you can specify the user PUID and group PGID. Ensure the data volume directory on the host is owned by the same
+user you specify.
+
+In this instance `PUID=1001` and `PGID=1001`. To find yours use id user as below:
+
+```bash
+$ id dockeruser
+uid=1001(dockeruser) gid=1001(dockergroup) groups=1001(dockergroup)
+```
