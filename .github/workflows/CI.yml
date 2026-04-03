@@ -122,7 +122,7 @@ jobs:
           mv ./Themerr-plex.bundle.zip ./artifacts/
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Themerr-plex.bundle
           if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
