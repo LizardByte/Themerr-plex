@@ -1,4 +1,0 @@
-[submodule "third-party/youtube-dl"]
-	path = third-party/youtube-dl
-	url = https://github.com/ytdl-org/youtube-dl.git
-	branch = master
