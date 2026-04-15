@@ -9,7 +9,7 @@ requests==2.27.1;python_version<"3"  # 2.27 is last version supporting Python 2.
 schedule==0.6.0;python_version<"3"
 six==1.16.0;python_version<"3"
 typing==3.10.0.0
-werkzeug==1.0.1;python_version<"3"
+werkzeug==3.1.6;python_version<"3"
 
 # youtube_dl is not capable or willing to create a new release so have to install from git
 # youtube_dl==2021.12.17
