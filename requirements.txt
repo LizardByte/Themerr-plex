@@ -1,6 +1,6 @@
 # these requirements must support python 2.7
 # it is doubtful that Plex will ever update to Python 3+
-flask==1.1.4;python_version<"3"
+flask==3.1.3;python_version<"3"
 flask-babel==1.0.0;python_version<"3"
 future==0.18.3
 plexapi-backport[alert]==4.15.10  # custom python-plexapi supporting python 2.7
