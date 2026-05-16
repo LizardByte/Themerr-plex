@@ -1,7 +1,5 @@
-# coding=utf-8
 """
-..
-   _locale.py
+scripts/_locale.py
 
 Functions related to building, initializing, updating, and compiling localization translations.
 """
@@ -14,7 +12,7 @@ project_name = 'Themerr-plex'
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.dirname(script_dir)
-locale_dir = os.path.join(root_dir, 'Contents', 'Strings')
+locale_dir = os.path.join(root_dir, 'locale')
 
 # target locales
 target_locales = [
@@ -30,7 +28,7 @@ target_locales = [
     'ru',  # Russian
     'sv',  # Swedish
     'tr',  # Turkish
-    'zh',  # Chinese Simplified
+    'zh',  # Chinese (Simplified)
 ]
 
 
@@ -40,22 +38,22 @@ def babel_extract():
         'pybabel',
         'extract',
         '-F', os.path.join(script_dir, 'babel.cfg'),
-        '-o', os.path.join(locale_dir, '%s.po' % project_name.lower()),
+        '-o', os.path.join(locale_dir, f'{project_name.lower()}.po'),
         '--sort-by-file',
-        '--msgid-bugs-address=github.com/%s' % project_name.lower(),
-        '--copyright-holder=%s' % project_name,
-        '--project=%s' % project_name,
+        f'--msgid-bugs-address=github.com/{project_name.lower()}',
+        f'--copyright-holder={project_name}',
+        f'--project={project_name}',
         '--version=v0',
         '--add-comments=NOTE',
-        './Contents/Resources/web'
+        './src',
+        './web',
     ]
 
     print(commands)
     subprocess.check_output(args=commands, cwd=root_dir)
 
 
-def babel_init(locale_code):
-    # type: (str) -> None
+def babel_init(locale_code: str):
     """Executes `pybabel init` in subprocess.
 
     :param locale_code: str - locale code
@@ -63,7 +61,7 @@ def babel_init(locale_code):
     commands = [
         'pybabel',
         'init',
-        '-i', os.path.join(locale_dir, '%s.po' % project_name.lower()),
+        '-i', os.path.join(locale_dir, f'{project_name.lower()}.po'),
         '-d', locale_dir,
         '-D', project_name.lower(),
         '-l', locale_code
@@ -78,7 +76,7 @@ def babel_update():
     commands = [
         'pybabel',
         'update',
-        '-i', os.path.join(locale_dir, '%s.po' % project_name.lower()),
+        '-i', os.path.join(locale_dir, f'{project_name.lower()}.po'),
         '-d', locale_dir,
         '-D', project_name.lower(),
         '--update-header-comment'
