@@ -28,6 +28,7 @@ from common import locales
 from common import logger
 from plex import auth as plex_auth
 from themerr.cache import database_cache_file
+from themerr import theme_errors
 
 # variables
 URL_SCHEME = None
@@ -154,7 +155,7 @@ def home() -> render_template:
     except IOError:
         return responses[500]
 
-    return render_template('home.html', title=_('Home'), items=items)
+    return render_template('home.html', title=_('Home'), items=items, theme_errors=theme_errors.get_errors())
 
 
 @app.route('/settings/', methods=['GET'])

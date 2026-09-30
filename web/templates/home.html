@@ -158,8 +158,12 @@
                                             <i data-lucide="user" class="text-info"></i> {{ _('User provided') }}
                                         {% elif item['theme_provider'] == 'themerr' %}
                                             <i data-lucide="circle-check" class="text-success"></i> {{ _('Themerr provided') }}
+                                        {% elif item['theme_provider'] == 'themerr_inferred' %}
+                                            <i data-lucide="circle-check" class="text-success"></i>
+                                            {{ _('Themerr provided (inferred from Plex upload)') }}
                                         {% elif item['theme_provider'] != None %}
-                                            <i data-lucide="circle-help" class="text-secondary"></i> {{ item['provider'] }} {{ _('provided') }}
+                                            <i data-lucide="circle-help" class="text-secondary"></i>
+                                            {{ item['theme_provider'] }} {{ _('provided') }}
                                         {% elif item['theme_status'] == 'complete' %}
                                             <i data-lucide="circle-help" class="text-secondary"></i> {{ _('Unknown provider') }}
                                         {% elif item['theme_status'] == 'missing' %}
@@ -168,6 +172,12 @@
                                             <i data-lucide="circle-alert" class="text-warning"></i> {{ _('Failed to download') }}
                                         {% else %}
                                             <i data-lucide="circle-alert" class="text-danger"></i> {{ _('Unknown status') }}
+                                        {% endif %}
+                                        {% if item['rating_key'] in theme_errors %}
+                                            <div class="small text-danger mt-1" role="status">
+                                                <i data-lucide="triangle-alert"></i>
+                                                {{ theme_errors[item['rating_key']] }}
+                                            </div>
                                         {% endif %}
                                     </td>
                                 </tr>

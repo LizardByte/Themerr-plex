@@ -41,8 +41,12 @@ def test_initialize_error(monkeypatch):
 def test_stop_and_restart(monkeypatch):
     end = Mock()
     launch = Mock()
+    shutdown = Mock()
+    exit_process = Mock(side_effect=lambda code: (_ for _ in ()).throw(SystemExit(code)))
     monkeypatch.setattr(tray_icon, 'tray_end', end)
     monkeypatch.setattr(common.subprocess, 'Popen', launch)
+    monkeypatch.setattr(common.logger, 'shutdown', shutdown)
+    monkeypatch.setattr(common.os, '_exit', exit_process)
     monkeypatch.setattr(common.definitions.Modes, 'FROZEN', False)
     monkeypatch.setattr(common.sys, 'argv', ['themerr_plex.py', '--quiet'])
 
@@ -51,6 +55,8 @@ def test_stop_and_restart(monkeypatch):
     assert exit_info.value.code == 3
     assert launch.call_args.kwargs['args'][-2:] == ['--quiet', '--nolaunch']
     end.assert_called_once()
+    shutdown.assert_called_once()
+    exit_process.assert_called_once_with(3)
 
     launch.reset_mock()
     monkeypatch.setattr(common.sys, 'argv', ['scripts/run_dev.py', '--nolaunch'])
@@ -62,3 +68,4 @@ def test_stop_and_restart(monkeypatch):
     with pytest.raises(SystemExit):
         common.stop(exit_code=0)
     launch.assert_not_called()
+    assert exit_process.call_args.args == (0,)

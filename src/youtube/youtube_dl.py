@@ -3,10 +3,11 @@
 # standard imports
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
-from typing import Optional, TextIO
+from typing import Callable, Optional, TextIO
 
 # lib imports
 import yt_dlp
@@ -89,7 +90,14 @@ def _write_cookies(cookie_file: TextIO, raw_cookies: str) -> None:
         log.warning('Failed to write YouTube cookies; continuing without them: %s', exc)
 
 
-def _extract_video(url: str, params: dict) -> Optional[dict]:
+def _error_reason(error: Exception) -> str:
+    """Reduce an extractor error to a short message safe for the dashboard."""
+    reason = re.sub(r'^(?:ERROR:\s*)?(?:\[[^]]+\]\s*[^:]+:\s*)?', '', str(error))
+    reason = re.sub(r'https?://\S+', '[URL]', reason)
+    return re.sub(r'\s+', ' ', reason).strip()[:300] or 'Video extraction failed'
+
+
+def _extract_video(url: str, params: dict, on_error: Callable[[str], None] | None = None) -> Optional[dict]:
     """Extract a video or the first available playlist entry.
 
     Parameters
@@ -98,6 +106,8 @@ def _extract_video(url: str, params: dict) -> Optional[dict]:
         Video or playlist URL.
     params : dict
         yt-dlp options.
+    on_error : callable or None, optional
+        Receives a human-readable failure reason.
 
     Returns
     -------
@@ -112,17 +122,28 @@ def _extract_video(url: str, params: dict) -> Optional[dict]:
                 log.info('yt-dlp could not extract %s: %s', url, exc)
             else:
                 log.exception('yt-dlp failed to extract %s', url)
+            if on_error:
+                on_error(_error_reason(exc))
             return None
         except yt_dlp.utils.DownloadError as exc:
             log.warning('yt-dlp could not extract %s: %s', url, exc)
+            if on_error:
+                on_error(_error_reason(exc))
             return None
         except Exception:
             log.exception('yt-dlp failed to extract %s', url)
+            if on_error:
+                on_error('Video extraction failed')
             return None
 
     if not result:
+        if on_error:
+            on_error('No video found')
         return None
-    return next((entry for entry in result['entries'] if entry), None) if 'entries' in result else result
+    video = next((entry for entry in result['entries'] if entry), None) if 'entries' in result else result
+    if not video and on_error:
+        on_error('No video found')
+    return video
 
 
 def _select_audio(video: dict) -> Optional[str]:
@@ -154,7 +175,7 @@ def _select_audio(video: dict) -> Optional[str]:
     return max(selected.values(), default=(0, None))[1]
 
 
-def process_youtube(url: str) -> Optional[str]:
+def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> Optional[str]:
     """
     Return the best audio stream URL from a YouTube video.
 
@@ -166,6 +187,8 @@ def process_youtube(url: str) -> Optional[str]:
     ----------
     url : str
         URL of the YouTube video or playlist.
+    on_error : callable or None, optional
+        Receives a human-readable failure reason.
 
     Returns
     -------
@@ -192,8 +215,13 @@ def process_youtube(url: str) -> Optional[str]:
         runtime = _js_runtime()
         if runtime:
             params['js_runtimes'] = runtime
-        video = _extract_video(url, params)
-        return _select_audio(video) if video else None
+        video = _extract_video(url, params, on_error=on_error)
+        if not video:
+            return None
+        audio = _select_audio(video)
+        if not audio and on_error:
+            on_error('No supported audio stream found')
+        return audio
     finally:
         try:
             os.remove(cookie_path)

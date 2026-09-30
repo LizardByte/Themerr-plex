@@ -79,8 +79,11 @@ def test_extractor_error_and_invalid_cookies(configured, monkeypatch):
 
 
 def test_download_error_is_nonfatal(configured, monkeypatch):
-    seen = extractor(monkeypatch, error=youtube_dl.yt_dlp.utils.DownloadError('Video unavailable'))
-    assert youtube_dl.process_youtube('https://youtube.example') is None
+    seen = extractor(monkeypatch, error=youtube_dl.yt_dlp.utils.DownloadError(
+        'ERROR: [youtube] Y8r_oMQqOIY: Video unavailable'))
+    errors = []
+    assert youtube_dl.process_youtube('https://youtube.example', on_error=errors.append) is None
+    assert errors == ['Video unavailable']
     assert seen['params']['format'] == 'bestaudio'
 
 

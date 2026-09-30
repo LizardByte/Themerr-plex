@@ -42,6 +42,21 @@ def test_theme_provider(monkeypatch, item, provider, rating_key, expected):
     assert general.get_theme_provider(item) == expected
 
 
+def test_uploaded_theme_without_tracking_is_inferred(monkeypatch, item):
+    item.themes.return_value = [SimpleNamespace(selected=True, provider=None,
+                                                ratingKey='upload://themes/abcdef')]
+    monkeypatch.setattr(general, 'get_themerr_json_data', lambda **_: {})
+    assert general.get_theme_provider(item) == 'themerr_inferred'
+
+
+def test_legacy_plugin_tracking_record(configured, item, tmp_path):
+    configured['Plex']['PLEX_APP_SUPPORT_PATH'] = str(tmp_path)
+    path = Path(general._legacy_themerr_json_path(item))
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({'youtube_theme_url': 'https://youtube.example/theme'}), encoding='utf-8')
+    assert general.get_themerr_json_data(item)['youtube_theme_url'] == 'https://youtube.example/theme'
+
+
 def test_no_selected_theme(item):
     assert general.get_theme_provider(item) is None
     item.themes.return_value = [SimpleNamespace(selected=False)]

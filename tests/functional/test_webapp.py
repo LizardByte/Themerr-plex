@@ -10,6 +10,7 @@ import requests
 
 from common import webapp
 from plex import auth, plexapi
+from themerr import theme_errors
 
 
 @pytest.fixture
@@ -26,6 +27,29 @@ def test_home(client, configured):
     assert b'Database is being cached' in response.data
     Path(webapp.database_cache_file).write_text(json.dumps({}), encoding='utf-8')
     assert client.get('/home').status_code == 200
+
+
+def test_home_shows_item_failure(client, configured):
+    dashboard = {'1': {
+        'key': 1, 'title': 'Movies', 'agent': 'tv.plex.agents.movie', 'type': 'movie',
+        'media_percent_complete': 0, 'collection_count': 0,
+        'items': [{
+            'rating_key': '42', 'title': 'Example', 'type': 'movie', 'year': 2020,
+            'issue_action': 'add', 'issue_url': None, 'theme_provider': None,
+            'theme_status': 'failed',
+        }],
+    }}
+    Path(webapp.database_cache_file).write_text(json.dumps(dashboard), encoding='utf-8')
+    theme_errors.set_error(42, 'Video unavailable')
+
+    response = client.get('/home')
+    assert response.status_code == 200
+    assert b'Video unavailable' in response.data
+    assert b'Example' in response.data
+    theme_errors.set_error(42, '<script>alert(1)</script>')
+    response = client.get('/home')
+    assert b'&lt;script&gt;' in response.data
+    assert b'<script>alert(1)</script>' not in response.data
 
 
 def test_images_and_status(client):

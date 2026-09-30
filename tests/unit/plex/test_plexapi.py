@@ -91,6 +91,45 @@ def test_get_database_info(configured, item, monkeypatch):
     )
 
 
+def test_legacy_guid_without_guids(configured, item, monkeypatch):
+    """Plex can supply only a legacy primary GUID for migrated movies and shows."""
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: object())
+    item.guids = []
+    item.guid = 'com.plexapp.agents.imdb://tt0298203?lang=en'
+    assert plexapi.get_database_info(item) == (
+        'movies', 'imdb', 'tv.plex.agents.movie', 'tt0298203',
+    )
+
+    item.type = 'show'
+    item.guid = 'com.plexapp.agents.thetvdb://12345?lang=en'
+    monkeypatch.setattr(plexapi.tmdb, 'get_tmdb_id_from_external_id', lambda **kwargs: '789'
+                        if kwargs['database'] == 'thetvdb' and kwargs['external_id'] == '12345' else None)
+    assert plexapi.get_database_info(item) == (
+        'tv_shows', 'themoviedb', 'tv.plex.agents.series', '789',
+    )
+
+
+def test_theme_failure_is_saved_and_cleared(configured, item, monkeypatch):
+    configured['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] = True
+    monkeypatch.setattr(plexapi.general, 'get_themerr_settings_hash', lambda: 'hash')
+    monkeypatch.setattr(plexapi.general, 'get_themerr_json_data', lambda **_: {})
+    saved = {}
+    monkeypatch.setattr(plexapi.theme_errors, 'set_error', lambda key, reason: saved.update({key: reason}))
+
+    def fail_extract(**kwargs):
+        kwargs['on_error']('Video unavailable')
+        return None
+
+    monkeypatch.setattr(plexapi, 'process_youtube', fail_extract)
+    plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
+    assert saved[item.ratingKey] == 'Video unavailable'
+
+    monkeypatch.setattr(plexapi, 'process_youtube', lambda **_: 'https://audio.example/theme')
+    monkeypatch.setattr(plexapi, 'add_media', Mock(return_value=True))
+    plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
+    assert saved[item.ratingKey] is None
+
+
 def test_get_plex_item(monkeypatch):
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: None)
     assert plexapi.get_plex_item(1) is None

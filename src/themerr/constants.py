@@ -6,7 +6,12 @@ contributes_to = [
 guid_map = dict(
     imdb='imdb',
     tmdb='themoviedb',
-    tvdb='thetvdb'
+    tvdb='thetvdb',
+    **{
+        'com.plexapp.agents.imdb': 'imdb',
+        'com.plexapp.agents.themoviedb': 'themoviedb',
+        'com.plexapp.agents.thetvdb': 'thetvdb',
+    },
 )
 
 metadata_type_map = dict(

@@ -89,6 +89,7 @@ def _cache_item(item) -> dict:
         theme_status = 'missing'
 
     return {
+        'rating_key': str(item.ratingKey),
         'title': item.title,
         'agent': item_agent,
         'database': database,

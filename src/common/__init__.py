@@ -97,7 +97,7 @@ def initialize(config_file: str) -> bool:
         return True
 
 
-def stop(exit_code: int | str = 0, restart: bool = False):
+def stop(exit_code: int = 0, restart: bool = False) -> None:
     """
     Stop Themerr-plex.
 
@@ -106,7 +106,7 @@ def stop(exit_code: int | str = 0, restart: bool = False):
 
     Parameters
     ----------
-    exit_code : Union[int, str], default = 0
+    exit_code : int, default 0
         The exit code to send. Does not apply if `restart = True`.
     restart : bool, default = False
         Set to True to restart Themerr-plex.
@@ -135,10 +135,12 @@ def stop(exit_code: int | str = 0, restart: bool = False):
         if '--nolaunch' not in args:  # don't launch the browser again
             args += ['--nolaunch']  # also os.execv requires at least one argument
 
-        # os.execv(sys.executable, args)
-        # `os.execv` is more desirable, but is not working correctly
-        # flask app does not respond to requests after restarting
-        # alternative to os.execv()
         subprocess.Popen(args=args, cwd=os.getcwd())
 
-    sys.exit(exit_code)
+    # Flask and tray backends can leave non-daemon threads alive after sys.exit().
+    # Finish logging, then terminate this process so a restart cannot leave a
+    # second server running behind the newly launched process.
+    logger.shutdown()
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(exit_code)

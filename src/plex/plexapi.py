@@ -20,6 +20,7 @@ from common import logger
 from plex import auth
 from themerr.constants import contributes_to, guid_map, media_type_dict
 from themerr import general
+from themerr import theme_errors
 from themerr import themerr_db
 from themerr import tmdb
 from youtube.youtube_dl import process_youtube
@@ -153,6 +154,7 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         return
     if 'youtube_theme_url' not in data:
         log.info(f'{item.ratingKey}: No theme song found for {item.title} ({item.year})')
+        theme_errors.set_error(item.ratingKey, None)
         return
 
     yt_video_url = data['youtube_theme_url']
@@ -166,15 +168,23 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
     if skip:
         log.info(f'Skipping {media_type_dict["themes"]["name"]} for '
                  f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
+        theme_errors.set_error(item.ratingKey, None)
         return
 
     try:
-        theme_url = process_youtube(url=yt_video_url)
+        theme_url = process_youtube(
+            url=yt_video_url,
+            on_error=lambda reason: theme_errors.set_error(item.ratingKey, reason),
+        )
     except Exception:
         log.exception(f'{item.ratingKey}: Error processing youtube url')
+        theme_errors.set_error(item.ratingKey, 'Video processing failed')
         return
     if theme_url:
-        add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url)
+        if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url):
+            theme_errors.set_error(item.ratingKey, None)
+        else:
+            theme_errors.set_error(item.ratingKey, 'Theme upload failed')
 
 
 def update_plex_item(rating_key: int) -> bool:
@@ -433,6 +443,33 @@ def upload_media(
     return False
 
 
+def _guid_candidates(item: PlexPartialObject) -> list[tuple[str, str, str]]:
+    """Collect supported external IDs from modern and legacy Plex GUIDs.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex movie or show.
+
+    Returns
+    -------
+    list[tuple[str, str, str]]
+        GUID scheme, ThemerrDB database, and identifier.
+    """
+    raw_guids = [guid.id for guid in getattr(item, 'guids', []) or []]
+    raw_guids.append(getattr(item, 'guid', ''))
+    candidates = []
+    for raw_guid in raw_guids:
+        if not isinstance(raw_guid, str):
+            continue
+        scheme, separator, identifier = raw_guid.partition('://')
+        database = guid_map.get(scheme)
+        identifier = identifier.split('?', 1)[0].split('#', 1)[0]
+        if separator and database and identifier:
+            candidates.append((scheme, database, identifier))
+    return candidates
+
+
 def _movie_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
     """Resolve a movie's preferred external database identifier.
 
@@ -446,20 +483,15 @@ def _movie_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Option
     tuple
         Database type, database, agent, and identifier.
     """
-    if not item.guids:
+    candidates = _guid_candidates(item)
+    if not candidates:
         return None, None, None, None
 
-    database = None
-    database_id = None
-    for guid in item.guids:
-        split_guid = guid.id.split('://')
-        candidate = guid_map[split_guid[0]]
-        if candidate == 'imdb':
-            database, database_id = candidate, split_guid[1]
-        if candidate == 'themoviedb':
-            database, database_id = candidate, split_guid[1]
-            break
-    return 'movies', database, 'tv.plex.agents.movie', database_id
+    for preferred in ('themoviedb', 'imdb'):
+        for _, database, identifier in candidates:
+            if database == preferred:
+                return 'movies', database, 'tv.plex.agents.movie', identifier
+    return 'movies', None, 'tv.plex.agents.movie', None
 
 
 def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
@@ -475,17 +507,16 @@ def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optiona
     tuple
         Database type, database, agent, and identifier.
     """
-    if not item.guids:
+    candidates = _guid_candidates(item)
+    if not candidates:
         return 'tv_shows', None, None, None
 
     external_guid = None
-    for guid in item.guids:
-        split_guid = guid.id.split('://')
-        candidate = guid_map.get(split_guid[0])
-        if candidate == 'themoviedb':
-            return 'tv_shows', candidate, 'tv.plex.agents.series', split_guid[1]
-        if candidate in ('imdb', 'thetvdb'):
-            external_guid = split_guid
+    for scheme, database, identifier in candidates:
+        if database == 'themoviedb':
+            return 'tv_shows', database, 'tv.plex.agents.series', identifier
+        if database in ('imdb', 'thetvdb') and external_guid is None:
+            external_guid = (scheme.rsplit('.', 1)[-1], identifier)
 
     if external_guid:
         database_id = tmdb.get_tmdb_id_from_external_id(

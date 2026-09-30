@@ -176,7 +176,12 @@ def get_theme_provider(item: PlexPartialObject) -> Optional[str]:
 
     if not provider:
         themerr_data = get_themerr_json_data(item=item)
-        provider = 'themerr' if themerr_data else None
+        if themerr_data:
+            provider = 'themerr'
+        elif selected.ratingKey.startswith('upload://themes/'):
+            # Plex records an upload but does not identify its uploader. Older
+            # Themerr plugin uploads may have no standalone tracking file.
+            provider = 'themerr_inferred'
 
     return provider
 
@@ -207,6 +212,26 @@ def get_themerr_json_path(item: PlexPartialObject) -> str:
     return themerr_json_path
 
 
+def _legacy_themerr_json_path(item: PlexPartialObject) -> str:
+    """Locate an existing record from the former Plex plugin installation.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex item.
+
+    Returns
+    -------
+    str
+        Path to the former plugin's tracking record.
+    """
+    return os.path.join(
+        config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH'], 'Plug-in Support', 'Data',
+        'dev.lizardbyte.themerr-plex', 'DataItems', metadata_type_map[item.type],
+        f'{item.ratingKey}.json',
+    )
+
+
 def get_themerr_json_data(item: PlexPartialObject) -> dict:
     """
     Get the Themerr data for the specified item.
@@ -224,14 +249,13 @@ def get_themerr_json_data(item: PlexPartialObject) -> dict:
     dict
         The Themerr data for the specified item, or empty dict if no Themerr data exists.
     """
-    themerr_json_path = get_themerr_json_path(item=item)
-
-    if os.path.isfile(themerr_json_path):
-        themerr_data = json.loads(s=str(helpers.file_load(filename=themerr_json_path, binary=False)))
-    else:
-        themerr_data = {}
-
-    return themerr_data
+    for path in (get_themerr_json_path(item=item), _legacy_themerr_json_path(item=item)):
+        if os.path.isfile(path):
+            try:
+                return json.loads(s=str(helpers.file_load(filename=path, binary=False)))
+            except (TypeError, ValueError):
+                log.warning('Invalid Themerr tracking data for item %s', item.ratingKey)
+    return {}
 
 
 def get_themerr_settings_hash() -> str:
