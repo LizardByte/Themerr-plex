@@ -64,6 +64,18 @@ def on_change_tray_toggle() -> bool:
     return tray_icon.tray_toggle()
 
 
+def on_change_plex_url() -> None:
+    """Reconnect to Plex after its configured URL changes."""
+    from plex import plexapi
+    plexapi.stop_plex_listener()
+    plexapi.plex_server = None
+    if plexapi.auth.get_token():
+        try:
+            plexapi.plex_listener()
+        except Exception:
+            log.exception('Unable to reconnect to the changed Plex URL')
+
+
 # types
 # - section
 # - boolean
@@ -253,14 +265,7 @@ _CONFIG_SPEC_DICT = dict(
             default='http://127.0.0.1:32400',
             pattern=r'^https?:\/\/(?:[a-zA-Z0-9-]+\.?)+(:\d{1,5})?$',
             extra_class='col-lg-6',
-        ),
-        PLEX_TOKEN=dict(
-            type='string',
-            name=_('Plex token'),
-            mask=True,
-            description=_('The Plex token.'),
-            pattern=r'[A-Za-z0-9]+',
-            extra_class='col-lg-6',
+            on_change=on_change_plex_url,
         ),
         PLEX_APP_SUPPORT_PATH=dict(
             type='string',

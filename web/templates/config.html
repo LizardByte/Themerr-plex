@@ -134,6 +134,22 @@
                                 </div>
                             {%- endif -%}
                         {%- endfor -%}
+                        {%- if key == 'Plex' -%}
+                            <div class="my-4" id="plex-auth" data-connected="{{ _('Connected to Plex') }}"
+                                 data-disconnected="{{ _('Not connected to Plex') }}"
+                                 data-pending="{{ _('Waiting for Plex sign-in...') }}">
+                                <p id="plex-auth-status" role="status">{{ _('Checking Plex connection...') }}</p>
+                                <button id="plex-auth-start" type="button" class="btn btn-primary">
+                                    {{ _('Sign in with Plex') }}
+                                </button>
+                                <button id="plex-auth-disconnect" type="button" class="btn btn-outline-secondary d-none">
+                                    {{ _('Disconnect Plex') }}
+                                </button>
+                                <a id="plex-auth-link" class="d-none ms-3" target="_blank" rel="noopener noreferrer">
+                                    {{ _('Open Plex sign-in') }}
+                                </a>
+                            </div>
+                        {%- endif -%}
                     {%- endfor -%}
 
                     <button id="save-button" type="button" class="btn btn-danger" disabled>{{ _('Save') }}</button>

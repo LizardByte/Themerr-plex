@@ -4,8 +4,15 @@ Usage
 =====
 
 Start Themerr-plex, then open its web UI at https://localhost:9494 (or the host and port you configured).
-In Settings, enter your Plex server URL and token. Set the Plex data directory if you want Themerr-plex to
-remove older uploaded media from Plex's metadata directory.
+In Settings, enter and save your Plex server URL, then select **Sign in with Plex**. Complete the sign-in in the
+Plex browser window and return to Settings. Themerr-plex checks the sign-in and connects to the configured server.
+The Plex account must have access to that server. To change accounts, select **Disconnect Plex** and sign in again.
+This replaces the manually entered Plex token used by older versions; existing installations must sign in once.
+The resulting token is kept in ``plex-auth.json`` beside the configuration file and is never shown in Settings.
+
+Set the Plex data directory if you want Themerr-plex to remove older uploaded media from Plex's metadata directory.
+When Themerr-plex runs on another machine, use the Plex server's reachable URL and mount its data directory if you
+want this cleanup. Otherwise, disable the three **Remove unused** settings.
 
 Enable movie, series, and collection updates as needed. Themerr-plex listens for supported Plex library
 events and also scans on the configured schedule. The home page reports theme status for each supported

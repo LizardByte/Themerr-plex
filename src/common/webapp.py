@@ -7,14 +7,16 @@ Responsible for serving the webapp.
 import copy
 import json
 import os
+import time
 from typing import Optional
 
 # lib imports
-from flask import Flask, Response
+from flask import Flask, Response, session
 from flask import jsonify, render_template as flask_render_template, request, send_from_directory
 from flask_babel import Babel
 from flask_wtf import CSRFProtect
 import polib
+import requests
 from werkzeug.utils import secure_filename
 
 # local imports
@@ -25,6 +27,7 @@ from common.definitions import Paths
 from common import helpers
 from common import locales
 from common import logger
+from plex import auth as plex_auth
 from themerr.cache import database_cache_file
 
 # variables
@@ -87,6 +90,8 @@ for handler in log_handlers:
 
 csrf = CSRFProtect()
 csrf.init_app(app)
+
+PLEX_LOGIN_LIFETIME = 600
 
 
 def render_template(template_name_or_list, **context):
@@ -393,6 +398,112 @@ def api_settings() -> Response:
                 on_change()
 
         return jsonify({'status': 'OK', 'message': 'Selected settings are valid.'})
+
+
+@app.route('/api/plex/auth', methods=['GET'])
+def plex_auth_status() -> Response:
+    """Report whether this installation has a token from Plex sign-in.
+
+    Returns
+    -------
+    Response
+        Authentication status without exposing the token.
+    """
+    return jsonify({'connected': bool(plex_auth.get_token())})
+
+
+@app.route('/api/plex/auth/start', methods=['POST'])
+def plex_auth_start() -> Response:
+    """Start a Plex browser sign-in for this web session.
+
+    Returns
+    -------
+    Response
+        Plex authorization URL or a sanitized error.
+    """
+    try:
+        login = plex_auth.start_login()
+    except (requests.RequestException, KeyError, TypeError, ValueError, OSError):
+        app.logger.exception('Unable to start Plex sign-in')
+        return jsonify({'message': 'Unable to start Plex sign-in. Please try again.'}), 502
+
+    session['plex_login'] = {'pin_id': login['pin_id'], 'code': login['code'], 'started': time.time()}
+    return jsonify({'auth_url': login['auth_url']})
+
+
+@app.route('/api/plex/auth/check', methods=['POST'])
+def plex_auth_check() -> Response:
+    """Finish a Plex sign-in once its PIN has been claimed.
+
+    Returns
+    -------
+    Response
+        Pending, connected, expired, or error status.
+    """
+    login = session.get('plex_login')
+    if not login:
+        return jsonify({'message': 'Start Plex sign-in first.'}), 400
+    if time.time() - login['started'] > PLEX_LOGIN_LIFETIME:
+        session.pop('plex_login', None)
+        return jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410
+
+    try:
+        token = plex_auth.check_login(pin_id=login['pin_id'], code=login['code'])
+    except requests.HTTPError as error:
+        if error.response is not None and error.response.status_code in (404, 410):
+            session.pop('plex_login', None)
+            return jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410
+        app.logger.warning('Unable to check Plex sign-in: %s', error)
+        return jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502
+    except (requests.RequestException, KeyError, TypeError, ValueError):
+        app.logger.exception('Unable to check Plex sign-in')
+        return jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502
+
+    if not token:
+        return jsonify({'connected': False}), 202
+
+    from plex import plexapi
+    try:
+        server = plexapi.connect_plex_server(plex_url=config.CONFIG['Plex']['PLEX_URL'], plex_token=token)
+    except Exception:
+        app.logger.exception('Plex sign-in succeeded, but the selected server could not be reached')
+        return jsonify({'message': 'Signed in to Plex, but could not connect to the configured Plex server.'}), 400
+
+    try:
+        plex_auth.set_token(token)
+    except OSError:
+        app.logger.exception('Unable to save Plex sign-in')
+        return jsonify({'message': 'Unable to save Plex sign-in.'}), 500
+
+    plexapi.plex_server = server
+    try:
+        plexapi.plex_listener()
+    except Exception:
+        app.logger.exception('Plex sign-in succeeded, but the event listener could not start')
+    session.pop('plex_login', None)
+    return jsonify({'connected': True})
+
+
+@app.route('/api/plex/auth/disconnect', methods=['POST'])
+def plex_auth_disconnect() -> Response:
+    """Remove the local Plex connection.
+
+    Returns
+    -------
+    Response
+        Disconnected status.
+    """
+    try:
+        plex_auth.disconnect()
+    except OSError:
+        app.logger.exception('Unable to disconnect Plex')
+        return jsonify({'message': 'Unable to disconnect Plex.'}), 500
+
+    from plex import plexapi
+    plexapi.stop_plex_listener()
+    plexapi.plex_server = None
+    session.pop('plex_login', None)
+    return jsonify({'connected': False})
 
 
 def start_webapp():

@@ -14,7 +14,8 @@ fails, update the locked yt-dlp version and check the application log for the ex
 Plex connection
 ---------------
 
-Check the Plex URL and token in the web UI. The configured Plex data directory is needed for removing old
+Check the Plex URL and connection status in Settings, and sign in through Plex again if needed. The configured Plex
+data directory is needed for removing old
 uploads; theme upload itself uses the Plex API. The Plex Movie and Plex Series agents are supported.
 
 Application logs

@@ -6,15 +6,16 @@ from unittest.mock import Mock
 
 import requests
 
+from common import config
 from plex import plexapi
 
 
 def test_setup_plexapi(configured, monkeypatch):
     monkeypatch.setattr(plexapi, 'plex_server', None)
-    configured['Plex']['PLEX_TOKEN'] = ''
+    monkeypatch.setattr(plexapi.auth, 'get_token', lambda: '')
     assert plexapi.setup_plexapi() is None
 
-    configured['Plex']['PLEX_TOKEN'] = 'token'
+    monkeypatch.setattr(plexapi.auth, 'get_token', lambda: 'token')
     configured['Plex']['PLEX_URL'] = 'https://plex.example'
     server = object()
     constructor = Mock(return_value=server)
@@ -23,6 +24,42 @@ def test_setup_plexapi(configured, monkeypatch):
     assert plexapi.setup_plexapi() is server
     assert constructor.call_count == 1
     assert constructor.call_args.kwargs['session'].verify is False
+
+
+def test_listener_starts_after_login_and_stops_on_disconnect(monkeypatch):
+    monkeypatch.setattr(plexapi, 'alert_listener', None)
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: object())
+    listener = Mock()
+    listener._ws = object()
+    constructor = Mock(return_value=listener)
+    monkeypatch.setattr(plexapi, 'AlertListener', constructor)
+    plexapi.plex_listener()
+    listener.start.assert_called_once_with()
+    assert plexapi.alert_listener is listener
+    plexapi.stop_plex_listener()
+    listener.stop.assert_called_once_with()
+    assert plexapi.alert_listener is None
+
+
+def test_listener_does_not_start_without_connection(monkeypatch):
+    monkeypatch.setattr(plexapi, 'alert_listener', None)
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: None)
+    constructor = Mock()
+    monkeypatch.setattr(plexapi, 'AlertListener', constructor)
+    plexapi.plex_listener()
+    constructor.assert_not_called()
+
+
+def test_changing_plex_url_reconnects_active_listener(monkeypatch):
+    listener, stop = Mock(), Mock()
+    monkeypatch.setattr(plexapi, 'plex_listener', listener)
+    monkeypatch.setattr(plexapi, 'stop_plex_listener', stop)
+    monkeypatch.setattr(plexapi.auth, 'get_token', lambda: 'issued-token')
+    monkeypatch.setattr(plexapi, 'plex_server', object())
+    config.on_change_plex_url()
+    stop.assert_called_once_with()
+    listener.assert_called_once_with()
+    assert plexapi.plex_server is None
 
 
 def test_get_database_info(configured, item, monkeypatch):

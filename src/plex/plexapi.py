@@ -19,6 +19,7 @@ from plexapi.utils import reverseSearchType
 from common import config
 from common import helpers
 from common import logger
+from plex import auth
 from themerr.constants import contributes_to, guid_map, media_type_dict
 from themerr import general
 from themerr import themerr_db
@@ -31,6 +32,7 @@ import _strptime  # noqa: F401
 log = logger.get_logger(__name__)
 
 plex_server = None
+alert_listener = None
 q = queue.Queue()
 
 # disable auto-reload, because Themerr doesn't rely on it, so it will only slow down the app
@@ -56,21 +58,37 @@ def setup_plexapi() -> Optional[plexapi.server.PlexServer]:
     ...
     """
     global plex_server
-    plex_token = config.CONFIG['Plex']['PLEX_TOKEN']
+    plex_token = auth.get_token()
     plex_url = config.CONFIG['Plex']['PLEX_URL']
     if not plex_server:
         if not plex_token:
-            log.error('Plex token not found, cannot proceed.')
+            log.error('Sign in with Plex in Settings before connecting to the server.')
             return None
 
-        sess = requests.Session()
-        sess.verify = False  # Ignore verifying the SSL certificate
-        urllib3.disable_warnings(InsecureRequestWarning)  # Disable the insecure request warning
-
-        # create the plex server object
-        plex_server = plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
+        plex_server = connect_plex_server(plex_url=plex_url, plex_token=plex_token)
 
     return plex_server
+
+
+def connect_plex_server(plex_url: str, plex_token: str) -> plexapi.server.PlexServer:
+    """Connect to a Plex server with a token obtained through Plex sign-in.
+
+    Parameters
+    ----------
+    plex_url : str
+        URL of the selected Plex server.
+    plex_token : str
+        Plex account token.
+
+    Returns
+    -------
+    PlexServer
+        The connected server.
+    """
+    sess = requests.Session()
+    sess.verify = False  # Ignore verifying the SSL certificate
+    urllib3.disable_warnings(InsecureRequestWarning)  # Disable the insecure request warning
+    return plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
 
 
 def update_plex_item(rating_key: int) -> bool:
@@ -600,12 +618,23 @@ def plex_listener() -> None:
     >>> plex_listener()
     ...
     """
+    global alert_listener
+    stop_plex_listener()
     plex = setup_plexapi()
     if not plex:
         log.error('Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.')
         return
-    listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=log.error)
-    listener.start()
+    alert_listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=log.error)
+    alert_listener.start()
+
+
+def stop_plex_listener() -> None:
+    """Stop the active Plex event listener, if one exists."""
+    global alert_listener
+    if alert_listener is not None:
+        if getattr(alert_listener, '_ws', None) is not None:
+            alert_listener.stop()
+        alert_listener = None
 
 
 def plex_listener_handler(data: dict) -> None:
