@@ -562,7 +562,7 @@ def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optiona
         if database == 'themoviedb':
             return 'tv_shows', database, 'tv.plex.agents.series', identifier
         if database in ('imdb', 'thetvdb') and external_guid is None:
-            external_guid = (scheme.rsplit('.', 1)[-1], identifier)
+            external_guid = ('tvdb' if database == 'thetvdb' else 'imdb', identifier)
 
     if external_guid:
         database_id = tmdb.get_tmdb_id_from_external_id(

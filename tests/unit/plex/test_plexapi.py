@@ -104,7 +104,7 @@ def test_legacy_guid_without_guids(configured, item, monkeypatch):
     item.type = 'show'
     item.guid = 'com.plexapp.agents.thetvdb://12345?lang=en'
     monkeypatch.setattr(plexapi.tmdb, 'get_tmdb_id_from_external_id', lambda **kwargs: '789'
-                        if kwargs['database'] == 'thetvdb' and kwargs['external_id'] == '12345' else None)
+                        if kwargs['database'] == 'tvdb' and kwargs['external_id'] == '12345' else None)
     assert plexapi.get_database_info(item) == (
         'tv_shows', 'themoviedb', 'tv.plex.agents.series', '789',
     )
