@@ -1,7 +1,6 @@
 # standard imports
 from threading import Lock
 import time
-from typing import Union
 
 # local imports
 from common import helpers
@@ -12,11 +11,11 @@ log = logger.get_logger(name=__name__)
 database_cache = {}
 last_cache_update = 0
 
-db_field_name = dict(
-    movies={'themoviedb': 'id', 'imdb': 'imdb_id'},
-    movie_collections={'themoviedb': 'id'},
-    tv_shows={'themoviedb': 'id'},
-)
+db_field_name = {
+    'movies': {'themoviedb': 'id', 'imdb': 'imdb_id'},
+    'movie_collections': {'themoviedb': 'id'},
+    'tv_shows': {'themoviedb': 'id'},
+}
 
 lock = Lock()
 
@@ -72,7 +71,7 @@ def update_cache() -> None:
         last_cache_update = time.time()
 
 
-def item_exists(database_type: str, database: str, id: Union[int, str]) -> bool:
+def item_exists(database_type: str, database: str, id: int | str) -> bool:
     """
     Check if an item exists in the ThemerrDB.
 

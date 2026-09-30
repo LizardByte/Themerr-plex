@@ -51,11 +51,8 @@ def test_initialize_and_browser(configured, monkeypatch):
     assert configured['General']['LAUNCH_BROWSER'] is not original
     save.assert_called_once_with(configured)
 
-    FakeIcon.HAS_MENU = False
-    try:
-        assert len(tray_icon.tray_initialize().menu) == 1
-    finally:
-        FakeIcon.HAS_MENU = True
+    monkeypatch.setattr(FakeIcon, 'HAS_MENU', False)
+    assert len(tray_icon.tray_initialize().menu) == 1
 
 
 def test_start_stop_toggle_and_signals(configured, monkeypatch):
@@ -75,9 +72,12 @@ def test_start_stop_toggle_and_signals(configured, monkeypatch):
     assert tray_icon.tray_toggle() is True
     worker.start.assert_called_once()
     tray_icon.tray_run()
-    assert icon.started and tray_icon.icon_running
+    assert icon.started
+    assert tray_icon.icon_running
     assert tray_icon.tray_toggle() is True
-    assert icon.stopped and not icon.visible and not tray_icon.icon_running
+    assert icon.stopped
+    assert not icon.visible
+    assert not tray_icon.icon_running
 
     save = Mock()
     monkeypatch.setattr(tray_icon.config, 'save_config', save)

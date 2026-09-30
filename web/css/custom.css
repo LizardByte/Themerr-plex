@@ -167,20 +167,12 @@ iframe.feedback {
 
 /*settings page*/
 
-.advanced-setting {
-    /*display: none;*/
-}
-
 div.advanced-setting {
     border-left: 1px solid #cc7b19;
 }
 
 li.advanced-setting {
     border-left: 1px solid #cc7b19;
-}
-
-.beta-setting {
-    /*display: none;*/
 }
 
 div.beta-setting {

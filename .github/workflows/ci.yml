@@ -93,11 +93,12 @@ jobs:
           deno-version: 2.9.7
 
       - name: Setup Python Dependencies
-        run: |
-          uv sync --locked --all-extras --no-install-project --no-python-downloads --python ${{ env.PYTHON_VERSION }}
+        run: >-
+          uv sync --locked --all-extras --no-build --no-install-project
+          --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Compile Locale Translations
-        run: uv run --locked --all-extras --no-sync python ./scripts/_locale.py --compile
+        run: uv run --locked --all-extras --no-build --no-sync python ./scripts/_locale.py --compile
 
       - name: Build web assets
         run: |
@@ -106,8 +107,8 @@ jobs:
 
       - name: Build Docs with Dockle
         run: |
-          uv run --locked --all-extras --no-sync python -m dockle check
-          uv run --locked --all-extras --no-sync python -m dockle build
+          uv run --locked --all-extras --no-build --no-sync python -m dockle check
+          uv run --locked --all-extras --no-build --no-sync python -m dockle build
 
       - name: Set up virtual desktop
         if: runner.os == 'Linux'
@@ -117,7 +118,7 @@ jobs:
 
       - name: Test with pytest
         id: test
-        run: uv run --locked --all-extras --no-sync python -m pytest
+        run: uv run --locked --all-extras --no-build --no-sync python -m pytest
 
       - name: Upload coverage
         if: >-
@@ -148,7 +149,7 @@ jobs:
           verbose: true
 
       - name: Build pyinstaller package
-        run: uv run --locked --all-extras --no-sync python ./scripts/build.py
+        run: uv run --locked --all-extras --no-build --no-sync python ./scripts/build.py
 
       - name: Smoke test executable
         shell: bash
@@ -179,6 +180,7 @@ jobs:
     needs:
       - setup_release
       - build
+    if: ${{ needs.setup_release.outputs.publish_release == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -192,7 +194,6 @@ jobs:
           merge-multiple: true
 
       - name: Create GitHub Release
-        if: ${{ needs.setup_release.outputs.publish_release == 'true' }}
         uses: LizardByte/actions/actions/release_create@39c468549cfb87ccb917e5e5342e18abc926dc48  # v2026.909.30231
         with:
           allowUpdates: false

@@ -1,5 +1,5 @@
 # standard imports
-from typing import Optional, Union
+from typing import Optional
 
 # local imports
 from common import config
@@ -32,7 +32,7 @@ def tmdb_base_url() -> Optional[str]:
         return
 
 
-def get_tmdb_id_from_external_id(external_id: Union[int, str], database: str, item_type: str) -> Optional[int]:
+def get_tmdb_id_from_external_id(external_id: int | str, database: str, item_type: str) -> Optional[int]:
     """
     Convert IMDB ID to TMDB ID.
 
@@ -76,7 +76,7 @@ def get_tmdb_id_from_external_id(external_id: Union[int, str], database: str, it
         tmdb_data = helpers.json_get(
             url=url,
             sleep_time=2.0,
-            headers=dict(Accept='application/json'),
+            headers={'Accept': 'application/json'},
             cache_time=86400,  # 1 day
         )
     except Exception as e:
@@ -126,7 +126,7 @@ def get_tmdb_id_from_collection(search_query: str) -> Optional[int]:
         tmdb_data = helpers.json_get(
             url=url,
             sleep_time=2.0,
-            headers=dict(Accept='application/json'),
+            headers={'Accept': 'application/json'},
             cache_time=86400,  # 1 day
         )
     except Exception as e:

@@ -39,3 +39,21 @@ def test_cache_data(configured, item, tmp_path, monkeypatch):
     assert data['1']['items'][0]['theme_status'] == 'missing'
     assert data['1']['items'][0]['issue_action'] == 'add'
     assert section.collections.call_count == 0
+
+
+def test_cache_item_converts_imdb_id_and_marks_existing_theme(item, monkeypatch):
+    item.theme = 'existing theme'
+    monkeypatch.setattr(cache, 'get_database_info', lambda **_: (
+        'movies', 'imdb', 'com.plexapp.agents.imdb', 'tt42',
+    ))
+    monkeypatch.setattr(cache.tmdb, 'get_tmdb_id_from_external_id', lambda **_: 99)
+    monkeypatch.setattr(cache.themerr_db, 'item_exists', lambda **_: True)
+    monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: 'plex')
+
+    data = cache._cache_item(item)
+
+    assert data['database_id'] == 99
+    assert data['issue_action'] == 'edit'
+    assert data['theme_status'] == 'complete'
+    assert data['theme_provider'] == 'plex'
+    assert 'Example+%282020%29' in data['issue_url']

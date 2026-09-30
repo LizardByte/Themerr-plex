@@ -12,7 +12,7 @@ import os
 import time
 import warnings
 import webbrowser
-from typing import AnyStr, Optional, Union
+from typing import AnyStr, Optional
 from urllib.parse import quote, quote_plus, unquote, unquote_plus
 
 # lib imports
@@ -88,8 +88,8 @@ def check_folder_writable(fallback: str, name: str, folder: Optional[str] = None
 
     try:
         os.makedirs(name=folder, exist_ok=True)
-    except OSError as e:
-        log.error(msg=f"Could not create {name} dir '{folder}': {e}")
+    except OSError:
+        log.exception(msg=f"Could not create {name} dir '{folder}'")
         if fallback and folder != fallback:
             log.warning(msg=f"Falling back to {name} dir '{fallback}'")
             return check_folder_writable(folder=None, fallback=fallback, name=name)
@@ -171,8 +171,8 @@ def file_load(filename: str, binary: bool = False) -> Optional[AnyStr]:
     try:
         with open(file=filename, mode=mode) as f:
             return f.read()
-    except Exception as e:
-        log.error(f'Error loading data from {filename}: {e}')
+    except Exception:
+        log.exception(f'Error loading data from {filename}')
     return None
 
 
@@ -205,8 +205,8 @@ def file_save(filename: str, data: AnyStr, binary: bool = False) -> bool:
     try:
         with open(file=filename, mode=mode) as f:
             f.write(data)
-    except Exception as e:
-        log.error(f'Error saving data to {filename}: {e}')
+    except Exception:
+        log.exception(f'Error saving data to {filename}')
         return False
     else:
         return True
@@ -241,7 +241,7 @@ def json_get(
         headers: Optional[dict] = None,
         params: Optional[dict] = None,
         cache_time: int = 0,
-        sleep_time: Union[float, int] = 0.0,
+        sleep_time: float | int = 0.0,
         request_type: str = 'get',
 ) -> dict:
     """
@@ -294,14 +294,14 @@ def json_get(
 
     try:
         request = type_map[request_type](url=url, headers=headers, params=params)
-    except requests.exceptions.RequestException as e:
-        log.error(f'Error getting JSON data from {url}: {e}')
+    except requests.exceptions.RequestException:
+        log.exception(f'Error getting JSON data from {url}')
         return {}
     else:
         try:
             data = request.json()
-        except json.JSONDecodeError as e:
-            log.error(f'Error decoding JSON data from {url}: {e}')
+        except json.JSONDecodeError:
+            log.exception(f'Error decoding JSON data from {url}')
             return {}
 
         return data
@@ -331,7 +331,7 @@ def now(separate: bool = False) -> str:
     >>> now(separate=True)
     '2022-04-10 18:46:12'
     """
-    return timestamp_to_YMDHMS(ts=timestamp(), separate=separate)
+    return timestamp_to_ymdhms(ts=timestamp(), separate=separate)
 
 
 def open_url_in_browser(url: str) -> bool:
@@ -444,7 +444,7 @@ def timestamp() -> int:
     return int(time.time())
 
 
-def timestamp_to_YMDHMS(ts: int, separate: bool = False) -> str:
+def timestamp_to_ymdhms(ts: int, separate: bool = False) -> str:
     """
     Convert timestamp to YMDHMS format.
 
@@ -464,10 +464,10 @@ def timestamp_to_YMDHMS(ts: int, separate: bool = False) -> str:
 
     Examples
     --------
-    >>> timestamp_to_YMDHMS(ts=timestamp(), separate=False)
+    >>> timestamp_to_ymdhms(ts=timestamp(), separate=False)
     '20220410185142'
 
-    >>> timestamp_to_YMDHMS(ts=timestamp(), separate=True)
+    >>> timestamp_to_ymdhms(ts=timestamp(), separate=True)
     '2022-04-10 18:52:09'
     """
     dt = timestamp_to_datetime(ts=ts)

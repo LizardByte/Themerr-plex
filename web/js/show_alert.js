@@ -20,7 +20,7 @@ export function showAlert(message, alertType = 'alert-info', iconName = null, ti
     const close = document.createElement('button');
     close.type = 'button';
     close.className = 'btn-close';
-    close.setAttribute('data-bs-dismiss', 'alert');
+    close.dataset.bsDismiss = 'alert';
     close.setAttribute('aria-label', 'Close');
     alert.appendChild(close);
     alertPlaceholder.appendChild(alert);

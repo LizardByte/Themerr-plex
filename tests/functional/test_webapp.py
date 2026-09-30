@@ -36,11 +36,13 @@ def test_images_and_status(client):
 
 def test_settings(client):
     assert client.get('/settings/').status_code == 200
+    assert client.get('/settings/plugin/example').status_code == 404
     response = client.get('/api/settings')
     assert response.status_code == 200
     assert 'Themerr' in response.json
     assert 'PLEX_TOKEN' not in response.json['Plex']
     assert b'Sign in with Plex' in client.get('/settings/').data
+    assert b'<output id="plex-auth-status"' in client.get('/settings/').data
     assert b'PLEX_TOKEN' not in client.get('/settings/').data
 
 

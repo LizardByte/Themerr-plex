@@ -5,7 +5,6 @@ Responsible for system tray icon and related functions.
 """
 # standard imports
 import os
-from typing import Union
 
 # lib imports
 from PIL import Image
@@ -38,10 +37,10 @@ else:
     icon_supported = True
 
 # additional setup
-icon_object: Union[Icon, bool] = False
+icon_object: Icon | bool = False
 
 
-def tray_initialize() -> Union[Icon, bool]:
+def tray_initialize() -> Icon | bool:
     """
     Initialize the system tray icon.
 

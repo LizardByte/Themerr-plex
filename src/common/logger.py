@@ -87,7 +87,7 @@ class NoThreadFilter(logging.Filter):
 
     Parameters
     ----------
-    threadName : str
+    thread_name : str
         The name of the thread.
 
     Methods
@@ -101,10 +101,10 @@ class NoThreadFilter(logging.Filter):
     <common.logger.NoThreadFilter object at 0x...>
     """
 
-    def __init__(self, threadName):
+    def __init__(self, thread_name):
         super(NoThreadFilter, self).__init__()
 
-        self.threadName = threadName
+        self.threadName = thread_name
 
     def filter(self, record) -> bool:
         """
@@ -176,7 +176,7 @@ class BlacklistFilter(logging.Filter):
         True
         """
         if not LOG_BLACKLIST:
-            return True
+            return super().filter(record)
 
         for item in _BLACKLIST_WORDS:
             try:
@@ -197,7 +197,7 @@ class BlacklistFilter(logging.Filter):
             except Exception:
                 pass
 
-        return True
+        return super().filter(record)
 
 
 class RegexFilter(logging.Filter):
@@ -249,7 +249,7 @@ class RegexFilter(logging.Filter):
         True
         """
         if not LOG_BLACKLIST:
-            return True
+            return super().filter(record)
 
         try:
             matches = self.regex.findall(record.msg)
@@ -272,9 +272,9 @@ class RegexFilter(logging.Filter):
         except Exception:
             pass
 
-        return True
+        return super().filter(record)
 
-    def replace(self, text, match):
+    def replace(self, text, _match):
         return text
 
 
@@ -304,7 +304,7 @@ class PublicIPFilter(RegexFilter):
         super(PublicIPFilter, self).__init__()
 
         # Currently only checking for ipv4 addresses
-        self.regex = re.compile(pattern=r'[0-9]+(?:[.-][0-9]+){3}(?!\d*-[a-z0-9]{6})')
+        self.regex = re.compile(pattern=r'\d+(?:[.-]\d+){3}(?!\d*-[a-z0-9]{6})')
 
     def replace(self, text: str, ip: str) -> str:
         """
@@ -654,9 +654,6 @@ def init_logger(log_name: str) -> logging.Logger:
     # Install exception hooks
     if log_name == app_name:  # all tracebacks go to 'common.log'
         _init_hooks(logger)
-
-    # replace warn
-    # logger.warn = logger.warning
 
     return logger
 

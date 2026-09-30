@@ -138,7 +138,7 @@
                             <div class="my-4" id="plex-auth" data-connected="{{ _('Connected to Plex') }}"
                                  data-disconnected="{{ _('Not connected to Plex') }}"
                                  data-pending="{{ _('Waiting for Plex sign-in...') }}">
-                                <p id="plex-auth-status" role="status">{{ _('Checking Plex connection...') }}</p>
+                                <output id="plex-auth-status" class="d-block">{{ _('Checking Plex connection...') }}</output>
                                 <button id="plex-auth-start" type="button" class="btn btn-primary">
                                     {{ _('Sign in with Plex') }}
                                 </button>

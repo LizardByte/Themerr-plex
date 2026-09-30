@@ -9,7 +9,6 @@ import argparse
 import os
 import sys
 import time
-from typing import Union
 
 # local imports
 import common
@@ -62,7 +61,7 @@ class IntRange(object):
             stop, start = start, stop
         self.start, self.stop = start, stop
 
-    def __call__(self, value: Union[int, str]) -> int:
+    def __call__(self, value: int | str) -> int:
         """
         Validate that value is within accepted range.
 
@@ -97,6 +96,39 @@ class IntRange(object):
         if value < self.start or value >= self.stop:
             raise argparse.ArgumentTypeError(f'Value outside of range: ({self.start}, {self.stop})')
         return value
+
+
+def _apply_cli_options(args: argparse.Namespace) -> None:
+    """Initialize configuration and logging from parsed CLI options.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Parsed command line arguments.
+    """
+    config_file = args.config or os.path.join(definitions.Paths.CONFIG_DIR, definitions.Files.CONFIG)
+    if args.debug:
+        common.DEBUG = True
+    if args.dev:
+        common.DEV = True
+    if args.quiet:
+        common.QUIET = True
+
+    # Submodules using translations are imported only after initialization.
+    common.initialize(config_file=config_file)
+
+    if args.config:
+        log.info(msg=f"Themerr-plex is using custom config file: {config_file}.")
+    if args.debug:
+        log.info(msg="Themerr-plex will log debug messages.")
+    if args.dev:
+        log.info(msg="Themerr-plex is running in the dev environment.")
+    if args.quiet:
+        log.info(msg="Themerr-plex is running in quiet mode. Nothing will be printed to console.")
+
+    if args.port:
+        config.CONFIG['Network']['HTTP_PORT'] = args.port
+        config.CONFIG.write()
 
 
 def main():
@@ -148,34 +180,7 @@ def main():
         print('version arg is not yet implemented')
         sys.exit()
 
-    if args.config:
-        config_file = args.config
-    else:
-        config_file = os.path.join(definitions.Paths.CONFIG_DIR, definitions.Files.CONFIG)
-    if args.debug:
-        common.DEBUG = True
-    if args.dev:
-        common.DEV = True
-    if args.quiet:
-        common.QUIET = True
-
-    # initialize Themerr-plex
-    # logging should not occur until after initialize
-    # any submodules that require translations need to be imported after config is initialize
-    common.initialize(config_file=config_file)
-
-    if args.config:
-        log.info(msg=f"Themerr-plex is using custom config file: {config_file}.")
-    if args.debug:
-        log.info(msg="Themerr-plex will log debug messages.")
-    if args.dev:
-        log.info(msg="Themerr-plex is running in the dev environment.")
-    if args.quiet:
-        log.info(msg="Themerr-plex is running in quiet mode. Nothing will be printed to console.")
-
-    if args.port:
-        config.CONFIG['Network']['HTTP_PORT'] = args.port
-        config.CONFIG.write()
+    _apply_cli_options(args)
 
     if config.CONFIG['General']['SYSTEM_TRAY']:
         from common import tray_icon  # submodule requires translations so importing after initialization

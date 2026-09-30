@@ -7,8 +7,6 @@ from typing import Callable, Optional, Tuple
 
 # lib imports
 import requests
-import urllib3
-from urllib3.exceptions import InsecureRequestWarning
 from plexapi.alert import AlertListener
 from plexapi.base import PlexPartialObject
 from plexapi.exceptions import BadRequest
@@ -30,6 +28,7 @@ from youtube.youtube_dl import process_youtube
 import _strptime  # noqa: F401
 
 log = logger.get_logger(__name__)
+PLEX_SETUP_ERROR = 'Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.'
 
 plex_server = None
 alert_listener = None
@@ -86,9 +85,96 @@ def connect_plex_server(plex_url: str, plex_token: str) -> plexapi.server.PlexSe
         The connected server.
     """
     sess = requests.Session()
-    sess.verify = False  # Ignore verifying the SSL certificate
-    urllib3.disable_warnings(InsecureRequestWarning)  # Disable the insecure request warning
     return plexapi.server.PlexServer(baseurl=plex_url, token=plex_token, session=sess)
+
+
+def _update_collection_summary(item: PlexPartialObject, data: dict) -> None:
+    """Apply a collection summary when it is available and editable.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Collection to update.
+    data : dict
+        ThemerrDB metadata.
+    """
+    if item.isLocked(field='summary') and not config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']:
+        log.debug(f'Not overwriting locked summary for collection: {item.title}')
+        return
+    if 'overview' not in data or item.summary == data['overview']:
+        return
+    log.info(f'Updating summary for collection: {item.title}')
+    try:
+        item.editSummary(summary=data['overview'], locked=False)
+    except Exception:
+        log.exception(f'{item.ratingKey}: Error updating summary')
+
+
+def _update_collection_metadata(item: PlexPartialObject, agent: str, data: dict) -> None:
+    """Update supported collection artwork and summary.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Collection to update.
+    agent : str
+        Metadata agent identifier.
+    data : dict
+        ThemerrDB metadata.
+    """
+    if item.type != 'collection' or agent != 'tv.plex.agents.movie' or not config.CONFIG['Themerr'][
+            'BOOL_UPDATE_COLLECTION_METADATA']:
+        return
+
+    for field, media_type in (('poster_path', 'posters'), ('backdrop_path', 'art')):
+        if field in data:
+            media_path = data[field]
+            add_media(item=item, media_type=media_type, media_url_id=media_path,
+                      media_url=f'https://image.tmdb.org/t/p/original{media_path}')
+    _update_collection_summary(item, data)
+
+
+def _update_theme(item: PlexPartialObject, data: dict) -> None:
+    """Update an item theme when Plex and Themerr settings permit it.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex item to update.
+    data : dict
+        ThemerrDB metadata.
+    """
+    if item.isLocked(field='theme') and not config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']:
+        log.debug(f'Not overwriting locked theme for {item.type}: {item.title}')
+        return
+    if (not config.CONFIG['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] and
+            general.get_theme_provider(item=item) == 'plex'):
+        log.debug(f'Not overwriting Plex provided theme for {item.type}: {item.title}')
+        return
+    if 'youtube_theme_url' not in data:
+        log.info(f'{item.ratingKey}: No theme song found for {item.title} ({item.year})')
+        return
+
+    yt_video_url = data['youtube_theme_url']
+    settings_hash = general.get_themerr_settings_hash()
+    themerr_data = general.get_themerr_json_data(item=item)
+    try:
+        skip = (themerr_data['settings_hash'] == settings_hash and
+                themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url)
+    except KeyError:
+        skip = False
+    if skip:
+        log.info(f'Skipping {media_type_dict["themes"]["name"]} for '
+                 f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
+        return
+
+    try:
+        theme_url = process_youtube(url=yt_video_url)
+    except Exception:
+        log.exception(f'{item.ratingKey}: Error processing youtube url')
+        return
+    if theme_url:
+        add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url)
 
 
 def update_plex_item(rating_key: int) -> bool:
@@ -112,114 +198,38 @@ def update_plex_item(rating_key: int) -> bool:
     --------
     >>> update_plex_item(rating_key=12345)
     """
-    # first get the plex item
     item = get_plex_item(rating_key=rating_key)
-
     if not item:
         log.error(f'Could not find item with rating key: {rating_key}')
         return False
 
-    database_info = get_database_info(item=item)
+    database_type, database, agent, database_id = get_database_info(item=item)
     log.debug('-' * 50)
     log.debug(f'item title: {item.title}')
     log.debug(f'item type: {item.type}')
-    log.debug(f'database_info: {database_info}')
+    log.debug(f'database_info: {(database_type, database, agent, database_id)}')
 
-    database_type = database_info[0]
-    database = database_info[1]
-    agent = database_info[2]
-    database_id = database_info[3]
+    if not (database and database_type and database_id):
+        return False
+    if not themerr_db.item_exists(database_type=database_type, database=database, id=database_id):
+        log.debug(f'{item.type} item does not exist in ThemerrDB, skipping: {item.title} ({database_id})')
+        return False
 
-    if database and database_type and database_id:
-        if not themerr_db.item_exists(database_type=database_type, database=database, id=database_id):
-            log.debug(f'{item.type} item does not exist in ThemerrDB, skipping: {item.title} ({database_id})')
-            return False
+    try:
+        data = helpers.json_get(
+            cache_time=3600,
+            url=f'https://app.lizardbyte.dev/ThemerrDB/{database_type}/{database}/{database_id}.json',
+        )
+    except Exception:
+        log.exception(f'{item.ratingKey}: Error retrieving data from ThemerrDB')
+        return False
+    if not data:
+        return False
 
-        try:
-            data = helpers.json_get(
-                cache_time=3600,
-                url=f'https://app.lizardbyte.dev/ThemerrDB/{database_type}/{database}/{database_id}.json',
-            )
-        except Exception as e:
-            log.error(f'{item.ratingKey}: Error retrieving data from ThemerrDB: {e}')
-        else:
-            if data:
-                # update collection metadata
-                log.debug(f'data found for {item.type} {item.title}')
-                if item.type == 'collection':
-                    # determine if we want to update the metadata based on the agent and user preferences
-                    update_collection_metadata = False
-
-                    if agent == 'tv.plex.agents.movie':  # new Plex Movie agent
-                        if config.CONFIG['Themerr']['BOOL_UPDATE_COLLECTION_METADATA']:
-                            update_collection_metadata = True
-
-                    if update_collection_metadata:
-                        # update poster
-                        try:
-                            url = f'https://image.tmdb.org/t/p/original{data['poster_path']}'
-                        except KeyError:
-                            pass
-                        else:
-                            add_media(item=item, media_type='posters', media_url_id=data['poster_path'], media_url=url)
-                        # update art
-                        try:
-                            url = f'https://image.tmdb.org/t/p/original{data['backdrop_path']}'
-                        except KeyError:
-                            pass
-                        else:
-                            add_media(item=item, media_type='art', media_url_id=data['backdrop_path'], media_url=url)
-                        # update summary
-                        if item.isLocked(field='summary') and not config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']:
-                            log.debug(f'Not overwriting locked summary for collection: {item.title}')
-                        else:
-                            try:
-                                summary = data['overview']
-                            except KeyError:
-                                pass
-                            else:
-                                if item.summary != summary:
-                                    log.info(f'Updating summary for collection: {item.title}')
-                                    try:
-                                        item.editSummary(summary=summary, locked=False)
-                                    except Exception as e:
-                                        log.error(f'{item.ratingKey}: Error updating summary: {e}')
-
-                if item.isLocked(field='theme') and not config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']:
-                    log.debug(f'Not overwriting locked theme for {item.type}: {item.title}')
-                elif (
-                        not config.CONFIG['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] and
-                        general.get_theme_provider(item=item) == 'plex'
-                ):
-                    log.debug(f'Not overwriting Plex provided theme for {item.type}: {item.title}')
-                else:
-                    # get youtube_url
-                    try:
-                        yt_video_url = data['youtube_theme_url']
-                    except KeyError:
-                        log.info(f'{item.ratingKey}: No theme song found for {item.title} ({item.year})')
-                    else:
-                        settings_hash = general.get_themerr_settings_hash()
-                        themerr_data = general.get_themerr_json_data(item=item)
-
-                        try:
-                            skip = themerr_data['settings_hash'] == settings_hash \
-                                   and themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url
-                        except KeyError:
-                            skip = False
-
-                        if skip:
-                            log.info(f'Skipping {media_type_dict['themes']['name']} for '
-                                     f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
-                        else:
-                            try:
-                                theme_url = process_youtube(url=yt_video_url)
-                            except Exception as e:
-                                log.exception(f'{item.ratingKey}: Error processing youtube url:', exc_info=e)
-                            else:
-                                if theme_url:
-                                    add_media(item=item, media_type='themes',
-                                              media_url_id=yt_video_url, media_url=theme_url)
+    log.debug(f'data found for {item.type} {item.title}')
+    _update_collection_metadata(item, agent, data)
+    _update_theme(item, data)
+    return True
 
 
 def add_media(
@@ -268,39 +278,34 @@ def add_media(
         log.info(f'Not overwriting locked "{media_type_dict[media_type]['name']}" for {item.type}: {item.title}')
         return False
 
-    if media_file or media_url:
-        log.info(f'Plexapi attempting to upload {media_type_dict[media_type]['name']} for '
-                 f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
-
-        try:
-            if themerr_data['settings_hash'] == settings_hash \
-                    and themerr_data[media_type_dict[media_type]['themerr_data_key']] == media_url_id:
-                log.info(f'Skipping {media_type_dict[media_type]['name']} for '
-                         f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
-
-                # false because we aren't doing anything, and the listener will not see this item again
-                return False
-        except KeyError:
-            pass
-
-        # remove existing theme uploads
-        if config.CONFIG['Themerr'][media_type_dict[media_type]['remove_pref']]:
-            general.remove_uploaded_media(item=item, media_type=media_type)
-
-        log.info(f'Attempting to upload {media_type_dict[media_type]['name']} for '
-                 f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
-        if media_file:
-            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), filepath=media_file)
-        if media_url:
-            uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), url=media_url)
-    else:
+    if not (media_file or media_url):
         log.warning(f'No theme songs provided for type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
+        return False
+
+    log.info(f'Plexapi attempting to upload {media_type_dict[media_type]['name']} for '
+             f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
+
+    if (themerr_data.get('settings_hash') == settings_hash and
+            themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id):
+        log.info(f'Skipping {media_type_dict[media_type]['name']} for '
+                 f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
+        return False
+
+    if config.CONFIG['Themerr'][media_type_dict[media_type]['remove_pref']]:
+        general.remove_uploaded_media(item=item, media_type=media_type)
+
+    log.info(f'Attempting to upload {media_type_dict[media_type]['name']} for '
+             f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
+    if media_file:
+        uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), filepath=media_file)
+    if media_url:
+        uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), url=media_url)
 
     if uploaded:
         # new data for themerr.json
-        new_themerr_data = dict(
-            settings_hash=settings_hash
-        )
+        new_themerr_data = {
+            'settings_hash': settings_hash
+        }
         new_themerr_data[media_type_dict[media_type]['themerr_data_key']] = media_url_id
 
         general.update_themerr_data_file(item=item, new_themerr_data=new_themerr_data)
@@ -412,16 +417,11 @@ def upload_media(
     count = 0
     while count <= int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']):
         try:
-            if filepath:
+            if filepath or url:
+                source = {'filepath': filepath} if filepath else {'url': url}
                 if method == item.uploadTheme:
-                    method(filepath=filepath, timeout=int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT']))
-                else:
-                    method(filepath=filepath)
-            elif url:
-                if method == item.uploadTheme:
-                    method(url=url, timeout=int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT']))
-                else:
-                    method(url=url)
+                    source['timeout'] = int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'])
+                method(**source)
         except BadRequest as e:
             sleep_time = 2 ** count
             log.error(f'{item.ratingKey}: Error uploading media: {e}')
@@ -431,6 +431,91 @@ def upload_media(
         else:
             return True
     return False
+
+
+def _movie_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
+    """Resolve a movie's preferred external database identifier.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex movie.
+
+    Returns
+    -------
+    tuple
+        Database type, database, agent, and identifier.
+    """
+    if not item.guids:
+        return None, None, None, None
+
+    database = None
+    database_id = None
+    for guid in item.guids:
+        split_guid = guid.id.split('://')
+        candidate = guid_map[split_guid[0]]
+        if candidate == 'imdb':
+            database, database_id = candidate, split_guid[1]
+        if candidate == 'themoviedb':
+            database, database_id = candidate, split_guid[1]
+            break
+    return 'movies', database, 'tv.plex.agents.movie', database_id
+
+
+def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
+    """Resolve a show's preferred external database identifier.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex show.
+
+    Returns
+    -------
+    tuple
+        Database type, database, agent, and identifier.
+    """
+    if not item.guids:
+        return 'tv_shows', None, None, None
+
+    database = None
+    database_id = None
+    for guid in item.guids:
+        split_guid = guid.id.split('://')
+        candidate = guid_map[split_guid[0]]
+        if candidate in ('imdb', 'thetvdb'):
+            database_id = tmdb.get_tmdb_id_from_external_id(
+                external_id=split_guid[1], database=split_guid[0], item_type='tv',
+            )
+            if database_id:
+                database = 'themoviedb'
+                break
+        if candidate == 'themoviedb':
+            database, database_id = candidate, split_guid[1]
+            break
+    return 'tv_shows', database, 'tv.plex.agents.series', database_id
+
+
+def _collection_database_info(item: PlexPartialObject, plex) -> Tuple[str, str, str, Optional[str]]:
+    """Resolve a collection using its library agent and title.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex collection.
+    plex : PlexServer
+        Connected Plex server.
+
+    Returns
+    -------
+    tuple
+        Database type, database, agent, and identifier.
+    """
+    section = plex.library.sectionByID(item.librarySectionID)
+    database_id = tmdb.get_tmdb_id_from_collection(
+        search_query=f'{item.title}&language={section.language}',
+    )
+    return 'movie_collections', 'themoviedb', section.agent, database_id
 
 
 def get_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
@@ -458,77 +543,20 @@ def get_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[
 
     plex = setup_plexapi()
     if not plex:
-        log.error('Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.')
+        log.error(PLEX_SETUP_ERROR)
         return None, None, None, None
 
-    agent = None
-    database = None
-    database_id = None
-    database_type = None
-
     if item.type == 'movie':
-        if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
-            agent = 'tv.plex.agents.movie'
-            database_type = 'movies'
-            for guid in item.guids:
-                split_guid = guid.id.split('://')
-                temp_database = guid_map[split_guid[0]]
-                temp_database_id = split_guid[1]
-
-                if temp_database == 'imdb':
-                    database_id = temp_database_id
-                    database = temp_database
-
-                if temp_database == 'themoviedb':  # tmdb is our preferred db, so we break if found
-                    database_id = temp_database_id
-                    database = temp_database
-                    break
-
+        database_info = _movie_database_info(item)
     elif item.type == 'show':
-        database_type = 'tv_shows'
-
-        if item.guids:  # guids is a blank list for items from legacy agents, only available for new agent items
-            agent = 'tv.plex.agents.series'
-            for guid in item.guids:
-                split_guid = guid.id.split('://')
-                temp_database = guid_map[split_guid[0]]
-                temp_database_id = split_guid[1]
-
-                if temp_database == 'imdb' or temp_database == 'thetvdb':
-                    database_id = tmdb.get_tmdb_id_from_external_id(
-                        external_id=temp_database_id,
-                        database=split_guid[0],
-                        item_type='tv',
-                    )
-                    if database_id:
-                        database = 'themoviedb'
-                        break
-
-                if temp_database == 'themoviedb':  # tmdb is our preferred db, so we break if found
-                    database_id = temp_database_id
-                    database = temp_database
-                    break
-
+        database_info = _show_database_info(item)
     elif item.type == 'collection':
-        # this is tricky since collections don't match up with any of the databases
-        # we'll use the collection title and try to find a match
+        database_info = _collection_database_info(item, plex)
+    else:
+        database_info = None, None, None, None
 
-        # using the section id, we can probably figure out the agent
-        section = plex.library.sectionByID(item.librarySectionID)
-        agent = section.agent
-
-        database = 'themoviedb'
-        database_type = 'movie_collections'
-
-        # we need to get the library language for the library that this item belongs to
-        library_language = plex.library.sectionByID(item.librarySectionID).language
-
-        database_id = tmdb.get_tmdb_id_from_collection(
-            search_query=f'{item.title}&language={library_language}'
-        )
-
-    log.debug(f'Database info for item: {item.title}, database_info: {(database_type, database, agent, database_id)}')
-    return database_type, database, agent, database_id
+    log.debug(f'Database info for item: {item.title}, database_info: {database_info}')
+    return database_info
 
 
 def get_plex_item(rating_key: int) -> Optional[PlexPartialObject]:
@@ -554,7 +582,7 @@ def get_plex_item(rating_key: int) -> Optional[PlexPartialObject]:
     """
     plex = setup_plexapi()
     if not plex:
-        log.error('Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.')
+        log.error(PLEX_SETUP_ERROR)
         return None
     item = plex.fetchItem(ekey=rating_key)
 
@@ -622,7 +650,7 @@ def plex_listener() -> None:
     stop_plex_listener()
     plex = setup_plexapi()
     if not plex:
-        log.error('Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.')
+        log.error(PLEX_SETUP_ERROR)
         return
     alert_listener = AlertListener(server=plex, callback=plex_listener_handler, callbackError=log.error)
     alert_listener.start()
@@ -654,34 +682,47 @@ def plex_listener_handler(data: dict) -> None:
     >>> plex_listener_handler(data={'type': 'timeline'})
     ...
     """
-    # Log.Debug(data)
-    if data['type'] == 'timeline':
-        for entry in data['TimelineEntry']:
-            # known state values:
-            # https://python-plexapi.readthedocs.io/en/latest/modules/alert.html#module-plexapi.alert
+    if data['type'] != 'timeline':
+        return
 
-            # known search types:
-            # https://github.com/pkkid/python-plexapi/blob/8b3235445f6b3051c39ff6d6fc5d49f4e674d576/plexapi/utils.py#L35-L55
-            if (
-                    (
-                        (reverseSearchType(libtype=entry['type']) == 'movie' and
-                         config.CONFIG['Themerr']['BOOL_PLEX_MOVIE_SUPPORT']) or
-                        (reverseSearchType(libtype=entry['type']) == 'show' and
-                         config.CONFIG['Themerr']['BOOL_PLEX_SERIES_SUPPORT'])
-                    ) and
-                    entry['state'] == 5 and
-                    entry['identifier'] == 'com.plexapp.plugins.library'
-            ):
-                # identifier always appears to be `com.plexapp.plugins.library` for updating library metadata
-                # entry['title'] = item title
-                # entry['itemID'] = rating key
+    for entry in data['TimelineEntry']:
+        if entry['state'] != 5 or entry['identifier'] != 'com.plexapp.plugins.library':
+            continue
 
-                rating_key = int(entry['itemID'])
+        media_type = reverseSearchType(libtype=entry['type'])
+        supported = (
+            (media_type == 'movie' and config.CONFIG['Themerr']['BOOL_PLEX_MOVIE_SUPPORT']) or
+            (media_type == 'show' and config.CONFIG['Themerr']['BOOL_PLEX_SERIES_SUPPORT'])
+        )
+        if not supported:
+            continue
 
-                # since we added the themerr JSON file, we no longer need to keep track of whether the update
-                # here is from Themerr updating the theme, as we will just skip it if no changes are required
-                if rating_key not in q.queue:  # if the item was not in the list, then add it to the queue
-                    q.put(item=rating_key)
+        rating_key = int(entry['itemID'])
+        # Repeated timeline events should queue an item only once.
+        if rating_key not in q.queue:
+            q.put(item=rating_key)
+
+
+def _items_for_section(section) -> list:
+    """Collect supported media and collections from one Plex section.
+
+    Parameters
+    ----------
+    section : LibrarySection
+        Section being scanned.
+
+    Returns
+    -------
+    list
+        Items eligible for the scheduled update.
+    """
+    if section.type == 'movie':
+        media_items = section.all() if config.CONFIG['Themerr']['BOOL_PLEX_MOVIE_SUPPORT'] else []
+        collections = section.collections() if config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] else []
+        return media_items + collections
+    if section.type == 'show' and config.CONFIG['Themerr']['BOOL_PLEX_SERIES_SUPPORT']:
+        return section.all()
+    return []
 
 
 def scheduled_update() -> None:
@@ -701,7 +742,7 @@ def scheduled_update() -> None:
     """
     plex = setup_plexapi()
     if not plex:
-        log.error('Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.')
+        log.error(PLEX_SETUP_ERROR)
         return
 
     themerr_db.update_cache()
@@ -723,21 +764,6 @@ def scheduled_update() -> None:
 
         # TODO: add a check and option to ignore specific libraries
 
-        all_items = []
-
-        # get all the items in the section
-        if section.type == 'movie':
-            media_items = section.all() if config.CONFIG['Themerr']['BOOL_PLEX_MOVIE_SUPPORT'] else []
-
-            # get all collections in the section
-            collections = section.collections() if config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] else []
-
-            # combine the items and collections into one list
-            # this is done so that we can process both items and collections in the same loop
-            all_items = media_items + collections
-        elif section.type == 'show':
-            all_items = section.all() if config.CONFIG['Themerr']['BOOL_PLEX_SERIES_SUPPORT'] else []
-
-        for item in all_items:
+        for item in _items_for_section(section):
             if item.ratingKey not in q.queue:
                 q.put(item=item.ratingKey)

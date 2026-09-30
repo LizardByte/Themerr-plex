@@ -8,7 +8,6 @@ import os
 import subprocess
 import sys
 import threading
-from typing import Union
 
 # local imports
 from common import config
@@ -98,7 +97,7 @@ def initialize(config_file: str) -> bool:
         return True
 
 
-def stop(exit_code: Union[int, str] = 0, restart: bool = False):
+def stop(exit_code: int | str = 0, restart: bool = False):
     """
     Stop Themerr-plex.
 

@@ -8,10 +8,9 @@ import copy
 import json
 import os
 import time
-from typing import Optional
 
 # lib imports
-from flask import Flask, Response, session
+from flask import Flask, Response, make_response as _make_response, session
 from flask import jsonify, render_template as flask_render_template, request, send_from_directory
 from flask_babel import Babel
 from flask_wtf import CSRFProtect
@@ -65,10 +64,10 @@ app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
 
 # add python builtins to jinja templates
-jinja_functions = dict(
-    int=int,
-    str=str,
-)
+jinja_functions = {
+    'int': int,
+    'str': str,
+}
 app.jinja_env.globals.update(jinja_functions)
 
 # localization
@@ -123,8 +122,8 @@ def render_template(template_name_or_list, **context):
     return flask_render_template(template_name_or_list=template_name_or_list, **context)
 
 
-@app.route('/')
-@app.route('/home')
+@app.route('/', methods=['GET'])
+@app.route('/home', methods=['GET'])
 def home() -> render_template:
     """
     Serve the webapp home page.
@@ -158,19 +157,12 @@ def home() -> render_template:
     return render_template('home.html', title=_('Home'), items=items)
 
 
-@app.route('/settings/', defaults={'configuration_spec': None})
-@app.route('/settings/<path:configuration_spec>')
-def settings(configuration_spec: Optional[str]) -> render_template:
+@app.route('/settings/', methods=['GET'])
+def settings() -> render_template:
     """
-    Serve the configuration page page.
+    Serve the configuration page.
 
     .. todo:: This documentation needs to be improved.
-
-    Parameters
-    ----------
-    configuration_spec : Optional[str]
-        The spec to return. In the future this will be used to return config specs of plugins; however that is not
-        currently implemented.
 
     Returns
     -------
@@ -188,18 +180,12 @@ def settings(configuration_spec: Optional[str]) -> render_template:
     >>> settings()
     """
     config_settings = config.decode_config(common.CONFIG)
-
-    if not configuration_spec:
-        config_spec = config._CONFIG_SPEC_DICT
-    else:
-        # todo - handle plugin configs
-        config_spec = None
-
-    return render_template('config.html', title=_('Settings'), config_settings=config_settings, config_spec=config_spec)
+    return render_template('config.html', title=_('Settings'), config_settings=config_settings,
+                           config_spec=config._CONFIG_SPEC_DICT)
 
 
-@app.route('/docs/', defaults={'filename': 'index.html'})
-@app.route('/docs/<path:filename>')
+@app.route('/docs/', defaults={'filename': 'index.html'}, methods=['GET'])
+@app.route('/docs/<path:filename>', methods=['GET'])
 def docs(filename) -> send_from_directory:
     """
     Serve the Sphinx html documentation.
@@ -277,7 +263,7 @@ def image(img: str) -> send_from_directory:
         return Response(response='Image not found', status=404, mimetype='text/plain')
 
 
-@app.route('/status')
+@app.route('/status', methods=['GET'])
 def status() -> dict:
     """
     Check the status of Themerr-plex.
@@ -298,7 +284,7 @@ def status() -> dict:
     return web_status
 
 
-@app.route('/test_logger')
+@app.route('/test_logger', methods=['GET'])
 def test_logger() -> str:
     """
     Test logging functions.
@@ -320,16 +306,113 @@ def test_logger() -> str:
     --------
     >>> test_logger()
     """
-    app.logger.info('testing from app.logger')
-    app.logger.warning('testing from app.logger')
-    app.logger.error('testing from app.logger')
-    app.logger.critical('testing from app.logger')
-    app.logger.debug('testing from app.logger')
+    message = 'testing from app.logger'
+    app.logger.info(message)
+    app.logger.warning(message)
+    app.logger.error(message)
+    app.logger.critical(message)
+    app.logger.debug(message)
     return f'Testing complete, check "logs/{__name__}.log" for output.'
 
 
+def _parse_setting(option: str, value: str) -> tuple[str, str, object]:
+    """Validate and convert one submitted setting.
+
+    Parameters
+    ----------
+    option : str
+        Section and setting name separated by a pipe.
+    value : str
+        Submitted form value.
+
+    Returns
+    -------
+    tuple[str, str, object]
+        Section, setting name, and converted value.
+
+    Raises
+    ------
+    KeyError
+        The setting is unknown or locked.
+    ValueError
+        The value cannot be converted.
+    """
+    key, separator, setting = option.partition('|')
+    spec = config._CONFIG_SPEC_DICT.get(key, {}).get(setting)
+    if not separator or not isinstance(spec, dict) or spec.get('locked'):
+        raise KeyError(option)
+
+    try:
+        if spec['type'] == 'boolean':
+            value = {'true': True, 'false': False}[value.lower()]
+        elif spec['type'] == 'float':
+            value = float(value)
+        elif spec['type'] == 'integer':
+            value = int(value)
+    except (KeyError, ValueError) as exc:
+        raise ValueError(option) from exc
+    return key, setting, value
+
+
+def _candidate_settings() -> tuple[dict, list[tuple[str, str]], Response | None]:
+    """Build a validated candidate from the submitted settings form.
+
+    Returns
+    -------
+    tuple[dict, list[tuple[str, str]], Response or None]
+        Candidate configuration, changed keys, and an error response if parsing failed.
+    """
+    candidate = copy.deepcopy(config.CONFIG)
+    decoded = config.decode_config(common.CONFIG)
+    changed = []
+    for option, value in request.form.items():
+        try:
+            key, setting, value = _parse_setting(option, value)
+        except KeyError:
+            error = _make_response(jsonify({'status': 'ERROR', 'message': 'Unknown or locked setting.'}), 400)
+            return candidate, changed, error
+        except ValueError:
+            error = _make_response(jsonify({'status': 'ERROR', 'message': 'Invalid setting value.'}), 400)
+            return candidate, changed, error
+
+        if decoded[key][setting] != value:
+            changed.append((key, setting))
+        if config.is_masked_field(section=key, key=setting):
+            value = config.encode_value(value)
+        candidate[key][setting] = value
+    return candidate, changed, None
+
+
+def _save_settings(candidate: dict, changed: list[tuple[str, str]]) -> Response:
+    """Save changed settings and restore previous values on failure.
+
+    Parameters
+    ----------
+    candidate : dict
+        Validated candidate configuration.
+    changed : list[tuple[str, str]]
+        Section and setting names that changed.
+
+    Returns
+    -------
+    Response
+        Save result for the web client.
+    """
+    originals = {(key, setting): config.CONFIG[key][setting] for key, setting in changed}
+    for key, setting in changed:
+        config.CONFIG[key][setting] = candidate[key][setting]
+    if not config.save_config(config=config.CONFIG):
+        for (key, setting), value in originals.items():
+            config.CONFIG[key][setting] = value
+        return _make_response(jsonify({'status': 'ERROR', 'message': 'Unable to save settings.'}), 500)
+    for key, setting in changed:
+        on_change = config._CONFIG_SPEC_DICT[key][setting].get('on_change')
+        if on_change:
+            on_change()
+    return jsonify({'status': 'OK', 'message': 'Selected settings are valid.'})
+
+
 @app.route('/api/settings', methods=['GET', 'POST'])
-@app.route('/api/settings/<path:configuration_spec>')
 def api_settings() -> Response:
     """
     Get current settings or save changes to settings from the web ui.
@@ -347,67 +430,32 @@ def api_settings() -> Response:
     >>> api_settings()
     <Response ... bytes [200 OK]>
     """
-    config_spec = config._CONFIG_SPEC_DICT
-
     if request.method == 'GET':
-        return config.CONFIG
-    if request.method == 'POST':
-        boolean_dict = {
-            'true': True,
-            'false': False,
-        }
+        return jsonify(config.CONFIG)
 
-        candidate = copy.deepcopy(config.CONFIG)
-        decoded = config.decode_config(common.CONFIG)
-        changed = []
-        for option, value in request.form.items():
-            key, separator, setting = option.partition('|')
-            spec = config_spec.get(key, {}).get(setting)
-            if not separator or not isinstance(spec, dict) or spec.get('locked'):
-                return jsonify({'status': 'ERROR', 'message': 'Unknown or locked setting.'}), 400
-
-            try:
-                if spec['type'] == 'boolean':
-                    value = boolean_dict[value.lower()]
-                elif spec['type'] == 'float':
-                    value = float(value)
-                elif spec['type'] == 'integer':
-                    value = int(value)
-            except (KeyError, ValueError):
-                return jsonify({'status': 'ERROR', 'message': 'Invalid setting value.'}), 400
-
-            if decoded[key][setting] != value:
-                changed.append((key, setting))
-            if config.is_masked_field(section=key, key=setting):
-                value = config.encode_value(value)
-            candidate[key][setting] = value
-
-        if not config.validate_config(config=candidate):
-            return jsonify({'status': 'ERROR', 'message': 'Selected settings are not valid.'}), 400
-
-        originals = {(key, setting): config.CONFIG[key][setting] for key, setting in changed}
-        for key, setting in changed:
-            config.CONFIG[key][setting] = candidate[key][setting]
-        if not config.save_config(config=config.CONFIG):
-            for (key, setting), value in originals.items():
-                config.CONFIG[key][setting] = value
-            return jsonify({'status': 'ERROR', 'message': 'Unable to save settings.'}), 500
-        for key, setting in changed:
-            on_change = config_spec[key][setting].get('on_change')
-            if on_change:
-                on_change()
-
-        return jsonify({'status': 'OK', 'message': 'Selected settings are valid.'})
+    candidate, changed, error = _candidate_settings()
+    if error is not None:
+        return error
+    if not config.validate_config(config=candidate):
+        return _make_response(jsonify({'status': 'ERROR', 'message': 'Selected settings are not valid.'}), 400)
+    return _save_settings(candidate, changed)
 
 
 @app.route('/api/plex/auth', methods=['GET'])
 def plex_auth_status() -> Response:
     """Report whether this installation has a token from Plex sign-in.
 
+    The response contains only a connection flag and never includes the token.
+
     Returns
     -------
     Response
         Authentication status without exposing the token.
+
+    Examples
+    --------
+    >>> plex_auth_status()
+    <Response ...>
     """
     return jsonify({'connected': bool(plex_auth.get_token())})
 
@@ -416,16 +464,23 @@ def plex_auth_status() -> Response:
 def plex_auth_start() -> Response:
     """Start a Plex browser sign-in for this web session.
 
+    Store the PIN in the browser session so it can be checked later.
+
     Returns
     -------
     Response
         Plex authorization URL or a sanitized error.
+
+    Examples
+    --------
+    >>> plex_auth_start()
+    <Response ...>
     """
     try:
         login = plex_auth.start_login()
-    except (requests.RequestException, KeyError, TypeError, ValueError, OSError):
+    except (OSError, KeyError, TypeError, ValueError):
         app.logger.exception('Unable to start Plex sign-in')
-        return jsonify({'message': 'Unable to start Plex sign-in. Please try again.'}), 502
+        return _make_response(jsonify({'message': 'Unable to start Plex sign-in. Please try again.'}), 502)
 
     session['plex_login'] = {'pin_id': login['pin_id'], 'code': login['code'], 'started': time.time()}
     return jsonify({'auth_url': login['auth_url']})
@@ -435,45 +490,54 @@ def plex_auth_start() -> Response:
 def plex_auth_check() -> Response:
     """Finish a Plex sign-in once its PIN has been claimed.
 
+    Keep the previous connection until the new token reaches the selected server.
+
     Returns
     -------
     Response
         Pending, connected, expired, or error status.
+
+    Examples
+    --------
+    >>> plex_auth_check()
+    <Response ...>
     """
     login = session.get('plex_login')
     if not login:
-        return jsonify({'message': 'Start Plex sign-in first.'}), 400
+        return _make_response(jsonify({'message': 'Start Plex sign-in first.'}), 400)
     if time.time() - login['started'] > PLEX_LOGIN_LIFETIME:
         session.pop('plex_login', None)
-        return jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410
+        return _make_response(jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410)
 
     try:
         token = plex_auth.check_login(pin_id=login['pin_id'], code=login['code'])
     except requests.HTTPError as error:
         if error.response is not None and error.response.status_code in (404, 410):
             session.pop('plex_login', None)
-            return jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410
+            return _make_response(jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410)
         app.logger.warning('Unable to check Plex sign-in: %s', error)
-        return jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502
+        return _make_response(jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502)
     except (requests.RequestException, KeyError, TypeError, ValueError):
         app.logger.exception('Unable to check Plex sign-in')
-        return jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502
+        return _make_response(jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502)
 
     if not token:
-        return jsonify({'connected': False}), 202
+        return _make_response(jsonify({'connected': False}), 202)
 
     from plex import plexapi
     try:
         server = plexapi.connect_plex_server(plex_url=config.CONFIG['Plex']['PLEX_URL'], plex_token=token)
     except Exception:
         app.logger.exception('Plex sign-in succeeded, but the selected server could not be reached')
-        return jsonify({'message': 'Signed in to Plex, but could not connect to the configured Plex server.'}), 400
+        return _make_response(jsonify({
+            'message': 'Signed in to Plex, but could not connect to the configured Plex server.',
+        }), 400)
 
     try:
         plex_auth.set_token(token)
     except OSError:
         app.logger.exception('Unable to save Plex sign-in')
-        return jsonify({'message': 'Unable to save Plex sign-in.'}), 500
+        return _make_response(jsonify({'message': 'Unable to save Plex sign-in.'}), 500)
 
     plexapi.plex_server = server
     try:
@@ -488,16 +552,23 @@ def plex_auth_check() -> Response:
 def plex_auth_disconnect() -> Response:
     """Remove the local Plex connection.
 
+    Clear the saved token and stop the active event listener.
+
     Returns
     -------
     Response
         Disconnected status.
+
+    Examples
+    --------
+    >>> plex_auth_disconnect()
+    <Response ...>
     """
     try:
         plex_auth.disconnect()
     except OSError:
         app.logger.exception('Unable to disconnect Plex')
-        return jsonify({'message': 'Unable to disconnect Plex.'}), 500
+        return _make_response(jsonify({'message': 'Unable to disconnect Plex.'}), 500)
 
     from plex import plexapi
     plexapi.stop_plex_listener()
@@ -572,7 +643,7 @@ def translations() -> Response:
             po = polib.pofile(po_file)
 
             # convert the po to json
-            data = dict()
+            data = {}
             for entry in po:
                 if entry.msgid:
                     data[entry.msgid] = entry.msgstr

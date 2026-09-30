@@ -10,7 +10,8 @@ def test_certificate_lifecycle(tmp_path, monkeypatch):
     monkeypatch.setattr(crypto, 'CERT_FILE', str(cert))
     monkeypatch.setattr(crypto, 'KEY_FILE', str(key))
     assert crypto.initialize_certificate() == (str(cert), str(key))
-    assert cert.exists() and key.exists()
+    assert cert.exists()
+    assert key.exists()
     assert crypto.check_expiration(str(cert)) > 300
     before = cert.read_bytes()
     assert crypto.initialize_certificate() == (str(cert), str(key))

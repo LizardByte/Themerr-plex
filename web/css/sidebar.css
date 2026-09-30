@@ -19,7 +19,6 @@
     position: fixed;
     height: 100vh;
     background-color: #151515;
-    /*padding: 0;*/
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-transition: all 0.5s ease;

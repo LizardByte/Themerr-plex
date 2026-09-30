@@ -26,6 +26,20 @@ def test_check_folder_writable(tmp_path, monkeypatch):
     assert helpers.check_folder_writable(str(fallback), 'data', str(primary)) == (str(fallback), True)
 
 
+def test_check_folder_writable_recovers_from_creation_error(tmp_path, monkeypatch):
+    primary = tmp_path / 'primary'
+    fallback = tmp_path / 'fallback'
+    makedirs = helpers.os.makedirs
+
+    def fail_primary(name, exist_ok):
+        if name == str(primary):
+            raise OSError('primary unavailable')
+        makedirs(name, exist_ok=exist_ok)
+
+    monkeypatch.setattr(helpers.os, 'makedirs', fail_primary)
+    assert helpers.check_folder_writable(str(fallback), 'data', str(primary)) == (str(fallback), True)
+
+
 def test_file_load_save(tmp_path):
     path = tmp_path / 'data.txt'
     assert helpers.file_load(str(path)) is None
@@ -86,8 +100,8 @@ def test_quote_time_and_browser(monkeypatch):
     assert helpers.string_unquote('a+b', use_plus=True) == 'a b'
     monkeypatch.setattr(helpers.time, 'time', lambda: 0)
     assert helpers.timestamp() == 0
-    assert helpers.now() == helpers.timestamp_to_YMDHMS(0)
-    assert len(helpers.timestamp_to_YMDHMS(0, separate=True)) == 19
+    assert helpers.now() == helpers.timestamp_to_ymdhms(0)
+    assert len(helpers.timestamp_to_ymdhms(0, separate=True)) == 19
     monkeypatch.setattr(helpers.webbrowser, 'open', lambda **_: True)
     assert helpers.open_url_in_browser('https://example')
 

@@ -33,10 +33,10 @@ jobs:
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
 
       - name: Setup Python Dependencies
-        run: uv sync --locked --no-install-project --no-python-downloads --python ${{ env.PYTHON_VERSION }}
+        run: uv sync --locked --no-build --no-install-project --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Update Strings
-        run: uv run --locked --no-sync python ./scripts/_locale.py --extract
+        run: uv run --locked --no-build --no-sync python ./scripts/_locale.py --extract
 
       - name: git diff
         run: |

@@ -45,7 +45,8 @@ def _get_metadata_path(item: PlexPartialObject) -> str:
     "...bundle"
     """
     guid = item.guid
-    full_hash = hashlib.sha1(guid.encode('utf-8')).hexdigest()
+    # Plex metadata paths require SHA-1; this value is not used for security.
+    full_hash = hashlib.sha1(guid.encode('utf-8'), usedforsecurity=False).hexdigest()  # NOSONAR python:S4790
     metadata_path = os.path.join(
         config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH'], 'Metadata', metadata_type_map[item.type],
         full_hash[0], full_hash[1:] + '.bundle')
@@ -157,33 +158,21 @@ def get_theme_provider(item: PlexPartialObject) -> Optional[str]:
         'metadata://themes/com.plexapp.agents.plexthememusic_': 'plex',  # legacy agents
     }
 
-    if not item.themes():
+    themes = item.themes()
+    if not themes:
         log.debug(f'No themes found for item: {item.title}')
         return
 
-    provider = None
-
-    selected = None
-    for theme in item.themes():
-        if getattr(theme, 'selected'):
-            selected = theme
-            break
+    selected = next((theme for theme in themes if getattr(theme, 'selected')), None)
     if not selected:
         log.debug(f'No selected theme found for item: {item.title}')
         return
 
-    if selected.provider in provider_map.keys():
-        provider = provider_map[selected.provider]
-    elif selected.ratingKey.startswith(tuple(rating_key_map.keys())):
-        # new agents do not list a provider, so must match with rating keys if the theme
-
-        # find the rating key prefix in the rating key map
-        for rating_key_prefix in rating_key_map.keys():
-            if selected.ratingKey.startswith(rating_key_prefix):
-                provider = rating_key_map[rating_key_prefix]
-                break
-    else:
-        provider = selected.provider
+    provider = provider_map.get(selected.provider)
+    if not provider:
+        # New Plex agents identify their themes by rating key rather than provider.
+        provider = next((value for prefix, value in rating_key_map.items()
+                         if selected.ratingKey.startswith(prefix)), selected.provider)
 
     if not provider:
         themerr_data = get_themerr_json_data(item=item)
@@ -240,7 +229,7 @@ def get_themerr_json_data(item: PlexPartialObject) -> dict:
     if os.path.isfile(themerr_json_path):
         themerr_data = json.loads(s=str(helpers.file_load(filename=themerr_json_path, binary=False)))
     else:
-        themerr_data = dict()
+        themerr_data = {}
 
     return themerr_data
 
@@ -260,10 +249,10 @@ def get_themerr_settings_hash() -> str:
     '...'
     """
     # use to compare previous settings to new settings
-    themerr_settings = dict(
-        bool_prefer_mp4a_codec=config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'],
-        int_plexapi_plexapi_timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
-    )
+    themerr_settings = {
+        'bool_prefer_mp4a_codec': config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'],
+        'int_plexapi_plexapi_timeout': config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
+    }
     settings_hash = hashlib.sha256(json.dumps(themerr_settings, sort_keys=True).encode('utf-8')).hexdigest()
     return settings_hash
 

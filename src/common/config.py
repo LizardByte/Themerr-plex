@@ -65,7 +65,14 @@ def on_change_tray_toggle() -> bool:
 
 
 def on_change_plex_url() -> None:
-    """Reconnect to Plex after its configured URL changes."""
+    """Reconnect to Plex after its configured URL changes.
+
+    Stop the existing listener and start a new connection when a Plex token is available.
+
+    Examples
+    --------
+    >>> on_change_plex_url()
+    """
     from plex import plexapi
     plexapi.stop_plex_listener()
     plexapi.plex_server = None
@@ -76,48 +83,41 @@ def on_change_plex_url() -> None:
             log.exception('Unable to reconnect to the changed Plex URL')
 
 
-# types
-# - section
-# - boolean
-# - option
-# - string
-# - integer
-# - float
-_CONFIG_SPEC_DICT = dict(
-    Info=dict(
-        type='section',
-        name=_('Info'),
-        description=_('For information purposes only.'),
-        icon='info',
-        CONFIG_VERSION=dict(
-            type='integer',
-            name=_('Config version'),
-            description=_('The configuration version.'),
-            default=0,  # increment when updating config
-            min=0,
-            max=0,  # increment when updating config
-            extra_class='col-md-3',
-            locked=True,
-        ),
-        FIRST_RUN_COMPLETE=dict(
-            type='boolean',
-            name=_('First run complete'),
-            description=_('Todo: Indicates if the user has completed the initial setup.'),
-            default=False,
-            locked=True,
-        ),
-    ),
-    General=dict(
-        type='section',
-        name=_('General'),
-        description=_('General settings.'),
-        icon='settings',
-        LOCALE=dict(
-            type='option',
-            name=_('Locale'),
-            description=_('The localization setting to use.'),
-            default='en',
-            options=[
+_CONFIG_SPEC_DICT = {
+    'Info': {
+        'type': 'section',
+        'name': _('Info'),
+        'description': _('For information purposes only.'),
+        'icon': 'info',
+        'CONFIG_VERSION': {
+            'type': 'integer',
+            'name': _('Config version'),
+            'description': _('The configuration version.'),
+            'default': 0,  # increment when updating config
+            'min': 0,
+            'max': 0,  # increment when updating config
+            'extra_class': 'col-md-3',
+            'locked': True,
+        },
+        'FIRST_RUN_COMPLETE': {
+            'type': 'boolean',
+            'name': _('First run complete'),
+            'description': _('Todo: Indicates if the user has completed the initial setup.'),
+            'default': False,
+            'locked': True,
+        },
+    },
+    'General': {
+        'type': 'section',
+        'name': _('General'),
+        'description': _('General settings.'),
+        'icon': 'settings',
+        'LOCALE': {
+            'type': 'option',
+            'name': _('Locale'),
+            'description': _('The localization setting to use.'),
+            'default': 'en',
+            'options': [
                 'de',
                 'en',
                 'en_GB',
@@ -132,7 +132,7 @@ _CONFIG_SPEC_DICT = dict(
                 'tr',
                 'zh',
             ],
-            option_names=[
+            'option_names': [
                 f'German ({_("German")})',
                 f'English ({_("English")})',
                 f'English (Great Britain) ({_("English (Great Britain)")})',
@@ -147,261 +147,261 @@ _CONFIG_SPEC_DICT = dict(
                 f'Turkish ({_("Turkish")})',
                 f'Chinese (Simplified) ({_("Chinese (Simplified)")})',
             ],
-            refresh=True,
-            extra_class='col-lg-6',
-        ),
-        LAUNCH_BROWSER=dict(
-            type='boolean',
-            name=_('Launch Browser on Startup '),
-            description=_(f'Open browser when {definitions.Names.name} starts.'),
-            default=True,
-        ),
-        SYSTEM_TRAY=dict(
-            type='boolean',
-            name=_('Enable System Tray Icon'),
-            description=_(f'Show {definitions.Names.name} shortcut in the system tray.'),
-            default=True,
+            'refresh': True,
+            'extra_class': 'col-lg-6',
+        },
+        'LAUNCH_BROWSER': {
+            'type': 'boolean',
+            'name': _('Launch Browser on Startup '),
+            'description': _(f'Open browser when {definitions.Names.name} starts.'),
+            'default': True,
+        },
+        'SYSTEM_TRAY': {
+            'type': 'boolean',
+            'name': _('Enable System Tray Icon'),
+            'description': _(f'Show {definitions.Names.name} shortcut in the system tray.'),
+            'default': True,
             # todo - fix circular import
-            on_change=on_change_tray_toggle,
-        ),
-    ),
-    Logging=dict(
-        type='section',
-        name=_('Logging'),
-        description=_('Logging settings.'),
-        icon='file-code',
-        LOG_DIR=dict(
-            type='string',
-            name=_('Log directory'),
-            advanced=True,
-            description=_('The directory where to store the log files.'),
-            pattern=regex_directory,
-            extra_class='col-lg-8',
-            button_directory=True,
-        ),
-        DEBUG_LOGGING=dict(
-            type='boolean',
-            name=_('Debug logging'),
-            advanced=True,
-            description=_('Enable debug logging.'),
-            default=True,
-        ),
-    ),
-    Network=dict(
-        type='section',
-        name=_('Network'),
-        description=_('Network settings.'),
-        icon='network',
-        HTTP_HOST=dict(
-            type='string',
-            name=_('HTTP host address'),
-            advanced=True,
-            description=_('The HTTP address to bind to.'),
-            default='0.0.0.0',
-            pattern=r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[.]){3}'
+            'on_change': on_change_tray_toggle,
+        },
+    },
+    'Logging': {
+        'type': 'section',
+        'name': _('Logging'),
+        'description': _('Logging settings.'),
+        'icon': 'file-code',
+        'LOG_DIR': {
+            'type': 'string',
+            'name': _('Log directory'),
+            'advanced': True,
+            'description': _('The directory where to store the log files.'),
+            'pattern': regex_directory,
+            'extra_class': 'col-lg-8',
+            'button_directory': True,
+        },
+        'DEBUG_LOGGING': {
+            'type': 'boolean',
+            'name': _('Debug logging'),
+            'advanced': True,
+            'description': _('Enable debug logging.'),
+            'default': True,
+        },
+    },
+    'Network': {
+        'type': 'section',
+        'name': _('Network'),
+        'description': _('Network settings.'),
+        'icon': 'network',
+        'HTTP_HOST': {
+            'type': 'string',
+            'name': _('HTTP host address'),
+            'advanced': True,
+            'description': _('The HTTP address to bind to.'),
+            'default': '0.0.0.0',
+            'pattern': r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[.]){3}'
                     r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b',
             # https://codverter.com/blog/articles/tech/20190105-extract-ipv4-ipv6-ip-addresses-using-regex.html
-            extra_class='col-md-4',
-        ),
-        HTTP_PORT=dict(
-            type='integer',
-            name=_('HTTP port'),
-            advanced=True,
-            description=_('Port to bind web server to. Note that ports below 1024 may require root.'),
-            default=9494,
-            min=21,
-            max=65535,
-            extra_class='col-md-3',
-        ),
-        HTTP_ROOT=dict(
-            type='string',
-            name=_('HTTP root'),
-            beta=True,
-            description=_('Todo: The base URL of the web server. Used for reverse proxies.'),
-            extra_class='col-lg-6',
-        ),
-        SSL=dict(
-            type='boolean',
-            name=_('SSL'),
-            default=True,
-            description=_('Run the web server with HTTPS. '
-                          'Disabling this can be a security risk, do so at your own risk.'),
-        ),
-    ),
-    User_Interface=dict(
-        type='section',
-        name=_('User Interface'),
-        description=_('User interface settings.'),
-        icon='monitor',
-        BACKGROUND_VIDEO=dict(
-            type='boolean',
-            name=_('Background video'),
-            description=_('Enable background video.'),
-            default=True,
-        ),
-    ),
-    Updater=dict(
-        type='section',
-        name=_('Updater'),
-        description=_('Updater settings.'),
-        icon='refresh-cw',
-        AUTO_UPDATE=dict(
-            type='boolean',
-            name=_('Auto update'),
-            beta=True,
-            description=_(f'Todo: Automatically update {definitions.Names.name}.'),
-            default=False,
-        ),
-    ),
-    Plex=dict(
-        type='section',
-        name=_('Plex'),
-        description=_('Plex settings.'),
-        icon='chevron-right',
-        PLEX_URL=dict(
-            type='string',
-            name=_('Plex URL'),
-            description=_('The URL to the Plex server.'),
-            default='http://127.0.0.1:32400',
-            pattern=r'^https?:\/\/(?:[a-zA-Z0-9-]+\.?)+(:\d{1,5})?$',
-            extra_class='col-lg-6',
-            on_change=on_change_plex_url,
-        ),
-        PLEX_APP_SUPPORT_PATH=dict(
-            type='string',
-            name=_('Plex data directory'),
-            description=_('https://support.plex.tv/articles/'
-                          '202915258-where-is-the-plex-media-server-data-directory-located/'),
-            pattern=regex_directory,
-            extra_class='col-lg-8',
-            button_directory=True,
-        ),
-    ),
-    Themerr=dict(
-        type='section',
-        name=_('Themerr'),
-        description=_('Themerr settings.'),
-        icon='music',
-        BOOL_THEMERR_ENABLED=dict(
-            type='boolean',
-            name=_('Themerr Enabled'),
-            description=_('When enabled, Themerr will attempt to update themes.'),
-            default=True,
-        ),
-        BOOL_PLEX_COLLECTION_SUPPORT=dict(
-            type='boolean',
-            name=_('Collections'),
-            description=_('Add themes to collections.'),
-            default=True,
-        ),
-        BOOL_PLEX_MOVIE_SUPPORT=dict(
-            type='boolean',
-            name=_('Movie support'),
-            description=_('Add themes to movies using the Plex Movie agent.'),
-            default=True,
-        ),
-        BOOL_PLEX_SERIES_SUPPORT=dict(
-            type='boolean',
-            name=_('Series support'),
-            description=_('Add themes to series using the Plex Series agent.'),
-            default=True,
-        ),
-        BOOL_OVERWRITE_PLEX_PROVIDED_THEMES=dict(
-            type='boolean',
-            name=_('Overwrite Plex themes'),
-            description=_('When enabled, Themerr will overwrite themes provided by Plex.'),
-            default=True,
-        ),
-        BOOL_PREFER_MP4A_CODEC=dict(
-            type='boolean',
-            name=_('Prefer MP4A AAC Codec'),
-            description=_('This can improve theme compatibility with Apple devices.'),
-            default=True,
-        ),
-        BOOL_REMOVE_UNUSED_THEMES=dict(
-            type='boolean',
-            name=_('Remove unused themes'),
-            description=_('Frees up space in your Plex metadata directory. '
-                          'This option requires that the "Plex data directory" path is set'),
-            default=True,
-        ),
-        BOOL_REMOVE_UNUSED_ART=dict(
-            type='boolean',
-            name=_('Remove unused art'),
-            description=_('Applies to collection. '
-                          'Frees up space in your Plex metadata directory. '
-                          'This option requires that the "Plex data directory" path is set'),
-            default=True,
-        ),
-        BOOL_REMOVE_UNUSED_POSTERS=dict(
-            type='boolean',
-            name=_('Remove unused posters'),
-            description=_('Applies to collection. '
-                          'Frees up space in your Plex metadata directory. '
-                          'This option requires that the "Plex data directory" path is set'),
-            default=True,
-        ),
-        BOOL_UPDATE_COLLECTION_METADATA=dict(
-            type='boolean',
-            name=_('Collection metadata'),
-            description=_('Update collection metadata (poster, art, and summary) during scheduled update.'),
-            default=False,
-        ),
-        BOOL_IGNORE_LOCKED_FIELDS=dict(
-            type='boolean',
-            name=_('Ignore locked fields.'),
-            description=_('If you used Themerr-plex v2024.813.13709 or lower, '
-                          'you may need to enable this to update items.'),
-            default=False,
-        ),
-        INT_UPDATE_THEMES_INTERVAL=dict(
-            type='integer',
-            name=_('Update themes interval'),
-            description=_('Interval for automatic update task, in minutes (min: 15).'),
-            default=60,
-            advanced=True,
-            extra_class='col-md-2',
-        ),
-        INT_UPDATE_DATABASE_CACHE_INTERVAL=dict(
-            type='integer',
-            name=_('Update database cache interval'),
-            description=_('Interval for database cache update task, in minutes (min: 15).'),
-            default=60,
-            advanced=True,
-            extra_class='col-md-2',
-        ),
-        INT_PLEXAPI_PLEXAPI_TIMEOUT=dict(
-            type='integer',
-            name=_('PlexAPI timeout'),
-            description=_('Increase this slightly if you experience timeouts when adding themes. (min: 1)'),
-            default=180,
-            advanced=True,
-            extra_class='col-md-2',
-        ),
-        INT_PLEXAPI_UPLOAD_RETRIES_MAX=dict(
-            type='integer',
-            name=_('Theme upload retries'),
-            description=_('If uploading themes fail, retry this many times. (min: 0)'),
-            default=3,
-            advanced=True,
-            extra_class='col-md-2',
-        ),
-        INT_PLEXAPI_UPLOAD_THREADS=dict(
-            type='integer',
-            name=_('Multiprocessing thread count'),
-            description=_('The number of threads to use when adding themes. (min: 1)'),
-            default=3,
-            advanced=True,
-            extra_class='col-md-2',
-        ),
-        STR_YOUTUBE_COOKIES=dict(
-            type='string',
-            name=_('YouTube Cookies'),
-            description=_('Using cookies may improve the success rate of downloading themes. (JSON format)'),
-            advanced=True,
-        ),
-    ),
-)
+            'extra_class': 'col-md-4',
+        },
+        'HTTP_PORT': {
+            'type': 'integer',
+            'name': _('HTTP port'),
+            'advanced': True,
+            'description': _('Port to bind web server to. Note that ports below 1024 may require root.'),
+            'default': 9494,
+            'min': 21,
+            'max': 65535,
+            'extra_class': 'col-md-3',
+        },
+        'HTTP_ROOT': {
+            'type': 'string',
+            'name': _('HTTP root'),
+            'beta': True,
+            'description': _('Todo: The base URL of the web server. Used for reverse proxies.'),
+            'extra_class': 'col-lg-6',
+        },
+        'SSL': {
+            'type': 'boolean',
+            'name': _('SSL'),
+            'default': True,
+            'description': _('Run the web server with HTTPS. '
+                             'Disabling this can be a security risk, do so at your own risk.'),
+        },
+    },
+    'User_Interface': {
+        'type': 'section',
+        'name': _('User Interface'),
+        'description': _('User interface settings.'),
+        'icon': 'monitor',
+        'BACKGROUND_VIDEO': {
+            'type': 'boolean',
+            'name': _('Background video'),
+            'description': _('Enable background video.'),
+            'default': True,
+        },
+    },
+    'Updater': {
+        'type': 'section',
+        'name': _('Updater'),
+        'description': _('Updater settings.'),
+        'icon': 'refresh-cw',
+        'AUTO_UPDATE': {
+            'type': 'boolean',
+            'name': _('Auto update'),
+            'beta': True,
+            'description': _(f'Todo: Automatically update {definitions.Names.name}.'),
+            'default': False,
+        },
+    },
+    'Plex': {
+        'type': 'section',
+        'name': _('Plex'),
+        'description': _('Plex settings.'),
+        'icon': 'chevron-right',
+        'PLEX_URL': {
+            'type': 'string',
+            'name': _('Plex URL'),
+            'description': _('The URL to the Plex server.'),
+            'default': 'http://127.0.0.1:32400',
+            'pattern': r'^https?:\/\/(?:[a-zA-Z0-9-]+\.?)+(:\d{1,5})?$',
+            'extra_class': 'col-lg-6',
+            'on_change': on_change_plex_url,
+        },
+        'PLEX_APP_SUPPORT_PATH': {
+            'type': 'string',
+            'name': _('Plex data directory'),
+            'description': _('https://support.plex.tv/articles/'
+                             '202915258-where-is-the-plex-media-server-data-directory-located/'),
+            'pattern': regex_directory,
+            'extra_class': 'col-lg-8',
+            'button_directory': True,
+        },
+    },
+    'Themerr': {
+        'type': 'section',
+        'name': _('Themerr'),
+        'description': _('Themerr settings.'),
+        'icon': 'music',
+        'BOOL_THEMERR_ENABLED': {
+            'type': 'boolean',
+            'name': _('Themerr Enabled'),
+            'description': _('When enabled, Themerr will attempt to update themes.'),
+            'default': True,
+        },
+        'BOOL_PLEX_COLLECTION_SUPPORT': {
+            'type': 'boolean',
+            'name': _('Collections'),
+            'description': _('Add themes to collections.'),
+            'default': True,
+        },
+        'BOOL_PLEX_MOVIE_SUPPORT': {
+            'type': 'boolean',
+            'name': _('Movie support'),
+            'description': _('Add themes to movies using the Plex Movie agent.'),
+            'default': True,
+        },
+        'BOOL_PLEX_SERIES_SUPPORT': {
+            'type': 'boolean',
+            'name': _('Series support'),
+            'description': _('Add themes to series using the Plex Series agent.'),
+            'default': True,
+        },
+        'BOOL_OVERWRITE_PLEX_PROVIDED_THEMES': {
+            'type': 'boolean',
+            'name': _('Overwrite Plex themes'),
+            'description': _('When enabled, Themerr will overwrite themes provided by Plex.'),
+            'default': True,
+        },
+        'BOOL_PREFER_MP4A_CODEC': {
+            'type': 'boolean',
+            'name': _('Prefer MP4A AAC Codec'),
+            'description': _('This can improve theme compatibility with Apple devices.'),
+            'default': True,
+        },
+        'BOOL_REMOVE_UNUSED_THEMES': {
+            'type': 'boolean',
+            'name': _('Remove unused themes'),
+            'description': _('Frees up space in your Plex metadata directory. '
+                             'This option requires that the "Plex data directory" path is set'),
+            'default': True,
+        },
+        'BOOL_REMOVE_UNUSED_ART': {
+            'type': 'boolean',
+            'name': _('Remove unused art'),
+            'description': _('Applies to collection. '
+                             'Frees up space in your Plex metadata directory. '
+                             'This option requires that the "Plex data directory" path is set'),
+            'default': True,
+        },
+        'BOOL_REMOVE_UNUSED_POSTERS': {
+            'type': 'boolean',
+            'name': _('Remove unused posters'),
+            'description': _('Applies to collection. '
+                             'Frees up space in your Plex metadata directory. '
+                             'This option requires that the "Plex data directory" path is set'),
+            'default': True,
+        },
+        'BOOL_UPDATE_COLLECTION_METADATA': {
+            'type': 'boolean',
+            'name': _('Collection metadata'),
+            'description': _('Update collection metadata (poster, art, and summary) during scheduled update.'),
+            'default': False,
+        },
+        'BOOL_IGNORE_LOCKED_FIELDS': {
+            'type': 'boolean',
+            'name': _('Ignore locked fields.'),
+            'description': _('If you used Themerr-plex v2024.813.13709 or lower, '
+                             'you may need to enable this to update items.'),
+            'default': False,
+        },
+        'INT_UPDATE_THEMES_INTERVAL': {
+            'type': 'integer',
+            'name': _('Update themes interval'),
+            'description': _('Interval for automatic update task, in minutes (min: 15).'),
+            'default': 60,
+            'advanced': True,
+            'extra_class': 'col-md-2',
+        },
+        'INT_UPDATE_DATABASE_CACHE_INTERVAL': {
+            'type': 'integer',
+            'name': _('Update database cache interval'),
+            'description': _('Interval for database cache update task, in minutes (min: 15).'),
+            'default': 60,
+            'advanced': True,
+            'extra_class': 'col-md-2',
+        },
+        'INT_PLEXAPI_PLEXAPI_TIMEOUT': {
+            'type': 'integer',
+            'name': _('PlexAPI timeout'),
+            'description': _('Increase this slightly if you experience timeouts when adding themes. (min: 1)'),
+            'default': 180,
+            'advanced': True,
+            'extra_class': 'col-md-2',
+        },
+        'INT_PLEXAPI_UPLOAD_RETRIES_MAX': {
+            'type': 'integer',
+            'name': _('Theme upload retries'),
+            'description': _('If uploading themes fail, retry this many times. (min: 0)'),
+            'default': 3,
+            'advanced': True,
+            'extra_class': 'col-md-2',
+        },
+        'INT_PLEXAPI_UPLOAD_THREADS': {
+            'type': 'integer',
+            'name': _('Multiprocessing thread count'),
+            'description': _('The number of threads to use when adding themes. (min: 1)'),
+            'default': 3,
+            'advanced': True,
+            'extra_class': 'col-md-2',
+        },
+        'STR_YOUTUBE_COOKIES': {
+            'type': 'string',
+            'name': _('YouTube Cookies'),
+            'description': _('Using cookies may improve the success rate of downloading themes. (JSON format)'),
+            'advanced': True,
+        },
+    },
+}
 
 
 def is_masked_field(section: str, key: str) -> bool:
@@ -513,6 +513,33 @@ def decode_config(config: ConfigObj) -> dict:
     return _config
 
 
+def _format_config_checks(spec: dict) -> str:
+    """Format the validation arguments for a ConfigObj specification.
+
+    Parameters
+    ----------
+    spec : dict
+        One configuration option or section specification.
+
+    Returns
+    -------
+    str
+        Parenthesized validation arguments, or an empty string.
+    """
+    parts = []
+    for check in ('min', 'max', 'options', 'default'):
+        if check not in spec:
+            continue
+        value = spec[check]
+        if check == 'options':
+            parts.extend(f'"{option}"' if isinstance(option, str) else str(option) for option in value)
+        elif isinstance(value, str):
+            parts.append(f'{check}="{value}"')
+        else:
+            parts.append(f'{check}={value}')
+    return f'({", ".join(parts)})' if parts else ''
+
+
 def convert_config(d: dict = _CONFIG_SPEC_DICT, _config_spec: Optional[List] = None) -> List:
     """
     Convert a config spec dictionary to a config spec list.
@@ -542,39 +569,12 @@ def convert_config(d: dict = _CONFIG_SPEC_DICT, _config_spec: Optional[List] = N
         _config_spec = []
 
     for k, v in d.items():
-        try:
-            v['type']
-        except TypeError:
-            pass
-        else:
+        if isinstance(v, dict):
             # if a default value is not set, then set it to None
             if 'default' not in v:
                 v['default'] = ''
 
-            checks = ['min', 'max', 'options', 'default']
-            check_value = ''
-
-            for check in checks:
-                try:
-                    v[check]
-                except KeyError:
-                    pass
-                else:
-                    check_value += f"{', ' if check_value != '' else ''}"
-                    if check == 'options':
-                        for option_value in v[check]:
-                            if check_value:
-                                check_value += f"{', ' if not check_value.endswith(', ') else ''}"
-                            if isinstance(option_value, str):
-                                check_value += f'"{option_value}"'
-                            else:
-                                check_value += f'{option_value}'
-                    elif isinstance(v[check], str):
-                        check_value += f"{check}=\"{v[check]}\""
-                    else:
-                        check_value += f"{check}={v[check]}"
-
-            check_value = f'({check_value})' if check_value else ''  # add parenthesis if there's a value
+            check_value = _format_config_checks(v)
 
             if v['type'] == 'section':  # config section
                 _config_spec.append(f'[{k}]')

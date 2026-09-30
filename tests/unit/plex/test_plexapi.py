@@ -23,7 +23,7 @@ def test_setup_plexapi(configured, monkeypatch):
     assert plexapi.setup_plexapi() is server
     assert plexapi.setup_plexapi() is server
     assert constructor.call_count == 1
-    assert constructor.call_args.kwargs['session'].verify is False
+    assert constructor.call_args.kwargs['session'].verify is True
 
 
 def test_listener_starts_after_login_and_stops_on_disconnect(monkeypatch):
@@ -68,10 +68,17 @@ def test_get_database_info(configured, item, monkeypatch):
     assert plexapi.get_database_info(item) == (
         'movies', 'themoviedb', 'tv.plex.agents.movie', '123',
     )
+    item.guids = []
+    assert plexapi.get_database_info(item) == (None, None, None, None)
     item.type = 'show'
     item.guids = [SimpleNamespace(id='tmdb://456')]
     assert plexapi.get_database_info(item) == (
         'tv_shows', 'themoviedb', 'tv.plex.agents.series', '456',
+    )
+    monkeypatch.setattr(plexapi.tmdb, 'get_tmdb_id_from_external_id', lambda **_: '789')
+    item.guids = [SimpleNamespace(id='imdb://tt42')]
+    assert plexapi.get_database_info(item) == (
+        'tv_shows', 'themoviedb', 'tv.plex.agents.series', '789',
     )
 
     section = SimpleNamespace(agent='tv.plex.agents.movie', language='en')
@@ -199,6 +206,38 @@ def test_update_collection_metadata_and_theme(configured, item, monkeypatch):
     plexapi.update_plex_item(42)
     assert [call.kwargs['media_type'] for call in add.call_args_list] == ['posters', 'art', 'themes']
     item.editSummary.assert_called_once_with(summary='New summary', locked=False)
+
+
+def test_update_preserves_locked_and_plex_provided_themes(configured, item, monkeypatch):
+    monkeypatch.setattr(plexapi, 'get_plex_item', lambda **_: item)
+    monkeypatch.setattr(plexapi, 'get_database_info', lambda **_: (
+        'movies', 'themoviedb', 'tv.plex.agents.movie', '42',
+    ))
+    monkeypatch.setattr(plexapi.themerr_db, 'item_exists', lambda **_: True)
+    monkeypatch.setattr(plexapi.helpers, 'json_get', lambda **_: {'youtube_theme_url': 'https://youtube.example'})
+    add = Mock()
+    monkeypatch.setattr(plexapi, 'add_media', add)
+    monkeypatch.setattr(plexapi.general, 'get_theme_provider', lambda **_: 'plex')
+
+    item.isLocked.return_value = True
+    assert plexapi.update_plex_item(42)
+    add.assert_not_called()
+
+    item.isLocked.return_value = False
+    configured['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] = False
+    assert plexapi.update_plex_item(42)
+    add.assert_not_called()
+
+
+def test_update_handles_themerrdb_failure(configured, item, monkeypatch):
+    monkeypatch.setattr(plexapi, 'get_plex_item', lambda **_: item)
+    monkeypatch.setattr(plexapi, 'get_database_info', lambda **_: (
+        'movies', 'themoviedb', 'tv.plex.agents.movie', '42',
+    ))
+    monkeypatch.setattr(plexapi.themerr_db, 'item_exists', lambda **_: True)
+    monkeypatch.setattr(plexapi.helpers, 'json_get', Mock(side_effect=RuntimeError('unavailable')))
+
+    assert plexapi.update_plex_item(42) is False
 
 
 def test_listener_handler(configured, monkeypatch):

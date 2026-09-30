@@ -1,5 +1,4 @@
-# artifacts: false
-# platforms: linux/amd64,linux/arm64/v8
+# syntax=docker/dockerfile:1
 FROM ghcr.io/astral-sh/uv:0.12.21-python3.14-trixie-slim AS base
 
 COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
@@ -7,11 +6,19 @@ COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
 FROM base AS build
 
 # install build dependencies
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-       build-essential libjpeg-dev npm pkg-config libopenblas-dev zlib1g-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN <<EOF
+set -eu
+apt-get update -y
+apt-get install -y --no-install-recommends \
+    build-essential \
+    libjpeg-dev \
+    libopenblas-dev \
+    npm \
+    pkg-config \
+    zlib1g-dev
+apt-get clean
+rm -rf /var/lib/apt/lists/*
+EOF
 
 # uv creates the environment at a stable path for the runtime stage.
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
@@ -22,7 +29,7 @@ WORKDIR /build
 COPY . .
 
 # setup locked Python dependencies
-RUN uv sync --locked --extra docs --no-install-project --no-python-downloads
+RUN uv sync --locked --extra docs --no-build --no-install-project --no-python-downloads
 
 # compile locales
 RUN python scripts/_locale.py --compile
@@ -67,11 +74,14 @@ ENV UNAME=${UNAME}
 ENV HOME=/home/$UNAME
 
 # setup user
-RUN groupadd -f -g "${PGID}" "${UNAME}" \
-    && useradd -lm -d "${HOME}" -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}" \
-    && mkdir -p "${HOME}/.config/themerr-plex" \
-    && ln -s "${HOME}/.config/themerr-plex" /config \
-    && chown -R "${UNAME}" "${HOME}"
+RUN <<EOF
+set -eu
+groupadd -f -g "${PGID}" "${UNAME}"
+useradd -lm -d "${HOME}" -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}"
+mkdir -p "${HOME}/.config/themerr-plex"
+ln -s "${HOME}/.config/themerr-plex" /config
+chown -R "${UNAME}" "${HOME}"
+EOF
 
 # mounts
 VOLUME /config

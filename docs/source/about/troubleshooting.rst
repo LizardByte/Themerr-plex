@@ -17,6 +17,8 @@ Plex connection
 Check the Plex URL and connection status in Settings, and sign in through Plex again if needed. The configured Plex
 data directory is needed for removing old
 uploads; theme upload itself uses the Plex API. The Plex Movie and Plex Series agents are supported.
+For an HTTPS Plex URL, the server certificate must be trusted. Set ``REQUESTS_CA_BUNDLE`` to a CA certificate file
+when using a private certificate authority.
 
 Application logs
 ----------------
