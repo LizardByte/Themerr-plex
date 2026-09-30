@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% block modals %}
+    <dialog id="directory-picker" class="bg-dark text-light border rounded p-4" aria-labelledby="directory-picker-title">
+        <h2 id="directory-picker-title" class="h5">{{ _('Choose a server directory') }}</h2>
+        <output id="directory-current" class="d-block text-break mb-2"></output>
+        <button id="directory-up" type="button" class="btn btn-outline-light mb-2">{{ _('Parent directory') }}</button>
+        <div id="directory-list" class="list-group overflow-auto mb-2" style="max-height: 20rem;"></div>
+        <output id="directory-error" class="d-block text-danger mb-2"></output>
+        <div class="d-flex gap-2 justify-content-end">
+            <button id="directory-cancel" type="button" class="btn btn-outline-light">{{ _('Cancel') }}</button>
+            <button id="directory-select" type="button" class="btn btn-primary">{{ _('Select directory') }}</button>
+        </div>
+    </dialog>
 {% endblock modals %}
 
 {% block content %}
@@ -100,11 +111,13 @@
                                     <label for="{{ setting }}" class="form-label">
                                         {{ config_spec[key][setting]['name'] }}
                                     </label>
-                                    <div class="{{ extra_class }}">
+                                    <div class="{{ extra_class }}{% if config_spec[key][setting]['button_directory'] %} d-flex gap-2{% endif %}">
                                         <input {{ input_type }} class="form-control" id="{{ setting }}" category="{{ key }}" placeholder="{{ config_spec[key][setting]['default'] }}" value="{{ config_settings[key][setting] }}" aria-describedby="{{ setting.lower() }}-help"{% if pattern %} pattern="{{ pattern }}"{% endif %} {{ setting_disabled }}>
-
                                         {%- if config_spec[key][setting]['button_directory'] -%}
-                                            <!-- Todo: Add button to open directory browser -->
+                                            <button type="button" class="btn btn-outline-light" data-directory-target="{{ setting }}"
+                                                    aria-label="{{ _('Browse directories for') }} {{ config_spec[key][setting]['name'] }}">
+                                                <i data-lucide="folder-open" aria-hidden="true"></i>
+                                            </button>
                                         {%- endif -%}
                                     </div>
 

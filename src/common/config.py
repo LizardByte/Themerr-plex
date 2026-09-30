@@ -37,7 +37,8 @@ _ = locales.get_text()
 
 # https://regexpattern.com/windows-folder-path/
 # https://regexpattern.com/linux-folder-path/
-regex_directory = r'^[a-zA-Z]:\\(?:\w+\\?)*$' if definitions.Platform.os_platform == 'win32' else r'^\/(?:[^/]+\/)*$'
+regex_directory = (r'^[a-zA-Z]:\\(?:[^\\/:*?"<>|]+\\?)*$' if definitions.Platform.os_platform == 'win32'
+                   else r'^/(?:[^/]+/?)*$')
 
 
 def on_change_tray_toggle() -> bool:
@@ -161,7 +162,6 @@ _CONFIG_SPEC_DICT = {
             'name': _('Enable System Tray Icon'),
             'description': _(f'Show {definitions.Names.name} shortcut in the system tray.'),
             'default': True,
-            # todo - fix circular import
             'on_change': on_change_tray_toggle,
         },
     },
@@ -353,6 +353,13 @@ _CONFIG_SPEC_DICT = {
             'description': _('If you used Themerr-plex v2024.813.13709 or lower, '
                              'you may need to enable this to update items.'),
             'default': False,
+        },
+        'IGNORED_LIBRARY_IDS': {
+            'type': 'string',
+            'name': _('Ignored library IDs'),
+            'description': _('Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home.'),
+            'default': '',
+            'advanced': True,
         },
         'INT_UPDATE_THEMES_INTERVAL': {
             'type': 'integer',

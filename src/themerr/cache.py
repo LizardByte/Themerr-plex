@@ -104,6 +104,27 @@ def _cache_item(item) -> dict:
     }
 
 
+def _section_media_items(section) -> list:
+    """Select media matched by supported Plex agents in a library section.
+
+    Parameters
+    ----------
+    section : LibrarySection
+        Plex library section.
+
+    Returns
+    -------
+    list
+        Media with a supported agent.
+    """
+    if section.agent in contributes_to:
+        return section.all()
+    if section.type not in ('movie', 'show'):
+        return []
+    guid_prefix = f'plex://{section.type}/'
+    return [item for item in section.all() if (getattr(item, 'guid', None) or '').startswith(guid_prefix)]
+
+
 def _cache_section(section) -> dict:
     """Collect dashboard counts and item details for a Plex section.
 
@@ -117,9 +138,14 @@ def _cache_section(section) -> dict:
     dict
         Dashboard data for the section.
     """
-    media_items = section.all()
-    media_items_with_themes = section.all(theme__exists=True)
-    collections_enabled = config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT']
+    media_items = _section_media_items(section)
+    if section.agent in contributes_to:
+        media_items_with_themes = section.all(theme__exists=True)
+    else:
+        media_items_with_themes = [item for item in media_items if item.theme]
+    collections_enabled = (
+        config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] and section.agent in contributes_to
+    )
     collections = section.collections() if collections_enabled else []
     collections_with_themes = section.collections(theme__exists=True) if collections_enabled else []
     all_items = media_items + collections
@@ -164,12 +190,11 @@ def cache_data() -> None:
     items = {}
 
     for section in sections:
-        if section.agent not in contributes_to:
-            # todo - there is a small chance that a library with an unsupported agent could still have
-            # a individual items that was matched with a supported agent...
-            continue  # skip unsupported metadata agents
-
-        items[section.key] = _cache_section(section)
+        if section.agent not in contributes_to and getattr(section, 'type', None) not in ('movie', 'show'):
+            continue
+        section_data = _cache_section(section)
+        if section.agent in contributes_to or section_data['total_count']:
+            items[section.key] = section_data
 
     with database_cache_lock:
         helpers.file_save(filename=database_cache_file, data=json.dumps(items), binary=False)

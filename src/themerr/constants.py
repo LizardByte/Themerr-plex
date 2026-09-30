@@ -1,6 +1,3 @@
-# standard imports
-import os
-
 contributes_to = [
     'tv.plex.agents.movie',  # new movie agent
     'tv.plex.agents.series',  # new tv show agent
@@ -19,10 +16,6 @@ metadata_type_map = dict(
     movie='Movies',
     show='TV Shows'
 )
-
-# the explicit IPv4 address is used because `localhost` can resolve to ::1, which `websocket` rejects
-plex_url = 'http://127.0.0.1:32400'  # TODO: this needs to be a configuration option
-plex_token = os.environ.get('PLEXTOKEN')  # TODO: this needs to be a configuration option
 
 plex_section_type_settings_map = dict(
     album=9,

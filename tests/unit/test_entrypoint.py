@@ -24,6 +24,17 @@ def test_int_range():
         bounded('20')
 
 
+def test_help_uses_application_translation(monkeypatch, capsys):
+    monkeypatch.setattr(sys, 'argv', ['themerr_plex.py', '--help'])
+    monkeypatch.setattr(themerr_plex, '_', lambda message: f'translated: {message}')
+
+    with pytest.raises(SystemExit) as result:
+        themerr_plex.main()
+
+    assert result.value.code == 0
+    assert 'translated: Show this help message and exit' in capsys.readouterr().out
+
+
 @pytest.mark.parametrize('healthy,exit_code', [(True, 0), (False, 1)])
 def test_healthcheck_exit(monkeypatch, healthy, exit_code):
     monkeypatch.setattr(sys, 'argv', ['themerr_plex.py', '--docker_healthcheck'])

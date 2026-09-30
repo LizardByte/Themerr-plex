@@ -128,16 +128,16 @@ def home() -> render_template:
     """
     Serve the webapp home page.
 
-    .. todo:: This documentation needs to be improved.
+    Show cached Plex library data once it is available. Until then, show a progress page.
 
     Returns
     -------
     render_template
-        The rendered page.
+        The dashboard, or a cache progress page before dashboard data exists.
 
     Notes
     -----
-    The following routes trigger this function.
+    A cache read failure produces the HTTP 500 response. The following routes trigger this function.
 
         `/`
         `/home`
@@ -162,12 +162,12 @@ def settings() -> render_template:
     """
     Serve the configuration page.
 
-    .. todo:: This documentation needs to be improved.
+    Decode any masked settings for display and render the current configuration specification.
 
     Returns
     -------
     render_template
-        The rendered page.
+        The settings form populated with decoded values and the application specification.
 
     Notes
     -----
@@ -184,23 +184,62 @@ def settings() -> render_template:
                            config_spec=config._CONFIG_SPEC_DICT)
 
 
+@app.route('/api/directories', methods=['POST'])
+def browse_directories() -> Response:
+    """List server directories for the configuration folder picker.
+
+    The response contains directory names and paths, without file contents. The request is
+    protected by the same CSRF check as other settings actions.
+
+    Returns
+    -------
+    Response
+        Current directory, parent directory, and child directories.
+
+    Examples
+    --------
+    >>> browse_directories()  # Flask invokes this for POST /api/directories
+    """
+    payload = request.get_json(silent=True)
+    requested = payload.get('path', '') if isinstance(payload, dict) else None
+    if not isinstance(requested, str) or len(requested) > 4096 or '\x00' in requested:
+        return _make_response(jsonify({'message': 'Invalid directory path.'}), 400)
+    requested = requested or os.path.expanduser('~')
+    if not os.path.isabs(requested):
+        return _make_response(jsonify({'message': 'Directory path must be absolute.'}), 400)
+
+    try:
+        directory = os.path.realpath(requested)
+        with os.scandir(directory) as entries:
+            children = sorted(
+                ({'name': entry.name, 'path': os.path.realpath(entry.path)}
+                 for entry in entries if entry.is_dir()),
+                key=lambda entry: entry['name'].casefold(),
+            )
+    except OSError:
+        return _make_response(jsonify({'message': 'Directory is unavailable.'}), 400)
+
+    parent = os.path.dirname(directory)
+    return jsonify({'path': directory, 'parent': parent if parent != directory else None, 'directories': children})
+
+
 @app.route('/docs/', defaults={'filename': 'index.html'}, methods=['GET'])
 @app.route('/docs/<path:filename>', methods=['GET'])
 def docs(filename) -> send_from_directory:
     """
     Serve the Sphinx html documentation.
 
-    .. todo:: This documentation needs to be improved.
+    Resolve the requested page from the built documentation directory.
 
     Parameters
     ----------
     filename : str
-        The html filename to return.
+        Path to an HTML documentation file relative to the built documentation directory.
 
     Returns
     -------
     flask.send_from_directory
-        The requested documentation page.
+        The requested documentation page, or a 404 response when the file is absent.
 
     Notes
     -----

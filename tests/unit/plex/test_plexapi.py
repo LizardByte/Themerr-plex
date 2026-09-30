@@ -252,7 +252,7 @@ def test_listener_handler(configured, monkeypatch):
 def test_scheduled_update(configured, item, monkeypatch):
     configured['Themerr']['BOOL_PLEX_MOVIE_SUPPORT'] = True
     configured['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] = False
-    section = SimpleNamespace(agent='tv.plex.agents.movie', type='movie')
+    section = SimpleNamespace(agent='tv.plex.agents.movie', type='movie', key=1, title='Movies')
     section.all = Mock(return_value=[item])
     section.collections = Mock(return_value=[])
     library = SimpleNamespace(sections=lambda: [section])
@@ -261,3 +261,18 @@ def test_scheduled_update(configured, item, monkeypatch):
     monkeypatch.setattr(plexapi, 'q', Queue())
     plexapi.scheduled_update()
     assert plexapi.q.get_nowait() == 42
+
+
+def test_scheduled_update_ignores_configured_library(configured, item, monkeypatch):
+    configured['Themerr']['IGNORED_LIBRARY_IDS'] = '2, 3'
+    section = SimpleNamespace(agent='tv.plex.agents.movie', type='movie', key=2, title='Movies')
+    section.all = Mock(return_value=[item])
+    library = SimpleNamespace(sections=lambda: [section])
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: SimpleNamespace(library=library))
+    monkeypatch.setattr(plexapi.themerr_db, 'update_cache', Mock())
+    monkeypatch.setattr(plexapi, 'q', Queue())
+
+    plexapi.scheduled_update()
+
+    section.all.assert_not_called()
+    assert plexapi.q.empty()

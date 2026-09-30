@@ -43,7 +43,36 @@ def test_settings(client):
     assert 'PLEX_TOKEN' not in response.json['Plex']
     assert b'Sign in with Plex' in client.get('/settings/').data
     assert b'<output id="plex-auth-status"' in client.get('/settings/').data
+    assert b'data-directory-target="LOG_DIR"' in client.get('/settings/').data
+    assert b'data-directory-target="PLEX_APP_SUPPORT_PATH"' in client.get('/settings/').data
     assert b'PLEX_TOKEN' not in client.get('/settings/').data
+
+
+def test_directory_browser_lists_server_folders(client, tmp_path):
+    child = tmp_path / 'Plex Media Server'
+    child.mkdir()
+    (tmp_path / 'private.txt').write_text('not listed', encoding='utf-8')
+    assert re.fullmatch(webapp.config.regex_directory, str(child))
+
+    response = client.post('/api/directories', json={'path': str(tmp_path)})
+
+    assert response.status_code == 200
+    assert response.json['path'] == str(tmp_path)
+    assert response.json['directories'] == [{'name': child.name, 'path': str(child)}]
+    assert response.json['parent'] == str(tmp_path.parent)
+    assert client.post('/api/directories', json={'path': str(tmp_path / 'missing')}).status_code == 400
+    assert client.post('/api/directories', json={'path': 'relative/path'}).status_code == 400
+
+
+def test_directory_browser_requires_csrf(client, tmp_path):
+    webapp.app.config['WTF_CSRF_ENABLED'] = True
+    page = client.get('/settings/')
+    csrf_token = re.search(rb'data-csrf-token="([^"]+)"', page.data).group(1).decode()
+
+    assert client.post('/api/directories', json={'path': str(tmp_path)}).status_code == 400
+    response = client.post('/api/directories', json={'path': str(tmp_path)},
+                           headers={'X-CSRFToken': csrf_token})
+    assert response.status_code == 200
 
 
 def test_plex_sign_in_requires_csrf(client, configured, monkeypatch):

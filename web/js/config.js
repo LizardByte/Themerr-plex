@@ -35,6 +35,73 @@ if (form) {
         }
     });
 
+    const directoryPicker = document.getElementById('directory-picker');
+    const directoryCurrent = document.getElementById('directory-current');
+    const directoryList = document.getElementById('directory-list');
+    const directoryError = document.getElementById('directory-error');
+    const directoryUp = document.getElementById('directory-up');
+    const directorySelect = document.getElementById('directory-select');
+    let directoryField;
+    let currentDirectory;
+
+    async function loadDirectory(path) {
+        directoryError.textContent = '';
+        directorySelect.disabled = true;
+        directoryUp.disabled = true;
+        directoryList.replaceChildren();
+        const response = await fetch('/api/directories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': form.dataset.csrfToken },
+            body: JSON.stringify({ path }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
+
+        currentDirectory = result.path;
+        directoryCurrent.textContent = currentDirectory;
+        directoryUp.disabled = !result.parent;
+        directoryUp.dataset.path = result.parent || '';
+        result.directories.forEach(directory => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'list-group-item list-group-item-action text-start';
+            button.textContent = directory.name;
+            button.addEventListener('click', () => {
+                loadDirectory(directory.path).catch(error => { directoryError.textContent = error.message; });
+            });
+            directoryList.append(button);
+        });
+        directorySelect.disabled = false;
+    }
+
+    form.querySelectorAll('[data-directory-target]').forEach(button => {
+        button.addEventListener('click', async () => {
+            directoryField = document.getElementById(button.dataset.directoryTarget);
+            directoryPicker.showModal();
+            try {
+                await loadDirectory(directoryField.value);
+            } catch (error) {
+                directoryError.textContent = error.message;
+                if (directoryField.value) {
+                    try {
+                        await loadDirectory('');
+                    } catch (fallbackError) {
+                        directoryError.textContent = fallbackError.message;
+                    }
+                }
+            }
+        });
+    });
+    directoryUp.addEventListener('click', () => {
+        loadDirectory(directoryUp.dataset.path).catch(error => { directoryError.textContent = error.message; });
+    });
+    document.getElementById('directory-cancel').addEventListener('click', () => directoryPicker.close());
+    directorySelect.addEventListener('click', () => {
+        directoryField.value = currentDirectory;
+        directoryField.dispatchEvent(new Event('input', { bubbles: true }));
+        directoryPicker.close();
+    });
+
     const plexAuth = document.getElementById('plex-auth');
     const authStatus = document.getElementById('plex-auth-status');
     const authStart = document.getElementById('plex-auth-start');

@@ -750,8 +750,16 @@ def scheduled_update() -> None:
     plex_library = plex.library
 
     sections = plex_library.sections()
+    ignored_library_ids = {
+        library_id.strip()
+        for library_id in config.CONFIG['Themerr']['IGNORED_LIBRARY_IDS'].split(',')
+        if library_id.strip()
+    }
 
     for section in sections:
+        if str(section.key) in ignored_library_ids:
+            log.debug(f'Skipping ignored Plex library: {section.title}')
+            continue
         if section.agent not in contributes_to:
             # with legacy agents, not all items in the library had to match to the library agent
             # not the case with new agents (probably)
@@ -761,8 +769,6 @@ def scheduled_update() -> None:
         if not general.continue_update(item_agent=section.agent):
             log.debug(f'Themerr-plex is disabled for agent "{section.agent}"')
             continue
-
-        # TODO: add a check and option to ignore specific libraries
 
         for item in _items_for_section(section):
             if item.ratingKey not in q.queue:

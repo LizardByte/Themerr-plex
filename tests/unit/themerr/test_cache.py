@@ -57,3 +57,29 @@ def test_cache_item_converts_imdb_id_and_marks_existing_theme(item, monkeypatch)
     assert data['theme_status'] == 'complete'
     assert data['theme_provider'] == 'plex'
     assert 'Example+%282020%29' in data['issue_url']
+
+
+def test_legacy_section_keeps_modern_matched_media(item):
+    legacy_item = SimpleNamespace(guid='com.plexapp.agents.imdb://tt123')
+    section = SimpleNamespace(agent='legacy.agent', type='movie', all=Mock(return_value=[legacy_item, item]))
+
+    assert cache._section_media_items(section) == [item]
+
+
+def test_cache_data_includes_modern_item_in_legacy_section(configured, item, tmp_path, monkeypatch):
+    legacy_item = SimpleNamespace(guid='com.plexapp.agents.imdb://tt123')
+    section = SimpleNamespace(agent='legacy.agent', type='movie', key=7, title='Mixed Movies')
+    section.all = Mock(return_value=[legacy_item, item])
+    plex = SimpleNamespace(library=SimpleNamespace(sections=lambda: [section]))
+    monkeypatch.setattr(cache, 'setup_plexapi', lambda: plex)
+    monkeypatch.setattr(cache.themerr_db, 'update_cache', Mock())
+    monkeypatch.setattr(cache.themerr_db, 'item_exists', lambda **_: False)
+    monkeypatch.setattr(cache, 'get_database_info', lambda **_: ('movies', 'themoviedb', section.agent, '1'))
+    monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: None)
+    monkeypatch.setattr(cache, 'database_cache_file', str(tmp_path / 'cache.json'))
+
+    cache.cache_data()
+
+    data = json.loads(Path(cache.database_cache_file).read_text(encoding='utf-8'))
+    assert data['7']['media_count'] == 1
+    assert len(data['7']['items']) == 1

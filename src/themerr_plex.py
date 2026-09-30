@@ -154,9 +154,10 @@ def main():
             splash = pyi_splash
 
     # Set up and gather command line arguments
-    # todo... fix translations for '--help' command
     parser = argparse.ArgumentParser(description=_('Themerr-plex is an application that manages theme songs for Plex.\n'
-                                                   'Arguments supplied here are meant to be temporary.'))
+                                                   'Arguments supplied here are meant to be temporary.'),
+                                     add_help=False)
+    parser.add_argument('-h', '--help', action='help', help=_('Show this help message and exit'))
 
     parser.add_argument('--config', help=_('Specify a config file to use'))
     parser.add_argument('--debug', action='store_true', help=_('Use debug logging level'))

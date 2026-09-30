@@ -11,12 +11,18 @@ This replaces the manually entered Plex token used by older versions; existing i
 The resulting token is kept in ``plex-auth.json`` beside the configuration file and is never shown in Settings.
 
 Set the Plex data directory if you want Themerr-plex to remove older uploaded media from Plex's metadata directory.
+Use the folder button beside this setting to browse directories on the machine running Themerr-plex. The same button
+is available for the log directory.
+
 When Themerr-plex runs on another machine, use the Plex server's reachable URL and mount its data directory if you
 want this cleanup. Otherwise, disable the three **Remove unused** settings.
 
 Enable movie, series, and collection updates as needed. Themerr-plex listens for supported Plex library
 events and also scans on the configured schedule. The home page reports theme status for each supported
 library item and links to ThemerrDB contribution forms for missing themes.
+
+To exclude a library from scheduled updates, enter its ID in **Ignored library IDs** under advanced settings.
+The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 
 The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
 bundled with packaged and Docker builds.
