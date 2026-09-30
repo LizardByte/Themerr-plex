@@ -4,6 +4,8 @@ scripts/build.py
 Creates spec and builds binaries for Themerr-plex.
 """
 # standard imports
+import os
+import shutil
 import sys
 
 # lib imports
@@ -12,14 +14,19 @@ import PyInstaller.__main__
 
 def build():
     """Sets arguments for pyinstaller, creates spec, and builds binaries."""
+    deno = shutil.which('deno')
+    if deno is None:
+        raise SystemExit('Deno is required to bundle yt-dlp YouTube support.')
+
     pyinstaller_args = [
         './src/themerr_plex.py',
         '--onefile',
         '--noconfirm',
-        '--paths=./',
-        '--add-data=docs:docs',
-        '--add-data=web:web',
-        '--add-data=locale:locale',
+        '--paths=./src',
+        f'--add-data=_site{os.pathsep}_site',
+        f'--add-data=web{os.pathsep}web',
+        f'--add-data=locale{os.pathsep}locale',
+        f'--add-binary={deno}{os.pathsep}.',
         '--icon=./web/images/favicon.ico'
     ]
 
@@ -27,9 +34,6 @@ def build():
         pyinstaller_args.append('--console')
         pyinstaller_args.append('--splash=./web/images/icon-default.png')
 
-        # fix args for windows
-        for index, arg in enumerate(pyinstaller_args):
-            pyinstaller_args[index] = arg.replace(':', ';')
     elif sys.platform.lower() == 'darwin':  # macOS
         pyinstaller_args.append('--console')
         pyinstaller_args.append('--osx-bundle-identifier=dev.lizardbyte.themerr-plex')

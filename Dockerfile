@@ -1,66 +1,49 @@
 # artifacts: false
 # platforms: linux/amd64,linux/arm64/v8
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.14-slim-trixie AS base
+
+COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
 
 FROM base AS build
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+COPY --from=ghcr.io/astral-sh/uv:0.12.21 /uv /uvx /usr/local/bin/
 
 # install build dependencies
-RUN <<_DEPS
-#!/bin/bash
-set -e
+RUN apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+       build-essential libjpeg-dev npm pkg-config libopenblas-dev zlib1g-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-dependencies=(
-  "build-essential"
-  "libjpeg-dev"  # pillow
-  "npm"  # web dependencies
-  "pkg-config"
-  "libopenblas-dev"
-  "zlib1g-dev"  # pillow
-)
-apt-get update -y
-apt-get install -y --no-install-recommends "${dependencies[@]}"
-apt-get clean
-rm -rf /var/lib/apt/lists/*
-_DEPS
-
-# python virtualenv
-RUN python -m venv /opt/venv
-# use the virtualenv:
+# uv creates the environment at a stable path for the runtime stage.
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # setup app directory
 WORKDIR /build
 COPY . .
 
-# setup python requirements
-RUN <<_REQUIREMENTS
-#!/bin/bash
-set -e
-python -m pip install --no-cache-dir --upgrade pip setuptools wheel
-python -m pip install --no-cache-dir -r requirements.txt
-_REQUIREMENTS
+# setup locked Python dependencies
+RUN uv sync --locked --extra docs --no-install-project --no-python-downloads
 
 # compile locales
 RUN python scripts/_locale.py --compile
 
 # setup npm and dependencies
-RUN <<_NPM
-#!/bin/bash
-set -e
-npm install
-mv -f ./node_modules/ ./web/
-_NPM
+RUN npm ci --ignore-scripts && npm run build
 
-# compile docs
-WORKDIR /build/docs
-RUN sphinx-build -M html source build
+# build bundled documentation with Dockle
+RUN python -m dockle check && python -m dockle build
 
 FROM base AS app
 
-# copy app from builder
-COPY --from=build /build/ /app/
+# copy runtime files from builder
+COPY --from=build /build/src/ /app/src/
+COPY --from=build /build/web/ /app/web/
+COPY --from=build /build/locale/ /app/locale/
+COPY --from=build /build/_site/ /app/_site/
+COPY --from=build /build/scripts/_locale.py /app/scripts/_locale.py
+COPY --from=build /build/LICENSE /app/LICENSE
 
 # copy python venv
 COPY --from=build /opt/venv/ /opt/venv/
@@ -86,15 +69,11 @@ ENV UNAME=${UNAME}
 ENV HOME=/home/$UNAME
 
 # setup user
-RUN <<_SETUP_USER
-#!/bin/bash
-set -e
-groupadd -f -g "${PGID}" "${UNAME}"
-useradd -lm -d ${HOME} -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}"
-mkdir -p ${HOME}/.config/themerr-plex
-ln -s ${HOME}/.config/themerr-plex /config
-chown -R ${UNAME} ${HOME}
-_SETUP_USER
+RUN groupadd -f -g "${PGID}" "${UNAME}" \
+    && useradd -lm -d "${HOME}" -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}" \
+    && mkdir -p "${HOME}/.config/themerr-plex" \
+    && ln -s "${HOME}/.config/themerr-plex" /config \
+    && chown -R "${UNAME}" "${HOME}"
 
 # mounts
 VOLUME /config
@@ -102,5 +81,5 @@ VOLUME /config
 USER ${UNAME}
 WORKDIR ${HOME}
 
-ENTRYPOINT ["python", "./src/themerr_plex.py"]
-HEALTHCHECK --start-period=90s CMD python ./src/themerr_plex.py --docker_healthcheck || exit 1
+ENTRYPOINT ["python", "/app/src/themerr_plex.py"]
+HEALTHCHECK --start-period=90s CMD python /app/src/themerr_plex.py --docker_healthcheck || exit 1

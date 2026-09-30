@@ -8,7 +8,7 @@ Create and run the container (substitute your `<values>`):
 ```bash
 docker run -d \
   --name=themerr-plex \
-  --restart=unless-stopped
+  --restart=unless-stopped \
   -v <path to data>:/config \
   -e PUID=<uid> \
   -e PGID=<gid> \
@@ -72,9 +72,8 @@ Parameters are split into two halves separated by a colon. The left side represe
 container.
 
 **Example:** `-p external:internal` - This shows the port mapping from internal to external of the container.
-Therefore `-p 9696:9696` would expose port `9696` from inside the container to be accessible from the host's IP on port
-`9696` (e.g. `http://<host_ip>:9696`). The internal port must be `9696`, but the external port may be changed
-(e.g. `-p 8080:9696`).
+Therefore `-p 9494:9494` exposes port `9494` from inside the container on the host's port `9494`.
+The internal port is `9494`; the host port may be changed (e.g. `-p 8080:9494`).
 
 
 | Parameter                   | Function                                                                             | Example Value        | Required |

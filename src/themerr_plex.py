@@ -111,11 +111,15 @@ def main():
     ...     main()
     """
     # Fixed paths
-    if definitions.Modes.FROZEN:  # only when using the pyinstaller build
-
-        if definitions.Modes.SPLASH:
+    splash = None
+    if definitions.Modes.FROZEN and definitions.Modes.SPLASH:
+        try:
             import pyi_splash  # module cannot be installed outside of pyinstaller builds
             pyi_splash.update_text("Attempting to start Themerr-plex")
+        except (ImportError, RuntimeError):
+            pass  # the splash may be unavailable on headless machines
+        else:
+            splash = pyi_splash
 
     # Set up and gather command line arguments
     # todo... fix translations for '--help' command
@@ -180,10 +184,10 @@ def main():
         tray_icon.tray_run_threaded()
 
     # start the webapp
-    if definitions.Modes.SPLASH:  # pyinstaller build only, not darwin platforms
-        pyi_splash.update_text("Starting the webapp")
+    if splash is not None:
+        splash.update_text("Starting the webapp")
         time.sleep(3)  # show splash screen for a min of 3 seconds
-        pyi_splash.close()  # close the splash screen
+        splash.close()  # close the splash screen
     from common import webapp  # import at use due to translations
     from plex import plexapi  # import at use due to config
     from themerr import scheduled_tasks

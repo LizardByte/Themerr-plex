@@ -6,17 +6,12 @@ LizardByte has the full documentation hosted on `Read the Docs <http://themerr-p
 
 About
 -----
-Themerr-plex is a metadata agent plug-in for Plex Media Player. The plug-in adds theme music to your movies
-and tv shows.
+Themerr-plex is a standalone application that adds theme music to Plex movies and TV shows from
+`ThemerrDB <https://github.com/LizardByte/ThemerrDB>`__. It listens for Plex library updates and can also scan
+supported libraries on a schedule. YouTube audio streams are resolved with ``yt-dlp``.
 
-This plugin contributes to the following metadata agents.
-
-   - Plex Movie - `tv.plex.agents.movie`
-   - Plex Series - `tv.plex.agents.series`
-   - Plex Movie (Legacy) - `com.plexapp.agents.imdb`
-   - The Movie Database - `com.plexapp.agents.themoviedb`
-   - TheTVDB - `com.plexapp.agents.thetvdb`
-   - `RetroArcher <https://github.com/LizardByte/RetroArcher-plex>`__ - `dev.lizardbyte.retroarcher-plex`
+It works with the Plex Movie (``tv.plex.agents.movie``) and Plex Series (``tv.plex.agents.series``) agents.
+Install and configure the application separately from Plex; no Plex plug-in directory is used.
 
 Integrations
 ------------

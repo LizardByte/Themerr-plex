@@ -1,145 +1,78 @@
-# standard imports
-import os
-import shutil
+"""Tests for media paths, metadata, and provider selection."""
 
-# lib imports
+import hashlib
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
 import pytest
 
-# local imports
-from themerr import constants
 from themerr import general
 
 
-def test_get_metadata_path(section):
-    test_items = [
-        section.all()[0]
-    ]
-
-    for item in test_items:
-        metadata_path = general._get_metadata_path(item=item)
-        assert metadata_path.endswith('.bundle')
-        assert os.path.isdir(metadata_path)
-
-
-@pytest.mark.parametrize('item_agent, item_type, expected', [
-    ('tv.plex.agents.movie', 'movie', True),
-    ('tv.plex.agents.series', 'show', True),
-    ('invalid', 'invalid', False),
-])
-def test_continue_update(item_agent, item_type, expected):
-    assert general.continue_update(item_agent=item_agent) is expected
-
-
-@pytest.mark.parametrize('media_type', ['art', 'posters', 'themes'])
-def test_get_media_upload_path(section, media_type):
-    test_items = [
-        section.all()[0]
-    ]
-
-    for item in test_items:
-        media_upload_path = general.get_media_upload_path(item=item, media_type=media_type)
-        assert media_upload_path.endswith(os.path.join('.bundle', 'Uploads', media_type))
-        # todo - test collections, with art and posters
-        if media_type == 'themes':
-            assert os.path.isdir(media_upload_path)
-
-
-def test_get_theme_provider(section):
-    test_items = [
-        section.all()[0]
-    ]
-
-    for item in test_items:
-        theme_provider = general.get_theme_provider(item=item)
-        assert theme_provider
-        assert isinstance(theme_provider, str)
-        assert theme_provider == 'themerr'
-
-
-def test_get_media_upload_path_invalid(section):
-    test_items = [
-        section.all()[0]
-    ]
-
+def test_metadata_and_upload_paths(configured, item, tmp_path):
+    configured['Plex']['PLEX_APP_SUPPORT_PATH'] = str(tmp_path)
+    expected_hash = hashlib.sha1(item.guid.encode()).hexdigest()
+    metadata = Path(general._get_metadata_path(item))
+    assert metadata == tmp_path / 'Metadata' / 'Movies' / expected_hash[0] / (expected_hash[1:] + '.bundle')
+    assert Path(general.get_media_upload_path(item, 'themes')) == metadata / 'Uploads' / 'themes'
     with pytest.raises(ValueError):
-        general.get_media_upload_path(item=test_items[0], media_type='invalid')
+        general.get_media_upload_path(item, 'invalid')
 
 
-def test_get_themerr_json_path(section):
-    test_items = [
-        section.all()[0]
-    ]
-
-    for item in test_items:
-        themerr_json_path = general.get_themerr_json_path(item=item)
-        assert themerr_json_path.endswith('{}.json'.format(item.ratingKey))
-        assert os.path.join('Plex Media Server', 'Plug-in Support', 'Data', constants.plugin_identifier,
-                            'DataItems') in themerr_json_path
+@pytest.mark.parametrize('agent, expected', [
+    ('tv.plex.agents.movie', True), ('tv.plex.agents.series', True), ('invalid', False),
+])
+def test_continue_update(configured, agent, expected):
+    configured['Themerr']['BOOL_PLEX_MOVIE_SUPPORT'] = True
+    configured['Themerr']['BOOL_PLEX_SERIES_SUPPORT'] = True
+    assert general.continue_update(agent) is expected
 
 
-def test_get_themerr_json_data(section):
-    test_items = [
-        section.all()[0]
-    ]
-
-    for item in test_items:
-        themerr_json_data = general.get_themerr_json_data(item=item)
-        assert isinstance(themerr_json_data, dict)
-        assert 'youtube_theme_url' in themerr_json_data.keys()
-
-
-def test_get_themerr_settings_hash():
-    themerr_settings_hash = general.get_themerr_settings_hash()
-    assert themerr_settings_hash
-    assert isinstance(themerr_settings_hash, str)
-
-    # ensure hash is 256 bits long
-    assert len(themerr_settings_hash) == 64
+@pytest.mark.parametrize('provider, rating_key, expected', [
+    ('local', 'x', 'user'),
+    ('com.plexapp.agents.plexthememusic', 'x', 'plex'),
+    (None, 'metadata://themes/tv.plex.agents.series_1', 'plex'),
+    ('custom', 'x', 'custom'),
+    (None, 'x', 'themerr'),
+])
+def test_theme_provider(monkeypatch, item, provider, rating_key, expected):
+    item.themes.return_value = [SimpleNamespace(selected=True, provider=provider, ratingKey=rating_key)]
+    monkeypatch.setattr(general, 'get_themerr_json_data', lambda **_: {'source': 'themerr'})
+    assert general.get_theme_provider(item) == expected
 
 
-def test_remove_uploaded_media(section):
-    test_items = [
-        section.all()[0]
-    ]
-
-    for item in test_items:
-        for media_type in ['themes']:  # todo - test art and posters
-            # backup current directory
-            current_directory = general.get_media_upload_path(item=item, media_type=media_type)
-            assert os.path.isdir(current_directory)
-            shutil.copytree(current_directory, '{}.bak'.format(current_directory))
-            assert os.path.isdir('{}.bak'.format(current_directory))
-
-            general.remove_uploaded_media(item=item, media_type=media_type)
-            assert not os.path.isdir(current_directory)
-
-            # restore backup
-            shutil.move('{}.bak'.format(current_directory), current_directory)
-            assert os.path.isdir(current_directory)
+def test_no_selected_theme(item):
+    assert general.get_theme_provider(item) is None
+    item.themes.return_value = [SimpleNamespace(selected=False)]
+    assert general.get_theme_provider(item) is None
 
 
-def test_remove_uploaded_media_error_handler():
-    # just try to execute the error handler function
-    general.remove_uploaded_media_error_handler(
-        func=test_remove_uploaded_media_error_handler,
-        path=os.getcwd(),
-        exc_info=OSError
-    )
+def test_data_file_round_trip(configured, item, tmp_path):
+    assert general.get_themerr_json_data(item) == {}
+    path = Path(general.get_themerr_json_path(item))
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({'downloaded_timestamp': 1, 'old': 2}), encoding='utf-8')
+    general.update_themerr_data_file(item, {'new': 3})
+    assert general.get_themerr_json_data(item) == {'old': 2, 'new': 3}
 
 
-def test_update_themerr_data_file(section):
-    test_items = [
-        section.all()[0]
-    ]
+def test_settings_hash(configured):
+    first = general.get_themerr_settings_hash()
+    assert len(first) == 64
+    configured['Themerr']['BOOL_PREFER_MP4A_CODEC'] = not configured['Themerr']['BOOL_PREFER_MP4A_CODEC']
+    assert general.get_themerr_settings_hash() != first
 
-    new_themerr_data = {
-        'pytest': 'test'
-    }
 
-    for item in test_items:
-        general.update_themerr_data_file(item=item, new_themerr_data=new_themerr_data)
-        themerr_json_data = general.get_themerr_json_data(item=item)
-        assert themerr_json_data['pytest'] == 'test'
+def test_remove_uploaded_media(configured, item, tmp_path):
+    configured['Plex']['PLEX_APP_SUPPORT_PATH'] = str(tmp_path)
+    path = Path(general.get_media_upload_path(item, 'themes'))
+    path.mkdir(parents=True)
+    (path / 'old.mp3').write_bytes(b'audio')
+    general.remove_uploaded_media(item, 'themes')
+    assert not path.exists()
+    general.remove_uploaded_media(item, 'themes')
 
-        for key in general.legacy_keys:
-            assert key not in themerr_json_data
+
+def test_remove_error_handler():
+    general.remove_uploaded_media_error_handler('remove', 'path', OSError('failure'))

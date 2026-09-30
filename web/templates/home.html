@@ -27,7 +27,7 @@
                            data-bs-target="#section_{{ items[section]['key'] }}_collapse" aria-expanded="false"
                            aria-controls="section_{{ items[section]['key'] }}_collapse"
                            onclick="toggleArrow(this)">
-                           <i class="text-white fas fa-caret-up" id="section_{{ items[section]['key'] }}_arrow"></i>
+                           <i class="text-white section-arrow" data-lucide="chevron-up" id="section_{{ items[section]['key'] }}_arrow"></i>
                     </a></h2>
                 </div>
             </div>
@@ -151,21 +151,21 @@
                                     </td>
                                     <td class="{{ status_column_width }}">
                                         {% if item['theme_provider'] == 'plex' %}
-                                            <i class="fas fa-circle-chevron-right text-warning"></i> {{ _('Plex provided') }}
+                                            <i data-lucide="arrow-right-circle" class="text-warning"></i> {{ _('Plex provided') }}
                                         {% elif item['theme_provider'] == 'user' %}
-                                            <i class="fas fa-user text-info"></i> {{ _('User provided') }}
+                                            <i data-lucide="user" class="text-info"></i> {{ _('User provided') }}
                                         {% elif item['theme_provider'] == 'themerr' %}
-                                            <i class="fas fa-check-circle text-success"></i> {{ _('Themerr provided') }}
+                                            <i data-lucide="circle-check" class="text-success"></i> {{ _('Themerr provided') }}
                                         {% elif item['theme_provider'] != None %}
-                                            <i class="fas fa-question-circle text-secondary"></i> {{ item['provider'] }} {{ _('provided') }}
+                                            <i data-lucide="circle-help" class="text-secondary"></i> {{ item['provider'] }} {{ _('provided') }}
                                         {% elif item['theme_status'] == 'complete' %}
-                                            <i class="fas fa-question-circle text-secondary"></i> {{ _('Unknown provider') }}
+                                            <i data-lucide="circle-help" class="text-secondary"></i> {{ _('Unknown provider') }}
                                         {% elif item['theme_status'] == 'missing' %}
-                                            <i class="fas fa-times-circle text-danger"></i> {{ _('Missing from ThemerrDB') }}
+                                            <i data-lucide="circle-x" class="text-danger"></i> {{ _('Missing from ThemerrDB') }}
                                         {% elif item['theme_status'] == 'failed' %}
-                                            <i class="fas fa-exclamation-circle text-warning"></i> {{ _('Failed to download') }}
+                                            <i data-lucide="circle-alert" class="text-warning"></i> {{ _('Failed to download') }}
                                         {% else %}
-                                            <i class="fas fa-exclamation-circle text-danger"></i> {{ _('Unknown status') }}
+                                            <i data-lucide="circle-alert" class="text-danger"></i> {{ _('Unknown status') }}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -188,14 +188,7 @@
 <!-- toggle collapse arrow -->
 <script>
     function toggleArrow(element) {
-        let arrow = element.querySelector('.fas')
-        if (arrow.classList.contains('fa-caret-up')) {
-            arrow.classList.remove('fa-caret-up')
-            arrow.classList.add('fa-caret-down')
-        } else {
-            arrow.classList.remove('fa-caret-down')
-            arrow.classList.add('fa-caret-up')
-        }
+        element.querySelector('.section-arrow').classList.toggle('flipped')
     }
 </script>
 {% endblock scripts %}

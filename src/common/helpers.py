@@ -5,15 +5,47 @@ Many reusable helper functions.
 """
 # standard imports
 import datetime
+import ipaddress
 import json
 import logging
 import os
-import requests
-import requests_cache
 import time
+import warnings
+import webbrowser
 from typing import AnyStr, Optional, Union
 from urllib.parse import quote, quote_plus, unquote, unquote_plus
-import webbrowser
+
+# lib imports
+import requests
+import requests_cache
+from urllib3.exceptions import InsecureRequestWarning as _InsecureRequestWarning
+
+
+def is_public_ip(address: str) -> bool:
+    """
+    Check whether an IP address is globally routable.
+
+    This distinguishes public endpoints from local or reserved addresses without making a network request.
+
+    Parameters
+    ----------
+    address : str
+        IPv4 or IPv6 address to check.
+
+    Returns
+    -------
+    bool
+        True for a globally routable address, otherwise False.
+
+    Examples
+    --------
+    >>> is_public_ip('8.8.8.8')
+    True
+    """
+    try:
+        return ipaddress.ip_address(address).is_global
+    except ValueError:
+        return False
 
 
 def check_folder_writable(fallback: str, name: str, folder: Optional[str] = None) -> tuple[str, Optional[bool]]:
@@ -99,7 +131,10 @@ def docker_healthcheck() -> bool:
 
     for p in protocols:
         try:
-            response = requests.get(url=f'{p}://localhost:9696/status')
+            # The bundled HTTPS certificate is self-signed; this probe only connects to loopback.
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=_InsecureRequestWarning)
+                response = requests.get(url=f'{p}://localhost:9494/status', timeout=5, verify=p == 'http')
         except requests.exceptions.ConnectionError:
             pass
         else:

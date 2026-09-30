@@ -1,30 +1,44 @@
-# local imports
-from plex import plexapi
+"""ThemerrDB indexing and lookup without hosted data."""
+
 from themerr import themerr_db
 
 
-def test_update_cache(empty_themerr_db_cache):
+def test_update_cache_and_lookup(monkeypatch):
+    calls = []
+
+    def get_json(**kwargs):
+        url = kwargs['url']
+        calls.append(url)
+        if url.endswith('pages.json'):
+            return {'pages': 2}
+        return [{'id': 123, 'imdb_id': 'tt123'}]
+
+    monkeypatch.setattr(themerr_db.helpers, 'json_get', get_json)
+    monkeypatch.setattr(themerr_db.time, 'time', lambda: 10000)
+    monkeypatch.setattr(themerr_db, 'database_cache', {})
+    monkeypatch.setattr(themerr_db, 'last_cache_update', 0)
+
     themerr_db.update_cache()
-    assert themerr_db.last_cache_update > 0, 'Cache update did not complete'
-
-    assert "movies" in themerr_db.database_cache, 'Cache does not contain movies'
-    assert "movie_collections" in themerr_db.database_cache, 'Cache does not contain movie_collections'
-    assert "tv_shows" in themerr_db.database_cache, 'Cache does not contain tv_shows'
-
-
-def test_item_exists(empty_themerr_db_cache, section):
-    for item in section.all():
-        database_info = plexapi.get_database_info(item=item)
-
-        database_type = database_info[0]
-        database = database_info[1]
-        database_id = database_info[3]
-
-        assert themerr_db.item_exists(database_type=database_type, database=database, id=database_id), \
-            '{} {} {} does not exist in ThemerrDB'.format(database, database_type, database_id)
+    assert len(calls) == 9
+    assert themerr_db.item_exists('movies', 'themoviedb', 123)
+    assert themerr_db.item_exists('movies', 'imdb', 'tt123')
+    assert not themerr_db.item_exists('movies', 'imdb', 'missing')
+    assert not themerr_db.item_exists('invalid', 'imdb', 'tt123')
+    themerr_db.update_cache()
+    assert len(calls) == 9
 
 
-def test_item_exists_with_invalid_database():
-    # movie is not valid... the correct type is movies
-    assert not themerr_db.item_exists(database_type='movie', database='invalid', id='invalid'), \
-        'Invalid database should not exist in ThemerrDB'
+def test_failed_database_fetch(monkeypatch):
+    monkeypatch.setattr(themerr_db, 'database_cache', {})
+    monkeypatch.setattr(themerr_db, 'last_cache_update', 0)
+    monkeypatch.setattr(themerr_db.time, 'time', lambda: 10000)
+
+    def fail(**_):
+        raise RuntimeError('offline')
+
+    monkeypatch.setattr(themerr_db.helpers, 'json_get', fail)
+    themerr_db.update_cache()
+    assert themerr_db.database_cache == {
+        'movies': {}, 'movie_collections': {}, 'tv_shows': {},
+    }
+    assert not themerr_db.item_exists('movies', 'themoviedb', 1)

@@ -2,6 +2,16 @@ body {
    padding-top: 80px;
 }
 
+.lucide {
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: -0.2em;
+}
+
+.section-arrow.flipped {
+    transform: rotate(180deg);
+}
+
 /*Apply to elements that serve as anchors*/
 .offset-anchor {
     border-top: 80px solid transparent;
@@ -186,33 +196,6 @@ li.beta-setting {
     padding-left: 10px;
     margin-left: -10px;
     margin-bottom: 15px;
-}
-
-.settings-alert {
-    /*float: left;*/
-    padding: 0;
-    margin: 5px 0;
-    border: 0;
-    position: relative;
-}
-
-.settings-alert ul {
-    padding: 0;
-}
-
-.settings-alert ul li {
-    list-style: none;
-    padding: 5px 12px;
-    margin: 0;
-    border: 1px solid #ebccd1;
-    border-radius: 4px;
-}
-
-.settings-alert ul li:before {
-    content: "\f071";
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
-    margin-right: 5px;
 }
 
 .form-control,

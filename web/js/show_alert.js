@@ -1,42 +1,32 @@
-// create alert placeholder container
-let alert_placeholder = document.createElement('div');
-alert_placeholder.id = 'alert_placeholder';
-alert_placeholder.className = 'container alert_placeholder';
-document.body.appendChild(alert_placeholder);
+import { refreshIcons } from './icons.js';
 
-function showAlert(message, alert_type = 'alert-info', icon_class = null, timeout = null) {
-    // get current timestamp
-    let now = Date.now()
+const alertPlaceholder = document.createElement('div');
+alertPlaceholder.className = 'container alert_placeholder';
+document.body.appendChild(alertPlaceholder);
 
-    // create the alert div
-    let alert_div = document.createElement('div');
-    alert_div.id = `alert_div_${now}`;
-    alert_div.className = `alert ${alert_type} alert-dismissible fade show`;
-    alert_div.setAttribute('role', 'alert');
-    alert_div.textContent = message;
+export function showAlert(message, alertType = 'alert-info', iconName = null, timeout = null) {
+    const alert = document.createElement('div');
+    alert.className = `alert ${alertType} alert-dismissible fade show`;
+    alert.setAttribute('role', 'alert');
 
-    // create the icon and prepend it to the message
-    if (icon_class !== null) {
-        let icon = document.createElement('i');
-        icon.className = icon_class;
-        alert_div.prepend(icon);
+    if (iconName !== null) {
+        const icon = document.createElement('i');
+        icon.dataset.lucide = iconName;
+        icon.className = 'me-2';
+        alert.appendChild(icon);
     }
+    alert.appendChild(document.createTextNode(message));
 
-    // create the alert close button
-    let alert_close = document.createElement('button');
-    alert_close.type = 'button';
-    alert_close.className = 'btn-close';
-    alert_close.setAttribute('data-bs-dismiss', 'alert');
-    alert_close.setAttribute('aria-label', 'Close');
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'btn-close';
+    close.setAttribute('data-bs-dismiss', 'alert');
+    close.setAttribute('aria-label', 'Close');
+    alert.appendChild(close);
+    alertPlaceholder.appendChild(alert);
+    refreshIcons();
 
-    // append the elements to the placeholder
-    alert_div.appendChild(alert_close);
-    alert_placeholder.appendChild(alert_div);
-
-    // close alert after timeout
     if (timeout !== null) {
-        setTimeout(function () {
-            $(`#alert_div_${now}`).remove();
-        }, timeout);
+        setTimeout(() => alert.remove(), timeout);
     }
 }

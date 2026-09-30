@@ -1,5 +1,5 @@
 # standard imports
-from future.moves import queue
+import queue
 import os
 import time
 import threading
@@ -133,7 +133,7 @@ def update_plex_item(rating_key: int) -> bool:
                     update_collection_metadata = False
 
                     if agent == 'tv.plex.agents.movie':  # new Plex Movie agent
-                        if config.CONFIG['Themerr']['BOOL_AUTO_UPDATE_COLLECTION_THEMES']:
+                        if config.CONFIG['Themerr']['BOOL_UPDATE_COLLECTION_METADATA']:
                             update_collection_metadata = True
 
                     if update_collection_metadata:

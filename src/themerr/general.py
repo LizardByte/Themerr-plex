@@ -45,7 +45,7 @@ def _get_metadata_path(item: PlexPartialObject) -> str:
     "...bundle"
     """
     guid = item.guid
-    full_hash = hashlib.sha1(guid).hexdigest()
+    full_hash = hashlib.sha1(guid.encode('utf-8')).hexdigest()
     metadata_path = os.path.join(
         config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH'], 'Metadata', metadata_type_map[item.type],
         full_hash[0], full_hash[1:] + '.bundle')
@@ -264,7 +264,7 @@ def get_themerr_settings_hash() -> str:
         bool_prefer_mp4a_codec=config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'],
         int_plexapi_plexapi_timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
     )
-    settings_hash = hashlib.sha256(json.dumps(themerr_settings)).hexdigest()
+    settings_hash = hashlib.sha256(json.dumps(themerr_settings, sort_keys=True).encode('utf-8')).hexdigest()
     return settings_hash
 
 

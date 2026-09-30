@@ -9,3 +9,15 @@ tests/
 
 # ignore venv when building locally
 venv/
+.venv/
+build/
+dist/
+coverage/
+junit-python.xml
+_site/
+.dockle/
+.npm-cache/
+node_modules/
+web/assets/
+.build-tools/
+config/

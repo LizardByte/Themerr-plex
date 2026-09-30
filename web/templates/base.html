@@ -11,22 +11,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}">
-
-        <!-- Fonts -->
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='node_modules/@fontsource/open-sans/index.css') }}">
-
-        <!-- CSS -->
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sidebar.css') }}">
-
-        <!-- Bootstrap Optional JavaScript -->
-        <script type="text/javascript" src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-
-        <!-- JQuery Javascript -->
-        <script type="text/javascript" src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/app.css') }}">
 
         {% block head %}{% endblock head %}
     </head>
@@ -53,8 +38,7 @@
 
         <!-- JS -->
         <script type="text/javascript" src="https://app.lizardbyte.dev/js/discord.js"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/show_alert.js') }}"></script>
-        <script type="text/javascript" src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+        <script defer src="{{ url_for('static', filename='assets/app.js') }}"></script>
 
         {% block scripts %}{% endblock %}
     </body>

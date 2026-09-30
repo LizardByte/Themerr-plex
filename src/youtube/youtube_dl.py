@@ -1,6 +1,9 @@
+"""Resolve a YouTube video's audio stream with yt-dlp."""
+
 # standard imports
 import json
 import os
+import sys
 import tempfile
 from typing import Optional
 
@@ -17,140 +20,111 @@ log = logger.get_logger(name=__name__)
 
 def ns_bool(value: bool) -> str:
     """
-    Format a boolean value for a Netscape cookie jar file.
+    Format a boolean for a Netscape cookie file.
 
     Parameters
     ----------
-    value : py:class:`bool`
-        The boolean value to format.
+    value : bool
+        Boolean value to format.
 
     Returns
     -------
     str
-        'TRUE' or 'FALSE'.
+        ``TRUE`` or ``FALSE``.
     """
     return 'TRUE' if value else 'FALSE'
 
 
 def process_youtube(url: str) -> Optional[str]:
     """
-    Process URL using `yt_dlp`
+    Return the best audio stream URL from a YouTube video.
+
+    Extract audio formats with yt-dlp and choose the largest supported stream,
+    honoring the configured MP4A preference. Cookies are written to a temporary
+    Netscape file for the extractor and removed afterward.
 
     Parameters
     ----------
     url : str
-       The URL of the YouTube video.
+        URL of the YouTube video or playlist.
 
     Returns
     -------
-    Optional[str]
-       The URL of the audio object.
-
-    Examples
-    --------
-    >>> process_youtube(url='https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-    ...
+    str or None
+        Selected audio stream URL, or ``None`` if extraction fails.
     """
+    cookie_dir = os.path.join(definitions.Paths.CONFIG_DIR, 'cookies')
+    os.makedirs(cookie_dir, exist_ok=True)
 
-    cookie_jar_file = tempfile.NamedTemporaryFile(
-        dir=os.path.join(definitions.Paths.CONFIG_DIR, 'cookies'),
-        delete=False,
-    )
-    cookie_jar_file.write('# Netscape HTTP Cookie File\n')
-
-    youtube_dl_params = dict(
-        cookiefile=cookie_jar_file.name,
-        logger=log,
-        socket_timeout=10,
-        youtube_include_dash_manifest=False,
-    )
-
-    if config.CONFIG['Themerr']['STR_YOUTUBE_COOKIES']:
-        try:
-            cookies = json.loads(config.CONFIG['Themerr']['STR_YOUTUBE_COOKIES'])
-            for cookie in cookies:
-                include_subdomain = cookie['domain'].startswith('.')
-                expiry = int(cookie.get('expiry', 0))
-                values = [
-                    cookie['domain'],
-                    ns_bool(include_subdomain),
-                    cookie['path'],
-                    ns_bool(cookie['secure']),
-                    str(expiry),
-                    cookie['name'],
-                    cookie['value']
-                ]
-                cookie_jar_file.write(f'{'\t'.join(values)}\n')
-        except Exception as e:
-            log.exception(f'Failed to write YouTube cookies to file, will try anyway. Error: {e}')
-
-    cookie_jar_file.flush()
-    cookie_jar_file.close()
+    with tempfile.NamedTemporaryFile(
+        mode='w', encoding='utf-8', newline='\n', dir=cookie_dir, delete=False,
+    ) as cookie_file:
+        cookie_path = cookie_file.name
+        cookie_file.write('# Netscape HTTP Cookie File\n')
+        raw_cookies = config.CONFIG['Themerr']['STR_YOUTUBE_COOKIES']
+        if raw_cookies:
+            try:
+                for cookie in json.loads(raw_cookies):
+                    values = [
+                        cookie['domain'],
+                        ns_bool(cookie['domain'].startswith('.')),
+                        cookie['path'],
+                        ns_bool(cookie['secure']),
+                        str(int(cookie.get('expiry', 0))),
+                        cookie['name'],
+                        cookie['value'],
+                    ]
+                    cookie_file.write('\t'.join(values) + '\n')
+            except (ValueError, KeyError, TypeError) as exc:
+                log.warning('Failed to write YouTube cookies; continuing without them: %s', exc)
 
     try:
-        ydl = yt_dlp.YoutubeDL(params=youtube_dl_params)
-
-        with ydl:
+        params = {
+            'cookiefile': cookie_path,
+            'logger': log,
+            'socket_timeout': 10,
+            'youtube_include_dash_manifest': False,
+        }
+        if definitions.Modes.FROZEN:
+            deno_name = 'deno.exe' if sys.platform == 'win32' else 'deno'
+            params['js_runtimes'] = {
+                'deno': {'path': os.path.join(definitions.Paths.ROOT_DIR, deno_name)},
+            }
+        with yt_dlp.YoutubeDL(params=params) as ydl:
             try:
-                result = ydl.extract_info(
-                    url=url,
-                    download=False  # We just want to extract the info
-                )
-            except Exception as exc:
-                if isinstance(exc, yt_dlp.utils.ExtractorError) and exc.expected:
-                    log.info(f'yt-dlp returned YT error while downloading {url}: {exc}')
+                result = ydl.extract_info(url=url, download=False)
+            except yt_dlp.utils.ExtractorError as exc:
+                if exc.expected:
+                    log.info('yt-dlp could not extract %s: %s', url, exc)
                 else:
-                    log.exception(f'yt-dlp returned an unexpected error while downloading {url}: {exc}')
+                    log.exception('yt-dlp failed to extract %s', url)
+                return None
+            except Exception:
+                log.exception('yt-dlp failed to extract %s', url)
                 return None
 
-            if 'entries' in result:
-                # Can be a playlist or a list of videos
-                video_data = result['entries'][0]
-            else:
-                # Just a video
-                video_data = result
+        if not result:
+            return None
+        video = next((entry for entry in result['entries'] if entry), None) if 'entries' in result else result
+        if not video:
+            return None
 
-        selected = {
-            'opus': {
-                'size': 0,
-                'audio_url': None
-            },
-            'mp4a': {
-                'size': 0,
-                'audio_url': None
-            },
-        }
-        if video_data:
-            for fmt in video_data['formats']:  # loop through formats, select largest audio size for better quality
-                if 'audio only' in fmt['format']:
-                    if 'opus' == fmt['acodec']:
-                        temp_codec = 'opus'
-                    elif 'mp4a' == fmt['acodec'].split('.')[0]:
-                        temp_codec = 'mp4a'
-                    else:
-                        log.debug(f'Unknown codec: {fmt['acodec']}')
-                        continue  # unknown codec
-                    filesize = int(fmt['filesize'])
-                    if filesize > selected[temp_codec]['size']:
-                        selected[temp_codec]['size'] = filesize
-                        selected[temp_codec]['audio_url'] = fmt['url']
+        selected = {}
+        for fmt in video.get('formats', []):
+            if fmt.get('vcodec') != 'none' and 'audio only' not in fmt.get('format', ''):
+                continue
+            codec = fmt.get('acodec', '').split('.')[0]
+            if codec not in ('opus', 'mp4a') or not fmt.get('url'):
+                continue
+            size = fmt.get('filesize') or fmt.get('filesize_approx') or fmt.get('abr') or 0
+            if codec not in selected or size > selected[codec][0]:
+                selected[codec] = (size, fmt['url'])
 
-        audio_url = None
-
-        if 0 < selected['opus']['size'] > selected['mp4a']['size']:
-            audio_url = selected['opus']['audio_url']
-        elif 0 < selected['mp4a']['size'] > selected['opus']['size']:
-            audio_url = selected['mp4a']['audio_url']
-
-        if audio_url and config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC']:  # mp4a codec is preferred
-            if selected['mp4a']['audio_url']:  # mp4a codec is available
-                audio_url = selected['mp4a']['audio_url']
-            elif selected['opus']['audio_url']:  # fallback to opus :(
-                audio_url = selected['opus']['audio_url']
-
-        return audio_url  # return None or url found
+        if config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and 'mp4a' in selected:
+            return selected['mp4a'][1]
+        return max(selected.values(), default=(0, None))[1]
     finally:
         try:
-            os.remove(cookie_jar_file.name)
-        except Exception as e:
-            log.exception(f'Failed to delete cookie jar file: {e}')
+            os.remove(cookie_path)
+        except OSError:
+            log.exception('Failed to delete YouTube cookie file: %s', cookie_path)

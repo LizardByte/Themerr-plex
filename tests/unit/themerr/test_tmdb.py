@@ -1,40 +1,45 @@
-# lib imports
+"""Plex TMDb lookup behavior with deterministic responses."""
+
 import pytest
 
-# local imports
 from themerr import tmdb
 
 
-@pytest.mark.parametrize('tmdb_test_id, database, item_type', [
-    ('tt1254207', 'imdb', 'movie'),
-    ('268592', 'tvdb', 'tv'),
+def test_base_url(configured):
+    configured['Plex']['PLEX_URL'] = 'https://plex.example'
+    assert tmdb.tmdb_base_url() == 'https://plex.example/services/tmdb?uri='
+
+
+@pytest.mark.parametrize('database,item_type,data,expected', [
+    ('imdb', 'movie', {'movie_results': [{'id': '123'}]}, 123),
+    ('tvdb', 'tv', {'tv_results': [{'id': 456}]}, 456),
+    ('imdb', 'movie', {'movie_results': []}, None),
 ])
-def test_get_tmdb_id_from_external_id(tmdb_test_id, database, item_type):
-    tmdb_id = tmdb.get_tmdb_id_from_external_id(external_id=tmdb_test_id, database=database, item_type=item_type)
-    assert tmdb_id, "No tmdb_id found for {}".format(tmdb_test_id)
-    assert isinstance(tmdb_id, int), "tmdb_id is not an int: {}".format(tmdb_id)
+def test_external_lookup(configured, monkeypatch, database, item_type, data, expected):
+    configured['Plex']['PLEX_URL'] = 'https://plex.example'
+    calls = []
+    monkeypatch.setattr(tmdb.helpers, 'json_get', lambda **kwargs: calls.append(kwargs) or data)
+    assert tmdb.get_tmdb_id_from_external_id('tt 1', database, item_type) == expected
+    assert 'tt+1' in calls[0]['url']
 
 
-@pytest.mark.parametrize('tmdb_test_id, database, item_type', [
-    ('invalid', 'imdb', 'movie'),
-    ('tt1254207', 'invalid', 'movie'),
-    ('invalid', 'imdb', 'game'),
+def test_external_invalid_and_error(configured, monkeypatch):
+    assert tmdb.get_tmdb_id_from_external_id('x', 'invalid', 'movie') is None
+    assert tmdb.get_tmdb_id_from_external_id('x', 'imdb', 'game') is None
+
+    def fail(**_):
+        raise RuntimeError('offline')
+
+    monkeypatch.setattr(tmdb.helpers, 'json_get', fail)
+    assert tmdb.get_tmdb_id_from_external_id('x', 'imdb', 'movie') is None
+
+
+@pytest.mark.parametrize('name,expected', [
+    ('James Bond', 645), ('James Bond Collection', 645), ('Unknown', None),
 ])
-def test_get_tmdb_id_from_external_id_invalid(tmdb_test_id, database, item_type):
-    test = tmdb.get_tmdb_id_from_external_id(external_id=tmdb_test_id, database=database, item_type=item_type)
-    assert test is None, "tmdb_id found for invalid imdb_id: {}".format(test)
-
-
-@pytest.mark.parametrize('tmdb_test_collection', [
-    'James Bond',
-    'James Bond Collection',
-])
-def test_get_tmdb_id_from_collection(tmdb_test_collection):
-    tmdb_id = tmdb.get_tmdb_id_from_collection(search_query=tmdb_test_collection)
-    assert tmdb_id, "No tmdb_id found for {}".format(tmdb_test_collection)
-    assert isinstance(tmdb_id, int), "tmdb_id is not an int: {}".format(tmdb_id)
-
-
-def test_get_tmdb_id_from_collection_invalid():
-    test = tmdb.get_tmdb_id_from_collection(search_query='Not a real collection')
-    assert test is None, "tmdb_id found for invalid collection: {}".format(test)
+def test_collection_lookup(configured, monkeypatch, name, expected):
+    configured['Plex']['PLEX_URL'] = 'https://plex.example'
+    monkeypatch.setattr(tmdb.helpers, 'json_get', lambda **_: {
+        'results': [{'name': 'James Bond Collection', 'id': '645'}],
+    })
+    assert tmdb.get_tmdb_id_from_collection(name) == expected

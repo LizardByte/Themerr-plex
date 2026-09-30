@@ -150,6 +150,7 @@ class Paths:
     BINARY_PATH = os.path.abspath(os.path.join(SRC_DIR, 'themerr_plex.py'))
 
     if Modes.FROZEN:  # pyinstaller build
+        ROOT_DIR = sys._MEIPASS
         DATA_DIR = os.path.dirname(sys.executable)
         BINARY_PATH = os.path.abspath(sys.executable)
     if Modes.DOCKER:  # docker install
@@ -158,6 +159,6 @@ class Paths:
     else:
         CONFIG_DIR = os.path.join(DATA_DIR, 'config')
 
-    DOCS_DIR = os.path.join(ROOT_DIR, 'docs', 'build', 'html')
+    DOCS_DIR = os.path.join(ROOT_DIR, '_site')
     LOCALE_DIR = os.path.join(ROOT_DIR, 'locale')
     LOG_DIR = os.path.join(CONFIG_DIR, 'logs')

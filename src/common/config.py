@@ -71,13 +71,6 @@ def on_change_tray_toggle() -> bool:
 # - string
 # - integer
 # - float
-# data parsley types (Parsley validation)
-# - alphanum (string)
-# - email (string)
-# - url (string)
-# - number (float, integer)
-# - integer (integer)
-# - digits (string)
 _CONFIG_SPEC_DICT = dict(
     Info=dict(
         type='section',
@@ -91,7 +84,6 @@ _CONFIG_SPEC_DICT = dict(
             default=0,  # increment when updating config
             min=0,
             max=0,  # increment when updating config
-            data_parsley_type='integer',
             extra_class='col-md-3',
             locked=True,
         ),
@@ -107,7 +99,7 @@ _CONFIG_SPEC_DICT = dict(
         type='section',
         name=_('General'),
         description=_('General settings.'),
-        icon='gear',
+        icon='settings',
         LOCALE=dict(
             type='option',
             name=_('Locale'),
@@ -171,7 +163,7 @@ _CONFIG_SPEC_DICT = dict(
             name=_('Log directory'),
             advanced=True,
             description=_('The directory where to store the log files.'),
-            data_parsley_pattern=regex_directory,
+            pattern=regex_directory,
             extra_class='col-lg-8',
             button_directory=True,
         ),
@@ -187,15 +179,15 @@ _CONFIG_SPEC_DICT = dict(
         type='section',
         name=_('Network'),
         description=_('Network settings.'),
-        icon='network-wired',
+        icon='network',
         HTTP_HOST=dict(
             type='string',
             name=_('HTTP host address'),
             advanced=True,
             description=_('The HTTP address to bind to.'),
             default='0.0.0.0',
-            data_parsley_pattern=r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[.]){3}'
-                                 r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b',
+            pattern=r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[.]){3}'
+                    r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b',
             # https://codverter.com/blog/articles/tech/20190105-extract-ipv4-ipv6-ip-addresses-using-regex.html
             extra_class='col-md-4',
         ),
@@ -207,7 +199,6 @@ _CONFIG_SPEC_DICT = dict(
             default=9494,
             min=21,
             max=65535,
-            data_parsley_type='integer',
             extra_class='col-md-3',
         ),
         HTTP_ROOT=dict(
@@ -229,7 +220,7 @@ _CONFIG_SPEC_DICT = dict(
         type='section',
         name=_('User Interface'),
         description=_('User interface settings.'),
-        icon='display',
+        icon='monitor',
         BACKGROUND_VIDEO=dict(
             type='boolean',
             name=_('Background video'),
@@ -241,7 +232,7 @@ _CONFIG_SPEC_DICT = dict(
         type='section',
         name=_('Updater'),
         description=_('Updater settings.'),
-        icon='arrows-spin',
+        icon='refresh-cw',
         AUTO_UPDATE=dict(
             type='boolean',
             name=_('Auto update'),
@@ -260,7 +251,7 @@ _CONFIG_SPEC_DICT = dict(
             name=_('Plex URL'),
             description=_('The URL to the Plex server.'),
             default='http://127.0.0.1:32400',
-            data_parsley_pattern=r'^https?:\/\/(?:[a-zA-Z0-9-]+\.?)+(:\d{1,5})?$',
+            pattern=r'^https?:\/\/(?:[a-zA-Z0-9-]+\.?)+(:\d{1,5})?$',
             extra_class='col-lg-6',
         ),
         PLEX_TOKEN=dict(
@@ -268,7 +259,7 @@ _CONFIG_SPEC_DICT = dict(
             name=_('Plex token'),
             mask=True,
             description=_('The Plex token.'),
-            data_parsley_type='alphanum',
+            pattern=r'[A-Za-z0-9]+',
             extra_class='col-lg-6',
         ),
         PLEX_APP_SUPPORT_PATH=dict(
@@ -276,7 +267,7 @@ _CONFIG_SPEC_DICT = dict(
             name=_('Plex data directory'),
             description=_('https://support.plex.tv/articles/'
                           '202915258-where-is-the-plex-media-server-data-directory-located/'),
-            data_parsley_pattern=regex_directory,
+            pattern=regex_directory,
             extra_class='col-lg-8',
             button_directory=True,
         ),
@@ -739,11 +730,11 @@ def validate_config(config: ConfigObj) -> bool:
     """
     validator = Validator()
     try:
-        config.validate(
+        result = config.validate(
             validator=validator,
             copy=False  # don't write out default values
         )
-        return True
+        return result is True
     except ValidateError as e:
         log_msg = f"Config validation error: {e}.\n"
         log.error(msg=log_msg)

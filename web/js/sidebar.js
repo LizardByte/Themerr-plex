@@ -1,22 +1,18 @@
-//https://codepen.io/lfrichter/pen/mQJJyB
-
-// Collapse/Expand icon
-button = $('#collapse-icon')
-button.addClass('fa-xmark');
-
-// Collapse click
-$('[data-toggle=sidebar-collapse]').click(function() {
-    SidebarCollapse();
+document.querySelectorAll('[data-toggle="sidebar-collapse"]').forEach((button) => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.querySelectorAll('.sidebar-separator-title').forEach((element) => element.classList.toggle('invisible'));
+        document.querySelectorAll('.menu-collapsed').forEach((element) => element.classList.toggle('d-none'));
+        ['wrapper', 'sidebar-wrapper', 'page-content-wrapper'].forEach((id) => {
+            const element = document.getElementById(id);
+            element.classList.toggle('sidebar-expanded');
+            element.classList.toggle('sidebar-collapsed');
+        });
+        document.querySelectorAll('.sidebar-item').forEach((element) => {
+            element.classList.toggle('justify-content-start');
+            element.classList.toggle('justify-content-center');
+        });
+        document.getElementById('collapse-x').classList.toggle('d-none');
+        document.getElementById('collapse-menu').classList.toggle('d-none');
+    });
 });
-
-function SidebarCollapse () {
-    $('.sidebar-separator-title').toggleClass('invisible');
-    $('.menu-collapsed').toggleClass('d-none');
-    $('#wrapper').toggleClass('sidebar-expanded sidebar-collapsed');
-    $('#sidebar-wrapper').toggleClass('sidebar-expanded sidebar-collapsed');
-    $('#page-content-wrapper').toggleClass('sidebar-expanded sidebar-collapsed');
-    $('.sidebar-item').toggleClass('justify-content-start justify-content-center')
-    
-    // Collapse/Expand icon
-    button.toggleClass('fa-xmark fa-bars');
-}

@@ -4,6 +4,7 @@ src/common/webapp.py
 Responsible for serving the webapp.
 """
 # standard imports
+import copy
 import json
 import os
 from typing import Optional
@@ -54,6 +55,7 @@ app = Flask(
     static_folder=os.path.join(Paths.ROOT_DIR, 'web'),
     template_folder=os.path.join(Paths.ROOT_DIR, 'web', 'templates'),
 )
+app.secret_key = os.urandom(32)
 
 # remove extra lines rendered jinja templates
 app.jinja_env.trim_blocks = True
@@ -345,60 +347,52 @@ def api_settings() -> Response:
     if request.method == 'GET':
         return config.CONFIG
     if request.method == 'POST':
-        # setup return data
-        message = ''  # this will be populated as we progress
-        result_status = 'OK'
-
         boolean_dict = {
             'true': True,
             'false': False,
         }
 
-        data = request.form
-        _config = config.decode_config(common.CONFIG)
-        for option, value in data.items():
-            split_option = option.split('|', 1)
-            key = split_option[0]
-            setting = split_option[1]
+        candidate = copy.deepcopy(config.CONFIG)
+        decoded = config.decode_config(common.CONFIG)
+        changed = []
+        for option, value in request.form.items():
+            key, separator, setting = option.partition('|')
+            spec = config_spec.get(key, {}).get(setting)
+            if not separator or not isinstance(spec, dict) or spec.get('locked'):
+                return jsonify({'status': 'ERROR', 'message': 'Unknown or locked setting.'}), 400
 
-            setting_type = config_spec[key][setting]['type']
-
-            # get the original value
             try:
-                og_value = _config[key][setting]
-            except KeyError:
-                og_value = ''
-            finally:
-                if setting_type == 'boolean':
-                    value = boolean_dict[value.lower()]  # using eval could allow code injection, so use dictionary
-                if setting_type == 'float':
+                if spec['type'] == 'boolean':
+                    value = boolean_dict[value.lower()]
+                elif spec['type'] == 'float':
                     value = float(value)
-                if setting_type == 'integer':
+                elif spec['type'] == 'integer':
                     value = int(value)
-                if config.is_masked_field(section=key, key=setting):
-                    value = config.encode_value(value)
+            except (KeyError, ValueError):
+                return jsonify({'status': 'ERROR', 'message': 'Invalid setting value.'}), 400
 
-            if og_value != value:
-                # setting changed, get the on change command
-                try:
-                    setting_change_method = config_spec[key][setting]['on_change']
-                except KeyError:
-                    pass
-                else:
-                    setting_change_method()
+            if decoded[key][setting] != value:
+                changed.append((key, setting))
+            if config.is_masked_field(section=key, key=setting):
+                value = config.encode_value(value)
+            candidate[key][setting] = value
 
-            config.CONFIG[key][setting] = value
+        if not config.validate_config(config=candidate):
+            return jsonify({'status': 'ERROR', 'message': 'Selected settings are not valid.'}), 400
 
-        valid = config.validate_config(config=config.CONFIG)
+        originals = {(key, setting): config.CONFIG[key][setting] for key, setting in changed}
+        for key, setting in changed:
+            config.CONFIG[key][setting] = candidate[key][setting]
+        if not config.save_config(config=config.CONFIG):
+            for (key, setting), value in originals.items():
+                config.CONFIG[key][setting] = value
+            return jsonify({'status': 'ERROR', 'message': 'Unable to save settings.'}), 500
+        for key, setting in changed:
+            on_change = config_spec[key][setting].get('on_change')
+            if on_change:
+                on_change()
 
-        if valid:
-            message += 'Selected settings are valid.'
-            config.save_config(config=config.CONFIG)
-
-        else:
-            message += 'Selected settings are not valid.'
-
-        return jsonify({'status': f'{result_status}', 'message': f'{message}'})
+        return jsonify({'status': 'OK', 'message': 'Selected settings are valid.'})
 
 
 def start_webapp():

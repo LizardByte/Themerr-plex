@@ -4,7 +4,7 @@ import os
 from threading import Lock
 
 # lib imports
-from six.moves.urllib.parse import quote_plus
+from urllib.parse import quote_plus
 
 # local imports
 from common import config
