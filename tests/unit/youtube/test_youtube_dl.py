@@ -78,6 +78,12 @@ def test_extractor_error_and_invalid_cookies(configured, monkeypatch):
     assert not Path(seen['params']['cookiefile']).exists()
 
 
+def test_download_error_is_nonfatal(configured, monkeypatch):
+    seen = extractor(monkeypatch, error=youtube_dl.yt_dlp.utils.DownloadError('Video unavailable'))
+    assert youtube_dl.process_youtube('https://youtube.example') is None
+    assert seen['params']['format'] == 'bestaudio'
+
+
 def test_unexpected_error(configured, monkeypatch):
     extractor(monkeypatch, error=RuntimeError('failed'))
     assert youtube_dl.process_youtube('https://youtube.example') is None

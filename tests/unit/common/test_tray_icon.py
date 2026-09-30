@@ -4,6 +4,9 @@
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+# lib imports
+import pytest
+
 # local imports
 import common
 from common import tray_icon
@@ -32,6 +35,9 @@ class FakeMenu(tuple):
     def __new__(cls, *items):
         return super().__new__(cls, items)
 
+    def __call__(self, icon):
+        return None
+
 
 def test_initialize_and_browser(configured, monkeypatch):
     monkeypatch.setattr(tray_icon, 'icon_supported', True)
@@ -45,6 +51,8 @@ def test_initialize_and_browser(configured, monkeypatch):
 
     icon = tray_icon.tray_initialize()
     assert icon.name == 'themerr-plex'
+    assert isinstance(icon.menu, FakeMenu)
+    assert callable(icon.menu)
     assert len(icon.menu) > 1
     original = configured['General']['LAUNCH_BROWSER']
     tray_icon.tray_browser()
@@ -52,7 +60,9 @@ def test_initialize_and_browser(configured, monkeypatch):
     save.assert_called_once_with(configured)
 
     monkeypatch.setattr(FakeIcon, 'HAS_MENU', False)
-    assert len(tray_icon.tray_initialize().menu) == 1
+    minimal_menu = tray_icon.tray_initialize().menu
+    assert isinstance(minimal_menu, FakeMenu)
+    assert len(minimal_menu) == 1
 
 
 def test_start_stop_toggle_and_signals(configured, monkeypatch):
@@ -97,8 +107,23 @@ def test_browser_destinations(monkeypatch):
     monkeypatch.setattr(tray_icon.webapp, 'URL', 'https://localhost:9494')
     for action in (
         tray_icon.open_webapp, tray_icon.github_releases, tray_icon.donate_github,
-        tray_icon.donate_mee6, tray_icon.donate_patreon, tray_icon.donate_paypal,
+        tray_icon.donate_patreon, tray_icon.donate_paypal,
     ):
         assert action()
     assert opened[0] == 'https://localhost:9494'
-    assert len(set(opened)) == 6
+    assert len(set(opened)) == 5
+
+
+@pytest.mark.skipif(not hasattr(tray_icon, 'MenuOnLeftClickIcon'), reason='Windows tray backend only')
+def test_windows_left_click_opens_menu(monkeypatch):
+    notified = []
+    monkeypatch.setattr(tray_icon.Icon, '_on_notify', lambda self, wparam, lparam: notified.append(lparam))
+    icon = object.__new__(tray_icon.MenuOnLeftClickIcon)
+    icon._visible = False
+    icon._running = False
+    icon._icon_handle = None
+
+    icon._on_notify(0, tray_icon.pystray_win32.WM_LBUTTONUP)
+    icon._on_notify(0, tray_icon.pystray_win32.WM_RBUTTONUP)
+
+    assert notified == [tray_icon.pystray_win32.WM_RBUTTONUP] * 2

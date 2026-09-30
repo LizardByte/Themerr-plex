@@ -126,7 +126,10 @@ def stop(exit_code: int | str = 0, restart: bool = False):
         if definitions.Modes.FROZEN:
             args = [definitions.Paths.BINARY_PATH]
         else:
-            args = [sys.executable, definitions.Paths.BINARY_PATH]
+            entrypoint = os.path.abspath(sys.argv[0])
+            if not os.path.isfile(entrypoint):
+                entrypoint = definitions.Paths.BINARY_PATH
+            args = [sys.executable, entrypoint]
         args += sys.argv[1:]
 
         if '--nolaunch' not in args:  # don't launch the browser again

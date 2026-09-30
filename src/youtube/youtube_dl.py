@@ -113,6 +113,9 @@ def _extract_video(url: str, params: dict) -> Optional[dict]:
             else:
                 log.exception('yt-dlp failed to extract %s', url)
             return None
+        except yt_dlp.utils.DownloadError as exc:
+            log.warning('yt-dlp could not extract %s: %s', url, exc)
+            return None
         except Exception:
             log.exception('yt-dlp failed to extract %s', url)
             return None
@@ -181,6 +184,7 @@ def process_youtube(url: str) -> Optional[str]:
     try:
         params = {
             'cookiefile': cookie_path,
+            'format': 'bestaudio',
             'logger': log,
             'socket_timeout': 10,
             'youtube_include_dash_manifest': False,

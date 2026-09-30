@@ -5,6 +5,7 @@ Responsible for system tray icon and related functions.
 """
 # standard imports
 import os
+import sys
 
 # lib imports
 from PIL import Image
@@ -28,12 +29,41 @@ log = logger.get_logger(name=__name__)
 # conditional imports
 try:
     from pystray import Icon, MenuItem, Menu
+    if sys.platform == 'win32':
+        from pystray._util import win32 as pystray_win32
 except Exception:
     # A desktop backend may be unavailable, notably on headless Linux runners.
     Icon = MenuItem = Menu = None
     icon_class = None
 else:
-    icon_class = Icon  # avoids a messy import for pytest
+    if sys.platform == 'win32':
+        class MenuOnLeftClickIcon(Icon):
+            """Show the native Windows tray menu on either mouse button.
+
+            Pystray normally runs the default action on a left click. This
+            backend maps a left release to the native popup menu event.
+
+            Parameters
+            ----------
+            *args : tuple
+                Positional arguments passed to the pystray icon.
+            **kwargs : dict
+                Keyword arguments passed to the pystray icon.
+
+            Examples
+            --------
+            >>> issubclass(MenuOnLeftClickIcon, Icon)
+            True
+            """
+
+            def _on_notify(self, wparam, lparam):
+                if lparam == pystray_win32.WM_LBUTTONUP:
+                    lparam = pystray_win32.WM_RBUTTONUP
+                return super()._on_notify(wparam, lparam)
+
+        icon_class = MenuOnLeftClickIcon
+    else:
+        icon_class = Icon
     icon_supported = True
 
 # additional setup
@@ -61,7 +91,7 @@ def tray_initialize() -> Icon | bool:
     """
     if not icon_supported:
         return False
-    tray_icon = Icon(name='themerr-plex')
+    tray_icon = icon_class(name='themerr-plex')
     tray_icon.title = definitions.Names.name
 
     image = Image.open(os.path.join(definitions.Paths.ROOT_DIR, 'web', 'images', 'favicon.ico'))
@@ -69,7 +99,7 @@ def tray_initialize() -> Icon | bool:
 
     # NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not translate "%(app_name)s".
     first_menu_entry = MenuItem(text=_('Open %(app_name)s') % {'app_name': definitions.Names.name},
-                                action=open_webapp, default=True if tray_icon.HAS_DEFAULT_ACTION else False)
+                                action=open_webapp)
 
     if tray_icon.HAS_MENU:
         menu = (
@@ -81,7 +111,6 @@ def tray_initialize() -> Icon | bool:
                 # NOTE: Donate to LizardByte.
                 text=_('Donate'), action=Menu(
                     MenuItem(text=_('GitHub Sponsors'), action=donate_github),
-                    MenuItem(text='MEE6', action=donate_mee6),
                     MenuItem(text='Patreon', action=donate_patreon),
                     MenuItem(text='PayPal', action=donate_paypal),
                 )
@@ -104,7 +133,7 @@ def tray_initialize() -> Icon | bool:
             first_menu_entry,
         )
 
-    tray_icon.menu = menu
+    tray_icon.menu = Menu(*menu)
 
     return tray_icon
 
@@ -339,26 +368,6 @@ def donate_github():
     True
     """
     url = 'https://github.com/sponsors/LizardByte'
-    return helpers.open_url_in_browser(url=url)
-
-
-def donate_mee6():
-    """
-    Open MEE6.
-
-    Open MEE6 in the default web browser.
-
-    Returns
-    -------
-    bool
-        True if opening page was successful, otherwise False.
-
-    Examples
-    --------
-    >>> donate_mee6()
-    True
-    """
-    url = 'https://mee6.xyz/m/804382334370578482'
     return helpers.open_url_in_browser(url=url)
 
 

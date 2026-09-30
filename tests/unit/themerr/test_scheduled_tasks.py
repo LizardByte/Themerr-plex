@@ -8,10 +8,11 @@ from themerr import scheduled_tasks
 
 def test_run_threaded():
     done = Event()
-    thread = scheduled_tasks.run_threaded(target=done.set, daemon=True)
+    thread = scheduled_tasks.run_threaded(target=done.set)
     thread.join(timeout=2)
     assert done.is_set()
     assert not thread.is_alive()
+    assert thread.daemon
 
 
 def test_schedule_loop(monkeypatch):
@@ -42,6 +43,7 @@ def test_setup_scheduling(configured, monkeypatch):
     configured['Themerr']['BOOL_THEMERR_ENABLED'] = True
     scheduled_tasks.setup_scheduling()
     assert len(scheduled_tasks.schedule.jobs) == 2
+    assert all(job.job_func.keywords['daemon'] for job in scheduled_tasks.schedule.jobs)
     started.assert_called_once_with(target=scheduled_tasks.schedule_loop, daemon=True)
     scheduled_tasks.schedule.clear()
 

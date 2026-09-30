@@ -1,6 +1,7 @@
 """Application initialization and shutdown without spawning processes."""
 
 # standard imports
+import os
 from unittest.mock import Mock
 
 # lib imports
@@ -50,6 +51,12 @@ def test_stop_and_restart(monkeypatch):
     assert exit_info.value.code == 3
     assert launch.call_args.kwargs['args'][-2:] == ['--quiet', '--nolaunch']
     end.assert_called_once()
+
+    launch.reset_mock()
+    monkeypatch.setattr(common.sys, 'argv', ['scripts/run_dev.py', '--nolaunch'])
+    with pytest.raises(SystemExit):
+        common.stop(restart=True)
+    assert launch.call_args.kwargs['args'][1] == os.path.abspath('scripts/run_dev.py')
 
     launch.reset_mock()
     with pytest.raises(SystemExit):

@@ -1,10 +1,10 @@
 # standard imports
 import threading
 import time
+from typing import Any, Callable, Iterable, Mapping
 
 # lib imports
 import schedule
-from typing import Any, Callable, Iterable, Mapping, Optional
 
 # local imports
 from common import config
@@ -26,7 +26,7 @@ schedule.logger.info('schedule logger test message')
 
 def run_threaded(
         target: Callable,
-        daemon: Optional[bool] = None,
+        daemon: bool = True,
         args: Iterable = (),
         **kwargs: Mapping[str, Any],
 ) -> threading.Thread:
@@ -40,8 +40,8 @@ def run_threaded(
     ----------
     target : Callable
         The function to run in a thread.
-    daemon : Optional[py:class:`bool`]
-        Whether the thread should be a daemon thread.
+    daemon : bool, default True
+        Whether the thread should be a daemon thread. Scheduled work must not keep a stopped process alive.
     args : Iterable
         The positional arguments to pass to the function.
     kwargs : Mapping[str, Any]
@@ -101,12 +101,14 @@ def setup_scheduling() -> None:
     if config.CONFIG['Themerr']['BOOL_THEMERR_ENABLED']:
         schedule.every(max(15, int(config.CONFIG['Themerr']['INT_UPDATE_THEMES_INTERVAL']))).minutes.do(
             job_func=run_threaded,
-            target=scheduled_update
+            target=scheduled_update,
+            daemon=True,
         )
 
     schedule.every(max(15, int(config.CONFIG['Themerr']['INT_UPDATE_DATABASE_CACHE_INTERVAL']))).minutes.do(
         job_func=run_threaded,
-        target=cache_data
+        target=cache_data,
+        daemon=True,
     )
 
     run_threaded(target=schedule_loop, daemon=True)  # start the schedule loop in a thread
