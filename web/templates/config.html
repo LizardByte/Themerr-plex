@@ -111,7 +111,7 @@
                                     <label for="{{ setting }}" class="form-label">
                                         {{ config_spec[key][setting]['name'] }}
                                     </label>
-                                    <div class="{{ extra_class }}{% if config_spec[key][setting]['button_directory'] %} d-flex gap-2{% endif %}">
+                                    <div class="{{ extra_class }}{% if config_spec[key][setting]['button_directory'] %} input-group{% endif %}">
                                         <input {{ input_type }} class="form-control" id="{{ setting }}" category="{{ key }}" placeholder="{{ config_spec[key][setting]['default'] }}" value="{{ config_settings[key][setting] }}" aria-describedby="{{ setting.lower() }}-help"{% if pattern %} pattern="{{ pattern }}"{% endif %} {{ setting_disabled }}>
                                         {%- if config_spec[key][setting]['button_directory'] -%}
                                             <button type="button" class="btn btn-outline-light" data-directory-target="{{ setting }}"
