@@ -147,10 +147,12 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
     """
     if item.isLocked(field='theme') and not config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']:
         log.debug(f'Not overwriting locked theme for {item.type}: {item.title}')
+        theme_errors.set_error(item.ratingKey, None)
         return
     if (not config.CONFIG['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] and
             general.get_theme_provider(item=item) == 'plex'):
         log.debug(f'Not overwriting Plex provided theme for {item.type}: {item.title}')
+        theme_errors.set_error(item.ratingKey, None)
         return
     if 'youtube_theme_url' not in data:
         log.info(f'{item.ratingKey}: No theme song found for {item.title} ({item.year})')
@@ -159,10 +161,11 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
 
     yt_video_url = data['youtube_theme_url']
     settings_hash = general.get_themerr_settings_hash()
-    themerr_data = general.get_themerr_json_data(item=item)
+    themerr_data = general.get_themerr_data(item=item)
     try:
         skip = (themerr_data['settings_hash'] == settings_hash and
-                themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url)
+                themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url and
+                general.get_theme_provider(item=item) == 'themerr')
     except KeyError:
         skip = False
     if skip:
@@ -181,9 +184,10 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         theme_errors.set_error(item.ratingKey, 'Video processing failed')
         return
     if theme_url:
-        if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url):
+        if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url,
+                     on_error=lambda reason: theme_errors.set_error(item.ratingKey, reason)):
             theme_errors.set_error(item.ratingKey, None)
-        else:
+        elif str(item.ratingKey) not in theme_errors.get_errors():
             theme_errors.set_error(item.ratingKey, 'Theme upload failed')
 
 
@@ -248,6 +252,7 @@ def add_media(
         media_url_id: str,
         media_file: Optional[str] = None,
         media_url: Optional[str] = None,
+        on_error: Callable[[str], None] | None = None,
 ) -> bool:
     """
     Apply media to the specified item.
@@ -267,6 +272,8 @@ def add_media(
         Full path to media file.
     media_url : Optional[str]
         URL of media.
+    on_error : callable or None, optional
+        Receives an upload failure reason.
 
     Returns
     -------
@@ -281,7 +288,7 @@ def add_media(
     uploaded = False
 
     settings_hash = general.get_themerr_settings_hash()
-    themerr_data = general.get_themerr_json_data(item=item)
+    themerr_data = general.get_themerr_data(item=item)
 
     if (item.isLocked(field=media_type_dict[media_type]['plex_field']) and
             not config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']):
@@ -296,7 +303,8 @@ def add_media(
              f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
 
     if (themerr_data.get('settings_hash') == settings_hash and
-            themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id):
+            themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id and
+            (media_type != 'themes' or general.get_theme_provider(item=item) == 'themerr')):
         log.info(f'Skipping {media_type_dict[media_type]['name']} for '
                  f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
         return False
@@ -307,18 +315,27 @@ def add_media(
     log.info(f'Attempting to upload {media_type_dict[media_type]['name']} for '
              f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
     if media_file:
-        uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), filepath=media_file)
+        uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item),
+                                filepath=media_file, on_error=on_error)
     if media_url:
-        uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item), url=media_url)
+        uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item),
+                                url=media_url, on_error=on_error)
 
     if uploaded:
-        # new data for themerr.json
         new_themerr_data = {
             'settings_hash': settings_hash
         }
         new_themerr_data[media_type_dict[media_type]['themerr_data_key']] = media_url_id
+        if media_type == 'themes':
+            try:
+                selected = next((theme for theme in item.themes() if getattr(theme, 'selected', False)), None)
+            except Exception:
+                log.exception('%s: Unable to identify the newly uploaded theme', item.ratingKey)
+                selected = None
+            if selected is not None:
+                new_themerr_data['uploaded_theme_key'] = selected.ratingKey
 
-        general.update_themerr_data_file(item=item, new_themerr_data=new_themerr_data)
+        general.update_themerr_data(item=item, new_themerr_data=new_themerr_data)
 
         # unlock the field since it contains an automatically added value
         change_lock_status(item=item, field=media_type_dict[media_type]['plex_field'], lock=False)
@@ -395,6 +412,7 @@ def upload_media(
         method: Callable,
         filepath: Optional[str] = None,
         url: Optional[str] = None,
+        on_error: Callable[[str], None] | None = None,
 ) -> bool:
     """
     Upload media to the specified item.
@@ -411,6 +429,8 @@ def upload_media(
         The path to the theme song.
     url : Optional[str]
         The url to the theme song.
+    on_error : callable or None, optional
+        Receives the final upload failure reason.
 
     Returns
     -------
@@ -425,6 +445,7 @@ def upload_media(
     ...
     """
     count = 0
+    last_error = None
     while count <= int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']):
         try:
             if filepath or url:
@@ -432,14 +453,18 @@ def upload_media(
                 if method == item.uploadTheme:
                     source['timeout'] = int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'])
                 method(**source)
-        except BadRequest as e:
+        except (BadRequest, requests.RequestException) as e:
+            last_error = e
             sleep_time = 2 ** count
             log.error(f'{item.ratingKey}: Error uploading media: {e}')
-            log.error(f'{item.ratingKey}: Trying again in : {sleep_time} seconds')
-            time.sleep(sleep_time)
+            if count < int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']):
+                log.error(f'{item.ratingKey}: Trying again in : {sleep_time} seconds')
+                time.sleep(sleep_time)
             count += 1
         else:
             return True
+    if last_error is not None and on_error:
+        on_error(theme_errors.normalize_reason(last_error))
     return False
 
 
@@ -468,6 +493,27 @@ def _guid_candidates(item: PlexPartialObject) -> list[tuple[str, str, str]]:
         if separator and database and identifier:
             candidates.append((scheme, database, identifier))
     return candidates
+
+
+def get_external_id(item: PlexPartialObject) -> tuple[str | None, str | None]:
+    """Return an external metadata ID without requiring a TMDB conversion.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex movie, show, or collection.
+
+    Returns
+    -------
+    tuple[str or None, str or None]
+        Database name and identifier, if Plex supplied a supported external GUID.
+    """
+    candidates = _guid_candidates(item)
+    for preferred in ('themoviedb', 'imdb', 'thetvdb'):
+        for _, database, identifier in candidates:
+            if database == preferred:
+                return database, identifier
+    return None, None
 
 
 def _movie_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
@@ -527,7 +573,9 @@ def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optiona
     return 'tv_shows', None, 'tv.plex.agents.series', None
 
 
-def _collection_database_info(item: PlexPartialObject, plex) -> Tuple[str, str, str, Optional[str]]:
+def _collection_database_info(
+    item: PlexPartialObject, plex,
+) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
     """Resolve a collection using its library agent and title.
 
     Parameters
@@ -543,8 +591,64 @@ def _collection_database_info(item: PlexPartialObject, plex) -> Tuple[str, str, 
         Database type, database, agent, and identifier.
     """
     section = plex.library.sectionByID(item.librarySectionID)
+    if section.type != 'movie':
+        return None, None, section.agent, None
     database_id = tmdb.get_tmdb_id_from_collection(search_query=item.title, language=section.language)
+    if database_id is None:
+        database_id = _collection_id_from_members(item)
     return 'movie_collections', 'themoviedb', section.agent, database_id
+
+
+def _collection_id_from_members(item: PlexPartialObject) -> Optional[str]:
+    """Resolve a Plex collection from its movies' ThemerrDB collection metadata.
+
+    Plex collection GUIDs are local UUIDs. A matching TMDB collection can be
+    identified through a member movie, but only when its collection name agrees
+    with the Plex collection title.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex movie collection.
+
+    Returns
+    -------
+    str or None
+        Verified TMDB collection ID when a member supplies one.
+    """
+    requested_name = themerr_db._title_key(item.title).removesuffix(' collection')
+    try:
+        members = item.items()
+    except Exception:
+        log.exception('%s: Unable to inspect collection members', item.ratingKey)
+        return None
+
+    checked = 0
+    for member in members:
+        if checked >= 3:
+            break
+        if getattr(member, 'type', None) != 'movie':
+            continue
+        database, identifier = get_external_id(member)
+        if database not in ('imdb', 'themoviedb') or not identifier:
+            continue
+        if not themerr_db.item_exists(database_type='movies', database=database, id=identifier):
+            continue
+        checked += 1
+        try:
+            metadata = helpers.json_get(
+                cache_time=86400,
+                url=f'https://app.lizardbyte.dev/ThemerrDB/movies/{database}/{identifier}.json',
+            )
+            collection = metadata.get('belongs_to_collection') or {}
+            collection_name = themerr_db._title_key(collection.get('name', '')).removesuffix(' collection')
+            if collection_name == requested_name and collection.get('id'):
+                return str(collection['id'])
+        except (AttributeError, KeyError, TypeError, ValueError):
+            log.warning('%s: Invalid collection metadata for movie %s', item.ratingKey, identifier)
+        except Exception:
+            log.exception('%s: Unable to look up collection metadata', item.ratingKey)
+    return None
 
 
 def get_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:

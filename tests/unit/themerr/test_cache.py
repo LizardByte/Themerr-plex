@@ -1,17 +1,16 @@
 """Dashboard cache built from fake Plex sections and ThemerrDB lookups."""
 
-import json
-from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
 from themerr import cache
+from themerr import storage
 
 
 def test_cache_without_plex(monkeypatch):
     monkeypatch.setattr(cache, 'setup_plexapi', lambda: None)
     save = Mock()
-    monkeypatch.setattr(cache.helpers, 'file_save', save)
+    monkeypatch.setattr(cache.storage, 'replace_dashboard', save)
     cache.cache_data()
     save.assert_not_called()
 
@@ -29,12 +28,11 @@ def test_cache_data(configured, item, tmp_path, monkeypatch):
     monkeypatch.setattr(cache.themerr_db, 'item_exists', lambda **_: False)
     monkeypatch.setattr(cache, 'get_database_info', lambda **_: ('movies', 'themoviedb', section.agent, '1'))
     monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: None)
-    monkeypatch.setattr(cache, 'database_cache_file', str(tmp_path / 'cache.json'))
     configured['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] = False
 
     cache.cache_data()
 
-    data = json.loads(Path(cache.database_cache_file).read_text(encoding='utf-8'))
+    data = storage.get_dashboard()
     assert data['1']['media_count'] == 1
     assert data['1']['items'][0]['theme_status'] == 'missing'
     assert data['1']['items'][0]['issue_action'] == 'add'
@@ -59,6 +57,30 @@ def test_cache_item_converts_imdb_id_and_marks_existing_theme(item, monkeypatch)
     assert 'Example+%282020%29' in data['issue_url']
 
 
+def test_cache_distinguishes_external_id_from_unresolved_id(item, monkeypatch):
+    monkeypatch.setattr(cache, 'get_database_info', lambda **_: (
+        'movies', 'imdb', 'tv.plex.agents.movie', 'tt0437863',
+    ))
+    monkeypatch.setattr(cache, 'get_external_id', lambda _: ('imdb', 'tt0437863'))
+    monkeypatch.setattr(cache.tmdb, 'get_tmdb_id_from_external_id', lambda **_: None)
+    monkeypatch.setattr(cache.themerr_db, 'item_exists', lambda **_: False)
+    monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: None)
+    data = cache._cache_item(item)
+    assert data['database_id'] is None
+    assert data['source_id'] == 'tt0437863'
+    assert data['theme_status'] == 'missing'
+    assert cache._cache_item(item, errors={'42': 'Video unavailable'})['theme_status'] == 'failed'
+
+    monkeypatch.setattr(cache, 'get_database_info', lambda **_: (
+        'movie_collections', 'themoviedb', 'tv.plex.agents.movie', None,
+    ))
+    monkeypatch.setattr(cache, 'get_external_id', lambda _: (None, None))
+    item.type = 'collection'
+    data = cache._cache_item(item)
+    assert data['theme_status'] == 'unresolved'
+    assert data['source_id'] is None
+
+
 def test_legacy_section_keeps_modern_matched_media(item):
     legacy_item = SimpleNamespace(guid='com.plexapp.agents.imdb://tt123')
     section = SimpleNamespace(agent='legacy.agent', type='movie', all=Mock(return_value=[legacy_item, item]))
@@ -76,10 +98,8 @@ def test_cache_data_includes_modern_item_in_legacy_section(configured, item, tmp
     monkeypatch.setattr(cache.themerr_db, 'item_exists', lambda **_: False)
     monkeypatch.setattr(cache, 'get_database_info', lambda **_: ('movies', 'themoviedb', section.agent, '1'))
     monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: None)
-    monkeypatch.setattr(cache, 'database_cache_file', str(tmp_path / 'cache.json'))
-
     cache.cache_data()
 
-    data = json.loads(Path(cache.database_cache_file).read_text(encoding='utf-8'))
+    data = storage.get_dashboard()
     assert data['7']['media_count'] == 1
     assert len(data['7']['items']) == 1

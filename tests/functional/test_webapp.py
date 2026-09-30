@@ -1,7 +1,5 @@
 """Flask routes exercised with temporary configuration and cache data."""
 
-import json
-from pathlib import Path
 import re
 from unittest.mock import Mock
 
@@ -10,46 +8,76 @@ import requests
 
 from common import webapp
 from plex import auth, plexapi
+from themerr import storage
 from themerr import theme_errors
 
 
 @pytest.fixture
 def client(configured, tmp_path, monkeypatch):
     webapp.app.config.update(TESTING=True, WTF_CSRF_ENABLED=False)
-    monkeypatch.setattr(webapp, 'database_cache_file', str(tmp_path / 'dashboard.json'))
     with webapp.app.test_client() as test_client:
         yield test_client
+
+
+def _dashboard(items):
+    """Build a small persisted library snapshot for route tests."""
+    return {'1': {
+        'key': 1, 'title': 'Movies', 'agent': 'tv.plex.agents.movie', 'type': 'movie',
+        'media_count': len(items), 'media_percent_complete': 0,
+        'collection_count': 0, 'collection_percent_complete': 0,
+        'collections_enabled': False, 'total_count': len(items), 'items': items,
+    }}
 
 
 def test_home(client, configured):
     response = client.get('/')
     assert response.status_code == 200
     assert b'Database is being cached' in response.data
-    Path(webapp.database_cache_file).write_text(json.dumps({}), encoding='utf-8')
+    storage.replace_dashboard(_dashboard([]))
     assert client.get('/home').status_code == 200
 
 
 def test_home_shows_item_failure(client, configured):
-    dashboard = {'1': {
-        'key': 1, 'title': 'Movies', 'agent': 'tv.plex.agents.movie', 'type': 'movie',
-        'media_percent_complete': 0, 'collection_count': 0,
-        'items': [{
+    dashboard = _dashboard([{
             'rating_key': '42', 'title': 'Example', 'type': 'movie', 'year': 2020,
             'issue_action': 'add', 'issue_url': None, 'theme_provider': None,
-            'theme_status': 'failed',
-        }],
-    }}
-    Path(webapp.database_cache_file).write_text(json.dumps(dashboard), encoding='utf-8')
+            'theme_status': 'pending', 'theme': False,
+        }])
+    storage.replace_dashboard(dashboard)
+    assert b'Theme not installed yet' in client.get('/home').data
     theme_errors.set_error(42, 'Video unavailable')
 
     response = client.get('/home')
     assert response.status_code == 200
     assert b'Video unavailable' in response.data
+    assert b'Failed to add theme' in response.data
     assert b'Example' in response.data
     theme_errors.set_error(42, '<script>alert(1)</script>')
     response = client.get('/home')
     assert b'&lt;script&gt;' in response.data
     assert b'<script>alert(1)</script>' not in response.data
+
+
+def test_home_distinguishes_external_id_and_unknown_upload(client, configured):
+    storage.replace_dashboard(_dashboard([
+        {
+            'rating_key': '42', 'title': 'TV example', 'type': 'show', 'year': 2020,
+            'source_database': 'thetvdb', 'source_id': '123', 'issue_url': None,
+            'theme_provider': None, 'theme_status': 'unresolved', 'theme': False,
+        },
+        {
+            'rating_key': '43', 'title': 'Movie example', 'type': 'movie', 'year': 2021,
+            'issue_url': None, 'theme_provider': 'uploaded', 'theme_status': 'complete', 'theme': True,
+        },
+    ]))
+
+    response = client.get('/home')
+    assert response.status_code == 200
+    page = re.sub(rb'\s+', b' ', response.data)
+    assert b'TVDB 123' in page
+    assert b'TMDB ID unavailable' in page
+    assert b'Uploaded (source unknown)' in page
+    assert b'Plex ID: 43' in page
 
 
 def test_images_and_status(client):

@@ -12,6 +12,8 @@ YouTube Cookies setting. Test again after an item update or the next scheduled s
 fails, update the locked yt-dlp version and check the application log for the extractor error.
 Themerr-plex selects an audio-only stream URL and does not require local FFmpeg for that extraction path.
 An unavailable video is a separate YouTube error.
+The home page shows the latest recorded extraction or upload failure beside the affected item. A theme that is listed
+in ThemerrDB but has not been installed and has no recorded failure is shown as **Theme not installed yet**.
 
 Plex connection
 ---------------

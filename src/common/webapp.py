@@ -23,11 +23,10 @@ import common
 from common import config
 from common import crypto
 from common.definitions import Paths
-from common import helpers
 from common import locales
 from common import logger
 from plex import auth as plex_auth
-from themerr.cache import database_cache_file
+from themerr import storage
 from themerr import theme_errors
 
 # variables
@@ -147,13 +146,13 @@ def home() -> render_template:
     --------
     >>> home()
     """
-    if not os.path.isfile(database_cache_file):
-        return render_template('home_db_not_cached.html', title='Home')
-
     try:
-        items = json.loads(helpers.file_load(filename=database_cache_file, binary=False))
-    except IOError:
+        items = storage.get_dashboard()
+    except Exception:
+        logger.get_logger(__name__).exception('Unable to load dashboard')
         return responses[500]
+    if items is None:
+        return render_template('home_db_not_cached.html', title='Home')
 
     return render_template('home.html', title=_('Home'), items=items, theme_errors=theme_errors.get_errors())
 

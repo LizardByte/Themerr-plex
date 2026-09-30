@@ -1,7 +1,6 @@
 """Plex browser sign-in and credential persistence without network access."""
 
 # standard imports
-import json
 from urllib.parse import parse_qs
 from unittest.mock import Mock
 
@@ -12,6 +11,7 @@ import requests
 # local imports
 from common import config
 from plex import auth
+from themerr import storage
 
 
 def test_credentials_persist_without_exposing_legacy_token(configured, tmp_path):
@@ -23,14 +23,15 @@ def test_credentials_persist_without_exposing_legacy_token(configured, tmp_path)
     assert len(identifier) == 32
 
     auth.set_token('plex-issued-token')
-    path = tmp_path / 'plex-auth.json'
-    assert json.loads(path.read_text(encoding='utf-8')) == {
+    assert storage.get_credentials() == {
         'client_id': identifier, 'token': 'plex-issued-token',
     }
+    assert (tmp_path / 'themerr-plex.db').is_file()
+    assert not (tmp_path / 'plex-auth.json').exists()
     assert auth.get_token() == 'plex-issued-token'
     auth.disconnect()
     assert auth.get_token() == ''
-    assert json.loads(path.read_text(encoding='utf-8')) == {'client_id': identifier}
+    assert storage.get_credentials() == {'client_id': identifier}
 
 
 def test_old_config_token_is_dropped(tmp_path, monkeypatch):

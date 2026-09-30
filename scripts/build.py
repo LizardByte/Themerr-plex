@@ -16,6 +16,10 @@ def build():
     """Sets arguments for pyinstaller, creates spec, and builds binaries."""
     deno = shutil.which('deno')
     if deno is None:
+        executable = 'deno.exe' if sys.platform == 'win32' else 'deno'
+        local_deno = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.build-tools', executable)
+        deno = local_deno if os.path.isfile(local_deno) else None
+    if deno is None:
         raise SystemExit('Deno is required to bundle yt-dlp YouTube support.')
 
     pyinstaller_args = [
@@ -26,6 +30,7 @@ def build():
         f'--add-data=_site{os.pathsep}_site',
         f'--add-data=web{os.pathsep}web',
         f'--add-data=locale{os.pathsep}locale',
+        f'--add-data=src/themerr/migrations{os.pathsep}themerr/migrations',
         f'--add-binary={deno}{os.pathsep}.',
         '--icon=./web/images/favicon.ico'
     ]

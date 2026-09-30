@@ -81,7 +81,7 @@ def test_get_database_info(configured, item, monkeypatch):
         'tv_shows', 'themoviedb', 'tv.plex.agents.series', '789',
     )
 
-    section = SimpleNamespace(agent='tv.plex.agents.movie', language='en')
+    section = SimpleNamespace(agent='tv.plex.agents.movie', language='en', type='movie')
     server = SimpleNamespace(library=SimpleNamespace(sectionByID=lambda _: section))
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: server)
     monkeypatch.setattr(plexapi.tmdb, 'get_tmdb_id_from_collection', lambda **_: '99')
@@ -99,6 +99,7 @@ def test_legacy_guid_without_guids(configured, item, monkeypatch):
     assert plexapi.get_database_info(item) == (
         'movies', 'imdb', 'tv.plex.agents.movie', 'tt0298203',
     )
+    assert plexapi.get_external_id(item) == ('imdb', 'tt0298203')
 
     item.type = 'show'
     item.guid = 'com.plexapp.agents.thetvdb://12345?lang=en'
@@ -107,12 +108,34 @@ def test_legacy_guid_without_guids(configured, item, monkeypatch):
     assert plexapi.get_database_info(item) == (
         'tv_shows', 'themoviedb', 'tv.plex.agents.series', '789',
     )
+    assert plexapi.get_external_id(item) == ('thetvdb', '12345')
+
+
+def test_collection_id_from_matching_member(configured, item, monkeypatch):
+    item.type = 'collection'
+    item.title = 'Batman'
+    member = SimpleNamespace(type='movie', guid='com.plexapp.agents.imdb://tt0096895', guids=[])
+    item.items = lambda: [member]
+    section = SimpleNamespace(agent='tv.plex.agents.movie', type='movie', language='en')
+    server = SimpleNamespace(library=SimpleNamespace(sectionByID=lambda _: section))
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: server)
+    monkeypatch.setattr(plexapi.tmdb, 'get_tmdb_id_from_collection', lambda **_: None)
+    monkeypatch.setattr(plexapi.themerr_db, 'item_exists', lambda **_: True)
+    monkeypatch.setattr(plexapi.helpers, 'json_get', lambda **_: {
+        'belongs_to_collection': {'id': 120794, 'name': 'Batman Collection'},
+    })
+
+    assert plexapi.get_database_info(item) == (
+        'movie_collections', 'themoviedb', 'tv.plex.agents.movie', '120794',
+    )
+    item.title = 'Unrelated collection'
+    assert plexapi.get_database_info(item)[-1] is None
 
 
 def test_theme_failure_is_saved_and_cleared(configured, item, monkeypatch):
     configured['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] = True
     monkeypatch.setattr(plexapi.general, 'get_themerr_settings_hash', lambda: 'hash')
-    monkeypatch.setattr(plexapi.general, 'get_themerr_json_data', lambda **_: {})
+    monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {})
     saved = {}
     monkeypatch.setattr(plexapi.theme_errors, 'set_error', lambda key, reason: saved.update({key: reason}))
 
@@ -143,10 +166,10 @@ def test_add_media_success(configured, item, monkeypatch):
     configured['Themerr']['BOOL_IGNORE_LOCKED_FIELDS'] = False
     configured['Themerr']['BOOL_REMOVE_UNUSED_THEMES'] = True
     monkeypatch.setattr(plexapi.general, 'get_themerr_settings_hash', lambda: 'hash')
-    monkeypatch.setattr(plexapi.general, 'get_themerr_json_data', lambda **_: {})
+    monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {})
     removed, saved, locked = Mock(), Mock(), Mock()
     monkeypatch.setattr(plexapi.general, 'remove_uploaded_media', removed)
-    monkeypatch.setattr(plexapi.general, 'update_themerr_data_file', saved)
+    monkeypatch.setattr(plexapi.general, 'update_themerr_data', saved)
     monkeypatch.setattr(plexapi, 'change_lock_status', locked)
     monkeypatch.setattr(plexapi, 'upload_media', Mock(return_value=True))
 
@@ -158,12 +181,42 @@ def test_add_media_success(configured, item, monkeypatch):
     locked.assert_called_once_with(item=item, field='theme', lock=False)
 
 
+def test_successful_upload_records_selected_theme_key(configured, item, monkeypatch):
+    configured['Themerr']['BOOL_REMOVE_UNUSED_THEMES'] = False
+    item.themes.return_value = [SimpleNamespace(selected=True, provider=None,
+                                                ratingKey='upload://themes/new-theme')]
+    monkeypatch.setattr(plexapi, 'upload_media', Mock(return_value=True))
+    monkeypatch.setattr(plexapi, 'change_lock_status', Mock(return_value=True))
+
+    assert plexapi.add_media(item, 'themes', 'https://youtube.example/video',
+                             media_url='https://audio.example/stream')
+    assert plexapi.general.get_themerr_data(item)['uploaded_theme_key'] == 'upload://themes/new-theme'
+    assert plexapi.general.get_theme_provider(item) == 'themerr'
+
+
+def test_unknown_upload_is_replaced_even_with_old_tracking(configured, item, monkeypatch):
+    configured['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] = True
+    item.themes.return_value = [SimpleNamespace(selected=True, provider=None,
+                                                ratingKey='upload://themes/old-upload')]
+    monkeypatch.setattr(plexapi.general, 'get_themerr_settings_hash', lambda: 'hash')
+    monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {
+        'settings_hash': 'hash', 'youtube_theme_url': 'https://youtube.example/video',
+    })
+    monkeypatch.setattr(plexapi, 'process_youtube', lambda **_: 'https://audio.example/stream')
+    upload = Mock(return_value=True)
+    monkeypatch.setattr(plexapi, 'add_media', upload)
+
+    plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/video'})
+    upload.assert_called_once()
+
+
 def test_add_media_skips_locked_or_unchanged(configured, item, monkeypatch):
     configured['Themerr']['BOOL_IGNORE_LOCKED_FIELDS'] = False
     monkeypatch.setattr(plexapi.general, 'get_themerr_settings_hash', lambda: 'hash')
-    monkeypatch.setattr(plexapi.general, 'get_themerr_json_data', lambda **_: {
-        'settings_hash': 'hash', 'youtube_theme_url': 'id',
+    monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {
+        'settings_hash': 'hash', 'youtube_theme_url': 'id', 'uploaded_theme_key': 'upload://themes/42',
     })
+    item.themes.return_value = [SimpleNamespace(selected=True, provider=None, ratingKey='upload://themes/42')]
     upload = Mock()
     monkeypatch.setattr(plexapi, 'upload_media', upload)
     item.isLocked.return_value = True
@@ -184,8 +237,11 @@ def test_upload_media(configured, item, monkeypatch):
     monkeypatch.setattr(plexapi, 'BadRequest', RuntimeError)
     monkeypatch.setattr(plexapi.time, 'sleep', Mock())
     item.uploadPoster.side_effect = RuntimeError('retry')
-    assert not plexapi.upload_media(item, item.uploadPoster, url='https://poster.example')
+    errors = []
+    assert not plexapi.upload_media(item, item.uploadPoster, url='https://poster.example',
+                                    on_error=errors.append)
     assert item.uploadPoster.call_count == 2
+    assert errors == ['retry']
 
 
 def test_change_lock_status(configured, item, monkeypatch):
@@ -237,7 +293,7 @@ def test_update_collection_metadata_and_theme(configured, item, monkeypatch):
         'youtube_theme_url': 'https://youtube.example/theme',
     })
     monkeypatch.setattr(plexapi.general, 'get_themerr_settings_hash', lambda: 'hash')
-    monkeypatch.setattr(plexapi.general, 'get_themerr_json_data', lambda **_: {})
+    monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {})
     monkeypatch.setattr(plexapi, 'process_youtube', lambda **_: 'https://audio.example/theme')
     add = Mock(return_value=True)
     monkeypatch.setattr(plexapi, 'add_media', add)

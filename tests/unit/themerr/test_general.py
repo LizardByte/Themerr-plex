@@ -34,19 +34,20 @@ def test_continue_update(configured, agent, expected):
     ('com.plexapp.agents.plexthememusic', 'x', 'plex'),
     (None, 'metadata://themes/tv.plex.agents.series_1', 'plex'),
     ('custom', 'x', 'custom'),
-    (None, 'x', 'themerr'),
+    (None, 'upload://themes/1', 'themerr'),
+    (None, 'x', None),
 ])
 def test_theme_provider(monkeypatch, item, provider, rating_key, expected):
     item.themes.return_value = [SimpleNamespace(selected=True, provider=provider, ratingKey=rating_key)]
-    monkeypatch.setattr(general, 'get_themerr_json_data', lambda **_: {'source': 'themerr'})
+    monkeypatch.setattr(general, 'get_themerr_data', lambda **_: {'uploaded_theme_key': rating_key})
     assert general.get_theme_provider(item) == expected
 
 
 def test_uploaded_theme_without_tracking_is_inferred(monkeypatch, item):
-    item.themes.return_value = [SimpleNamespace(selected=True, provider=None,
+    item.themes.return_value = [SimpleNamespace(selected=True, provider='custom',
                                                 ratingKey='upload://themes/abcdef')]
-    monkeypatch.setattr(general, 'get_themerr_json_data', lambda **_: {})
-    assert general.get_theme_provider(item) == 'themerr_inferred'
+    monkeypatch.setattr(general, 'get_themerr_data', lambda **_: {})
+    assert general.get_theme_provider(item) == 'uploaded'
 
 
 def test_legacy_plugin_tracking_record(configured, item, tmp_path):
@@ -54,7 +55,7 @@ def test_legacy_plugin_tracking_record(configured, item, tmp_path):
     path = Path(general._legacy_themerr_json_path(item))
     path.parent.mkdir(parents=True)
     path.write_text(json.dumps({'youtube_theme_url': 'https://youtube.example/theme'}), encoding='utf-8')
-    assert general.get_themerr_json_data(item)['youtube_theme_url'] == 'https://youtube.example/theme'
+    assert general.get_themerr_data(item)['youtube_theme_url'] == 'https://youtube.example/theme'
 
 
 def test_no_selected_theme(item):
@@ -64,12 +65,10 @@ def test_no_selected_theme(item):
 
 
 def test_data_file_round_trip(configured, item, tmp_path):
-    assert general.get_themerr_json_data(item) == {}
-    path = Path(general.get_themerr_json_path(item))
-    path.parent.mkdir(parents=True)
-    path.write_text(json.dumps({'downloaded_timestamp': 1, 'old': 2}), encoding='utf-8')
-    general.update_themerr_data_file(item, {'new': 3})
-    assert general.get_themerr_json_data(item) == {'old': 2, 'new': 3}
+    assert general.get_themerr_data(item) == {}
+    general.update_themerr_data(item, {'youtube_theme_url': 'https://youtube.example/theme'})
+    assert general.get_themerr_data(item) == {'youtube_theme_url': 'https://youtube.example/theme'}
+    assert not (tmp_path / 'data').exists()
 
 
 def test_settings_hash(configured):

@@ -183,6 +183,9 @@ def main():
 
     _apply_cli_options(args)
 
+    from themerr import storage
+    storage.engine()
+
     if config.CONFIG['General']['SYSTEM_TRAY']:
         from common import tray_icon  # submodule requires translations so importing after initialization
         # also do not import if not required by config options

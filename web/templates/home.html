@@ -9,11 +9,11 @@
     <div class="col-lg-12 mx-auto" id="themerr-container" style="min-width: 335px">
 
         {# constants #}
-        {% set title_column_width = 'col-6' %}
-        {% set type_column_width = 'col-2' %}
+        {% set title_column_width = 'col-5' %}
+        {% set type_column_width = 'col-1' %}
         {% set year_column_width = 'col-1' %}
-        {% set contribute_column_width = 'col-1' %}
-        {% set status_column_width = 'col-2' %}
+        {% set contribute_column_width = 'col-2' %}
+        {% set status_column_width = 'col-3' %}
 
         {% for section in items %}
         <!-- Library sections -->
@@ -117,11 +117,14 @@
                             </tr>
 
                             {% for item in items[section]['items'] %}
+                                {% set failure_reason = theme_errors.get(item['rating_key']) if not item['theme'] else None %}
                                 {% if item['theme_status'] == 'complete' %}
                                     {% set theme_status_color = 'table-success' %}
+                                {% elif failure_reason %}
+                                    {% set theme_status_color = 'table-warning' %}
                                 {% elif item['theme_status'] == 'missing' %}
                                     {% set theme_status_color = 'table-danger' %}
-                                {% elif item['theme_status'] == 'failed' %}
+                                {% elif item['theme_status'] in ['pending', 'unresolved'] %}
                                     {% set theme_status_color = 'table-warning' %}
                                 {% else %}
                                     {% set theme_status_color = 'table-danger' %}
@@ -148,7 +151,15 @@
                                                 rel="noopener noreferrer"
                                                 role="button">{{ contribute_button_text }}</a>
                                         {% else %}
-                                            {{ _('No known ID') }}
+                                            {% if item['source_id'] %}
+                                                {% set source_labels = {
+                                                    'themoviedb': 'TMDB', 'imdb': 'IMDb', 'thetvdb': 'TVDB'
+                                                } %}
+                                                {{ source_labels.get(item['source_database'], item['source_database']|upper) }}
+                                                {{ item['source_id'] }}
+                                            {% else %}
+                                                {{ _('Plex ID') }}: {{ item['rating_key'] }}
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                     <td class="{{ status_column_width }}">
@@ -158,25 +169,35 @@
                                             <i data-lucide="user" class="text-info"></i> {{ _('User provided') }}
                                         {% elif item['theme_provider'] == 'themerr' %}
                                             <i data-lucide="circle-check" class="text-success"></i> {{ _('Themerr provided') }}
-                                        {% elif item['theme_provider'] == 'themerr_inferred' %}
-                                            <i data-lucide="circle-check" class="text-success"></i>
-                                            {{ _('Themerr provided (inferred from Plex upload)') }}
+                                        {% elif item['theme_provider'] == 'uploaded' %}
+                                            <i data-lucide="upload" class="text-info"></i>
+                                            {{ _('Uploaded (source unknown)') }}
                                         {% elif item['theme_provider'] != None %}
                                             <i data-lucide="circle-help" class="text-secondary"></i>
                                             {{ item['theme_provider'] }} {{ _('provided') }}
                                         {% elif item['theme_status'] == 'complete' %}
                                             <i data-lucide="circle-help" class="text-secondary"></i> {{ _('Unknown provider') }}
+                                        {% elif failure_reason %}
+                                            <i data-lucide="circle-alert" class="text-warning"></i>
+                                            {{ _('Failed to add theme') }}
                                         {% elif item['theme_status'] == 'missing' %}
                                             <i data-lucide="circle-x" class="text-danger"></i> {{ _('Missing from ThemerrDB') }}
-                                        {% elif item['theme_status'] == 'failed' %}
-                                            <i data-lucide="circle-alert" class="text-warning"></i> {{ _('Failed to download') }}
+                                        {% elif item['theme_status'] in ['pending', 'failed'] %}
+                                            <i data-lucide="clock" class="text-warning"></i> {{ _('Theme not installed yet') }}
+                                        {% elif item['theme_status'] == 'unresolved' %}
+                                            <i data-lucide="circle-help" class="text-secondary"></i>
+                                            {% if item['source_id'] %}
+                                                {{ _('TMDB ID unavailable') }}
+                                            {% else %}
+                                                {{ _('External ID unavailable') }}
+                                            {% endif %}
                                         {% else %}
                                             <i data-lucide="circle-alert" class="text-danger"></i> {{ _('Unknown status') }}
                                         {% endif %}
-                                        {% if item['rating_key'] in theme_errors %}
-                                            <div class="small text-danger mt-1" role="status">
+                                        {% if failure_reason %}
+                                            <div class="small text-danger text-break mt-1" role="status">
                                                 <i data-lucide="triangle-alert"></i>
-                                                {{ theme_errors[item['rating_key']] }}
+                                                {{ failure_reason }}
                                             </div>
                                         {% endif %}
                                     </td>

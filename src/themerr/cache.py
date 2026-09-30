@@ -1,27 +1,17 @@
-# standard imports
-import json
-import os
-from threading import Lock
-
 # lib imports
 from urllib.parse import quote_plus
 
 # local imports
 from common import config
-from common import definitions
-from common import helpers
 from common import logger
 from themerr.constants import contributes_to, issue_urls
 from themerr import general
-from plex.plexapi import PLEX_SETUP_ERROR, get_database_info, setup_plexapi
+from plex.plexapi import PLEX_SETUP_ERROR, get_database_info, get_external_id, setup_plexapi
+from themerr import storage
 from themerr import themerr_db
 from themerr import tmdb
 
 log = logger.get_logger(name=__name__)
-
-# where the database cache is stored
-database_cache_file = os.path.join(definitions.Paths.CONFIG_DIR, 'database_cache.json')
-database_cache_lock = Lock()
 
 
 def _item_issue_url(item, database_type: str, database_id: str | None, year: int | None) -> str | None:
@@ -55,13 +45,15 @@ def _item_issue_url(item, database_type: str, database_id: str | None, year: int
     return issue_url.format(quote_plus(issue_title), database_id)
 
 
-def _cache_item(item) -> dict:
+def _cache_item(item, errors: dict[str, str] | None = None) -> dict:
     """Convert one Plex item to dashboard data.
 
     Parameters
     ----------
     item : PlexPartialObject
         Plex media or collection.
+    errors : dict or None, optional
+        Current item processing failures.
 
     Returns
     -------
@@ -69,6 +61,7 @@ def _cache_item(item) -> dict:
         Dashboard fields for the item.
     """
     database_type, database, item_agent, database_id = get_database_info(item=item)
+    source_database, source_id = get_external_id(item)
     original_id = database_id
     year = getattr(item, 'year', None)
     if item.type == 'movie' and database_id and (
@@ -83,8 +76,12 @@ def _cache_item(item) -> dict:
     issue_action = 'edit' if exists else 'add'
     if item.theme:
         theme_status = 'complete'
-    elif exists:
+    elif errors and str(item.ratingKey) in errors:
         theme_status = 'failed'
+    elif not original_id:
+        theme_status = 'unresolved'
+    elif exists:
+        theme_status = 'pending'
     else:
         theme_status = 'missing'
 
@@ -95,6 +92,8 @@ def _cache_item(item) -> dict:
         'database': database,
         'database_type': database_type,
         'database_id': database_id,
+        'source_database': source_database,
+        'source_id': source_id,
         'issue_action': issue_action,
         'issue_url': _item_issue_url(item, database_type, database_id, year),
         'theme': bool(item.theme),
@@ -126,13 +125,15 @@ def _section_media_items(section) -> list:
     return [item for item in section.all() if (getattr(item, 'guid', None) or '').startswith(guid_prefix)]
 
 
-def _cache_section(section) -> dict:
+def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
     """Collect dashboard counts and item details for a Plex section.
 
     Parameters
     ----------
     section : LibrarySection
         Plex library section.
+    errors : dict or None, optional
+        Current item processing failures.
 
     Returns
     -------
@@ -155,7 +156,7 @@ def _cache_section(section) -> dict:
         'key': section.key,
         'title': section.title,
         'agent': section.agent,
-        'items': [_cache_item(item) for item in all_items],
+        'items': [_cache_item(item, errors=errors) for item in all_items],
         'media_count': len(media_items),
         'media_percent_complete': int(len(media_items_with_themes) / len(media_items) * 100)
         if media_items_with_themes else 0,
@@ -174,7 +175,7 @@ def cache_data() -> None:
 
     Because there are many http requests that must be made to gather the data for the dashboard, it can be
     time-consuming to populate; therefore, this is performed within this caching function, which runs on a schedule.
-    This function will create a json file that can be loaded by other functions.
+    This function atomically publishes a snapshot in SQLite.
     """
     # get all Plex items from supported metadata agents
     plex_server = setup_plexapi()
@@ -189,13 +190,13 @@ def cache_data() -> None:
     sections = plex_library.sections()
 
     items = {}
+    errors = storage.get_errors()
 
     for section in sections:
         if section.agent not in contributes_to and getattr(section, 'type', None) not in ('movie', 'show'):
             continue
-        section_data = _cache_section(section)
+        section_data = _cache_section(section, errors=errors)
         if section.agent in contributes_to or section_data['total_count']:
             items[section.key] = section_data
 
-    with database_cache_lock:
-        helpers.file_save(filename=database_cache_file, data=json.dumps(items), binary=False)
+    storage.replace_dashboard(items)

@@ -10,17 +10,12 @@ from plexapi.base import PlexPartialObject
 
 # local imports
 from common import config
-from common import definitions
 from common import helpers
 from common import logger
 from themerr.constants import metadata_type_map
+from themerr import storage
 
 log = logger.get_logger(__name__)
-
-# constants
-legacy_keys = [
-    'downloaded_timestamp'
-]
 
 
 def _get_metadata_path(item: PlexPartialObject) -> str:
@@ -168,48 +163,17 @@ def get_theme_provider(item: PlexPartialObject) -> Optional[str]:
         log.debug(f'No selected theme found for item: {item.title}')
         return
 
+    if selected.ratingKey.startswith('upload://themes/'):
+        themerr_data = get_themerr_data(item=item)
+        return 'themerr' if themerr_data.get('uploaded_theme_key') == selected.ratingKey else 'uploaded'
+
     provider = provider_map.get(selected.provider)
     if not provider:
         # New Plex agents identify their themes by rating key rather than provider.
         provider = next((value for prefix, value in rating_key_map.items()
                          if selected.ratingKey.startswith(prefix)), selected.provider)
 
-    if not provider:
-        themerr_data = get_themerr_json_data(item=item)
-        if themerr_data:
-            provider = 'themerr'
-        elif selected.ratingKey.startswith('upload://themes/'):
-            # Plex records an upload but does not identify its uploader. Older
-            # Themerr plugin uploads may have no standalone tracking file.
-            provider = 'themerr_inferred'
-
     return provider
-
-
-def get_themerr_json_path(item: PlexPartialObject) -> str:
-    """
-    Get the path to the Themerr data file.
-
-    Get the path to the Themerr data file for the item specified by the ``item``.
-
-    Parameters
-    ----------
-    item : PlexPartialObject
-        The item to get the Themerr data file path for.
-
-    Returns
-    -------
-    str
-        The path to the Themerr data file.
-
-    Examples
-    --------
-    >>> get_themerr_json_path(item=...)
-    '.../Plex Media Server/Plug-in Support/Data/dev.lizardbyte.themerr-plex/DataItems/...'
-    """
-    themerr_json_path = os.path.join(definitions.Paths.CONFIG_DIR, 'data', metadata_type_map[item.type],
-                                     f'{item.ratingKey}.json')
-    return themerr_json_path
 
 
 def _legacy_themerr_json_path(item: PlexPartialObject) -> str:
@@ -232,12 +196,11 @@ def _legacy_themerr_json_path(item: PlexPartialObject) -> str:
     )
 
 
-def get_themerr_json_data(item: PlexPartialObject) -> dict:
+def get_themerr_data(item: PlexPartialObject) -> dict:
     """
-    Get the Themerr data for the specified item.
+    Get persisted upload metadata for the specified item.
 
-    Themerr data is stored as a JSON file in the Themerr data directory, and is used to ensure that we don't
-    unnecessarily re-upload media to the Plex server.
+    Previously saved plugin records are imported when first encountered.
 
     Parameters
     ----------
@@ -247,14 +210,20 @@ def get_themerr_json_data(item: PlexPartialObject) -> dict:
     Returns
     -------
     dict
-        The Themerr data for the specified item, or empty dict if no Themerr data exists.
+        Tracked upload fields, or an empty dict when none exist.
     """
-    for path in (get_themerr_json_path(item=item), _legacy_themerr_json_path(item=item)):
-        if os.path.isfile(path):
-            try:
-                return json.loads(s=str(helpers.file_load(filename=path, binary=False)))
-            except (TypeError, ValueError):
-                log.warning('Invalid Themerr tracking data for item %s', item.ratingKey)
+    data = storage.get_tracking(item.ratingKey)
+    if data:
+        return data
+    path = _legacy_themerr_json_path(item=item)
+    if os.path.isfile(path):
+        try:
+            data = json.loads(s=str(helpers.file_load(filename=path, binary=False)))
+            if isinstance(data, dict) and data:
+                storage.save_tracking(item.ratingKey, item.type, data)
+                return storage.get_tracking(item.ratingKey)
+        except (OSError, TypeError, ValueError):
+            log.warning('Invalid Themerr tracking data for item %s', item.ratingKey)
     return {}
 
 
@@ -327,38 +296,17 @@ def remove_uploaded_media_error_handler(func: any, path: any, exc_info: any) -> 
     log.error(f'Error removing themes with function: {func}, path: {path}, exception info: {exc_info}')
 
 
-def update_themerr_data_file(item: PlexPartialObject, new_themerr_data: dict) -> None:
+def update_themerr_data(item: PlexPartialObject, new_themerr_data: dict) -> None:
     """
-    Update the Themerr data file for the specified item.
+    Update tracked Themerr upload metadata in SQLite.
 
-    This updates the themerr data file after uploading media to the Plex server.
+    This records successful uploads so they can be identified on later scans.
 
     Parameters
     ----------
     item : PlexPartialObject
-        The item to update the Themerr data file for.
+        The Plex item whose media was uploaded.
     new_themerr_data : dict
-        The Themerr data to update the Themerr data file with.
+        Updated upload metadata.
     """
-    # get the old themerr data
-    themerr_data = get_themerr_json_data(item=item)
-
-    # remove legacy keys
-    for key in legacy_keys:
-        try:
-            del themerr_data[key]
-        except KeyError:
-            pass
-
-    # update the old themerr data with the new themerr data
-    themerr_data.update(new_themerr_data)
-
-    # get path
-    themerr_json_path = get_themerr_json_path(item=item)
-
-    # create directory if it doesn't exist
-    if not os.path.isdir(os.path.dirname(themerr_json_path)):
-        os.makedirs(os.path.dirname(themerr_json_path))
-
-    # write themerr json
-    helpers.file_save(filename=themerr_json_path, data=json.dumps(themerr_data), binary=False)
+    storage.save_tracking(item.ratingKey, item.type, new_themerr_data)

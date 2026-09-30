@@ -1,9 +1,6 @@
-"""Plex PIN sign-in and local storage for the resulting account token."""
+"""Plex PIN sign-in and SQLite storage for the resulting account token."""
 
 # standard imports
-import json
-import os
-import tempfile
 import threading
 import uuid
 from urllib.parse import urlencode
@@ -12,8 +9,8 @@ from urllib.parse import urlencode
 import requests
 
 # local imports
-from common import config
 from common import logger
+from themerr import storage
 
 
 PLEX_PIN_URL = 'https://plex.tv/api/v2/pins'
@@ -21,17 +18,6 @@ PLEX_AUTH_URL = 'https://app.plex.tv/auth#?'
 PRODUCT = 'Themerr-plex'
 TIMEOUT = 10
 _lock = threading.RLock()
-
-
-def _credentials_path() -> str:
-    """Return the credentials path next to the active configuration file.
-
-    Returns
-    -------
-    str
-        Credentials file path.
-    """
-    return os.path.join(os.path.dirname(os.path.abspath(config.CONFIG.filename)), 'plex-auth.json')
 
 
 def _load() -> dict:
@@ -42,35 +28,18 @@ def _load() -> dict:
     dict
         Saved client identifier and token, if available.
     """
-    try:
-        with open(_credentials_path(), encoding='utf-8') as credentials_file:
-            credentials = json.load(credentials_file)
-        return credentials if isinstance(credentials, dict) else {}
-    except (OSError, ValueError):
-        return {}
+    return storage.get_credentials()
 
 
 def _save(credentials: dict) -> None:
-    """Atomically store Plex credentials with owner-only permissions on Unix.
+    """Store Plex credentials in the installation database.
 
     Parameters
     ----------
     credentials : dict
         Client identifier and optional account token.
     """
-    path = _credentials_path()
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    temporary_path = None
-    try:
-        with tempfile.NamedTemporaryFile('w', encoding='utf-8', dir=os.path.dirname(path),
-                                         prefix='.plex-auth-', delete=False) as credentials_file:
-            temporary_path = credentials_file.name
-            os.chmod(temporary_path, 0o600)
-            json.dump(credentials, credentials_file)
-        os.replace(temporary_path, path)
-    finally:
-        if temporary_path and os.path.exists(temporary_path):
-            os.unlink(temporary_path)
+    storage.save_credentials(credentials)
 
 
 def get_token() -> str:

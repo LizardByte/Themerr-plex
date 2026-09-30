@@ -10,6 +10,7 @@ import pytest
 def configured(tmp_path, monkeypatch):
     import common
     from common import config, definitions
+    from themerr import storage
 
     old_config, old_common = config.CONFIG, common.CONFIG
     monkeypatch.setattr(definitions.Paths, 'CONFIG_DIR', str(tmp_path))
@@ -18,6 +19,7 @@ def configured(tmp_path, monkeypatch):
     try:
         yield cfg
     finally:
+        storage.close()
         config.CONFIG, common.CONFIG = old_config, old_common
 
 
