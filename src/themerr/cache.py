@@ -195,7 +195,10 @@ def cache_data() -> None:
     for section in sections:
         if section.agent not in contributes_to and getattr(section, 'type', None) not in ('movie', 'show'):
             continue
+        log.info('Caching dashboard library %r (ID %s)', section.title, section.key)
         section_data = _cache_section(section, errors=errors)
+        log.info('Cached %d items from library %r (ID %s)',
+                 section_data['total_count'], section.title, section.key)
         if section.agent in contributes_to or section_data['total_count']:
             items[section.key] = section_data
 

@@ -60,12 +60,27 @@ def test_logger_setup(configured, monkeypatch, tmp_path):
         target.removeHandler(handler)
 
 
+def test_plex_child_info_reaches_file(configured, monkeypatch, tmp_path):
+    monkeypatch.setattr(logger.definitions.Paths, 'LOG_DIR', str(tmp_path))
+    monkeypatch.setattr(common, 'QUIET', False)
+    monkeypatch.setattr(common, 'DEV', False)
+    target = logger.init_logger('plex')
+    try:
+        logger.get_logger('plex.plexapi').info('Theme upload started for rating_key=42')
+        assert 'Theme upload started for rating_key=42' in (tmp_path / 'plex.log').read_text(encoding='utf-8')
+    finally:
+        for handler in target.handlers[:]:
+            handler.close()
+            target.removeHandler(handler)
+
+
 def test_setup_loggers_and_listener(monkeypatch):
     initialized = []
     monkeypatch.setattr(logger, 'init_logger', lambda log_name: initialized.append(log_name))
     logger.setup_loggers()
     assert logger.app_name in initialized
     assert 'werkzeug' in initialized
+    assert {'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule'} <= set(initialized)
 
     target = logging.getLogger('listener-test')
     monkeypatch.setattr(logger, 'queue', False)

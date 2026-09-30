@@ -14,20 +14,12 @@ from themerr.cache import cache_data
 
 log = logger.get_logger(name=__name__)
 
-# setup logging for schedule
-log.info('Adding schedule log handlers to plex plugin logger')
-
-schedule.logger.handlers = log.handlers
-schedule.logger.setLevel(log.level)
-
-# test message
-schedule.logger.info('schedule logger test message')
-
 
 def run_threaded(
         target: Callable,
         daemon: bool = True,
         args: Iterable = (),
+        task_name: str | None = None,
         **kwargs: Mapping[str, Any],
 ) -> threading.Thread:
     """
@@ -44,6 +36,8 @@ def run_threaded(
         Whether the thread should be a daemon thread. Scheduled work must not keep a stopped process alive.
     args : Iterable
         The positional arguments to pass to the function.
+    task_name : str or None, optional
+        Human-readable scheduled job name to log at start and finish.
     kwargs : Mapping[str, Any]
         The keyword arguments to pass to the function.
 
@@ -57,7 +51,18 @@ def run_threaded(
     >>> run_threaded(target=log.info, daemon=True, args=['Hello, world!'])
     "Hello, world!"
     """
-    job_thread = threading.Thread(target=target, args=args, kwargs=kwargs)
+    def run_job() -> None:
+        started = time.monotonic()
+        log.info('Scheduled task started: %s', task_name)
+        try:
+            target(*args, **kwargs)
+        except Exception:
+            log.exception('Scheduled task failed: %s (%.1f seconds)', task_name, time.monotonic() - started)
+        else:
+            log.info('Scheduled task finished: %s (%.1f seconds)', task_name, time.monotonic() - started)
+
+    job_thread = threading.Thread(target=run_job if task_name else target,
+                                  args=() if task_name else args, kwargs={} if task_name else kwargs)
     if daemon:
         job_thread.daemon = True
     job_thread.start()
@@ -75,7 +80,9 @@ def schedule_loop() -> None:
     >>> schedule_loop()
     ...
     """
+    log.info('Scheduler started; initial jobs will run in 60 seconds')
     time.sleep(60)  # give a little time for the server to start
+    log.info('Dispatching initial scheduled jobs')
     schedule.run_all()  # run all jobs once
 
     while True:
@@ -103,12 +110,14 @@ def setup_scheduling() -> None:
             job_func=run_threaded,
             target=scheduled_update,
             daemon=True,
+            task_name='Theme scan and queue',
         )
 
     schedule.every(max(15, int(config.CONFIG['Themerr']['INT_UPDATE_DATABASE_CACHE_INTERVAL']))).minutes.do(
         job_func=run_threaded,
         target=cache_data,
         daemon=True,
+        task_name='Dashboard refresh',
     )
 
     run_threaded(target=schedule_loop, daemon=True)  # start the schedule loop in a thread

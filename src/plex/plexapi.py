@@ -34,10 +34,31 @@ PLEX_SETUP_ERROR = 'Unable to setup plex server, cannot proceed. Ensure Plex is 
 plex_server = None
 alert_listener = None
 q = queue.Queue()
+_library_names: dict[str, str] = {}
 
 # disable auto-reload, because Themerr doesn't rely on it, so it will only slow down the app
 # when accessing a missing field
 os.environ["PLEXAPI_PLEXAPI_AUTORELOAD"] = "false"
+
+
+def _item_log_context(item: PlexPartialObject) -> str:
+    """Describe an item for progress logs without including media URLs.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Plex item being processed.
+
+    Returns
+    -------
+    str
+        Rating key, library ID and name, and item title.
+    """
+    library_id = getattr(item, 'librarySectionID', None)
+    library_name = (getattr(item, 'librarySectionTitle', None) or
+                    _library_names.get(str(library_id), 'unknown'))
+    return (f'rating_key={item.ratingKey} library_id={library_id} '
+            f'library_name={library_name!r} item={item.title!r}')
 
 
 def setup_plexapi() -> Optional[plexapi.server.PlexServer]:
@@ -174,13 +195,20 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         theme_errors.set_error(item.ratingKey, None)
         return
 
+    context = _item_log_context(item)
+
+    def report_extraction_error(reason: str) -> None:
+        theme_errors.set_error(item.ratingKey, reason)
+        log.warning('Theme audio extraction failed for %s: %s', context, reason)
+
+    log.info('Resolving theme audio for %s', context)
     try:
         theme_url = process_youtube(
             url=yt_video_url,
-            on_error=lambda reason: theme_errors.set_error(item.ratingKey, reason),
+            on_error=report_extraction_error,
         )
     except Exception:
-        log.exception(f'{item.ratingKey}: Error processing youtube url')
+        log.exception('Error processing YouTube theme for %s', context)
         theme_errors.set_error(item.ratingKey, 'Video processing failed')
         return
     if theme_url:
@@ -299,9 +327,6 @@ def add_media(
         log.warning(f'No theme songs provided for type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
         return False
 
-    log.info(f'Plexapi attempting to upload {media_type_dict[media_type]['name']} for '
-             f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
-
     if (themerr_data.get('settings_hash') == settings_hash and
             themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id and
             (media_type != 'themes' or general.get_theme_provider(item=item) == 'themerr')):
@@ -309,11 +334,10 @@ def add_media(
                  f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
         return False
 
+    log.info('Preparing %s upload for %s', media_type_dict[media_type]['name'], _item_log_context(item))
     if config.CONFIG['Themerr'][media_type_dict[media_type]['remove_pref']]:
         general.remove_uploaded_media(item=item, media_type=media_type)
 
-    log.info(f'Attempting to upload {media_type_dict[media_type]['name']} for '
-             f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
     if media_file:
         uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item),
                                 filepath=media_file, on_error=on_error)
@@ -336,6 +360,8 @@ def add_media(
                 new_themerr_data['uploaded_theme_key'] = selected.ratingKey
 
         general.update_themerr_data(item=item, new_themerr_data=new_themerr_data)
+        if media_type == 'themes':
+            log.info('Theme upload recorded for %s', _item_log_context(item))
 
         # unlock the field since it contains an automatically added value
         change_lock_status(item=item, field=media_type_dict[media_type]['plex_field'], lock=False)
@@ -446,22 +472,32 @@ def upload_media(
     """
     count = 0
     last_error = None
-    while count <= int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']):
+    max_attempts = int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']) + 1
+    is_theme = method == item.uploadTheme
+    context = _item_log_context(item) if is_theme else None
+    while count < max_attempts:
         try:
             if filepath or url:
                 source = {'filepath': filepath} if filepath else {'url': url}
-                if method == item.uploadTheme:
+                if is_theme:
                     source['timeout'] = int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'])
+                    log.info('Submitting theme to Plex for %s (attempt %d/%d, timeout=%ds)',
+                             context, count + 1, max_attempts, source['timeout'])
                 method(**source)
         except (BadRequest, requests.RequestException) as e:
             last_error = e
             sleep_time = 2 ** count
-            log.error(f'{item.ratingKey}: Error uploading media: {e}')
-            if count < int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']):
-                log.error(f'{item.ratingKey}: Trying again in : {sleep_time} seconds')
+            reason = theme_errors.normalize_reason(e)
+            log.error('Plex media upload failed for %s (attempt %d/%d): %s',
+                      context or f'rating_key={item.ratingKey}', count + 1, max_attempts, reason)
+            if count + 1 < max_attempts:
+                log.warning('Retrying Plex media upload for %s in %d seconds',
+                            context or f'rating_key={item.ratingKey}', sleep_time)
                 time.sleep(sleep_time)
             count += 1
         else:
+            if is_theme:
+                log.info('Plex accepted theme upload for %s', context)
             return True
     if last_error is not None and on_error:
         on_error(theme_errors.normalize_reason(last_error))
@@ -878,17 +914,22 @@ def scheduled_update() -> None:
         log.error(PLEX_SETUP_ERROR)
         return
 
+    log.info('Refreshing ThemerrDB index before the theme scan')
     themerr_db.update_cache()
+    log.info('ThemerrDB index ready; loading Plex libraries')
 
     plex_library = plex.library
 
     sections = plex_library.sections()
+    _library_names.update({str(section.key): section.title for section in sections})
+    log.info('Scanning %d Plex libraries for theme updates', len(sections))
     ignored_library_ids = {
         library_id.strip()
         for library_id in config.CONFIG['Themerr']['IGNORED_LIBRARY_IDS'].split(',')
         if library_id.strip()
     }
 
+    queued = 0
     for section in sections:
         if str(section.key) in ignored_library_ids:
             log.debug(f'Skipping ignored Plex library: {section.title}')
@@ -903,6 +944,11 @@ def scheduled_update() -> None:
             log.debug(f'Themerr-plex is disabled for agent "{section.agent}"')
             continue
 
+        section_queued = 0
         for item in _items_for_section(section):
             if item.ratingKey not in q.queue:
                 q.put(item=item.ratingKey)
+                section_queued += 1
+        queued += section_queued
+        log.info('Queued %d items from library %r (ID %s)', section_queued, section.title, section.key)
+    log.info('Theme scan finished queuing %d items; %d remain in the worker queue', queued, q.qsize())

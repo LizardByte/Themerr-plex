@@ -244,6 +244,27 @@ def test_upload_media(configured, item, monkeypatch):
     assert errors == ['retry']
 
 
+def test_theme_upload_logs_context_and_redacts_signed_url(configured, item, monkeypatch):
+    configured['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX'] = 1
+    item.librarySectionTitle = 'Movies'
+    item.uploadTheme.side_effect = [requests.HTTPError('406 for https://audio.example/?sig=secret'), None]
+    monkeypatch.setattr(plexapi.time, 'sleep', Mock())
+    info, error = Mock(), Mock()
+    monkeypatch.setattr(plexapi.log, 'info', info)
+    monkeypatch.setattr(plexapi.log, 'error', error)
+
+    assert plexapi.upload_media(item, item.uploadTheme, url='https://audio.example/stream')
+    messages = [call.args[0] % call.args[1:] for call in info.call_args_list]
+    assert any('Submitting theme to Plex' in message and
+               "rating_key=42 library_id=1 library_name='Movies' item='Example'" in message and
+               'attempt 1/2' in message for message in messages)
+    assert any('Plex accepted theme upload' in message for message in messages)
+    errors = [call.args[0] % call.args[1:] for call in error.call_args_list]
+    assert len(errors) == 1
+    assert '406' in errors[0]
+    assert 'sig=secret' not in errors[0]
+
+
 def test_change_lock_status(configured, item, monkeypatch):
     item.isLocked.side_effect = [False, True]
     assert plexapi.change_lock_status(item, 'theme', True)
@@ -356,6 +377,7 @@ def test_scheduled_update(configured, item, monkeypatch):
     monkeypatch.setattr(plexapi, 'q', Queue())
     plexapi.scheduled_update()
     assert plexapi.q.get_nowait() == 42
+    assert "library_id=1 library_name='Movies' item='Example'" in plexapi._item_log_context(item)
 
 
 def test_scheduled_update_ignores_configured_library(configured, item, monkeypatch):

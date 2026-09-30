@@ -1,5 +1,7 @@
 """ThemerrDB indexing and lookup without hosted data."""
 
+from threading import Event, Thread
+
 from themerr import themerr_db
 
 
@@ -54,3 +56,43 @@ def test_failed_database_fetch(monkeypatch):
     }
     assert not themerr_db.item_exists('movies', 'themoviedb', 1)
     assert themerr_db.find_id_by_title('movie_collections', 'Missing') is None
+
+
+def test_concurrent_refresh_logs_only_one_update(monkeypatch):
+    entered, waiting, release = Event(), Event(), Event()
+    requests = []
+    messages = []
+    monkeypatch.setattr(themerr_db, 'last_cache_update', 0)
+    monkeypatch.setattr(themerr_db.time, 'time', lambda: 10000)
+
+    def get_json(**kwargs):
+        requests.append(kwargs['url'])
+        if not entered.is_set():
+            entered.set()
+            release.wait(timeout=10)
+        return {'pages': 0}
+
+    def info(message, *_):
+        messages.append(message)
+        if message.startswith('Waiting for another task'):
+            waiting.set()
+
+    monkeypatch.setattr(themerr_db.helpers, 'json_get', get_json)
+    monkeypatch.setattr(themerr_db.log, 'info', info)
+    first = Thread(target=themerr_db.update_cache)
+    second = Thread(target=themerr_db.update_cache)
+    first.start()
+    try:
+        assert entered.wait(timeout=10)
+        second.start()
+        assert waiting.wait(timeout=10)
+    finally:
+        release.set()
+        first.join(timeout=10)
+        if second.ident is not None:
+            second.join(timeout=10)
+
+    assert not first.is_alive() and not second.is_alive()
+    assert len(requests) == 3
+    assert messages.count('Updating ThemerrDB cache') == 1
+    assert 'ThemerrDB index was refreshed by another task; skipping' in messages

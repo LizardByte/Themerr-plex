@@ -15,6 +15,28 @@ def test_run_threaded():
     assert thread.daemon
 
 
+def test_scheduled_task_logs_start_and_finish(monkeypatch):
+    started, finished = Mock(), Mock()
+    monkeypatch.setattr(scheduled_tasks.log, 'info', started)
+    job = scheduled_tasks.run_threaded(target=finished, task_name='Dashboard refresh')
+    job.join(timeout=2)
+
+    finished.assert_called_once_with()
+    assert started.call_args_list[0].args == ('Scheduled task started: %s', 'Dashboard refresh')
+    assert started.call_args_list[1].args[:2] == ('Scheduled task finished: %s (%.1f seconds)', 'Dashboard refresh')
+
+
+def test_scheduled_task_failure_is_logged_and_thread_exits(monkeypatch):
+    error = Mock()
+    monkeypatch.setattr(scheduled_tasks.log, 'exception', error)
+    job = scheduled_tasks.run_threaded(target=Mock(side_effect=RuntimeError('failed')),
+                                       task_name='Theme scan and queue')
+    job.join(timeout=2)
+
+    assert not job.is_alive()
+    assert error.call_args.args[:2] == ('Scheduled task failed: %s (%.1f seconds)', 'Theme scan and queue')
+
+
 def test_schedule_loop(monkeypatch):
     run_all = Mock()
     pending = Mock()

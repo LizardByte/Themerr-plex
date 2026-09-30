@@ -68,18 +68,19 @@ def update_cache() -> None:
 
     Updating the cache less than an hour after the last update is a no-op.
     """
-    log.info('Updating ThemerrDB cache')
-
     global last_cache_update
 
     if time.time() - last_cache_update < 3600:
-        log.info('Cache updated less than an hour ago, skipping')
+        log.info('ThemerrDB index is fresh; skipping refresh')
         return
 
+    if lock.locked():
+        log.info('Waiting for another task to finish refreshing the ThemerrDB index')
     with lock:
         if time.time() - last_cache_update < 3600:
-            log.info('Cache updated while waiting for the lock, skipping')
+            log.info('ThemerrDB index was refreshed by another task; skipping')
             return
+        log.info('Updating ThemerrDB cache')
         for database_type, databases in db_field_name.items():
             try:
                 pages = helpers.json_get(
