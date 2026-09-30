@@ -8,7 +8,10 @@ In Settings, enter and save your Plex server URL, then select **Sign in with Ple
 Plex browser window and return to Settings. Themerr-plex checks the sign-in and connects to the configured server.
 The Plex account must have access to that server. To change accounts, select **Disconnect Plex** and sign in again.
 This replaces the manually entered Plex token used by older versions; existing installations must sign in once.
-The resulting token is kept in the local Themerr SQLite database and is never shown in Settings.
+On desktop systems, the Plex token is saved in the operating system's credential store and is never shown in Settings.
+For Docker or headless systems, provide ``THEMERR_PLEX_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
+the configuration directory. Themerr-plex uses that key to encrypt the token stored in SQLite. Keep the key file private;
+losing it requires signing in again. Docker sign-in requires this key file.
 
 Set the Plex data directory if you want Themerr-plex to remove older uploaded media from Plex's metadata directory.
 Use the folder button beside this setting to browse directories on the machine running Themerr-plex. The same button
@@ -29,18 +32,20 @@ To exclude a library from scheduled updates, enter its ID in **Ignored library I
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 
 TMDB IDs for titles already in ThemerrDB are resolved from ThemerrDB's index. Movie collections can also be resolved
-from matching collection metadata on their member movies. To resolve other titles for a contribution link, set the optional
+from matching collection metadata on their member movies. Themerr-plex asks the configured Plex server's TMDB proxy to
+resolve other IMDb or TVDB IDs and collection names. If the Plex proxy is unavailable, you can set the optional
 ``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
 web settings and configuration file.
 
 Local data
 ----------
 
-Themerr-plex stores its dashboard snapshot, upload records, processing errors, and Plex sign-in in
+Themerr-plex stores its dashboard snapshot, upload records, processing errors, and non-secret Plex client ID in
 ``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
-``/config/themerr-plex.db`` in Docker). Alembic applies schema migrations on startup.
-Existing ``database_cache.json``, ``theme_errors.json``, ``plex-auth.json``, and per-item JSON records are copied into
-SQLite on first use. The old files are left in place as backups and are no longer updated by Themerr-plex.
+``/config/themerr-plex.db`` in Docker). Docker and headless installs also store the encrypted Plex token there.
+Alembic applies schema migrations on startup. Existing ``database_cache.json``, ``theme_errors.json``, and per-item JSON
+records are copied into SQLite on first use; those old files remain as backups. Any old plaintext Plex token row and
+``plex-auth.json`` file are removed without importing the token, so you must sign in again.
 
 The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
 bundled with packaged and Docker builds.

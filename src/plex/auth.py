@@ -1,4 +1,4 @@
-"""Plex PIN sign-in and SQLite storage for the resulting account token."""
+"""Plex PIN sign-in with secure storage for the resulting account token."""
 
 # standard imports
 import threading
@@ -10,6 +10,7 @@ import requests
 
 # local imports
 from common import logger
+from plex import token_store
 from themerr import storage
 
 
@@ -18,6 +19,7 @@ PLEX_AUTH_URL = 'https://app.plex.tv/auth#?'
 PRODUCT = 'Themerr-plex'
 TIMEOUT = 10
 _lock = threading.RLock()
+log = logger.get_logger(__name__)
 
 
 def _load() -> dict:
@@ -26,18 +28,18 @@ def _load() -> dict:
     Returns
     -------
     dict
-        Saved client identifier and token, if available.
+        Saved client identifier, if available.
     """
     return storage.get_credentials()
 
 
 def _save(credentials: dict) -> None:
-    """Store Plex credentials in the installation database.
+    """Store the non-secret Plex client identifier in SQLite.
 
     Parameters
     ----------
     credentials : dict
-        Client identifier and optional account token.
+        Client identifier.
     """
     storage.save_credentials(credentials)
 
@@ -51,7 +53,14 @@ def get_token() -> str:
         Saved token, or an empty string if disconnected.
     """
     with _lock:
-        token = _load().get('token', '')
+        client_id = _load().get('client_id')
+        if not client_id:
+            return ''
+        try:
+            token = token_store.get_token(client_id)
+        except token_store.TokenStorageError as exc:
+            log.warning('%s', exc)
+            return ''
         if token:
             logger.blacklist_config({'Plex': {'PLEX_TOKEN': token}})
         return token
@@ -66,18 +75,16 @@ def set_token(token: str) -> None:
         Plex account token.
     """
     with _lock:
-        credentials = _load()
-        credentials['token'] = token
-        _save(credentials)
+        token_store.save_token(_client_identifier(), token)
         logger.blacklist_config({'Plex': {'PLEX_TOKEN': token}})
 
 
 def disconnect() -> None:
     """Remove the saved token while retaining the client identifier."""
     with _lock:
-        credentials = _load()
-        credentials.pop('token', None)
-        _save(credentials)
+        client_id = _load().get('client_id')
+        if client_id:
+            token_store.delete_token(client_id)
 
 
 def _client_identifier() -> str:

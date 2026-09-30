@@ -5,12 +5,14 @@ from urllib.parse import parse_qs
 from unittest.mock import Mock
 
 # lib imports
+from cryptography.fernet import Fernet
+from keyring.errors import NoKeyringError
 import pytest
 import requests
 
 # local imports
 from common import config
-from plex import auth
+from plex import auth, token_store
 from themerr import storage
 
 
@@ -23,15 +25,50 @@ def test_credentials_persist_without_exposing_legacy_token(configured, tmp_path)
     assert len(identifier) == 32
 
     auth.set_token('plex-issued-token')
-    assert storage.get_credentials() == {
-        'client_id': identifier, 'token': 'plex-issued-token',
-    }
+    assert storage.get_credentials() == {'client_id': identifier}
     assert (tmp_path / 'themerr-plex.db').is_file()
+    assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
     assert not (tmp_path / 'plex-auth.json').exists()
     assert auth.get_token() == 'plex-issued-token'
     auth.disconnect()
     assert auth.get_token() == ''
     assert storage.get_credentials() == {'client_id': identifier}
+
+
+def test_headless_token_uses_external_key(configured, tmp_path, monkeypatch):
+    key_path = tmp_path / 'plex.key'
+    key_path.write_bytes(Fernet.generate_key())
+    monkeypatch.setenv('THEMERR_DOCKER', 'True')
+    monkeypatch.setenv(token_store.KEY_FILE_ENV, str(key_path))
+
+    auth.set_token('plex-issued-token')
+    encrypted = storage.get_encrypted_token()
+    assert encrypted and 'plex-issued-token' not in encrypted
+    assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
+    storage.close()
+    assert auth.get_token() == 'plex-issued-token'
+
+    key_path.write_bytes(Fernet.generate_key())
+    assert auth.get_token() == ''
+    auth.disconnect()
+    assert storage.get_encrypted_token() == ''
+
+
+def test_headless_requires_external_key(configured, monkeypatch):
+    monkeypatch.setenv('THEMERR_DOCKER', 'True')
+    with pytest.raises(token_store.TokenStorageError, match='mounted secret'):
+        auth.set_token('plex-issued-token')
+    assert storage.get_encrypted_token() == ''
+
+
+def test_unavailable_os_credential_store_does_not_save_plaintext(configured, tmp_path, monkeypatch):
+    monkeypatch.setattr(token_store.keyring, 'set_password',
+                        Mock(side_effect=NoKeyringError('No credential store')))
+
+    with pytest.raises(token_store.TokenStorageError, match='credential store'):
+        auth.set_token('plex-issued-token')
+    assert auth.get_token() == ''
+    assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
 
 
 def test_old_config_token_is_dropped(tmp_path, monkeypatch):

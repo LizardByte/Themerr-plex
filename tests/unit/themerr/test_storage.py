@@ -38,7 +38,8 @@ def test_legacy_state_import_survives_restart(configured, tmp_path):
 
     assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
     assert storage.get_errors() == {'42': 'Video unavailable'}
-    assert storage.get_credentials() == {'client_id': 'abc', 'token': 'issued'}
+    assert storage.get_credentials() == {}
+    assert not credentials_path.exists()
     assert storage.get_tracking(42) == {
         'settings_hash': 'hash', 'youtube_theme_url': 'https://youtube.example',
     }
@@ -51,7 +52,18 @@ def test_legacy_state_import_survives_restart(configured, tmp_path):
     assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
     assert storage.get_credentials() == {'client_id': 'abc'}
     assert storage.get_errors() == {}
-    assert all(path.exists() for path in (dashboard_path, errors_path, credentials_path, record_path))
+    assert all(path.exists() for path in (dashboard_path, errors_path, record_path))
+
+
+def test_plaintext_token_row_is_discarded(configured):
+    database = storage.engine()
+    with database.begin() as connection:
+        connection.execute(text("INSERT INTO app_settings (key, value) VALUES ('token', 'old-plaintext-token')"))
+    storage.close()
+
+    assert storage.get_credentials() == {}
+    with storage.engine().connect() as connection:
+        assert connection.execute(text("SELECT value FROM app_settings WHERE key='token'")).scalar_one_or_none() is None
 
 
 def test_dashboard_replacement_is_atomic(configured):

@@ -9,7 +9,7 @@ from threading import RLock
 # lib imports
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, delete, select
+from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, delete, select, text
 from sqlalchemy.engine import URL, Engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
@@ -94,7 +94,7 @@ class ThemeError(Base):
 
 
 class AppSetting(Base):
-    """Small installation settings, including the Plex OAuth client and token."""
+    """Non-secret installation settings and encrypted token data."""
 
     __tablename__ = 'app_settings'
 
@@ -216,15 +216,27 @@ def _import_legacy(engine: Engine) -> None:
                                                         'settings_hash', 'youtube_theme_url', 'art_url', 'poster_url',
                                                     )}))
 
-        if app_config.CONFIG is not None:
-            credentials_path = Path(app_config.CONFIG.filename).resolve().parent / 'plex-auth.json'
-            if credentials_path.is_file():
-                for key, value in _legacy_json(credentials_path).items():
-                    if (key in ('client_id', 'token') and isinstance(value, str) and
-                            session.get(AppSetting, key) is None):
-                        session.add(AppSetting(key=key, value=value))
         session.add(AppSetting(key='legacy_imported', value='1'))
         session.commit()
+
+
+def _discard_legacy_credentials(engine: Engine) -> None:
+    """Erase formerly stored plaintext credentials without importing them.
+
+    Parameters
+    ----------
+    engine : Engine
+        Active SQLite engine.
+    """
+    with Session(engine) as session:
+        session.execute(text('PRAGMA secure_delete=ON'))
+        session.execute(delete(AppSetting).where(AppSetting.key == 'token'))
+        session.commit()
+    old_file = Path(database_path()).parent / 'plex-auth.json'
+    try:
+        old_file.unlink(missing_ok=True)
+    except OSError:
+        log.warning('Unable to remove the old plaintext Plex token file: %s', old_file)
 
 
 def engine() -> Engine:
@@ -255,6 +267,7 @@ def engine() -> Engine:
             if was_missing and os.name != 'nt':
                 os.chmod(path, 0o600)
             _import_legacy(candidate)
+            _discard_legacy_credentials(candidate)
         except Exception:
             candidate.dispose()
             raise
@@ -395,7 +408,7 @@ def set_error(rating_key: int | str, reason: str | None) -> None:
 
 
 def get_credentials() -> dict[str, str]:
-    """Return the stored Plex OAuth client identifier and token.
+    """Return the stored Plex OAuth client identifier.
 
     Returns
     -------
@@ -404,25 +417,57 @@ def get_credentials() -> dict[str, str]:
     """
     with Session(engine()) as session:
         return {row.key: row.value for row in session.scalars(select(AppSetting))
-                if row.key in ('client_id', 'token')}
+                if row.key == 'client_id'}
 
 
 def save_credentials(credentials: dict[str, str]) -> None:
-    """Replace the stored Plex OAuth credentials.
+    """Replace the non-secret Plex OAuth client identifier.
 
     Parameters
     ----------
     credentials : dict[str, str]
-        Client identifier and optional token.
+        Client identifier.
     """
     with Session(engine()) as session:
-        for key in ('client_id', 'token'):
-            row = session.get(AppSetting, key)
-            if key not in credentials:
-                if row is not None:
-                    session.delete(row)
-            elif row is None:
-                session.add(AppSetting(key=key, value=credentials[key]))
-            else:
-                row.value = credentials[key]
+        row = session.get(AppSetting, 'client_id')
+        if 'client_id' not in credentials:
+            if row is not None:
+                session.delete(row)
+        elif row is None:
+            session.add(AppSetting(key='client_id', value=credentials['client_id']))
+        else:
+            row.value = credentials['client_id']
+        session.commit()
+
+
+def get_encrypted_token() -> str:
+    """Return encrypted token data for the external-key backend.
+
+    Returns
+    -------
+    str
+        Fernet ciphertext, or an empty string when not signed in.
+    """
+    with Session(engine()) as session:
+        row = session.get(AppSetting, 'plex_token_ciphertext')
+        return row.value if row is not None else ''
+
+
+def save_encrypted_token(ciphertext: str | None) -> None:
+    """Save or clear encrypted token data.
+
+    Parameters
+    ----------
+    ciphertext : str or None
+        Fernet ciphertext, or ``None`` to disconnect.
+    """
+    with Session(engine()) as session:
+        row = session.get(AppSetting, 'plex_token_ciphertext')
+        if ciphertext is None:
+            if row is not None:
+                session.delete(row)
+        elif row is None:
+            session.add(AppSetting(key='plex_token_ciphertext', value=ciphertext))
+        else:
+            row.value = ciphertext
         session.commit()

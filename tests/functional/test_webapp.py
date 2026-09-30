@@ -186,6 +186,22 @@ def test_plex_sign_in_failed_server_preserves_connection(client, configured, mon
     assert auth.get_token() == 'previous-token'
 
 
+def test_plex_sign_in_requires_secure_store(client, configured, monkeypatch):
+    monkeypatch.setenv('THEMERR_DOCKER', 'True')
+    monkeypatch.setattr(auth, 'start_login', lambda: {
+        'pin_id': 123, 'code': 'strong-code', 'auth_url': 'https://app.plex.tv/auth#?code=strong-code',
+    })
+    monkeypatch.setattr(auth, 'check_login', lambda **_: 'issued-token')
+    monkeypatch.setattr(plexapi, 'connect_plex_server', Mock(return_value=object()))
+
+    assert client.post('/api/plex/auth/start').status_code == 200
+    response = client.post('/api/plex/auth/check')
+    assert response.status_code == 500
+    assert response.json == {'message': 'Unable to save Plex sign-in.'}
+    assert auth.get_token() == ''
+    assert storage.get_encrypted_token() == ''
+
+
 def test_plex_sign_in_expired_and_upstream_failure(client, configured, monkeypatch):
     monkeypatch.setattr(auth, 'start_login', lambda: {
         'pin_id': 123, 'code': 'strong-code', 'auth_url': 'https://app.plex.tv/auth#?code=strong-code',

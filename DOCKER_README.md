@@ -2,6 +2,14 @@
 
 ## lizardbyte/themerr-plex
 
+Before Plex sign-in, create a persistent key file outside the `/config` volume. Keep this file private and ensure the
+container's `PUID` can read it. Keep the same key when recreating the container; losing it requires signing in again.
+
+```bash
+python3 -c 'import base64, os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())' > themerr-plex.key
+chmod 600 themerr-plex.key
+```
+
 ### Using docker run
 Create and run the container (substitute your `<values>`):
 
@@ -10,6 +18,8 @@ docker run -d \
   --name=themerr-plex \
   --restart=unless-stopped \
   -v <path to data>:/config \
+  -v <absolute path to themerr-plex.key>:/run/secrets/themerr_plex_key:ro \
+  -e THEMERR_PLEX_TOKEN_KEY_FILE=/run/secrets/themerr_plex_key \
   -e PUID=<uid> \
   -e PGID=<gid> \
   -e TZ=<timezone> \
@@ -43,7 +53,9 @@ services:
     restart: unless-stopped
     volumes:
       - <path to data>:/config
+      - <absolute path to themerr-plex.key>:/run/secrets/themerr_plex_key:ro
     environment:
+      - THEMERR_PLEX_TOKEN_KEY_FILE=/run/secrets/themerr_plex_key
       - PUID=<uid>
       - PGID=<gid>
       - TZ=<timezone>
@@ -80,6 +92,8 @@ The internal port is `9494`; the host port may be changed (e.g. `-p 8080:9494`).
 |-----------------------------|--------------------------------------------------------------------------------------|----------------------|:--------:|
 | `-p <port>:9494`            | Web UI Port                                                                          | `9494`               |   True   |
 | `-v <path to data>:/config` | Volume mapping                                                                       | `/home/themerr-plex` |   True   |
+| `-v <path to key>:/run/secrets/themerr_plex_key:ro` | Read-only token encryption key | `/home/me/themerr-plex.key` | True |
+| `-e THEMERR_PLEX_TOKEN_KEY_FILE=...` | Container path to the token encryption key | `/run/secrets/themerr_plex_key` | True |
 | `-e PUID=<uid>`             | User ID                                                                              | `1001`               |  False   |
 | `-e PGID=<gid>`             | Group ID                                                                             | `1001`               |  False   |
 | `-e TZ=<timezone>`          | Lookup TZ value [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | `America/New_York`   |   True   |
