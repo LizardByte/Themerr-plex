@@ -9,7 +9,7 @@ from threading import RLock
 # lib imports
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, delete, select, text
+from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, delete, func, select, text
 from sqlalchemy.engine import URL, Engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
@@ -23,6 +23,9 @@ log = logger.get_logger(__name__)
 _lock = RLock()
 _engine: Engine | None = None
 _engine_path: str | None = None
+_dashboard_lock = RLock()
+_dashboard_revision = 0
+_theme_uploads: dict[str, tuple[int, str]] = {}
 
 
 class Base(DeclarativeBase):
@@ -277,24 +280,94 @@ def engine() -> Engine:
 
 def close() -> None:
     """Dispose the active engine, primarily for clean shutdown and tests."""
-    global _engine, _engine_path
-    with _lock:
-        if _engine is not None:
-            _engine.dispose()
-        _engine, _engine_path = None, None
+    global _engine, _engine_path, _dashboard_revision
+    with _dashboard_lock:
+        with _lock:
+            if _engine is not None:
+                _engine.dispose()
+            _engine, _engine_path = None, None
+        _dashboard_revision = 0
+        _theme_uploads.clear()
 
 
-def replace_dashboard(sections: dict) -> None:
+def dashboard_revision() -> int:
+    """Return the current upload revision before building a dashboard snapshot.
+
+    Returns
+    -------
+    int
+        Revision used to retain uploads that finish during the scan.
+    """
+    with _dashboard_lock:
+        return _dashboard_revision
+
+
+def _set_dashboard_theme_uploaded(session: Session, rating_key: str, provider: str) -> None:
+    """Update one cached row and its library progress in a transaction."""
+    item = session.get(LibraryItem, rating_key)
+    if item is None:
+        return
+    item.theme = True
+    item.theme_status = 'complete'
+    item.theme_provider = provider
+
+    section = session.get(LibrarySection, item.section_key)
+    if item.type == 'collection':
+        total = section.collection_count
+        field = 'collection_percent_complete'
+        type_filter = LibraryItem.type == 'collection'
+    else:
+        total = section.media_count
+        field = 'media_percent_complete'
+        type_filter = LibraryItem.type != 'collection'
+    session.flush()
+    complete = session.scalar(select(func.count()).select_from(LibraryItem).where(
+        LibraryItem.section_key == item.section_key, type_filter, LibraryItem.theme.is_(True),
+    ))
+    setattr(section, field, int(complete / total * 100) if total else 0)
+
+
+def mark_dashboard_theme_uploaded(rating_key: int | str, provider: str) -> None:
+    """Publish a successful upload to the cached dashboard immediately.
+
+    The revision also preserves uploads that finish while a full dashboard scan is in progress.
+
+    Parameters
+    ----------
+    rating_key : int or str
+        Plex rating key of the uploaded item.
+    provider : str
+        Provider identified after the upload.
+    """
+    global _dashboard_revision
+
+    key = str(rating_key)
+    with _dashboard_lock:
+        with Session(engine()) as session:
+            _set_dashboard_theme_uploaded(session, key, provider)
+            session.commit()
+        _dashboard_revision += 1
+        _theme_uploads[key] = (_dashboard_revision, provider)
+
+
+def replace_dashboard(sections: dict, since_revision: int | None = None) -> None:
     """Atomically publish a complete dashboard snapshot.
 
     Parameters
     ----------
     sections : dict
         Complete library snapshot keyed by section ID.
+    since_revision : int or None, optional
+        Upload revision captured before the scan. Newer uploads are retained in the snapshot.
     """
-    with Session(engine()) as session:
-        _replace_dashboard(session, sections)
-        session.commit()
+    with _dashboard_lock:
+        with Session(engine()) as session:
+            _replace_dashboard(session, sections)
+            if since_revision is not None:
+                for key, (revision, provider) in _theme_uploads.items():
+                    if revision > since_revision:
+                        _set_dashboard_theme_uploaded(session, key, provider)
+            session.commit()
 
 
 def get_dashboard() -> dict | None:

@@ -187,11 +187,14 @@ def test_successful_upload_records_selected_theme_key(configured, item, monkeypa
                                                 ratingKey='upload://themes/new-theme')]
     monkeypatch.setattr(plexapi, 'upload_media', Mock(return_value=True))
     monkeypatch.setattr(plexapi, 'change_lock_status', Mock(return_value=True))
+    dashboard_update = Mock()
+    monkeypatch.setattr(plexapi.storage, 'mark_dashboard_theme_uploaded', dashboard_update)
 
     assert plexapi.add_media(item, 'themes', 'https://youtube.example/video',
                              media_url='https://audio.example/stream')
     assert plexapi.general.get_themerr_data(item)['uploaded_theme_key'] == 'upload://themes/new-theme'
     assert plexapi.general.get_theme_provider(item) == 'themerr'
+    dashboard_update.assert_called_once_with(42, 'themerr')
 
 
 def test_unknown_upload_is_replaced_even_with_old_tracking(configured, item, monkeypatch):

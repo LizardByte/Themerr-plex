@@ -75,6 +75,50 @@ def test_dashboard_replacement_is_atomic(configured):
     assert storage.get_dashboard()['1']['items'][0]['title'] == 'Example'
 
 
+def test_theme_upload_updates_dashboard_row_and_progress(configured):
+    snapshot = _dashboard()
+    section = snapshot['1']
+    section['media_count'] = 2
+    section['collection_count'] = 1
+    section['total_count'] = 3
+    section['items'].append({
+        **section['items'][0], 'rating_key': '43', 'title': 'Second movie',
+    })
+    section['items'].append({
+        **section['items'][0], 'rating_key': '44', 'title': 'Collection', 'type': 'collection',
+    })
+    storage.replace_dashboard(snapshot)
+
+    storage.mark_dashboard_theme_uploaded(42, 'themerr')
+    storage.mark_dashboard_theme_uploaded(42, 'themerr')
+    data = storage.get_dashboard()['1']
+    assert data['media_percent_complete'] == 50
+    assert data['collection_percent_complete'] == 0
+    assert data['items'][0]['theme'] is True
+    assert data['items'][0]['theme_status'] == 'complete'
+    assert data['items'][0]['theme_provider'] == 'themerr'
+
+    storage.mark_dashboard_theme_uploaded(44, 'uploaded')
+    data = storage.get_dashboard()['1']
+    assert data['media_percent_complete'] == 50
+    assert data['collection_percent_complete'] == 100
+    assert data['items'][2]['theme_provider'] == 'uploaded'
+
+
+def test_dashboard_refresh_retains_upload_completed_during_scan(configured):
+    snapshot = _dashboard()
+    storage.replace_dashboard(snapshot)
+    scan_revision = storage.dashboard_revision()
+    storage.mark_dashboard_theme_uploaded(42, 'themerr')
+
+    storage.replace_dashboard(snapshot, since_revision=scan_revision)
+
+    data = storage.get_dashboard()['1']
+    assert data['items'][0]['theme_status'] == 'complete'
+    assert data['items'][0]['theme_provider'] == 'themerr'
+    assert data['media_percent_complete'] == 100
+
+
 def test_legacy_import_uses_active_config_directory(configured, tmp_path, monkeypatch):
     monkeypatch.setattr(definitions.Paths, 'CONFIG_DIR', str(tmp_path / 'inactive'))
     (tmp_path / 'theme_errors.json').write_text(json.dumps({'42': 'Video unavailable'}), encoding='utf-8')

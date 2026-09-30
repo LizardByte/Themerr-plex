@@ -20,6 +20,7 @@ from common import logger
 from plex import auth
 from themerr.constants import contributes_to, guid_map, media_type_dict
 from themerr import general
+from themerr import storage
 from themerr import theme_errors
 from themerr import themerr_db
 from themerr import tmdb
@@ -361,6 +362,12 @@ def add_media(
 
         general.update_themerr_data(item=item, new_themerr_data=new_themerr_data)
         if media_type == 'themes':
+            uploaded_key = new_themerr_data.get('uploaded_theme_key', '')
+            provider = 'themerr' if str(uploaded_key).startswith('upload://themes/') else 'uploaded'
+            try:
+                storage.mark_dashboard_theme_uploaded(item.ratingKey, provider)
+            except Exception:
+                log.exception('Unable to update dashboard after theme upload for %s', _item_log_context(item))
             log.info('Theme upload recorded for %s', _item_log_context(item))
 
         # unlock the field since it contains an automatically added value

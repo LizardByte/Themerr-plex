@@ -177,6 +177,8 @@ def cache_data() -> None:
     time-consuming to populate; therefore, this is performed within this caching function, which runs on a schedule.
     This function atomically publishes a snapshot in SQLite.
     """
+    revision = storage.dashboard_revision()
+
     # get all Plex items from supported metadata agents
     plex_server = setup_plexapi()
     if not plex_server:
@@ -202,4 +204,4 @@ def cache_data() -> None:
         if section.agent in contributes_to or section_data['total_count']:
             items[section.key] = section_data
 
-    storage.replace_dashboard(items)
+    storage.replace_dashboard(items, since_revision=revision)

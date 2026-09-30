@@ -58,6 +58,22 @@ def test_home_shows_item_failure(client, configured):
     assert b'<script>alert(1)</script>' not in response.data
 
 
+def test_home_reflects_successful_upload_on_reload(client):
+    storage.replace_dashboard(_dashboard([{
+        'rating_key': '42', 'title': 'Example', 'type': 'movie', 'year': 2020,
+        'issue_action': 'add', 'issue_url': None, 'theme_provider': None,
+        'theme_status': 'pending', 'theme': False,
+    }]))
+    assert b'Theme not installed yet' in client.get('/home').data
+
+    storage.mark_dashboard_theme_uploaded(42, 'themerr')
+
+    response = client.get('/home')
+    assert response.status_code == 200
+    assert b'Themerr provided' in response.data
+    assert b'Theme not installed yet' not in response.data
+
+
 def test_home_distinguishes_external_id_and_unknown_upload(client, configured):
     storage.replace_dashboard(_dashboard([
         {
