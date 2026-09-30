@@ -87,6 +87,8 @@ def test_json_get_errors(monkeypatch):
     monkeypatch.setattr(helpers.requests, 'Session', lambda: session)
     assert helpers.json_get('https://example') == {}
     session.get.side_effect = None
+    session.get.return_value = SimpleNamespace(status_code=401)
+    assert helpers.json_get('https://example') == {}
     session.get.return_value = SimpleNamespace(
         json=lambda: (_ for _ in ()).throw(json.JSONDecodeError('bad', '{', 0)),
     )

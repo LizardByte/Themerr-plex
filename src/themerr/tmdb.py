@@ -1,147 +1,114 @@
+"""Resolve TMDB IDs from the already downloaded ThemerrDB index."""
+
 # standard imports
-from typing import Optional
+import os
 
 # local imports
-from common import config
 from common import helpers
-from common import logger
-
-log = logger.get_logger(name=__name__)
+from themerr import themerr_db
 
 
-def tmdb_base_url() -> Optional[str]:
-    """
-    Get the base URL for the Plex TMDB service.
-
-    .. todo:: is Plex going to keep these services after removing plugins altogether?
-
-    Returns
-    -------
-    str
-        Base URL for the Plex TMDB service.
-
-    Examples
-    --------
-    >>> tmdb_base_url()
-    '.../services/tmdb?uri='
-    """
-    try:
-        return f'{config.CONFIG['Plex']['PLEX_URL']}/services/tmdb?uri='
-    except (KeyError, TypeError):
-        log.exception('Error getting base URL for Plex TMDB service. Config may not be initialized.')
-        return
+TMDB_API_URL = 'https://api.themoviedb.org/3'
 
 
-def get_tmdb_id_from_external_id(external_id: int | str, database: str, item_type: str) -> Optional[int]:
-    """
-    Convert IMDB ID to TMDB ID.
-
-    Use the builtin Plex tmdb api service to search for a movie by IMDB ID.
+def _api_get(path: str, params: dict) -> dict:
+    """Query TMDB when an optional API read token is configured.
 
     Parameters
     ----------
-    external_id : Union[int, str]
-        External ID to convert.
-    database : str
-        Database to search. Must be one of 'imdb' or 'tvdb'.
-    item_type : str
-        Item type to search. Must be one of 'movie' or 'tv'.
+    path : str
+        TMDB API path.
+    params : dict
+        Query parameters.
 
     Returns
     -------
-    Optional[int]
-        Return TMDB ID if found, otherwise None.
-
-    Examples
-    --------
-    >>> get_tmdb_id_from_external_id(imdb_id='tt1254207', database='imdb', item_type='movie')
-    10378
-    >>> get_tmdb_id_from_external_id(imdb_id='268592', database='tvdb', item_type='tv')
-    48866
+    dict
+        JSON response, or an empty dictionary without a token.
     """
-    if database.lower() not in ['imdb', 'tvdb']:
-        log.exception(f'Invalid database: {database}')
-        return
-    if item_type.lower() not in ['movie', 'tv']:
-        log.exception(f'Invalid item type: {item_type}')
-        return
+    token = os.environ.get('TMDB_API_READ_ACCESS_TOKEN')
+    if not token:
+        return {}
+    data = helpers.json_get(
+        url=f'{TMDB_API_URL}/{path}', params=params,
+        headers={'Accept': 'application/json', 'Authorization': f'Bearer {token}'},
+        cache_time=86400,
+    )
+    return data if isinstance(data, dict) else {}
 
-    # according to https://www.themoviedb.org/talk/5f6a0500688cd000351c1712 we can search by external id
-    # https://api.themoviedb.org/3/find/tt0458290?api_key=###&external_source=imdb_id
-    find_url_suffix = 'find/{}?external_source={}_id'
 
-    url = f'{tmdb_base_url()}/{find_url_suffix.format(
-        helpers.string_quote(string=str(external_id), use_plus=True), database.lower())}'
+def get_tmdb_id_from_external_id(external_id: int | str, database: str, item_type: str,
+                                 title: str | None = None) -> int | None:
+    """Resolve an external movie or show identifier to a TMDB ID.
+
+    ThemerrDB publishes IMDb IDs for movies and titles for TV shows. A configured
+    TMDB API read token can resolve items absent from ThemerrDB.
+
+    Parameters
+    ----------
+    external_id : int or str
+        IMDb or TVDB identifier from Plex.
+    database : str
+        ``imdb`` or ``tvdb``.
+    item_type : str
+        ``movie`` or ``tv``.
+    title : str or None
+        Plex show title, used when ThemerrDB has no external ID mapping.
+
+    Returns
+    -------
+    int or None
+        TMDB identifier for an item already present in ThemerrDB.
+    """
+    if database not in ('imdb', 'tvdb') or item_type not in ('movie', 'tv'):
+        return None
+    if item_type == 'movie' and database == 'imdb':
+        database_id = themerr_db.find_movie_id_by_imdb(str(external_id))
+        if database_id:
+            return database_id
+    if item_type == 'tv' and title:
+        database_id = themerr_db.find_id_by_title('tv_shows', title)
+        if database_id:
+            return database_id
+
+    if item_type == 'movie' and database == 'tvdb':
+        return None  # TMDB's find endpoint does not support TVDB IDs for movies.
+    data = _api_get(f'find/{external_id}', {'external_source': f'{database}_id'})
     try:
-        tmdb_data = helpers.json_get(
-            url=url,
-            sleep_time=2.0,
-            headers={'Accept': 'application/json'},
-            cache_time=86400,  # 1 day
-        )
-    except Exception as e:
-        log.debug(f'Error converting external ID to TMDB ID: {e}')
-    else:
-        log.debug(f'TMDB data: {tmdb_data}')
-        try:
-            # this is already an integer, but let's force it
-            tmdb_id = int(tmdb_data[f'{item_type.lower()}_results'][0]['id'])
-        except (IndexError, KeyError, ValueError):
-            log.debug(f'Error converting external ID to TMDB ID: {tmdb_data}')
-        else:
-            return tmdb_id
+        return int(data[f'{item_type}_results'][0]['id'])
+    except (IndexError, KeyError, TypeError, ValueError):
+        return None
 
 
-def get_tmdb_id_from_collection(search_query: str) -> Optional[int]:
-    """
-    Search for a collection by name.
-
-    Use the builtin Plex tmdb api service to search for a tmdb collection by name.
+def get_tmdb_id_from_collection(search_query: str, language: str | None = None) -> int | None:
+    """Find a collection by title in ThemerrDB or the optional TMDB API.
 
     Parameters
     ----------
     search_query : str
-        Name of collection to search for.
+        Plex collection title, with or without the ``Collection`` suffix.
+    language : str or None
+        Plex library language for the TMDB API fallback.
 
     Returns
     -------
-    Optional[int]
-        Return collection ID if found, otherwise None.
-
-    Examples
-    --------
-    >>> get_tmdb_id_from_collection(search_query='James Bond Collection')
-    645
-    >>> get_tmdb_id_from_collection(search_query='James Bond')
-    645
+    int or None
+        TMDB collection identifier when present in ThemerrDB.
     """
-    # /search/collection?query=James%20Bond%20Collection&include_adult=false&language=en-US&page=1"
-    query_url = 'search/collection?query={}'
-    query_item = search_query.split('&', 1)[0]
+    database_id = themerr_db.find_id_by_title('movie_collections', search_query)
+    if database_id:
+        return database_id
 
-    # Plex returns 500 error if spaces are in the collection query, same with `_`, `+`, and `%20`... so use `-`
-    url = f'{tmdb_base_url()}/{query_url.format(helpers.string_quote(
-        string=search_query.replace(' ', '-'), use_plus=False))}'
-    try:
-        tmdb_data = helpers.json_get(
-            url=url,
-            sleep_time=2.0,
-            headers={'Accept': 'application/json'},
-            cache_time=86400,  # 1 day
-        )
-    except Exception as e:
-        log.debug(f'Error searching for collection {search_query}: {e}')
-    else:
-        collection_id = None
-        log.debug(f'TMDB data: {tmdb_data}')
-
-        end_string = 'Collection'  # collection names on themoviedb end with 'Collection'
+    params = {'query': search_query}
+    if language:
+        params['language'] = language
+    data = _api_get('search/collection', params)
+    search_key = themerr_db._title_key(search_query)
+    for result in data.get('results', []):
         try:
-            for result in tmdb_data['results']:
-                if result['name'].lower() == query_item.lower() or \
-                        f'{query_item.lower()} {end_string}'.lower() == result['name'].lower():
-                    collection_id = int(result['id'])
-        except (IndexError, KeyError, ValueError):
-            log.debug(f'Error searching for collection {search_query}: {tmdb_data}')
-        else:
-            return collection_id
+            result_key = themerr_db._title_key(result['name'])
+            if result_key in (search_key, f'{search_key} collection'):
+                return int(result['id'])
+        except (KeyError, TypeError, ValueError):
+            continue
+    return None

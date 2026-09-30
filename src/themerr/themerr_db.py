@@ -1,4 +1,5 @@
 # standard imports
+import re
 from threading import Lock
 import time
 
@@ -9,6 +10,7 @@ from common import logger
 log = logger.get_logger(name=__name__)
 
 database_cache = {}
+lookup_cache = {}
 last_cache_update = 0
 
 db_field_name = {
@@ -18,6 +20,40 @@ db_field_name = {
 }
 
 lock = Lock()
+
+
+def _title_key(title: str) -> str:
+    """Normalize a Plex or ThemerrDB title for matching.
+
+    Parameters
+    ----------
+    title : str
+        Title to normalize.
+
+    Returns
+    -------
+    str
+        Case-insensitive title with punctuation normalized to spaces.
+    """
+    return ' '.join(re.findall(r'\w+', title.casefold()))
+
+
+def _index_title(index: dict, title: str, item_id: int) -> None:
+    """Index a title and its optional collection suffix alias.
+
+    Parameters
+    ----------
+    index : dict
+        Title lookup being built.
+    title : str
+        ThemerrDB title.
+    item_id : int
+        TMDB identifier.
+    """
+    key = _title_key(title)
+    index.setdefault(key, item_id)
+    if key.endswith(' collection'):
+        index.setdefault(key[:-len(' collection')], item_id)
 
 
 def update_cache() -> None:
@@ -41,6 +77,9 @@ def update_cache() -> None:
         return
 
     with lock:
+        if time.time() - last_cache_update < 3600:
+            log.info('Cache updated while waiting for the lock, skipping')
+            return
         for database_type, databases in db_field_name.items():
             try:
                 pages = helpers.json_get(
@@ -50,6 +89,7 @@ def update_cache() -> None:
                 page_count = pages['pages']
 
                 id_index = {db: set() for db in databases}
+                lookups = {'title': {}, 'imdb': {}}
 
                 for page in range(page_count):
                     page_data = helpers.json_get(
@@ -59,16 +99,61 @@ def update_cache() -> None:
 
                     for db in databases:
                         id_index[db].update(str(item[db_field_name[database_type][db]]) for item in page_data)
+                    for item in page_data:
+                        if item.get('title'):
+                            _index_title(lookups['title'], item['title'], int(item['id']))
+                        if database_type == 'movies' and item.get('imdb_id'):
+                            lookups['imdb'][item['imdb_id']] = int(item['id'])
 
                 database_cache[database_type] = id_index
+                lookup_cache[database_type] = lookups
 
                 log.info(f'{database_type}: database updated')
             except Exception as e:
                 log.error(f'{database_type}: Error retrieving page index from ThemerrDB: {e}')
 
                 database_cache[database_type] = {}
+                lookup_cache[database_type] = {}
 
         last_cache_update = time.time()
+
+
+def find_id_by_title(database_type: str, title: str) -> int | None:
+    """Find a ThemerrDB TMDB identifier by title.
+
+    Parameters
+    ----------
+    database_type : str
+        ThemerrDB database type.
+    title : str
+        Plex item title.
+
+    Returns
+    -------
+    int or None
+        TMDB identifier when the title exists in ThemerrDB.
+    """
+    if database_type not in lookup_cache:
+        update_cache()
+    return lookup_cache.get(database_type, {}).get('title', {}).get(_title_key(title))
+
+
+def find_movie_id_by_imdb(imdb_id: str) -> int | None:
+    """Find a ThemerrDB movie's TMDB identifier by IMDb ID.
+
+    Parameters
+    ----------
+    imdb_id : str
+        IMDb identifier.
+
+    Returns
+    -------
+    int or None
+        TMDB identifier when the movie exists in ThemerrDB.
+    """
+    if 'movies' not in lookup_cache:
+        update_cache()
+    return lookup_cache.get('movies', {}).get('imdb', {}).get(imdb_id)
 
 
 def item_exists(database_type: str, database: str, id: int | str) -> bool:

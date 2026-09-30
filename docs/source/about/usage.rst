@@ -24,6 +24,11 @@ library item and links to ThemerrDB contribution forms for missing themes.
 To exclude a library from scheduled updates, enter its ID in **Ignored library IDs** under advanced settings.
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 
+TMDB IDs for titles already in ThemerrDB are resolved from ThemerrDB's index, without calling the retired Plex TMDB
+proxy. To resolve a title that is not in ThemerrDB for a contribution link, set the optional
+``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
+web settings and configuration file.
+
 The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
 bundled with packaged and Docker builds.
 

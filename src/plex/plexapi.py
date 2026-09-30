@@ -478,22 +478,22 @@ def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optiona
     if not item.guids:
         return 'tv_shows', None, None, None
 
-    database = None
-    database_id = None
+    external_guid = None
     for guid in item.guids:
         split_guid = guid.id.split('://')
-        candidate = guid_map[split_guid[0]]
-        if candidate in ('imdb', 'thetvdb'):
-            database_id = tmdb.get_tmdb_id_from_external_id(
-                external_id=split_guid[1], database=split_guid[0], item_type='tv',
-            )
-            if database_id:
-                database = 'themoviedb'
-                break
+        candidate = guid_map.get(split_guid[0])
         if candidate == 'themoviedb':
-            database, database_id = candidate, split_guid[1]
-            break
-    return 'tv_shows', database, 'tv.plex.agents.series', database_id
+            return 'tv_shows', candidate, 'tv.plex.agents.series', split_guid[1]
+        if candidate in ('imdb', 'thetvdb'):
+            external_guid = split_guid
+
+    if external_guid:
+        database_id = tmdb.get_tmdb_id_from_external_id(
+            external_id=external_guid[1], database=external_guid[0], item_type='tv', title=item.title,
+        )
+        if database_id:
+            return 'tv_shows', 'themoviedb', 'tv.plex.agents.series', database_id
+    return 'tv_shows', None, 'tv.plex.agents.series', None
 
 
 def _collection_database_info(item: PlexPartialObject, plex) -> Tuple[str, str, str, Optional[str]]:
@@ -512,9 +512,7 @@ def _collection_database_info(item: PlexPartialObject, plex) -> Tuple[str, str, 
         Database type, database, agent, and identifier.
     """
     section = plex.library.sectionByID(item.librarySectionID)
-    database_id = tmdb.get_tmdb_id_from_collection(
-        search_query=f'{item.title}&language={section.language}',
-    )
+    database_id = tmdb.get_tmdb_id_from_collection(search_query=item.title, language=section.language)
     return 'movie_collections', 'themoviedb', section.agent, database_id
 
 

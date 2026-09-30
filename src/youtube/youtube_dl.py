@@ -3,6 +3,7 @@
 # standard imports
 import json
 import os
+import shutil
 import sys
 import tempfile
 from typing import Optional, TextIO
@@ -16,6 +17,30 @@ from common import definitions
 from common import logger
 
 log = logger.get_logger(name=__name__)
+
+
+def _js_runtime() -> dict:
+    """Locate a supported JavaScript runtime for yt-dlp.
+
+    Returns
+    -------
+    dict
+        yt-dlp runtime configuration, or an empty dictionary if none is installed.
+    """
+    if definitions.Modes.FROZEN:
+        deno_name = 'deno.exe' if sys.platform == 'win32' else 'deno'
+        return {'deno': {'path': os.path.join(definitions.Paths.ROOT_DIR, deno_name)}}
+
+    deno = shutil.which('deno')
+    if not deno:
+        deno_name = 'deno.exe' if sys.platform == 'win32' else 'deno'
+        bundled_deno = os.path.join(definitions.Paths.ROOT_DIR, '.build-tools', deno_name)
+        deno = bundled_deno if os.path.isfile(bundled_deno) else None
+    if deno:
+        return {'deno': {'path': deno}}
+
+    node = shutil.which('node')
+    return {'node': {'path': node}} if node else {}
 
 
 def ns_bool(value: bool) -> str:
@@ -160,11 +185,9 @@ def process_youtube(url: str) -> Optional[str]:
             'socket_timeout': 10,
             'youtube_include_dash_manifest': False,
         }
-        if definitions.Modes.FROZEN:
-            deno_name = 'deno.exe' if sys.platform == 'win32' else 'deno'
-            params['js_runtimes'] = {
-                'deno': {'path': os.path.join(definitions.Paths.ROOT_DIR, deno_name)},
-            }
+        runtime = _js_runtime()
+        if runtime:
+            params['js_runtimes'] = runtime
         video = _extract_video(url, params)
         return _select_audio(video) if video else None
     finally:

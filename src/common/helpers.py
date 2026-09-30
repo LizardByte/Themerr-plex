@@ -20,6 +20,9 @@ import requests
 import requests_cache
 from urllib3.exceptions import InsecureRequestWarning as _InsecureRequestWarning
 
+# local imports
+from common import definitions
+
 
 def is_public_ip(address: str) -> bool:
     """
@@ -275,7 +278,13 @@ def json_get(
     {...}
     """
     if cache_time > 0:
-        session = requests_cache.CachedSession(cache_name='http_cache', expire_after=cache_time)
+        try:
+            os.makedirs(definitions.Paths.CONFIG_DIR, exist_ok=True)
+            cache_name = os.path.join(definitions.Paths.CONFIG_DIR, 'http_cache')
+            session = requests_cache.CachedSession(cache_name=cache_name, expire_after=cache_time)
+        except OSError:
+            log.warning('HTTP cache is unavailable; continuing without response caching')
+            session = requests.Session()
     else:
         session = requests.Session()
 
@@ -298,10 +307,15 @@ def json_get(
         log.exception(f'Error getting JSON data from {url}')
         return {}
     else:
+        status_code = getattr(request, 'status_code', 200)
+        if status_code >= 400:
+            log.warning('HTTP %s while requesting JSON from %s', status_code, url)
+            return {}
         try:
             data = request.json()
         except json.JSONDecodeError:
-            log.exception(f'Error decoding JSON data from {url}')
+            content_type = getattr(request, 'headers', {}).get('Content-Type', 'unknown')
+            log.warning('Non-JSON response from %s (HTTP %s, Content-Type: %s)', url, status_code, content_type)
             return {}
 
         return data

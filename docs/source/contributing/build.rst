@@ -16,6 +16,15 @@ From the repository root, install dependencies and compile translations:
    npm ci --ignore-scripts
    npm run build
 
+For local development, run ``scripts/run_dev.py`` with the project's Python interpreter. The wrapper installs locked
+npm dependencies when needed, rebuilds changed browser assets and documentation when Dockle is available,
+and starts the Python source in the same process. Point an IDE debugger at this script to use normal breakpoints in
+``src``. It uses Deno from ``PATH`` or ``.build-tools``; if Deno is unavailable, yt-dlp can use Node instead.
+
+.. code-block:: shell
+
+   uv run --locked --all-extras python scripts/run_dev.py --nolaunch
+
 Build the documentation and standalone executable:
 
 .. code-block:: shell
