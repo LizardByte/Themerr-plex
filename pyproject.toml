@@ -2,7 +2,7 @@
 name = "themerr-plex"
 version = "0.0.0"
 description = "Standalone theme song manager for Plex"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.14"
 license = { text = "AGPL-3.0-only" }
 authors = [{ name = "LizardByte", email = "lizardbyte@users.noreply.github.com" }]

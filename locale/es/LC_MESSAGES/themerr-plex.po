@@ -137,4 +137,3 @@ msgstr "Centro de soporte"
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
 msgstr "Inicio"
-

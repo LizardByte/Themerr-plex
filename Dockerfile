@@ -1,12 +1,10 @@
 # artifacts: false
 # platforms: linux/amd64,linux/arm64/v8
-FROM python:3.14-slim-trixie AS base
+FROM ghcr.io/astral-sh/uv:0.12.21-python3.14-trixie-slim AS base
 
 COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
 
 FROM base AS build
-
-COPY --from=ghcr.io/astral-sh/uv:0.12.21 /uv /uvx /usr/local/bin/
 
 # install build dependencies
 RUN apt-get update -y \
@@ -82,4 +80,4 @@ USER ${UNAME}
 WORKDIR ${HOME}
 
 ENTRYPOINT ["python", "/app/src/themerr_plex.py"]
-HEALTHCHECK --start-period=90s CMD python /app/src/themerr_plex.py --docker_healthcheck || exit 1
+HEALTHCHECK --start-period=90s CMD ["python", "/app/src/themerr_plex.py", "--docker_healthcheck"]

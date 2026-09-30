@@ -26,9 +26,9 @@ jobs:
       release_generate_release_notes: ${{ steps.setup_release.outputs.release_generate_release_notes }}
       release_tag: ${{ steps.setup_release.outputs.release_tag }}
       release_version: ${{ steps.setup_release.outputs.release_version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -70,8 +70,6 @@ jobs:
           - windows-2022
           - ubuntu-22.04
           - macos-14
-        architecture:
-          - x64
     permissions:
       contents: read
 
@@ -83,7 +81,6 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          architecture: ${{ matrix.architecture }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
@@ -112,6 +109,12 @@ jobs:
           uv run --locked --all-extras --no-sync python -m dockle check
           uv run --locked --all-extras --no-sync python -m dockle build
 
+      - name: Set up virtual desktop
+        if: runner.os == 'Linux'
+        uses: LizardByte/actions/actions/virtual_desktop@28374bf43cc8b6ee88b9b8a3419b2ac7a6573906
+        with:
+          environment: fluxbox
+
       - name: Test with pytest
         id: test
         run: uv run --locked --all-extras --no-sync python -m pytest
@@ -125,7 +128,7 @@ jobs:
         with:
           fail_ci_if_error: true
           files: ./coverage/python-coverage.xml
-          flags: "${{ runner.os }}-${{ matrix.architecture }}"
+          flags: "${{ runner.os }}"
           report_type: coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
@@ -139,7 +142,7 @@ jobs:
         with:
           fail_ci_if_error: true
           files: ./junit-python.xml
-          flags: "${{ runner.os }}-${{ matrix.architecture }}"
+          flags: "${{ runner.os }}"
           report_type: test_results
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
@@ -149,19 +152,24 @@ jobs:
 
       - name: Smoke test executable
         shell: bash
-        run: ./dist/themerr_plex --help
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            ./dist/themerr_plex.exe --help
+          else
+            ./dist/themerr_plex --help
+          fi
 
       - name: Package Release
         run: |
-          7z a "./Themerr-plex_${{ runner.os }}_${{ matrix.architecture }}.zip" "dist"
+          7z a "./Themerr-plex_${{ runner.os }}.zip" "dist"
 
           mkdir artifacts
-          mv "./Themerr-plex_${{ runner.os }}_${{ matrix.architecture }}.zip" ./artifacts/
+          mv "./Themerr-plex_${{ runner.os }}.zip" ./artifacts/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: Themerr-plex_${{ runner.os }}_${{ matrix.architecture }}
+          name: Themerr-plex_${{ runner.os }}
           if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
           path: |
             ${{ github.workspace }}/artifacts
@@ -173,7 +181,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       actions: read
     steps:
       - name: Download artifacts

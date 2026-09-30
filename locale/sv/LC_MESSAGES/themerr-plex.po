@@ -137,4 +137,3 @@ msgstr "Online support"
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
 msgstr "Hem"
-

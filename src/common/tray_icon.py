@@ -27,15 +27,12 @@ icon_supported = False
 log = logger.get_logger(name=__name__)
 
 # conditional imports
-if definitions.Platform.os_platform == 'linux':
-    try:
-        import Xlib
-    except Exception:
-        pass
 try:
     from pystray import Icon, MenuItem, Menu
-except Xlib.error.DisplayNameError:
-    Icon = None
+except Exception:
+    # A desktop backend may be unavailable, notably on headless Linux runners.
+    Icon = MenuItem = Menu = None
+    icon_class = None
 else:
     icon_class = Icon  # avoids a messy import for pytest
     icon_supported = True
@@ -159,27 +156,25 @@ def tray_end() -> bool:
     --------
     >>> tray_end()
     """
-    try:
-        icon_class
-    except NameError:
+    if icon_class is None:
         return False
-    else:
-        if isinstance(icon_object, icon_class):
-            try:  # this shouldn't be possible to call, other than through pytest
-                icon_object.visible = False
-            except AttributeError:
-                pass
+    if isinstance(icon_object, icon_class):
+        try:  # this shouldn't be possible to call, other than through pytest
+            icon_object.visible = False
+        except AttributeError:
+            pass
 
-            try:
-                icon_object.stop()
-            except AttributeError:
-                pass
-            except Exception as e:
-                log.error(f'Exception when stopping system tray icon: {e}')
-            else:
-                global icon_running
-                icon_running = False
-                return True
+        try:
+            icon_object.stop()
+        except AttributeError:
+            pass
+        except Exception as e:
+            log.error(f'Exception when stopping system tray icon: {e}')
+        else:
+            global icon_running
+            icon_running = False
+            return True
+    return False
 
 
 def tray_run_threaded() -> bool:
@@ -275,11 +270,7 @@ def tray_run():
     --------
     >>> tray_run()
     """
-    try:
-        icon_class
-    except NameError:
-        pass
-    else:
+    if icon_class is not None:
         global icon_running
 
         if isinstance(icon_object, icon_class):

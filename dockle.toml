@@ -21,6 +21,5 @@ source = "docs/source"
 home = true
 
 [targets.sphinx]
-exclude_patterns = ["toc.rst"]
 extra_config = "docs/dockle_sphinx.py"
 source_edit_link = "https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/{filename}"
