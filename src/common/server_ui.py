@@ -1,5 +1,9 @@
 """Authenticated server management, discovery, and dashboard views."""
 
+# standard imports
+import re
+from urllib.parse import quote, urlencode
+
 # lib imports
 from flask import Blueprint, abort, jsonify, render_template, request
 from plexapi.exceptions import Unauthorized
@@ -8,7 +12,7 @@ from requests.exceptions import ConnectionError, RequestException, SSLError, Tim
 # local imports
 from common import logger
 from plex import auth, plexapi, servers, token_store
-from themerr import storage
+from themerr import storage, theme_errors
 
 blueprint = Blueprint('server_ui', __name__)
 log = logger.get_logger(__name__)
@@ -43,6 +47,34 @@ def _payload() -> dict:
     return payload
 
 
+def _metadata_url(item: dict) -> str | None:
+    """Link validated external IDs to their metadata provider.
+
+    Parameters
+    ----------
+    item : dict
+        Cached Plex item and resolved external identifiers.
+
+    Returns
+    -------
+    str or None
+        Provider URL when the ID and media type are supported.
+    """
+    identifier = str(item.get('database_id') or item.get('source_id') or '')
+    database = ('imdb' if identifier.startswith('tt') else 'themoviedb') if item.get('database_id') else (
+        item.get('source_database'))
+    if database == 'imdb' and re.fullmatch(r'tt\d+', identifier):
+        return 'https://www.imdb.com/title/' + identifier + '/'
+    if not identifier.isascii() or not identifier.isdigit():
+        return None
+    if database == 'themoviedb':
+        category = {'movie': 'movie', 'show': 'tv', 'collection': 'collection'}.get(item.get('type'))
+        return 'https://www.themoviedb.org/' + category + '/' + identifier if category else None
+    if database == 'thetvdb' and item.get('type') == 'show':
+        return 'https://thetvdb.com/dereferrer/series/' + identifier
+    return None
+
+
 def dashboard() -> tuple[dict, dict, dict]:
     """Assemble library snapshots without merging rating keys from different servers.
 
@@ -65,6 +97,10 @@ def dashboard() -> tuple[dict, dict, dict]:
             for item in section['items']:
                 item['server_id'] = record['id']
                 item['error'] = failures.get(item['rating_key'])
+                item['plex_url'] = 'https://app.plex.tv/desktop/#!/server/' + quote(record['id'], safe='') + (
+                    '/details?' + urlencode({'key': '/library/metadata/' + str(item['rating_key'])}))
+                item['metadata_url'] = _metadata_url(item)
+                item['show_edit'] = theme_errors.is_video_issue(item['error'])
                 errors[record['id'] + ':' + item['rating_key']] = item['error']
     items = [item for section in libraries.values() for item in section['items']]
     installed = sum(item['theme'] for item in items)

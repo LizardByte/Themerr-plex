@@ -102,6 +102,9 @@ small, .muted { color: var(--muted); }
 .search-field input { min-width: 0; width: 100%; height: 42px; border: 0; background: transparent; color: var(--ink); font-size: 12px; outline: 0; }
 .search-field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px #ff795e1a; }
 .search-field input::placeholder { color: #8c97aa; }
+.search-field input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.search-clear { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; flex-shrink: 0; border: 0; border-radius: 6px; color: var(--muted); background: transparent; }
+.search-clear:hover { color: var(--ink); background: var(--surface-raised); }
 .filter-toolbar select { max-width: 175px; font-size: 11px; }
 .library-card { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin-bottom: 20px; overflow: hidden; }
 .library-header { list-style: none; display: flex; align-items: center; gap: 14px; padding: 18px 22px; cursor: pointer; }
@@ -125,6 +128,11 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .library-table tr:last-child td { border-bottom: 0; }
 .library-table tbody tr:hover { background: #ffffff03; }
 .media-title-row { display: flex; align-items: center; gap: 12px; }
+.media-controls { display: flex; align-items: center; gap: 6px; width: 74px; flex-shrink: 0; }
+.plex-item-link { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); }
+.plex-item-link:hover, .metadata-link:hover { color: var(--accent); }
+.plex-item-link .lucide, .metadata-link .lucide { width: 11px; height: 11px; }
+.metadata-link { display: inline-flex; align-items: center; gap: 5px; }
 .media-title-row > span:last-child { min-width: 130px; }
 .media-title-row strong { font-size: 12px; font-weight: 600; display: block; line-height: 1.5; }
 .media-title-row small { display: block; font-size: 9px; margin-top: 3px; }
@@ -355,8 +363,8 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
     .library-table tr { display: grid; grid-template-columns: 1fr auto; padding: 16px; border-top: 1px solid var(--line); gap: 8px; }
     .library-table td { display: block; border: 0; padding: 0 !important; width: auto !important; }
     .library-table td:first-child { grid-column: 1/-1; padding-bottom: 5px !important; }
-    .metadata-cell { margin-left: 46px; }
-    .status-cell { grid-column: 1/-1; margin-left: 46px; }
+    .metadata-cell { margin-left: 86px; }
+    .status-cell { grid-column: 1/-1; margin-left: 86px; }
     .contribution-cell { grid-column: 2; grid-row: 2; }
     .media-title-row strong { font-size: 13px; }
     .panel { padding: 20px; }

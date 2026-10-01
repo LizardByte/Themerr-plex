@@ -85,6 +85,12 @@ preserved instead of reloading; the completion message tells you when the new sn
 **Activity** shows scheduled task starts, completion, duration, the upload queue, and per-item failure reasons.
 Its **Scan for themes** button also starts a processing scan when theme updates are enabled.
 
+The search field's clear button removes just the title search, retaining the other filters. Plex and metadata IDs
+open the item on Plex or its metadata provider in a new tab. Media type icons remain visible beside theme playback.
+**Edit** appears for source video issues such as removal, privacy, or age restrictions. Local network, upload, and
+regional failures do not by themselves require replacing the ThemerrDB video. ThemerrDB checks US availability
+when accepting themes; a regional failure elsewhere cannot establish that it is currently unavailable in the US.
+
 Select the play button beside an item's title to listen to its currently selected Plex theme, regardless of provider.
 The button changes to pause during playback, and the ring around it shows playback progress. Pausing retains your
 position; selecting another item stops the previous theme. Items without an installed theme have no play button.

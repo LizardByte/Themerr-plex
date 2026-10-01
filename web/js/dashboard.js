@@ -12,6 +12,7 @@ export function initDashboard(root = document) {
     const search = root.querySelector('#library-search');
     if (!search) return;
     const fields = ['server', 'type', 'status'].map(name => root.querySelector(`#${name}-filter`));
+    const clearSearch = root.querySelector('#clear-search');
     try {
         const saved = JSON.parse(sessionStorage.getItem('themerr-refresh-filters') || 'null');
         sessionStorage.removeItem('themerr-refresh-filters');
@@ -23,6 +24,7 @@ export function initDashboard(root = document) {
         // Filtering also works when browser storage is unavailable.
     }
     function filter() {
+        if (clearSearch) clearSearch.hidden = !search.value;
         let count = 0;
         const filters = { search: search.value, server: fields[0].value, type: fields[1].value, status: fields[2].value };
         root.querySelectorAll('[data-library]').forEach(library => {
@@ -41,6 +43,11 @@ export function initDashboard(root = document) {
     }
     search.addEventListener('input', filter);
     fields.forEach(field => field.addEventListener('change', filter));
+    clearSearch?.addEventListener('click', () => {
+        search.value = '';
+        filter();
+        search.focus();
+    });
     root.querySelector('#clear-filters').addEventListener('click', () => {
         search.value = '';
         fields.forEach(field => { field.value = ''; });

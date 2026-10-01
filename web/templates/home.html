@@ -22,7 +22,7 @@
 <section class="library-workspace" aria-labelledby="library-heading">
     <div class="section-heading"><h2 id="library-heading">{{ _('Your libraries') }}</h2><span id="visible-count" class="muted">{{ stats.total }} {{ _('items') }}</span></div>
     <div class="filter-toolbar">
-        <div class="search-field"><i data-lucide="search"></i><label class="visually-hidden" for="library-search">{{ _('Search library items') }}</label><input id="library-search" type="search" placeholder="{{ _('Search titles…') }}" autocomplete="off"></div>
+        <div class="search-field"><i data-lucide="search"></i><label class="visually-hidden" for="library-search">{{ _('Search library items') }}</label><input id="library-search" type="search" placeholder="{{ _('Search titles…') }}" autocomplete="off"><button id="clear-search" class="search-clear" type="button" aria-label="{{ _('Clear search') }}" title="{{ _('Clear search') }}" hidden><i data-lucide="x"></i></button></div>
         <label class="visually-hidden" for="server-filter">{{ _('Server') }}</label><select id="server-filter" class="form-select"><option value="">{{ _('All servers') }}</option>{% for server in servers %}<option value="{{ server.id }}">{{ server.name }}</option>{% endfor %}</select>
         <label class="visually-hidden" for="type-filter">{{ _('Type') }}</label><select id="type-filter" class="form-select"><option value="">{{ _('All types') }}</option><option value="movie">{{ _('Movies') }}</option><option value="show">{{ _('TV shows') }}</option><option value="collection">{{ _('Collections') }}</option></select>
         <label class="visually-hidden" for="status-filter">{{ _('Theme status') }}</label><select id="status-filter" class="form-select"><option value="">{{ _('All statuses') }}</option><option value="installed">{{ _('Has a theme') }}</option><option value="missing">{{ _('No theme') }}</option><option value="attention">{{ _('Needs attention') }}</option></select>
@@ -44,6 +44,8 @@
             <tr data-media-row data-title="{{ item.title|lower }}" data-type="{{ item.type }}" data-theme="{{ 'true' if item.theme else 'false' }}" data-attention="{{ 'true' if attention else 'false' }}">
                 <td>
                     <div class="media-title-row">
+                        <span class="media-controls">
+                        <span class="media-placeholder" title="{{ item.type|capitalize }}" aria-hidden="true"><i data-lucide="{{ 'tv' if item.type == 'show' else 'layers' if item.type == 'collection' else 'film' }}"></i></span>
                         {% if item.theme %}
                         <button type="button" class="theme-playback" data-theme-url="{{ url_for('play_theme', server_id=section.server_id, rating_key=item.rating_key) }}"
                             data-play-label="{{ _('Play theme for') }} {{ item.title }}" data-pause-label="{{ _('Pause theme for') }} {{ item.title }}"
@@ -52,12 +54,13 @@
                             <svg class="theme-playback-ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="theme-playback-track" cx="18" cy="18" r="16"/><circle class="theme-playback-progress" cx="18" cy="18" r="16" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
                             <span class="theme-play-icon"><i data-lucide="play" aria-hidden="true"></i></span><span class="theme-pause-icon d-none"><i data-lucide="pause" aria-hidden="true"></i></span>
                         </button>
-                        {% else %}<span class="media-placeholder"><i data-lucide="{{ 'tv' if item.type == 'show' else 'layers' if item.type == 'collection' else 'film' }}"></i></span>{% endif %}
-                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> {{ _('Plex ID') }}: {{ item.rating_key }}</small></span>
+                        {% endif %}
+                        </span>
+                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.plex_url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ _('Open in Plex') }}: {{ item.title }}">{{ _('Plex ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
                     </div>
                     {% if item.theme %}<div id="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}" class="theme-playback-error" role="status" hidden></div>{% endif %}
                 </td>
-                <td class="metadata-cell">{% if item.database_id %}<span class="metadata-id">{{ 'IMDb' if item.database_id.startswith('tt') else 'TMDB' }} {{ item.database_id }}</span>{% elif item.source_id %}<span class="metadata-id">{{ {'themoviedb':'TMDB','imdb':'IMDb','thetvdb':'TVDB'}.get(item.source_database, item.source_database|upper) }} {{ item.source_id }}</span>{% else %}<span class="muted">{{ _('External ID unavailable') }}</span>{% endif %}</td>
+                <td class="metadata-cell">{% if item.database_id or item.source_id %}{% if item.metadata_url %}<a class="metadata-id metadata-link" href="{{ item.metadata_url }}" target="_blank" rel="noopener noreferrer">{% else %}<span class="metadata-id">{% endif %}{% if item.database_id %}{{ 'IMDb' if item.database_id.startswith('tt') else 'TMDB' }} {{ item.database_id }}{% else %}{{ {'themoviedb':'TMDB','imdb':'IMDb','thetvdb':'TVDB'}.get(item.source_database, item.source_database|upper) }} {{ item.source_id }}{% endif %}{% if item.metadata_url %}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% else %}</span>{% endif %}{% else %}<span class="muted">{{ _('External ID unavailable') }}</span>{% endif %}</td>
                 <td class="status-cell">
                     {% if failure_reason and not item.theme %}<span class="status-badge warning"><i data-lucide="circle-alert"></i>{{ _('Failed to add theme') }}</span>
                     {% elif item.theme_provider == 'plex' %}<span class="status-badge plex"><i data-lucide="arrow-right-circle"></i>{{ _('Plex provided') }}</span>
@@ -69,7 +72,7 @@
                     {% else %}<span class="status-badge pending"><i data-lucide="clock"></i>{{ _('Theme not installed yet') }}</span>{% endif %}
                     {% if failure_reason %}<div class="failure-reason">{% if item.theme %}<strong><i data-lucide="triangle-alert"></i>{{ _('Outdated from ThemerrDB') }}</strong>{% endif %}<span>{{ failure_reason }}</span></div>{% endif %}
                 </td>
-                <td class="contribution-cell">{% if item.issue_url %}<a class="contribute-link" href="{{ item.issue_url }}" target="_blank" rel="noopener noreferrer">{{ _('Edit') if item.issue_action == 'edit' else _('Add') }}<i data-lucide="arrow-up-right"></i></a>{% else %}<span class="muted">—</span>{% endif %}</td>
+                <td class="contribution-cell">{% if item.issue_url and (item.issue_action != 'edit' or item.show_edit) %}<a class="contribute-link" href="{{ item.issue_url }}" target="_blank" rel="noopener noreferrer">{{ _('Edit') if item.issue_action == 'edit' else _('Add') }}<i data-lucide="arrow-up-right"></i></a>{% else %}<span class="muted">—</span>{% endif %}</td>
             </tr>
             {% endfor %}
             </tbody></table>

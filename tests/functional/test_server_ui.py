@@ -226,3 +226,47 @@ def test_activity_includes_unresolved_ids_counted_on_overview(client):
     assert b'Unresolved metadata' in activity
     assert b'TMDB ID unavailable. Review the item metadata in Plex.' in activity
     assert b'Outdated from ThemerrDB' not in activity
+
+
+@pytest.mark.parametrize(('kind', 'database_id', 'source_database', 'source_id', 'url'), [
+    ('movie', '550988', None, None, 'https://www.themoviedb.org/movie/550988'),
+    ('show', '1407', None, None, 'https://www.themoviedb.org/tv/1407'),
+    ('collection', '10', None, None, 'https://www.themoviedb.org/collection/10'),
+    ('movie', None, 'imdb', 'tt0497329', 'https://www.imdb.com/title/tt0497329/'),
+    ('show', None, 'thetvdb', '71862', 'https://thetvdb.com/dereferrer/series/71862'),
+    ('movie', 'bad/id', None, None, None),
+])
+def test_provider_links_and_scoped_plex_links(client, kind, database_id, source_database, source_id, url):
+    save_server('a')
+    data = snapshot('Linked title')
+    data['1']['items'][0].update(
+        type=kind, database_id=database_id, source_database=source_database, source_id=source_id,
+    )
+    with storage.server_scope('a'):
+        storage.replace_dashboard(data)
+    rendered = client.get('/').data
+    assert b'https://app.plex.tv/desktop/#!/server/a/details?key=%2Flibrary%2Fmetadata%2F42' in rendered
+    assert b'target="_blank" rel="noopener noreferrer" aria-label="Open in Plex: Linked title"' in rendered
+    if url:
+        assert ('href="' + url + '" target="_blank" rel="noopener noreferrer"').encode() in rendered
+    else:
+        assert b'metadata-link' not in rendered
+
+
+@pytest.mark.parametrize(('reason', 'action', 'visible'), [
+    (None, 'edit', False), ('Video unavailable', 'edit', True),
+    ('Video unavailable in your country', 'edit', False), ('Theme upload failed', 'edit', False),
+    (None, 'add', True),
+])
+def test_contribution_actions_reflect_video_issues(client, reason, action, visible):
+    save_server('a')
+    data = snapshot('Theme row', 'themerr')
+    data['1']['items'][0].update(issue_action=action, issue_url='https://github.com/LizardByte/ThemerrDB/issues/new')
+    with storage.server_scope('a'):
+        storage.replace_dashboard(data)
+        storage.set_error(42, reason)
+    rendered = client.get('/').data
+    assert (b'class="contribute-link"' in rendered) is visible
+    assert b'class="media-controls"' in rendered
+    assert b'title="Movie" aria-hidden="true"' in rendered
+    assert b'data-lucide="film"' in rendered and b'data-lucide="play"' in rendered
