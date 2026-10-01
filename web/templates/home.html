@@ -169,14 +169,13 @@
                                             <i data-lucide="user" class="text-info"></i> {{ _('User provided') }}
                                         {% elif item['theme_provider'] == 'themerr' %}
                                             <i data-lucide="circle-check" class="text-success"></i> {{ _('Themerr provided') }}
-                                        {% elif item['theme_provider'] == 'uploaded' %}
-                                            <i data-lucide="upload" class="text-info"></i>
-                                            {{ _('Uploaded (source unknown)') }}
+                                        {% elif item['theme_provider'] == 'uploaded' or
+                                                (item['theme_provider'] == None and item['theme_status'] == 'complete') %}
+                                            <i data-lucide="circle-help" class="text-secondary"></i>
+                                            {{ _('Unknown provider') }}
                                         {% elif item['theme_provider'] != None %}
                                             <i data-lucide="circle-help" class="text-secondary"></i>
                                             {{ item['theme_provider'] }} {{ _('provided') }}
-                                        {% elif item['theme_status'] == 'complete' %}
-                                            <i data-lucide="circle-help" class="text-secondary"></i> {{ _('Unknown provider') }}
                                         {% elif failure_reason %}
                                             <i data-lucide="circle-alert" class="text-warning"></i>
                                             {{ _('Failed to add theme') }}

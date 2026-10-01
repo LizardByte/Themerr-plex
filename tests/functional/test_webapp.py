@@ -74,7 +74,7 @@ def test_home_reflects_successful_upload_on_reload(client):
     assert b'Theme not installed yet' not in response.data
 
 
-def test_home_distinguishes_external_id_and_unknown_upload(client, configured):
+def test_home_distinguishes_external_id_and_unknown_provider(client, configured):
     storage.replace_dashboard(_dashboard([
         {
             'rating_key': '42', 'title': 'TV example', 'type': 'show', 'year': 2020,
@@ -85,6 +85,10 @@ def test_home_distinguishes_external_id_and_unknown_upload(client, configured):
             'rating_key': '43', 'title': 'Movie example', 'type': 'movie', 'year': 2021,
             'issue_url': None, 'theme_provider': 'uploaded', 'theme_status': 'complete', 'theme': True,
         },
+        {
+            'rating_key': '44', 'title': 'Unattributed theme', 'type': 'movie', 'year': 2022,
+            'issue_url': None, 'theme_provider': None, 'theme_status': 'complete', 'theme': True,
+        },
     ]))
 
     response = client.get('/home')
@@ -92,7 +96,7 @@ def test_home_distinguishes_external_id_and_unknown_upload(client, configured):
     page = re.sub(rb'\s+', b' ', response.data)
     assert b'TVDB 123' in page
     assert b'TMDB ID unavailable' in page
-    assert b'Uploaded (source unknown)' in page
+    assert page.count(b'data-lucide="circle-help" class="text-secondary"></i> Unknown provider') == 2
     assert b'Plex ID: 43' in page
 
 
