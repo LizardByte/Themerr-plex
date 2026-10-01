@@ -1,7 +1,9 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "node scripts/build-assets.mjs"
+    "build": "node scripts/build-assets.mjs",
+    "test": "node --test tests/web/theme_player.test.mjs"
   },
   "dependencies": {
     "@fontsource/open-sans": "5.3.0",

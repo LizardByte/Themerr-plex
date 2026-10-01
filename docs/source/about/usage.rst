@@ -28,6 +28,10 @@ Plex's ``collection://`` GUID is local to the server. Uploaded themes with no ma
 labeled **Uploaded (source unknown)**. Themerr can replace these themes when a matching theme exists in ThemerrDB and
 the overwrite settings allow it.
 
+Select the play button beside an item's title to listen to its currently selected Plex theme, regardless of provider.
+The button changes to pause during playback, and the ring around it shows playback progress. Pausing retains your
+position; selecting another item stops the previous theme. Items without an installed theme have no play button.
+
 To exclude a library from scheduled updates, enter its ID in **Ignored library IDs** under advanced settings.
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 

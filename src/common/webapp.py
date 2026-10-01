@@ -14,6 +14,7 @@ from flask import Flask, Response, make_response as _make_response, session
 from flask import jsonify, render_template as flask_render_template, request, send_from_directory
 from flask_babel import Babel
 from flask_wtf import CSRFProtect
+from plexapi import exceptions as plex_exceptions
 import polib
 import requests
 from werkzeug.utils import secure_filename
@@ -155,6 +156,99 @@ def home() -> render_template:
         return render_template('home_db_not_cached.html', title='Home')
 
     return render_template('home.html', title=_('Home'), items=items, theme_errors=theme_errors.get_errors())
+
+
+def _stream_theme_audio(upstream: requests.Response, rating_key: int):
+    """Stream Plex audio and release the connection when playback stops.
+
+    Parameters
+    ----------
+    upstream : requests.Response
+        Open streaming response from the configured Plex server.
+    rating_key : int
+        Plex item identifier for diagnostic logging.
+
+    Yields
+    ------
+    bytes
+        Audio chunks without buffering the entire theme in memory.
+    """
+    try:
+        yield from upstream.iter_content(chunk_size=64 * 1024)
+    except requests.RequestException as error:
+        app.logger.warning('Theme playback interrupted for rating_key=%s (%s)', rating_key, type(error).__name__)
+    finally:
+        upstream.close()
+
+
+@app.route('/api/themes/<int:rating_key>', methods=['GET'])
+def play_theme(rating_key: int) -> Response:
+    """Serve the item's current Plex theme without exposing the Plex token.
+
+    Resolve the selected audio from fresh Plex metadata and forward byte range requests
+    so browsers can determine the duration. Only media response headers reach the browser.
+
+    Parameters
+    ----------
+    rating_key : int
+        Item whose selected theme should be played, regardless of its provider.
+
+    Returns
+    -------
+    Response
+        Streamed audio, including byte range headers, or a sanitized error.
+
+    Examples
+    --------
+    >>> play_theme(rating_key=42)  # Flask invokes this for GET /api/themes/42
+    <Response ...>
+    """
+    from plex import plexapi
+
+    try:
+        server = plexapi.setup_plexapi()
+        if server is None:
+            return _make_response(jsonify({'message': 'Connect to Plex before playing themes.'}), 503)
+        item = server.fetchItem(rating_key)
+        theme_path = getattr(item, 'theme', None)
+        if not theme_path:
+            return _make_response(jsonify({'message': 'This item has no theme.'}), 404)
+        if not theme_path.startswith('/library/metadata/') or '/theme/' not in theme_path:
+            return _make_response(jsonify({'message': 'Plex returned an unsupported theme path.'}), 502)
+
+        headers = {'Accept-Encoding': 'identity'}
+        for header in ('Range', 'If-Range'):
+            if header in request.headers:
+                headers[header] = request.headers[header]
+        upstream = server._session.get(
+            server.url(theme_path, includeToken=False), headers=server._headers(**headers),
+            stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
+        )
+    except plex_exceptions.NotFound:
+        return _make_response(jsonify({'message': 'This Plex item is no longer available.'}), 404)
+    except (plex_exceptions.PlexApiException, requests.RequestException) as error:
+        app.logger.warning('Unable to load theme for rating_key=%s (%s)', rating_key, type(error).__name__)
+        return _make_response(jsonify({'message': 'Unable to load theme audio from Plex.'}), 502)
+
+    headers = {'Cache-Control': 'no-store'}
+    for header in ('Content-Type', 'Content-Length', 'Content-Range', 'Accept-Ranges', 'ETag', 'Last-Modified'):
+        if header in upstream.headers:
+            headers[header] = upstream.headers[header]
+    if upstream.status_code not in (200, 206):
+        upstream.close()
+        if upstream.status_code == 416:
+            headers['Content-Length'] = '0'
+            return Response(status=416, headers=headers)
+        status = 404 if upstream.status_code == 404 else 502
+        app.logger.warning('Plex rejected theme playback for rating_key=%s (HTTP %s)', rating_key, upstream.status_code)
+        return _make_response(jsonify({'message': 'Plex could not provide theme audio.'}), status)
+    if request.method == 'HEAD':
+        upstream.close()
+        return Response(status=upstream.status_code, headers=headers)
+
+    response = Response(_stream_theme_audio(upstream, rating_key), status=upstream.status_code, headers=headers)
+    response.call_on_close(upstream.close)
+    return response
 
 
 @app.route('/settings/', methods=['GET'])

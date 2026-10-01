@@ -1,10 +1,12 @@
 """Flask routes exercised with temporary configuration and cache data."""
 
 import re
+from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
 import requests
+from plexapi.exceptions import NotFound
 
 from common import webapp
 from plex import auth, plexapi
@@ -35,6 +37,153 @@ def test_home(client, configured):
     assert b'Database is being cached' in response.data
     storage.replace_dashboard(_dashboard([]))
     assert client.get('/home').status_code == 200
+
+
+def test_theme_controls_only_for_installed_themes(client):
+    providers = ['plex', 'user', 'themerr', 'uploaded', None]
+    items = [{
+        'rating_key': str(index), 'title': f'Theme {index}', 'type': 'movie', 'year': 2020,
+        'issue_url': None, 'theme_provider': provider, 'theme_status': 'complete', 'theme': True,
+    } for index, provider in enumerate(providers, start=1)]
+    items.append({
+        'rating_key': '99', 'title': 'No theme', 'type': 'show', 'year': 2020,
+        'issue_url': None, 'theme_provider': None, 'theme_status': 'pending', 'theme': False,
+    })
+    storage.replace_dashboard(_dashboard(items))
+
+    page = client.get('/home').data
+    for index in range(1, 6):
+        assert f'data-theme-url="/api/themes/{index}"'.encode() in page
+    assert b'data-theme-url="/api/themes/99"' not in page
+    assert page.count(b'data-lucide="play"') == len(providers)
+    assert page.count(b'id="theme-player"') == 1
+    assert b'preload="none"' in page
+
+
+@pytest.fixture
+def theme_server(monkeypatch):
+    server = Mock()
+    server.fetchItem.return_value = SimpleNamespace(theme='/library/metadata/42/theme/123')
+    server.url.return_value = 'http://plex.example/library/metadata/42/theme/123'
+    server._headers.side_effect = lambda **headers: {'X-Plex-Token': 'private-token', **headers}
+    upstream = Mock(status_code=200, headers={
+        'Content-Type': 'audio/mpeg', 'Content-Length': '6', 'Accept-Ranges': 'bytes',
+        'X-Plex-Token': 'private-token', 'Location': 'http://plex.example/?X-Plex-Token=private-token',
+    })
+    upstream.iter_content.return_value = iter([b'abc', b'def'])
+    server._session.get.return_value = upstream
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: server)
+    return server, upstream
+
+
+@pytest.mark.parametrize('partial', [False, True])
+def test_theme_audio_stream_and_ranges(client, theme_server, partial):
+    server, upstream = theme_server
+    headers = {}
+    if partial:
+        headers = {'Range': 'bytes=0-5', 'If-Range': 'theme-version'}
+        upstream.status_code = 206
+        upstream.headers['Content-Range'] = 'bytes 0-5/10'
+    response = client.get('/api/themes/42', headers=headers)
+
+    assert response.status_code == upstream.status_code
+    assert response.data == b'abcdef'
+    assert response.content_type == 'audio/mpeg'
+    assert response.headers['Content-Length'] == '6'
+    assert response.headers['Accept-Ranges'] == 'bytes'
+    assert response.headers['Cache-Control'] == 'no-store'
+    assert 'X-Plex-Token' not in response.headers
+    assert 'Location' not in response.headers
+    if partial:
+        assert response.headers['Content-Range'] == 'bytes 0-5/10'
+    server.fetchItem.assert_called_once_with(42)
+    server.url.assert_called_once_with('/library/metadata/42/theme/123', includeToken=False)
+    forwarded = server._session.get.call_args.kwargs
+    assert forwarded['stream'] is True
+    assert forwarded['allow_redirects'] is False
+    assert forwarded['headers'] == {'X-Plex-Token': 'private-token', 'Accept-Encoding': 'identity', **headers}
+    response.close()
+    upstream.close.assert_called()
+
+
+def test_theme_head_closes_without_reading_audio(client, theme_server):
+    _, upstream = theme_server
+    response = client.head('/api/themes/42')
+    assert response.status_code == 200
+    assert response.data == b''
+    assert response.headers['Content-Length'] == '6'
+    upstream.iter_content.assert_not_called()
+    upstream.close.assert_called_once()
+
+
+@pytest.mark.parametrize('theme, status', [
+    (None, 404),
+    ('https://other.example/theme/123', 502),
+    ('//other.example/library/metadata/42/theme/123', 502),
+])
+def test_theme_missing_or_invalid_path(client, theme_server, theme, status):
+    server, _ = theme_server
+    server.fetchItem.return_value.theme = theme
+    response = client.get('/api/themes/42')
+    assert response.status_code == status
+    server._session.get.assert_not_called()
+
+
+def test_theme_requires_plex_connection(client, monkeypatch):
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: None)
+    assert client.get('/api/themes/42').status_code == 503
+    assert client.get('/api/themes/not-an-id').status_code == 404
+
+
+@pytest.mark.parametrize('error, status', [
+    (NotFound('private-token'), 404),
+    (requests.Timeout('private-token'), 502),
+])
+def test_theme_lookup_errors_are_sanitized(client, theme_server, caplog, error, status):
+    server, _ = theme_server
+    server.fetchItem.side_effect = error
+    response = client.get('/api/themes/42')
+    assert response.status_code == status
+    assert b'private-token' not in response.data
+    assert 'private-token' not in caplog.text
+
+
+@pytest.mark.parametrize('status, expected', [(302, 502), (404, 404), (500, 502), (416, 416)])
+def test_theme_upstream_errors_close_connection(client, theme_server, status, expected):
+    _, upstream = theme_server
+    upstream.status_code = status
+    upstream.headers['Content-Range'] = 'bytes */6'
+    response = client.get('/api/themes/42')
+    assert response.status_code == expected
+    assert b'private-token' not in response.data
+    if status == 416:
+        assert response.headers['Content-Range'] == 'bytes */6'
+        assert response.headers['Content-Length'] == '0'
+    upstream.iter_content.assert_not_called()
+    upstream.close.assert_called_once()
+
+
+def test_theme_interrupted_stream_is_closed(client, theme_server, caplog):
+    _, upstream = theme_server
+
+    def interrupted_audio(**kwargs):
+        yield b'abc'
+        raise requests.ConnectionError('private-token')
+
+    upstream.iter_content.side_effect = interrupted_audio
+    response = client.get('/api/themes/42')
+    assert response.data == b'abc'
+    upstream.close.assert_called()
+    assert 'Theme playback interrupted for rating_key=42' in caplog.text
+    assert 'private-token' not in caplog.text
+
+
+def test_theme_cancelled_playback_closes_connection(client, theme_server):
+    _, upstream = theme_server
+    response = client.get('/api/themes/42', buffered=False)
+    assert next(iter(response.response)) == b'abc'
+    response.close()
+    upstream.close.assert_called()
 
 
 def test_home_shows_item_failure(client, configured):

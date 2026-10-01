@@ -100,10 +100,11 @@ jobs:
       - name: Compile Locale Translations
         run: uv run --locked --all-extras --no-build --no-sync python ./scripts/_locale.py --compile
 
-      - name: Build web assets
+      - name: Build and test web assets
         run: |
           npm ci --ignore-scripts
           npm run build
+          npm test
 
       - name: Build Docs with Dockle
         run: |

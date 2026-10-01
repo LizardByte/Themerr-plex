@@ -141,7 +141,33 @@
                                 {% endif %}
 
                                 <tr class="d-flex {{ theme_status_color }} border-dark border-opacity-75">
-                                    <td class="{{ title_column_width }}">{{ item['title'] }}</td>
+                                    <td class="{{ title_column_width }}">
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if item['theme'] %}
+                                                <button type="button" class="theme-playback"
+                                                        data-theme-url="{{ url_for('play_theme', rating_key=item['rating_key']) }}"
+                                                        data-play-label="{{ _('Play theme for') }} {{ item['title'] }}"
+                                                        data-pause-label="{{ _('Pause theme for') }} {{ item['title'] }}"
+                                                        data-error-label="{{ _('Unable to play this theme. Check the Plex connection and browser audio support.') }}"
+                                                        aria-label="{{ _('Play theme for') }} {{ item['title'] }}"
+                                                        aria-pressed="false"
+                                                        aria-describedby="theme-playback-error-{{ item['rating_key'] }}">
+                                                    <svg class="theme-playback-ring" viewBox="0 0 36 36" aria-hidden="true">
+                                                        <circle class="theme-playback-track" cx="18" cy="18" r="16" />
+                                                        <circle class="theme-playback-progress" cx="18" cy="18" r="16"
+                                                                pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" />
+                                                    </svg>
+                                                    <span class="theme-play-icon"><i data-lucide="play" aria-hidden="true"></i></span>
+                                                    <span class="theme-pause-icon d-none"><i data-lucide="pause" aria-hidden="true"></i></span>
+                                                </button>
+                                            {% endif %}
+                                            <span>{{ item['title'] }}</span>
+                                        </div>
+                                        {% if item['theme'] %}
+                                            <div id="theme-playback-error-{{ item['rating_key'] }}"
+                                                 class="theme-playback-error small text-danger mt-1" role="status" hidden></div>
+                                        {% endif %}
+                                    </td>
                                     <td class="{{ type_column_width }}">{{ item['type'] }}</td>
                                     <td class="{{ year_column_width }}">{{ item['year'] }}</td>
                                     <td class="{{ contribute_column_width }}">
@@ -218,6 +244,7 @@
         </section>
         {% endfor %}
 
+        <audio id="theme-player" preload="none" hidden></audio>
     </div>
 </div>
 {% endblock content %}

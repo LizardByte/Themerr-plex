@@ -12,6 +12,50 @@ body {
     transform: rotate(180deg);
 }
 
+.theme-playback {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    color: #0b5ed7;
+}
+
+.theme-playback:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.theme-playback:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+.theme-playback-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.theme-playback-track {
+    opacity: 0.2;
+}
+
+.theme-playback-progress {
+    stroke-linecap: round;
+}
+
 /*Apply to elements that serve as anchors*/
 .offset-anchor {
     border-top: 80px solid transparent;
