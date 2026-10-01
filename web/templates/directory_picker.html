@@ -1,0 +1,7 @@
+<dialog id="directory-picker" class="directory-picker" aria-labelledby="directory-picker-title">
+    <header><h2 id="directory-picker-title">{{ _('Choose an application directory') }}</h2><button id="directory-cancel" type="button" class="icon-button" aria-label="{{ _('Close directory picker') }}"><i data-lucide="x"></i></button></header>
+    <p class="muted">{{ _('Browse directories on the machine running Themerr.') }}</p>
+    <div class="directory-toolbar"><button id="directory-up" type="button" class="icon-button" aria-label="{{ _('Parent directory') }}"><i data-lucide="arrow-up"></i></button><output id="directory-current"></output></div>
+    <div id="directory-list" class="list-group"></div><output id="directory-error" class="form-error" role="status"></output>
+    <footer><button id="directory-select" type="button" class="btn btn-primary"><i data-lucide="folder-check"></i>{{ _('Select directory') }}</button></footer>
+</dialog>

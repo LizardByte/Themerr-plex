@@ -11,7 +11,7 @@ def test_cache_without_plex(monkeypatch):
     monkeypatch.setattr(cache, 'setup_plexapi', lambda: None)
     save = Mock()
     monkeypatch.setattr(cache.storage, 'replace_dashboard', save)
-    cache.cache_data()
+    cache._cache_server()
     save.assert_not_called()
 
 
@@ -30,7 +30,7 @@ def test_cache_data(configured, item, tmp_path, monkeypatch):
     monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: None)
     configured['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] = False
 
-    cache.cache_data()
+    cache._cache_server()
 
     data = storage.get_dashboard()
     assert data['1']['media_count'] == 1
@@ -98,7 +98,7 @@ def test_cache_data_includes_modern_item_in_legacy_section(configured, item, tmp
     monkeypatch.setattr(cache.themerr_db, 'item_exists', lambda **_: False)
     monkeypatch.setattr(cache, 'get_database_info', lambda **_: ('movies', 'themoviedb', section.agent, '1'))
     monkeypatch.setattr(cache.general, 'get_theme_provider', lambda **_: None)
-    cache.cache_data()
+    cache._cache_server()
 
     data = storage.get_dashboard()
     assert data['7']['media_count'] == 1

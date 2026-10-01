@@ -1,1 +1,4 @@
-{# This template is used to extract translations used in javascript files #}
+{% extends 'base.html' %}
+{% block content %}
+<section class="empty-state"><span class="empty-icon"><i data-lucide="globe"></i></span><h1>{{ _('Themerr speaks your language.') }}</h1><p>{{ _('Choose a language in Settings, or help improve translations on Crowdin.') }}</p><a class="btn btn-primary" href="https://crowdin.com/project/themerr-plex" target="_blank" rel="noopener noreferrer">{{ _('Help translate') }}<i data-lucide="arrow-up-right"></i></a></section>
+{% endblock %}

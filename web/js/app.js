@@ -1,13 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fontsource/open-sans/index.css';
+import '@fontsource/open-sans/600.css';
+import '@fontsource/open-sans/700.css';
 import '../css/custom.css';
-import '../css/sidebar.css';
 
 import { refreshIcons } from './icons.js';
 import { initThemePlayer } from './theme_player.js';
-import './sidebar.js';
-import './config.js';
+import { initDashboard, initNavigation } from './dashboard.js';
+import { initDirectoryPicker } from './directories.js';
+import { initSettings } from './config.js';
+import { initServers } from './servers.js';
+import { initActivity } from './activity.js';
 
 refreshIcons();
+initNavigation();
 initThemePlayer();
+initDashboard();
+initDirectoryPicker();
+initSettings();
+initServers();
+initActivity();

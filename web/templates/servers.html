@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">{{ _('ONE WORKSPACE. EVERY SERVER.') }}</span><h1>{{ _('Servers') }}<span class="heading-dot">.</span></h1><p>{{ _('Connect your Plex account, then choose where the music goes.') }}</p></div><span class="count-pill">{{ servers|length }} {{ _('saved') }}</span></div>
+<section class="account-panel panel">
+    <span class="plex-logo">PLEX<span>›</span></span>
+    <div class="account-copy"><h2>{{ _('Your Plex account') }}</h2><p id="plex-auth-status">{{ _('Account linked. Choose a server below.') if plex_connected else _('Link your account securely through Plex to access your servers.') }}</p><a id="plex-auth-link" class="d-none" target="_blank" rel="noopener noreferrer">{{ _('Continue Plex sign-in') }}<i data-lucide="arrow-up-right"></i></a></div>
+    <div class="d-flex flex-wrap gap-2"><button id="plex-auth-start" type="button" class="btn btn-primary"><i data-lucide="link"></i>{{ _('Reconnect account') if plex_connected else _('Connect Plex account') }}</button><button id="plex-auth-disconnect" type="button" class="btn btn-outline-light {{ 'd-none' if not plex_connected }}"><i data-lucide="unlink"></i>{{ _('Disconnect') }}</button></div>
+</section>
+<div class="section-heading"><h2>{{ _('Connected servers') }}</h2><small class="muted">{{ _('Theme history and library settings are kept separately for each server.') }}</small></div>
+<div class="server-grid">
+{% for server in servers %}
+<article class="server-card">
+    <header><span class="server-symbol"><i data-lucide="server"></i></span><div><h3>{{ server.name }}</h3><span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span></div></header>
+    <p class="server-address"><i data-lucide="network"></i>{{ server.url }}</p>
+    {% if server.last_error %}<p class="form-error">{{ server.last_error }}</p>{% endif %}
+    <small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
+    <details class="server-settings"><summary>{{ _('Processing settings') }}<i data-lucide="chevron-down"></i></summary>
+        <form data-server-form data-server-id="{{ server.id }}">
+            <div class="setting-switch"><label for="enabled-{{ loop.index }}">{{ _('Process this server') }}</label><input id="enabled-{{ loop.index }}" type="checkbox" name="enabled" class="form-check-input" role="switch" {% if server.enabled %}checked{% endif %}></div>
+            <label for="directory-{{ loop.index }}">{{ _('Plex data directory') }} <span class="muted">{{ _('optional') }}</span></label>
+            <div class="input-group"><input id="directory-{{ loop.index }}" class="form-control" name="data_directory" value="{{ server.data_directory }}"><button type="button" class="btn btn-outline-light" data-directory-target="directory-{{ loop.index }}" aria-label="{{ _('Browse Plex data directory') }}"><i data-lucide="folder-open"></i></button></div>
+            <p class="form-text">{{ _('A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers.') }}</p>
+            <label for="ignored-{{ loop.index }}">{{ _('Ignored library IDs') }}</label><input id="ignored-{{ loop.index }}" class="form-control" name="ignored_libraries" value="{{ server.ignored_libraries }}" placeholder="2, 5">
+            <p class="form-text">{{ _('Comma-separated library IDs to exclude from theme updates.') }}</p>
+            <div class="server-actions"><button type="submit" class="btn btn-primary btn-sm">{{ _('Save settings') }}</button><button type="button" class="btn btn-quiet-danger btn-sm" data-remove-server="{{ server.id }}">{{ _('Remove server') }}</button></div>
+        </form>
+    </details>
+</article>
+{% else %}<div class="server-empty"><i data-lucide="server"></i><h3>{{ _('Your first server starts here.') }}</h3><p>{{ _('Link Plex above, then discover or add an address below.') }}</p></div>{% endfor %}
+</div>
+<section class="panel discovery-panel">
+    <div class="section-heading"><div><h2>{{ _('Add a server') }}</h2><p>{{ _('Choose a server from your Plex account, discover one nearby, or use an address you know.') }}</p></div></div>
+    <div class="discovery-actions"><button class="btn btn-outline-light" type="button" data-discover="account"><i data-lucide="cloud"></i>{{ _('Find account servers') }}</button><button class="btn btn-outline-light" type="button" data-discover="local"><i data-lucide="radar"></i>{{ _('Discover on LAN') }}</button><span class="muted">{{ _('LAN discovery uses Plex GDM on your application’s network.') }}</span></div>
+    <div id="discovery-results" aria-live="polite"></div>
+    <details class="manual-server"><summary><i data-lucide="plus"></i>{{ _('Enter an address manually') }}<i data-lucide="chevron-down"></i></summary>
+        <form id="manual-server-form"><label for="plex-address">{{ _('Plex server address') }}</label><div class="manual-address-row"><input id="plex-address" type="url" class="form-control" name="url" placeholder="http://192.168.1.10:32400" required maxlength="2048"><button type="submit" class="btn btn-primary"><i data-lucide="plus"></i>{{ _('Connect server') }}</button></div><p class="form-text">{{ _('Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address.') }}</p></form>
+    </details>
+</section>
+{% endblock %}
+{% block modals %}{% include 'directory_picker.html' %}{% endblock %}

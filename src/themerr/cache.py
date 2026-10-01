@@ -6,6 +6,7 @@ from common import config
 from common import logger
 from themerr.constants import contributes_to, issue_urls
 from themerr import general
+from plex import servers
 from plex.plexapi import PLEX_SETUP_ERROR, get_database_info, get_external_id, setup_plexapi
 from themerr import storage
 from themerr import themerr_db
@@ -169,7 +170,7 @@ def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
     }
 
 
-def cache_data() -> None:
+def _cache_server() -> None:
     """
     Cache data for use in the Web UI dashboard.
 
@@ -205,3 +206,19 @@ def cache_data() -> None:
             items[section.key] = section_data
 
     storage.replace_dashboard(items, since_revision=revision)
+
+
+def cache_data() -> None:
+    """Refresh enabled server dashboards independently without discarding offline snapshots."""
+    registered = servers.list_servers(enabled_only=True)
+    if not registered:
+        return
+    for record in registered:
+        try:
+            with storage.server_scope(record['id']):
+                log.info('Refreshing dashboard for server %r (%s)', record['name'], record['id'])
+                _cache_server()
+            servers.record_refresh(record['id'])
+        except Exception:
+            log.exception('Dashboard refresh failed for server %s', record['id'])
+            servers.record_refresh(record['id'], 'Dashboard refresh failed. Check the Plex address and access.')

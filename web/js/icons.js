@@ -1,17 +1,19 @@
 import {
-    createIcons, ArrowRightCircle, Bird, BookOpenText, Check, ChevronDown,
-    ChevronRight, ChevronUp, CircleAlert, CircleCheck, CircleHelp, CircleX,
-    Clapperboard, CreditCard, FileCode, FileText, FolderOpen, Globe, HandHeart, Heart,
-    House, Info, LogIn, Menu, MessageCircle, MessagesSquare, Monitor,
-    Music, Network, Pause, Play, RefreshCw, Settings, Smile, TriangleAlert, User, Users, X,
+    createIcons, Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowRightCircle, ArrowUp, ArrowUpRight,
+    AudioLines, BookOpenText, ChartNoAxesCombined, Check, ChevronDown, ChevronRight, CircleAlert, CircleCheck,
+    CircleHelp, CircleX, Clapperboard, Clock, Cloud, FileCode, Film, Folder, FolderCheck, FolderOpen, Globe,
+    HandHeart, Heart, Layers, LayoutDashboard, Library, Link, ListRestart, LoaderCircle, LockKeyhole,
+    LogOut, Menu, Music, Network, Pause, Play, Plus, Radar, RefreshCw, ScanLine, Search, SearchX,
+    Server, Settings, ShieldCheck, SlidersHorizontal, Terminal, TriangleAlert, Tv, Unlink, User, X,
 } from 'lucide';
 
 const icons = {
-    ArrowRightCircle, Bird, BookOpenText, Check, ChevronDown, ChevronRight,
-    ChevronUp, CircleAlert, CircleCheck, CircleHelp, CircleX, Clapperboard,
-    CreditCard, FileCode, FileText, FolderOpen, Globe, HandHeart, Heart, House, Info,
-    LogIn, Menu, MessageCircle, MessagesSquare, Monitor, Music, Network, Pause, Play,
-    RefreshCw, Settings, Smile, TriangleAlert, User, Users, X,
+    Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowRightCircle, ArrowUp, ArrowUpRight,
+    AudioLines, BookOpenText, ChartNoAxesCombined, Check, ChevronDown, ChevronRight, CircleAlert, CircleCheck,
+    CircleHelp, CircleX, Clapperboard, Clock, Cloud, FileCode, Film, Folder, FolderCheck, FolderOpen, Globe,
+    HandHeart, Heart, Layers, LayoutDashboard, Library, Link, ListRestart, LoaderCircle, LockKeyhole,
+    LogOut, Menu, Music, Network, Pause, Play, Plus, Radar, RefreshCw, ScanLine, Search, SearchX,
+    Server, Settings, ShieldCheck, SlidersHorizontal, Terminal, TriangleAlert, Tv, Unlink, User, X,
 };
 
 export function refreshIcons() {

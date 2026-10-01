@@ -14,6 +14,7 @@ from common import helpers
 from common import logger
 from themerr.constants import metadata_type_map
 from themerr import storage
+from plex import servers
 
 log = logger.get_logger(__name__)
 
@@ -42,8 +43,12 @@ def _get_metadata_path(item: PlexPartialObject) -> str:
     guid = item.guid
     # Plex metadata paths require SHA-1; this value is not used for security.
     full_hash = hashlib.sha1(guid.encode('utf-8'), usedforsecurity=False).hexdigest()  # NOSONAR python:S4790
+    record = servers.get_server(storage.current_server_id())
+    directory = record['data_directory'] if record else config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH']
+    if not directory:
+        return ''
     metadata_path = os.path.join(
-        config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH'], 'Metadata', metadata_type_map[item.type],
+        directory, 'Metadata', metadata_type_map[item.type],
         full_hash[0], full_hash[1:] + '.bundle')
     return metadata_path
 
@@ -116,7 +121,8 @@ def get_media_upload_path(item: PlexPartialObject, media_type: str) -> str:
             f'media_type must be one of: {allowed_media_types}'
         )
 
-    theme_upload_path = os.path.join(_get_metadata_path(item=item), 'Uploads', media_type)
+    metadata_path = _get_metadata_path(item=item)
+    theme_upload_path = os.path.join(metadata_path, 'Uploads', media_type) if metadata_path else ''
     return theme_upload_path
 
 
@@ -189,8 +195,12 @@ def _legacy_themerr_json_path(item: PlexPartialObject) -> str:
     str
         Path to the former plugin's tracking record.
     """
+    record = servers.get_server(storage.current_server_id())
+    directory = record['data_directory'] if record else config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH']
+    if not directory:
+        return ''
     return os.path.join(
-        config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH'], 'Plug-in Support', 'Data',
+        directory, 'Plug-in Support', 'Data',
         'dev.lizardbyte.themerr-plex', 'DataItems', metadata_type_map[item.type],
         f'{item.ratingKey}.json',
     )

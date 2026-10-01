@@ -73,3 +73,50 @@ def test_setup_scheduling(configured, monkeypatch):
     scheduled_tasks.setup_scheduling()
     assert len(scheduled_tasks.schedule.jobs) == 1
     scheduled_tasks.schedule.clear()
+
+
+def test_duplicate_dispatch_returns_the_running_job_and_history_is_a_copy(monkeypatch):
+    monkeypatch.setattr(scheduled_tasks, '_running', {})
+    from collections import deque
+    monkeypatch.setattr(scheduled_tasks, '_jobs', deque(maxlen=30))
+    started, release = Event(), Event()
+
+    def refresh():
+        started.set()
+        release.wait(timeout=2)
+
+    first = scheduled_tasks.run_threaded(target=refresh, task_name='Dashboard refresh')
+    try:
+        assert started.wait(timeout=2)
+        assert scheduled_tasks.run_threaded(target=refresh, task_name='Dashboard refresh') is first
+        history = scheduled_tasks.job_history()
+        assert len(history) == 1 and history[0]['id'] == first.job_id
+        history[0]['status'] = 'modified'
+        assert scheduled_tasks.job_history()[0]['status'] == 'running'
+    finally:
+        release.set()
+        first.join(timeout=2)
+    assert scheduled_tasks.job_history()[0]['status'] == 'finished'
+    assert scheduled_tasks.job_history()[0]['duration'] is not None
+    assert not scheduled_tasks._running
+
+
+def test_reconfigure_changes_intervals_without_duplicating_or_removing_other_jobs(configured):
+    scheduler = scheduled_tasks.schedule
+    scheduler.clear()
+    unrelated = scheduler.every().hour.do(lambda: None).tag('other')
+    try:
+        configured['Themerr']['BOOL_THEMERR_ENABLED'] = True
+        configured['Themerr']['INT_UPDATE_THEMES_INTERVAL'] = 30
+        scheduled_tasks.configure_jobs()
+        scheduled_tasks.configure_jobs()
+        assert len(scheduler.jobs) == 3
+        assert scheduler.get_jobs('themerr')[0].interval == 30
+        configured['Themerr']['BOOL_THEMERR_ENABLED'] = False
+        configured['Themerr']['INT_UPDATE_DATABASE_CACHE_INTERVAL'] = 45
+        scheduled_tasks.configure_jobs()
+        assert scheduler.get_jobs('other') == [unrelated]
+        assert len(scheduler.get_jobs('themerr')) == 1
+        assert scheduler.get_jobs('themerr')[0].interval == 45
+    finally:
+        scheduler.clear()

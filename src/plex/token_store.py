@@ -60,7 +60,7 @@ def get_token(client_id: str) -> str:
     """
     cipher = _cipher()
     if cipher is not None:
-        encrypted = storage.get_encrypted_token()
+        encrypted = storage.get_encrypted_token(_namespace(client_id))
         if not encrypted:
             return ''
         try:
@@ -85,7 +85,7 @@ def save_token(client_id: str, token: str) -> None:
     """
     cipher = _cipher()
     if cipher is not None:
-        storage.save_encrypted_token(cipher.encrypt(token.encode('utf-8')).decode('ascii'))
+        storage.save_encrypted_token(cipher.encrypt(token.encode('utf-8')).decode('ascii'), _namespace(client_id))
         return
     try:
         keyring.set_password(SERVICE, client_id, token)
@@ -101,7 +101,7 @@ def delete_token(client_id: str) -> None:
     client_id : str
         Installation's Plex OAuth client identifier.
     """
-    storage.save_encrypted_token(None)
+    storage.save_encrypted_token(None, _namespace(client_id))
     if os.environ.get(KEY_FILE_ENV) or os.environ.get('THEMERR_DOCKER'):
         return
     try:
@@ -110,3 +110,8 @@ def delete_token(client_id: str) -> None:
         pass
     except KeyringError as exc:
         raise TokenStorageError('The OS credential store is unavailable.') from exc
+
+
+def _namespace(client_id: str) -> str:
+    """Choose a separate encrypted slot for a server credential."""
+    return ':' + client_id if client_id.startswith('server:') else ''

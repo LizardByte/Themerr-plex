@@ -1,181 +1,40 @@
 {% extends 'base.html' %}
-{% block modals %}
-    <dialog id="directory-picker" class="bg-dark text-light border rounded p-4" aria-labelledby="directory-picker-title">
-        <h2 id="directory-picker-title" class="h5">{{ _('Choose a server directory') }}</h2>
-        <output id="directory-current" class="d-block text-break mb-2"></output>
-        <button id="directory-up" type="button" class="btn btn-outline-light mb-2">{{ _('Parent directory') }}</button>
-        <div id="directory-list" class="list-group overflow-auto mb-2" style="max-height: 20rem;"></div>
-        <output id="directory-error" class="d-block text-danger mb-2"></output>
-        <div class="d-flex gap-2 justify-content-end">
-            <button id="directory-cancel" type="button" class="btn btn-outline-light">{{ _('Cancel') }}</button>
-            <button id="directory-select" type="button" class="btn btn-primary">{{ _('Select directory') }}</button>
+{% macro setting_field(section, key, spec) %}
+{% set value = config_settings[section][key] %}
+<div class="setting-row {{ 'setting-row-switch' if spec.type == 'boolean' }}">
+    <div class="setting-description"><label for="{{ key }}">{{ spec.name }}</label><p id="{{ key }}-help">{{ spec.description }}{% if spec.help_url %} <a href="{{ spec.help_url }}" target="_blank" rel="noopener noreferrer">{{ spec.help_label }}<i data-lucide="arrow-up-right"></i></a>{% endif %}</p></div>
+    <div class="setting-control">
+        {% if spec.type == 'boolean' %}<input id="{{ key }}" type="checkbox" class="form-check-input" role="switch" category="{{ section }}" aria-describedby="{{ key }}-help" {% if value %}checked{% endif %}>
+        {% elif spec.type == 'option' %}<select id="{{ key }}" class="form-select" category="{{ section }}" aria-describedby="{{ key }}-help">{% for option in spec.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ spec.option_names[loop.index0] }}</option>{% endfor %}</select>
+        {% else %}
+        <div class="{{ 'input-group' if spec.button_directory }}">
+            <input id="{{ key }}" category="{{ section }}" class="form-control" value="{{ value }}" aria-describedby="{{ key }}-help"
+                type="{{ 'number' if spec.type in ['integer','float'] else 'password' if spec.mask else 'text' }}"
+                {% if spec.type in ['integer','float'] %}step="{{ '1' if spec.type == 'integer' else 'any' }}"{% if spec.min is number %} min="{{ spec.min }}"{% endif %}{% if spec.max is number %} max="{{ spec.max }}"{% endif %}{% endif %}
+                {% if spec.pattern %}pattern="{{ spec.pattern }}"{% endif %}>
+            {% if spec.button_directory %}<button type="button" class="btn btn-outline-light" data-directory-target="{{ key }}" aria-label="{{ _('Browse directories for') }} {{ spec.name }}"><i data-lucide="folder-open" aria-hidden="true"></i></button>{% endif %}
         </div>
-    </dialog>
-{% endblock modals %}
-
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
 {% block content %}
-    <div id="wrapper" class="sidebar-expanded">
-
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper" class="sidebar-expanded shadow"><!-- d-* hides the Sidebar in smaller devices. Its items can be kept on the Navbar 'Menu' -->
-            <!-- Bootstrap List Group -->
-            <ul class="list-group list-group-flush">
-                <a href="#" data-toggle="sidebar-collapse" class="bg-dark list-group-item list-group-item-action d-flex align-items-center no-hover border-0">
-                    <div class="d-flex w-100 justify-content-start align-items-center">
-                        <button class="btn btn-outline-light">
-                            <i id="collapse-x" data-lucide="x"></i><i id="collapse-menu" class="d-none" data-lucide="menu"></i>
-                        </button>
-                    </div>
-                </a>
-                <!-- Separator with title -->
-                <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center border-0">
-                    <small>{{ title }}</small>
-                </li>
-                <!-- /END Separator -->
-                <!-- Menu -->
-                {% for key in config_spec %}
-                    {% if config_spec[key]['type'] == 'section' %}
-                        <a href="#{{ key.lower() }}" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start border-0">
-                            <div class="sidebar-item d-flex w-100 justify-content-start align-items-center">
-                                <i data-lucide="{{ config_spec[key]['icon'] }}" class="mx-3"></i>
-                                <span class="invisible">-</span> {# this invisible text keeps the sidebar spacing the same when collapsing/expanding #}
-                                <span class="menu-collapsed">{{ config_spec[key]['name'] }}</span>
-                            </div>
-                        </a>
-                    {% endif %}
-                {% endfor %}
-            </ul><!-- List Group END-->
-        </div><!-- sidebar-container END -->
-
-        <!-- Page Content -->
-        <div id="page-content-wrapper" class="sidebar-expanded">
-            <div class="container px-5 my-5">
-
-                <form id="configForm" data-csrf-token="{{ csrf_token() }}" enctype="multipart/form-data" method="post">
-                    {%- for key in config_spec -%}
-                        <h3 class="offset-anchor mb-3" id="{{ key.lower() }}">{{ config_spec[key]['name'] }}</h3>
-                        <hr>
-                        {%- for setting in config_spec[key] -%}
-                            {%- set setting_disabled = '' -%}
-                            {%- if config_spec[key][setting]['locked'] == True -%}
-                                {%- set setting_disabled = 'disabled' -%}
-                            {%- endif -%}
-
-                            {%- set setting_tag = '' -%}
-                            {%- if config_spec[key][setting]['beta'] == True -%}
-                                {%- set setting_tag = 'beta-setting' -%}
-                            {%- elif config_spec[key][setting]['advanced'] == True -%}
-                                {%- set setting_tag = 'advanced-setting' -%}
-                            {%- endif -%}
-
-                            {%- set pattern = config_spec[key][setting]['pattern'] -%}
-
-                            {%- set extra_class = 'col-md-8' -%}
-                            {%- if config_spec[key][setting]['extra_class'] -%}
-                                {%- set extra_class = config_spec[key][setting]['extra_class'] -%}
-                            {%- endif -%}
-
-                            {%- if config_spec[key][setting]['type'] == 'boolean' -%}
-                                {%- set checkbox_checked = '' -%}
-                                {%- if config_settings[key][setting] == True -%}
-                                    {%- set checkbox_checked = 'checked' -%}
-                                {%- endif -%}
-                                <div class="checkbox {{ setting_tag }}">
-                                    <div class="{{ extra_class }}">
-                                        <input class="form-check-input" type="checkbox" category="{{ key }}" id="{{ setting }}" aria-describedby="{{ setting.lower() }}-help" {{ checkbox_checked }} {{ setting_disabled }}>
-                                    </div>
-                                    <label class="form-check-label" for="{{ setting }}">
-                                        {{ config_spec[key][setting]['name'] }}
-                                    </label>
-                                    <div id="{{ setting.lower() }}-help" class="form-text">{{ config_spec[key][setting]['description'] }}</div>
-                                </div>
-                            {%- endif -%}
-
-                            {%- if config_spec[key][setting]['type'] == 'integer' or config_spec[key][setting]['type'] == 'float' -%}
-                                <div class="form-group {{ setting_tag }}">
-                                    <label for="{{ setting }}" class="form-label">{{ config_spec[key][setting]['name'] }}</label>
-                                    <div class="{{ extra_class }}">
-                                        <input class="form-control" type="number" step="{{ '1' if config_spec[key][setting]['type'] == 'integer' else 'any' }}" id="{{ setting }}" category="{{ key }}" placeholder="{{ config_spec[key][setting]['default'] }}" value="{{ config_settings[key][setting] }}" aria-describedby="{{ setting.lower() }}-help"{% if config_spec[key][setting]['min'] is number %} min="{{ config_spec[key][setting]['min'] }}"{% endif %}{% if config_spec[key][setting]['max'] is number %} max="{{ config_spec[key][setting]['max'] }}"{% endif %} {{ setting_disabled }}>
-                                    </div>
-                                    <div id="{{ setting.lower() }}-help" class="form-text">{{ config_spec[key][setting]['description'] }}</div>
-                                </div>
-                            {%- endif -%}
-
-                            {%- if config_spec[key][setting]['type'] == 'string' -%}
-                                {%- set input_type = '' -%}
-                                {%- if config_spec[key][setting]['mask'] == True -%}
-                                    {%- set input_type = str('type=password') -%}
-                                {%- endif -%}
-
-                                <div class="form-group {{ setting_tag }}">
-                                    <label for="{{ setting }}" class="form-label">
-                                        {{ config_spec[key][setting]['name'] }}
-                                    </label>
-                                    <div class="{{ extra_class }}{% if config_spec[key][setting]['button_directory'] %} input-group{% endif %}">
-                                        <input {{ input_type }} class="form-control" id="{{ setting }}" category="{{ key }}" placeholder="{{ config_spec[key][setting]['default'] }}" value="{{ config_settings[key][setting] }}" aria-describedby="{{ setting.lower() }}-help"{% if pattern %} pattern="{{ pattern }}"{% endif %} {{ setting_disabled }}>
-                                        {%- if config_spec[key][setting]['button_directory'] -%}
-                                            <button type="button" class="btn btn-outline-light" data-directory-target="{{ setting }}"
-                                                    aria-label="{{ _('Browse directories for') }} {{ config_spec[key][setting]['name'] }}">
-                                                <i data-lucide="folder-open" aria-hidden="true"></i>
-                                            </button>
-                                        {%- endif -%}
-                                    </div>
-
-                                    <div id="{{ setting.lower() }}-help" class="form-text">
-                                        {{ config_spec[key][setting]['description'] }}
-                                        {%- if config_spec[key][setting]['help_url'] %}
-                                            <a href="{{ config_spec[key][setting]['help_url'] }}" target="_blank" rel="noopener noreferrer">
-                                                {{ config_spec[key][setting]['help_label'] }}
-                                            </a>
-                                        {%- endif -%}
-                                    </div>
-                                </div>
-                            {%- endif -%}
-
-                            {%- if config_spec[key][setting]['type'] == 'option' -%}
-                                <div class="form-group {{ setting_tag }}">
-                                    <label for="{{ setting }}" class="form-label">
-                                        {{ config_spec[key][setting]['name'] }}
-                                    </label>
-                                    <div class="{{ extra_class }}">
-                                        <select class="{{ extra_class }} form-select" id="{{ setting }}" category="{{ key }}" aria-describedby="{{ setting.lower() }}-help" {{ setting_disabled }}>
-                                            {%- for option in config_spec[key][setting]['options'] -%}
-                                                {%- set option_index = config_spec[key][setting]['options'].index(option) -%}
-
-                                                {%- set option_selected = '' -%}
-                                                {%- if config_settings[key][setting] == option -%}
-                                                    {%- set option_selected = 'selected' -%}
-                                                {%- endif -%}
-                                                <option {{ option_selected }} value="{{ config_spec[key][setting]['options'][option_index] }}">{{ config_spec[key][setting]['option_names'][option_index] }}</option>
-                                            {%- endfor -%}
-                                        </select>
-                                    </div>
-                                    <div id="{{ setting.lower() }}-help" class="form-text">{{ config_spec[key][setting]['description'] }}</div>
-                                </div>
-                            {%- endif -%}
-                        {%- endfor -%}
-                        {%- if key == 'Plex' -%}
-                            <div class="my-4" id="plex-auth" data-connected="{{ _('Connected to Plex') }}"
-                                 data-disconnected="{{ _('Not connected to Plex') }}"
-                                 data-pending="{{ _('Waiting for Plex sign-in...') }}">
-                                <output id="plex-auth-status" class="d-block">{{ _('Checking Plex connection...') }}</output>
-                                <button id="plex-auth-start" type="button" class="btn btn-primary">
-                                    {{ _('Sign in with Plex') }}
-                                </button>
-                                <button id="plex-auth-disconnect" type="button" class="btn btn-outline-secondary d-none">
-                                    {{ _('Disconnect Plex') }}
-                                </button>
-                                <a id="plex-auth-link" class="d-none ms-3" target="_blank" rel="noopener noreferrer">
-                                    {{ _('Open Plex sign-in') }}
-                                </a>
-                            </div>
-                        {%- endif -%}
-                    {%- endfor -%}
-
-                    <button id="save-button" type="button" class="btn btn-danger" disabled>{{ _('Save') }}</button>
-                </form>
-            </div>
-        </div><!-- /#page-content-wrapper -->
-
-    </div><!-- /#wrapper -->
-{% endblock content %}
+<div class="page-heading"><div><span class="eyebrow">{{ _('TUNE YOUR WORKSPACE') }}</span><h1>{{ _('Settings') }}<span class="heading-dot">.</span></h1><p>{{ _('Make Themerr work the way your library does.') }}</p></div></div>
+<div class="settings-layout">
+    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for key in ['Themerr','General','Logging','Network'] %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ config_spec[key].name }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
+    <div class="settings-content">
+        <form id="configForm" data-csrf-token="{{ csrf_token() }}" method="post">
+        {% for section in ['Themerr','General','Logging','Network'] %}
+            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ config_spec[section].name }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else config_spec[section].description }}</p></div></div>
+                {% for key, spec in config_spec[section].items() %}{% if spec is mapping and not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' %}{{ setting_field(section, key, spec) }}{% endif %}{% endfor %}
+            </section>
+        {% endfor %}
+        </form>
+        <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem"><i data-lucide="shield-check"></i></span></div>
+            <form id="password-form" class="password-form"><label for="current-password">{{ _('Current password') }}</label><input id="current-password" name="current_password" type="password" class="form-control" autocomplete="current-password" required maxlength="256"><label for="new-password">{{ _('New password') }}</label><input id="new-password" name="password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><label for="confirm-new-password">{{ _('Confirm new password') }}</label><input id="confirm-new-password" name="confirm_password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><button type="submit" class="btn btn-outline-light">{{ _('Change password') }}</button></form>
+        </section>
+        <div class="settings-save-bar"><span id="settings-save-status" class="save-status" role="status">{{ _('All changes saved.') }}</span><button id="save-button" type="submit" form="configForm" class="btn btn-primary" disabled><i data-lucide="check"></i>{{ _('Save changes') }}</button></div>
+    </div>
+</div>
+{% endblock %}
+{% block modals %}{% include 'directory_picker.html' %}{% endblock %}

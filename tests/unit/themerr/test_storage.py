@@ -49,7 +49,7 @@ def test_legacy_state_import_survives_restart(configured, tmp_path):
         'youtube_theme_url': 'https://youtube.example',
     }
     with storage.engine().connect() as connection:
-        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20260930_02'
+        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20261001_03'
 
     storage.save_credentials({'client_id': 'abc'})
     storage.set_error(42, None)

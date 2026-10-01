@@ -31,13 +31,14 @@ def test_setup_plexapi(configured, monkeypatch):
 def test_listener_starts_after_login_and_stops_on_disconnect(monkeypatch):
     monkeypatch.setattr(plexapi, 'alert_listener', None)
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: object())
+    monkeypatch.setattr(plexapi.servers, 'list_servers', lambda **kwargs: [{'id': 'one'}])
     listener = Mock()
     listener._ws = object()
     constructor = Mock(return_value=listener)
     monkeypatch.setattr(plexapi, 'AlertListener', constructor)
     plexapi.plex_listener()
     listener.start.assert_called_once_with()
-    assert plexapi.alert_listener is listener
+    assert plexapi._alert_listeners['one'] is listener
     plexapi.stop_plex_listener()
     listener.stop.assert_called_once_with()
     assert plexapi.alert_listener is None
@@ -66,6 +67,7 @@ def test_changing_plex_url_reconnects_active_listener(monkeypatch):
 
 def test_get_database_info(configured, item, monkeypatch):
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: object())
+    monkeypatch.setattr(plexapi.servers, 'list_servers', lambda **kwargs: [{'id': 'one'}])
     item.guids = [SimpleNamespace(id='imdb://tt42'), SimpleNamespace(id='tmdb://123')]
     assert plexapi.get_database_info(item) == (
         'movies', 'themoviedb', 'tv.plex.agents.movie', '123',
@@ -96,6 +98,7 @@ def test_get_database_info(configured, item, monkeypatch):
 def test_legacy_guid_without_guids(configured, item, monkeypatch):
     """Plex can supply only a legacy primary GUID for migrated movies and shows."""
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: object())
+    monkeypatch.setattr(plexapi.servers, 'list_servers', lambda **kwargs: [{'id': 'one'}])
     item.guids = []
     item.guid = 'com.plexapp.agents.imdb://tt0298203?lang=en'
     assert plexapi.get_database_info(item) == (
@@ -419,7 +422,7 @@ def test_change_lock_status_timeout(item, monkeypatch):
     assert item.edit.call_count == 3
 
 
-def test_update_missing_or_not_in_db(item, monkeypatch):
+def test_update_missing_or_not_in_db(configured, item, monkeypatch):
     monkeypatch.setattr(plexapi, 'get_plex_item', lambda **_: None)
     assert plexapi.update_plex_item(42) is False
     monkeypatch.setattr(plexapi, 'get_plex_item', lambda **_: item)
@@ -509,7 +512,7 @@ def test_scheduled_update(configured, item, monkeypatch):
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: SimpleNamespace(library=library))
     monkeypatch.setattr(plexapi.themerr_db, 'update_cache', Mock())
     monkeypatch.setattr(plexapi, 'q', Queue())
-    plexapi.scheduled_update()
+    plexapi._scheduled_update_server()
     assert plexapi.q.get_nowait() == 42
     assert "library_id=1 library_name='Movies' item='Example'" in plexapi._item_log_context(item)
 
@@ -523,7 +526,7 @@ def test_scheduled_update_ignores_configured_library(configured, item, monkeypat
     monkeypatch.setattr(plexapi.themerr_db, 'update_cache', Mock())
     monkeypatch.setattr(plexapi, 'q', Queue())
 
-    plexapi.scheduled_update()
+    plexapi._scheduled_update_server()
 
     section.all.assert_not_called()
     assert plexapi.q.empty()

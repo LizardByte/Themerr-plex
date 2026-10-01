@@ -228,18 +228,6 @@ _CONFIG_SPEC_DICT = {
                              'Disabling this can be a security risk, do so at your own risk.'),
         },
     },
-    'User_Interface': {
-        'type': 'section',
-        'name': _('User Interface'),
-        'description': _('User interface settings.'),
-        'icon': 'monitor',
-        'BACKGROUND_VIDEO': {
-            'type': 'boolean',
-            'name': _('Background video'),
-            'description': _('Enable background video.'),
-            'default': True,
-        },
-    },
     'Updater': {
         'type': 'section',
         'name': _('Updater'),
@@ -266,6 +254,7 @@ _CONFIG_SPEC_DICT = {
             'pattern': r'^https?:\/\/(?:[a-zA-Z0-9-]+\.?)+(:\d{1,5})?$',
             'extra_class': 'col-lg-6',
             'on_change': on_change_plex_url,
+            'locked': True,  # Retained only to identify and adopt the former single-server connection.
         },
         'PLEX_APP_SUPPORT_PATH': {
             'type': 'string',
@@ -275,6 +264,7 @@ _CONFIG_SPEC_DICT = {
             'pattern': regex_directory,
             'extra_class': 'col-lg-8',
             'button_directory': True,
+            'locked': True,
         },
     },
     'Themerr': {
@@ -396,7 +386,7 @@ _CONFIG_SPEC_DICT = {
         'INT_PLEXAPI_UPLOAD_THREADS': {
             'type': 'integer',
             'name': _('Multiprocessing thread count'),
-            'description': _('The number of threads to use when adding themes. (min: 1)'),
+            'description': _('The number of threads to use when adding themes. Restart required. (min: 1)'),
             'default': 3,
             'advanced': True,
             'extra_class': 'col-md-2',

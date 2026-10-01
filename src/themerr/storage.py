@@ -2,6 +2,8 @@
 
 # standard imports
 import json
+from contextlib import contextmanager
+from contextvars import ContextVar
 import os
 from pathlib import Path
 from threading import RLock
@@ -9,7 +11,7 @@ from threading import RLock
 # lib imports
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, delete, func, select, text
+from sqlalchemy import Boolean, ForeignKeyConstraint, Integer, String, create_engine, delete, func, select, text
 from sqlalchemy.engine import URL, Engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
@@ -25,7 +27,40 @@ _engine: Engine | None = None
 _engine_path: str | None = None
 _dashboard_lock = RLock()
 _dashboard_revision = 0
-_theme_uploads: dict[str, tuple[int, str]] = {}
+_theme_uploads: dict[tuple[str, str], tuple[int, str]] = {}
+_server_scope = ContextVar('plex_server_id', default='default')
+
+
+def current_server_id() -> str:
+    """Return the server ID for the current worker or request.
+
+    Returns
+    -------
+    str
+        Plex machine identifier, or the legacy default scope.
+    """
+    return _server_scope.get()
+
+
+@contextmanager
+def server_scope(server_id: str):
+    """Scope storage and Plex operations to one server.
+
+    Parameters
+    ----------
+    server_id : str
+        Plex machine identifier.
+
+    Yields
+    ------
+    None
+        Operations inside the context use this server.
+    """
+    token = _server_scope.set(server_id)
+    try:
+        yield
+    finally:
+        _server_scope.reset(token)
 
 
 class Base(DeclarativeBase):
@@ -36,6 +71,8 @@ class LibrarySection(Base):
     """One cached Plex library section."""
 
     __tablename__ = 'library_sections'
+
+    server_id: Mapped[str] = mapped_column(String, primary_key=True, default=current_server_id)
 
     key: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String, nullable=False)
@@ -54,8 +91,14 @@ class LibraryItem(Base):
 
     __tablename__ = 'library_items'
 
+    server_id: Mapped[str] = mapped_column(String, primary_key=True, default=current_server_id)
+
     rating_key: Mapped[str] = mapped_column(String, primary_key=True)
-    section_key: Mapped[int] = mapped_column(ForeignKey('library_sections.key'), nullable=False)
+    __table_args__ = (ForeignKeyConstraint(
+        ['server_id', 'section_key'], ['library_sections.server_id', 'library_sections.key'],
+    ),)
+
+    section_key: Mapped[int] = mapped_column(Integer, nullable=False)
     position: Mapped[int] = mapped_column(Integer, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
     type: Mapped[str] = mapped_column(String, nullable=False)
@@ -78,6 +121,8 @@ class ThemeRecord(Base):
 
     __tablename__ = 'theme_records'
 
+    server_id: Mapped[str] = mapped_column(String, primary_key=True, default=current_server_id)
+
     rating_key: Mapped[str] = mapped_column(String, primary_key=True)
     item_type: Mapped[str] = mapped_column(String, nullable=False)
     youtube_theme_url: Mapped[str | None] = mapped_column(String)
@@ -92,6 +137,8 @@ class ThemeError(Base):
     """Latest actionable processing failure for one Plex item."""
 
     __tablename__ = 'theme_errors'
+
+    server_id: Mapped[str] = mapped_column(String, primary_key=True, default=current_server_id)
 
     rating_key: Mapped[str] = mapped_column(String, primary_key=True)
     reason: Mapped[str] = mapped_column(String, nullable=False)
@@ -150,8 +197,8 @@ def _replace_dashboard(session: Session, sections: dict) -> None:
     sections : dict
         Complete library snapshot keyed by section ID.
     """
-    session.execute(delete(LibraryItem))
-    session.execute(delete(LibrarySection))
+    session.execute(delete(LibraryItem).where(LibraryItem.server_id == current_server_id()))
+    session.execute(delete(LibrarySection).where(LibrarySection.server_id == current_server_id()))
     for section in sections.values():
         session.add(LibrarySection(**{
             name: section[name] for name in (
@@ -200,7 +247,7 @@ def _import_legacy(engine: Engine) -> None:
         errors = config_dir / 'theme_errors.json'
         if errors.is_file():
             for key, reason in _legacy_json(errors).items():
-                if isinstance(reason, str) and session.get(ThemeError, str(key)) is None:
+                if isinstance(reason, str) and session.get(ThemeError, (current_server_id(), str(key))) is None:
                     session.add(ThemeError(rating_key=str(key), reason=reason))
 
         data_dir = config_dir / 'data'
@@ -212,7 +259,7 @@ def _import_legacy(engine: Engine) -> None:
                 if not item_type or not item_type_dir.is_dir():
                     continue
                 for path in item_type_dir.glob('*.json'):
-                    if session.get(ThemeRecord, path.stem) is None:
+                    if session.get(ThemeRecord, (current_server_id(), path.stem)) is None:
                         data = _legacy_json(path)
                         if data:
                             session.add(ThemeRecord(rating_key=path.stem, item_type=item_type,
@@ -305,14 +352,14 @@ def dashboard_revision() -> int:
 
 def _set_dashboard_theme_uploaded(session: Session, rating_key: str, provider: str) -> None:
     """Update one cached row and its library progress in a transaction."""
-    item = session.get(LibraryItem, rating_key)
+    item = session.get(LibraryItem, (current_server_id(), rating_key))
     if item is None:
         return
     item.theme = True
     item.theme_status = 'complete'
     item.theme_provider = provider
 
-    section = session.get(LibrarySection, item.section_key)
+    section = session.get(LibrarySection, (current_server_id(), item.section_key))
     if item.type == 'collection':
         total = section.collection_count
         field = 'collection_percent_complete'
@@ -323,7 +370,8 @@ def _set_dashboard_theme_uploaded(session: Session, rating_key: str, provider: s
         type_filter = LibraryItem.type != 'collection'
     session.flush()
     complete = session.scalar(select(func.count()).select_from(LibraryItem).where(
-        LibraryItem.section_key == item.section_key, type_filter, LibraryItem.theme.is_(True),
+        LibraryItem.server_id == current_server_id(), LibraryItem.section_key == item.section_key,
+        type_filter, LibraryItem.theme.is_(True),
     ))
     setattr(section, field, int(complete / total * 100) if total else 0)
 
@@ -348,7 +396,7 @@ def mark_dashboard_theme_uploaded(rating_key: int | str, provider: str) -> None:
             _set_dashboard_theme_uploaded(session, key, provider)
             session.commit()
         _dashboard_revision += 1
-        _theme_uploads[key] = (_dashboard_revision, provider)
+        _theme_uploads[(current_server_id(), key)] = (_dashboard_revision, provider)
 
 
 def replace_dashboard(sections: dict, since_revision: int | None = None) -> None:
@@ -365,8 +413,8 @@ def replace_dashboard(sections: dict, since_revision: int | None = None) -> None
         with Session(engine()) as session:
             _replace_dashboard(session, sections)
             if since_revision is not None:
-                for key, (revision, provider) in _theme_uploads.items():
-                    if revision > since_revision:
+                for (server_id, key), (revision, provider) in _theme_uploads.items():
+                    if server_id == current_server_id() and revision > since_revision:
                         _set_dashboard_theme_uploaded(session, key, provider)
             session.commit()
 
@@ -380,13 +428,15 @@ def get_dashboard() -> dict | None:
         Library snapshot, or ``None`` before the first scan.
     """
     with Session(engine()) as session:
-        sections = session.scalars(select(LibrarySection).order_by(LibrarySection.key)).all()
+        sections = session.scalars(select(LibrarySection).where(
+            LibrarySection.server_id == current_server_id()).order_by(LibrarySection.key)).all()
         if not sections:
             return None
         dashboard = {}
         for section in sections:
-            items = session.scalars(select(LibraryItem).where(LibraryItem.section_key == section.key)
-                                    .order_by(LibraryItem.position)).all()
+            items = session.scalars(select(LibraryItem).where(
+                LibraryItem.server_id == current_server_id(), LibraryItem.section_key == section.key,
+            ).order_by(LibraryItem.position)).all()
             dashboard[str(section.key)] = {
                 **{name: getattr(section, name) for name in (
                     'key', 'title', 'agent', 'type', 'media_count', 'media_percent_complete',
@@ -415,7 +465,7 @@ def get_tracking(rating_key: int | str) -> dict:
         Known upload fields, or an empty dictionary.
     """
     with Session(engine()) as session:
-        row = session.get(ThemeRecord, str(rating_key))
+        row = session.get(ThemeRecord, (current_server_id(), str(rating_key)))
         if row is None:
             return {}
         return {name: getattr(row, name) for name in (
@@ -437,7 +487,7 @@ def save_tracking(rating_key: int | str, item_type: str, values: dict) -> None:
     """
     allowed = {'youtube_theme_url', 'uploaded_theme_key', 'audio_codec', 'mp4a_available', 'art_url', 'poster_url'}
     with Session(engine()) as session:
-        row = session.get(ThemeRecord, str(rating_key))
+        row = session.get(ThemeRecord, (current_server_id(), str(rating_key)))
         if row is None:
             row = ThemeRecord(rating_key=str(rating_key), item_type=item_type)
             session.add(row)
@@ -456,7 +506,8 @@ def get_errors() -> dict[str, str]:
         Error reason by Plex rating key.
     """
     with Session(engine()) as session:
-        return {row.rating_key: row.reason for row in session.scalars(select(ThemeError))}
+        return {row.rating_key: row.reason for row in session.scalars(
+            select(ThemeError).where(ThemeError.server_id == current_server_id()))}
 
 
 def set_error(rating_key: int | str, reason: str | None) -> None:
@@ -470,7 +521,7 @@ def set_error(rating_key: int | str, reason: str | None) -> None:
         Failure reason, or ``None`` to clear it.
     """
     with Session(engine()) as session:
-        row = session.get(ThemeError, str(rating_key))
+        row = session.get(ThemeError, (current_server_id(), str(rating_key)))
         if reason:
             if row is None:
                 session.add(ThemeError(rating_key=str(rating_key), reason=reason))
@@ -514,8 +565,13 @@ def save_credentials(credentials: dict[str, str]) -> None:
         session.commit()
 
 
-def get_encrypted_token() -> str:
+def get_encrypted_token(namespace: str = '') -> str:
     """Return encrypted token data for the external-key backend.
+
+    Parameters
+    ----------
+    namespace : str, optional
+        Separate credential slot for a server token.
 
     Returns
     -------
@@ -523,25 +579,27 @@ def get_encrypted_token() -> str:
         Fernet ciphertext, or an empty string when not signed in.
     """
     with Session(engine()) as session:
-        row = session.get(AppSetting, 'plex_token_ciphertext')
+        row = session.get(AppSetting, 'plex_token_ciphertext' + namespace)
         return row.value if row is not None else ''
 
 
-def save_encrypted_token(ciphertext: str | None) -> None:
+def save_encrypted_token(ciphertext: str | None, namespace: str = '') -> None:
     """Save or clear encrypted token data.
 
     Parameters
     ----------
     ciphertext : str or None
         Fernet ciphertext, or ``None`` to disconnect.
+    namespace : str, optional
+        Separate credential slot for a server token.
     """
     with Session(engine()) as session:
-        row = session.get(AppSetting, 'plex_token_ciphertext')
+        row = session.get(AppSetting, 'plex_token_ciphertext' + namespace)
         if ciphertext is None:
             if row is not None:
                 session.delete(row)
         elif row is None:
-            session.add(AppSetting(key='plex_token_ciphertext', value=ciphertext))
+            session.add(AppSetting(key='plex_token_ciphertext' + namespace, value=ciphertext))
         else:
             row.value = ciphertext
         session.commit()

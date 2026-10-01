@@ -11,14 +11,14 @@ import requests
 
 # local imports
 from common import config, helpers, logger
-from plex import auth
-from themerr import themerr_db
+from plex import auth, servers, token_store
+from themerr import storage, themerr_db
 
 
 TMDB_API_URL = 'https://api.themoviedb.org/3'
 PROXY_TIMEOUT = 10
 PROXY_CACHE_SECONDS = 86400
-_proxy_cache: dict[tuple[str, str], tuple[float, dict]] = {}
+_proxy_cache: dict[tuple[str, ...], tuple[float, dict]] = {}
 _proxy_lock = Lock()
 log = logger.get_logger(__name__)
 
@@ -39,18 +39,22 @@ def _plex_get(path: str, params: dict) -> dict:
         JSON response, or an empty dictionary if the proxy is unavailable.
     """
     try:
-        base_url = config.CONFIG['Plex']['PLEX_URL'].rstrip('/')
+        server_id = storage.current_server_id()
+        record = servers.get_server(server_id) if server_id != 'default' else None
+        if server_id != 'default' and (record is None or not record['enabled']):
+            return {}
+        base_url = (record['url'] if record else config.CONFIG['Plex']['PLEX_URL']).rstrip('/')
     except (KeyError, TypeError, AttributeError):
         return {}
     if not base_url:
         return {}
     uri = f'/{path}?{urlencode(params, quote_via=quote)}'
-    key = (base_url, uri)
+    key = (server_id, base_url, uri)
     with _proxy_lock:
         cached = _proxy_cache.get(key)
         if cached and cached[0] > monotonic():
             return cached[1]
-    token = auth.get_token()
+    token = token_store.get_token(servers.credential_id(server_id)) if record else auth.get_token()
     if not token:
         return {}
     try:

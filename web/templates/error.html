@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="empty-state error-state">
+    <span class="empty-icon"><i data-lucide="circle-alert"></i></span>
+    <span class="eyebrow">{{ _('LET’S TRY THAT AGAIN') }}</span>
+    <h1>{{ title }}</h1><p>{{ message }}</p>
+    <a class="btn btn-primary" href="{{ url_for('home') }}"><i data-lucide="arrow-left"></i>{{ _('Back to workspace') }}</a>
+</section>
+{% endblock %}

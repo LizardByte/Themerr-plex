@@ -82,3 +82,22 @@ def test_wait_keyboard_interrupt(monkeypatch):
     monkeypatch.setattr(common, 'stop', stopped)
     themerr_plex.wait()
     stopped.assert_called_once_with()
+
+
+def test_console_password_reset_invalidates_sessions_without_starting_services(configured, monkeypatch, capsys):
+    from common import admin
+    from werkzeug.security import check_password_hash
+    monkeypatch.setattr(admin, 'HASH_METHOD', 'scrypt:16384:8:1')
+    previous = admin._save('admin', 'the original test passphrase')
+    monkeypatch.setattr(sys, 'argv', ['themerr_plex.py', '--reset-admin-password'])
+    monkeypatch.setattr(common, 'initialize', Mock(return_value=True))
+    monkeypatch.setattr(themerr_plex.getpass, 'getpass', lambda prompt: 'the replacement test passphrase')
+    start = Mock()
+    monkeypatch.setattr(threads, 'run_in_thread', start)
+    themerr_plex.main()
+    current = admin.account()
+    assert current['username'] == previous['username']
+    assert current['revision'] != previous['revision']
+    assert check_password_hash(current['password_hash'], 'the replacement test passphrase')
+    assert 'replacement test passphrase' not in capsys.readouterr().out
+    start.assert_not_called()

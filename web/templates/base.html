@@ -1,46 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-    <head>
-        {% if title %}
-            <title>Themerr-plex - {{ title }}</title>
-        {% else %}
-            <title>Themerr-plex</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="dark">
+    <title>{{ title or 'Overview' }} · Themerr</title>
+    <link rel="icon" href="{{ url_for('image', img='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="{{ 'app-body' if admin_username else 'auth-body' }}">
+    <a class="skip-link" href="#main-content">{{ _('Skip to content') }}</a>
+    {% if admin_username %}{% include 'navbar.html' %}{% endif %}
+    <main id="main-content" class="{{ 'workspace' if admin_username else 'auth-workspace' }}" tabindex="-1">
+        {% if admin_username %}
+        <header class="workspace-header">
+            <div class="d-flex align-items-center gap-3">
+                <button class="icon-button mobile-menu" type="button" data-sidebar-toggle aria-label="{{ _('Toggle navigation') }}" aria-expanded="false"><i data-lucide="menu"></i></button>
+                <span class="workspace-breadcrumb">{{ _('Workspace') }} <span>/</span> <strong>{{ title }}</strong></span>
+            </div>
+            <span class="workspace-account"><span class="presence-dot"></span>{{ admin_username }}</span>
+        </header>
         {% endif %}
-
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        <link rel="stylesheet" href="{{ url_for('static', filename='assets/app.css') }}">
-
-        {% block head %}{% endblock head %}
-    </head>
-
-    <body class="d-flex flex-column h-100 bg-dark-gray">
-        {% block modals %}{% endblock %}
-        <main class="flex-shrink-0 overflow-hidden">
-            <!-- Include navbar -->
-            {% include 'navbar.html' %}
-
-            {% if ui_config['BACKGROUND_VIDEO'] %}
-                <div class="backgroundVideoContainer">
-                    <video autoplay muted loop id="backgroundVideo" disablePictureInPicture="true" controlsList="nodownload">
-                        <source src="{{ url_for('static', filename='videos/Retro Delorean.mp4') }}" type="video/mp4">
-                    </video>
-
-                    <div class="backgroundVideoOverlay"></div>
-                </div>
-            {% endif %}
-
-            <!-- The page template -->
-            {% block content %}{% endblock %}
-        </main>
-
-        <!-- JS -->
-        <script type="text/javascript" src="https://app.lizardbyte.dev/js/discord.js"></script>
-        <script defer src="{{ url_for('static', filename='assets/app.js') }}"></script>
-
-        {% block scripts %}{% endblock %}
-    </body>
-
+        <div class="{{ 'page-content' if admin_username else '' }}">{% block content %}{% endblock %}</div>
+    </main>
+    <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+    {% block modals %}{% endblock %}
+    <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
 </html>

@@ -1,18 +1,4 @@
 {% extends 'base.html' %}
-{% block head %}
-{% endblock head %}
-{% block modals %}
-{% endblock modals %}
-
 {% block content %}
-<div class="container px-auto my-5">
-    <div class="col-lg-12 mx-auto" id="themerr-container" style="min-width: 335px">
-
-        <h2 class="text-center text-white">{{ _('Database is being cached, please try again soon.') }}</h2>
-
-    </div>
-</div>
-{% endblock content %}
-
-{% block scripts %}
-{% endblock scripts %}
+<section class="empty-state"><span class="empty-icon"><i data-lucide="library"></i></span><h1>{{ _('Your library is on its way.') }}</h1><p>{{ _('The first refresh builds your library view. You can follow progress in Activity.') }}</p><a class="btn btn-primary" href="{{ url_for('server_ui.activity') }}">{{ _('View activity') }}</a></section>
+{% endblock %}

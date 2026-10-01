@@ -6,6 +6,7 @@ Responsible for starting Themerr Plex.
 """
 # standard imports
 import argparse
+import getpass
 import os
 import sys
 import time
@@ -163,6 +164,8 @@ def main():
     parser.add_argument('--debug', action='store_true', help=_('Use debug logging level'))
     parser.add_argument('--dev', action='store_true', help=_('Start Themerr-plex in the development environment'))
     parser.add_argument('--docker_healthcheck', action='store_true', help=_('Health check the container and exit'))
+    parser.add_argument('--reset-admin-password', action='store_true',
+                        help='Reset the application admin password from this console')
     parser.add_argument('--nolaunch', action='store_true', help=_('Do not open Themerr-plex in browser'))
     parser.add_argument('-p', '--port', default=9494, type=IntRange(21, 65535),
                         help=_('Force Themerr-plex to run on a specified port, default=9494')
@@ -185,6 +188,17 @@ def main():
 
     from themerr import storage
     storage.engine()
+    from common import admin
+    if args.reset_admin_password:
+        password = getpass.getpass('New admin password (at least 12 characters): ')
+        if password != getpass.getpass('Confirm password: '):
+            parser.error('The passwords do not match.')
+        try:
+            admin.reset_password(password)
+        except ValueError as exc:
+            parser.error(str(exc))
+        print('Admin password reset. Existing sessions have been invalidated.')
+        return
 
     if config.CONFIG['General']['SYSTEM_TRAY']:
         from common import tray_icon  # submodule requires translations so importing after initialization
@@ -201,11 +215,18 @@ def main():
     from plex import plexapi  # import at use due to config
     from themerr import scheduled_tasks
 
+    from plex import servers
+    servers.adopt_legacy()
+    scheme = 'https' if config.CONFIG['Network']['SSL'] else 'http'
+    browser_url = admin.startup_url(f"{scheme}://127.0.0.1:{config.CONFIG['Network']['HTTP_PORT']}")
+    if not admin.account():
+        print(f'Create your Themerr admin account using this one-time link: {browser_url}', flush=True)
+
     threads.run_in_thread(target=webapp.start_webapp, name='Flask', daemon=True).start()
 
     # this should be after starting flask app
     if config.CONFIG['General']['LAUNCH_BROWSER'] and not args.nolaunch:
-        helpers.open_url_in_browser(url=webapp.URL)
+        helpers.open_url_in_browser(url=browser_url)
 
     # start plex listener
     plexapi.start_queue_threads()

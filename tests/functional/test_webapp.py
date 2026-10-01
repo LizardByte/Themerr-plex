@@ -8,7 +8,9 @@ import pytest
 import requests
 from plexapi.exceptions import NotFound
 
-from common import webapp
+from common import admin, webapp
+from plex import servers
+from sqlalchemy.orm import Session
 from plex import auth, plexapi
 from themerr import storage
 from themerr import theme_errors
@@ -16,8 +18,15 @@ from themerr import theme_errors
 
 @pytest.fixture
 def client(configured, tmp_path, monkeypatch):
-    webapp.app.config.update(TESTING=True, WTF_CSRF_ENABLED=False)
+    webapp.app.config.update(TESTING=True, WTF_CSRF_ENABLED=False, SESSION_COOKIE_SECURE=False)
+    monkeypatch.setattr(admin, 'HASH_METHOD', 'scrypt:16384:8:1')
+    current = admin._save('admin', 'a unique test password')
+    with Session(storage.engine()) as database:
+        database.add(servers.ServerRecord(id='default', name='Plex', url='http://plex.example'))
+        database.commit()
     with webapp.app.test_client() as test_client:
+        with test_client.session_transaction() as browser_session:
+            browser_session['admin_revision'] = current['revision']
         yield test_client
 
 
@@ -34,7 +43,7 @@ def _dashboard(items):
 def test_home(client, configured):
     response = client.get('/')
     assert response.status_code == 200
-    assert b'Database is being cached' in response.data
+    assert b'Getting to know your library.' in response.data
     storage.replace_dashboard(_dashboard([]))
     assert client.get('/home').status_code == 200
 
@@ -112,6 +121,16 @@ def test_theme_head_closes_without_reading_audio(client, theme_server):
     assert response.status_code == 200
     assert response.data == b''
     assert response.headers['Content-Length'] == '6'
+    upstream.iter_content.assert_not_called()
+    upstream.close.assert_called_once()
+
+
+def test_theme_proxy_does_not_serve_upstream_html_on_the_application_origin(client, theme_server):
+    _, upstream = theme_server
+    upstream.headers['Content-Type'] = 'text/html'
+    response = client.get('/api/themes/42')
+    assert response.status_code == 502
+    assert response.json['message'] == 'Plex returned an unsupported audio format.'
     upstream.iter_content.assert_not_called()
     upstream.close.assert_called_once()
 
@@ -245,7 +264,7 @@ def test_home_distinguishes_external_id_and_unknown_provider(client, configured)
     page = re.sub(rb'\s+', b' ', response.data)
     assert b'TVDB 123' in page
     assert b'TMDB ID unavailable' in page
-    assert page.count(b'data-lucide="circle-help" class="text-secondary"></i> Unknown provider') == 2
+    assert page.count(b'Unknown provider') == 2
     assert b'Plex ID: 43' in page
 
 
@@ -269,7 +288,7 @@ def test_home_shows_failed_replacement_of_unknown_provider(client):
     assert b'Plex rejected the replacement' in page
     assert b'Video unavailable' in page
     assert b'Failed to add theme' not in page
-    assert page.count(b'table-warning border-dark') == 2
+    assert page.count(b'class="failure-reason"') == 2
 
     theme_errors.set_error(43, None)
     page = client.get('/home').data
@@ -290,10 +309,10 @@ def test_settings(client):
     assert response.status_code == 200
     assert 'Themerr' in response.json
     assert 'PLEX_TOKEN' not in response.json['Plex']
-    assert b'Sign in with Plex' in client.get('/settings/').data
-    assert b'<output id="plex-auth-status"' in client.get('/settings/').data
+    assert b'Your Plex account' in client.get('/servers').data
+    assert b'id="plex-auth-status"' in client.get('/servers').data
     assert b'data-directory-target="LOG_DIR"' in client.get('/settings/').data
-    assert b'data-directory-target="PLEX_APP_SUPPORT_PATH"' in client.get('/settings/').data
+    assert b'Plex data directory' in client.get('/servers').data
     assert b'PLEX_TOKEN' not in client.get('/settings/').data
 
 
@@ -358,18 +377,18 @@ def test_plex_sign_in_flow(client, configured, monkeypatch):
     assert client.get('/api/plex/auth').json == {'connected': False}
     assert client.post('/api/plex/auth/check').json == {'connected': True}
     assert auth.get_token() == 'issued-token'
-    assert plexapi.plex_server is server
-    listener.assert_called_once_with()
+    assert plexapi.plex_server is None
+    listener.assert_not_called()
     assert client.get('/api/plex/auth').json == {'connected': True}
     assert client.post('/api/plex/auth/check').status_code == 400
 
     assert client.post('/api/plex/auth/disconnect').json == {'connected': False}
     assert auth.get_token() == ''
     assert plexapi.plex_server is None
-    stop_listener.assert_called_once_with()
+    stop_listener.assert_called()
 
 
-def test_plex_sign_in_failed_server_preserves_connection(client, configured, monkeypatch):
+def test_account_sign_in_does_not_require_a_preconfigured_server(client, configured, monkeypatch):
     auth.set_token('previous-token')
     monkeypatch.setattr(auth, 'start_login', lambda: {
         'pin_id': 123, 'code': 'strong-code', 'auth_url': 'https://app.plex.tv/auth#?code=strong-code',
@@ -378,9 +397,9 @@ def test_plex_sign_in_failed_server_preserves_connection(client, configured, mon
     monkeypatch.setattr(plexapi, 'connect_plex_server', Mock(side_effect=RuntimeError('server unavailable')))
     assert client.post('/api/plex/auth/start').status_code == 200
     response = client.post('/api/plex/auth/check')
-    assert response.status_code == 400
-    assert 'could not connect' in response.json['message']
-    assert auth.get_token() == 'previous-token'
+    assert response.status_code == 200
+    assert auth.get_token() == 'new-token'
+    plexapi.connect_plex_server.assert_not_called()
 
 
 def test_plex_sign_in_requires_secure_store(client, configured, monkeypatch):
@@ -432,17 +451,17 @@ def test_save_settings_with_csrf(client, configured):
     page = client.get('/settings/')
     token = re.search(rb'data-csrf-token="([^"]+)"', page.data).group(1).decode()
 
-    denied = client.post('/api/settings', data={'User_Interface|BACKGROUND_VIDEO': 'false'})
+    denied = client.post('/api/settings', data={'General|LAUNCH_BROWSER': 'false'})
     assert denied.status_code == 400
 
     response = client.post(
         '/api/settings',
-        data={'User_Interface|BACKGROUND_VIDEO': 'false'},
+        data={'General|LAUNCH_BROWSER': 'false'},
         headers={'X-CSRFToken': token},
     )
     assert response.status_code == 200
     assert response.json['status'] == 'OK'
-    assert configured['User_Interface']['BACKGROUND_VIDEO'] is False
+    assert configured['General']['LAUNCH_BROWSER'] is False
 
 
 def test_reject_invalid_settings_without_mutating_config(client, configured):
@@ -461,13 +480,13 @@ def test_reject_invalid_settings_without_mutating_config(client, configured):
 
 
 def test_save_failure_restores_config(client, configured, monkeypatch):
-    original = configured['User_Interface']['BACKGROUND_VIDEO']
+    original = configured['General']['LAUNCH_BROWSER']
     monkeypatch.setattr(webapp.config, 'save_config', lambda **_: False)
-    response = client.post('/api/settings', data={'User_Interface|BACKGROUND_VIDEO': 'false'})
+    response = client.post('/api/settings', data={'General|LAUNCH_BROWSER': 'false'})
     assert response.status_code == 500
-    assert configured['User_Interface']['BACKGROUND_VIDEO'] == original
+    assert configured['General']['LAUNCH_BROWSER'] == original
 
 
 def test_translations_and_logging(client):
     assert client.get('/translations').status_code == 200
-    assert client.get('/test_logger').status_code == 200
+    assert client.post('/test_logger').status_code == 200

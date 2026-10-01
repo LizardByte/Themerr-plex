@@ -21,6 +21,7 @@ from werkzeug.utils import secure_filename
 
 # local imports
 import common
+from common import admin, server_ui
 from common import config
 from common import crypto
 from common.definitions import Paths
@@ -28,7 +29,6 @@ from common import locales
 from common import logger
 from plex import auth as plex_auth
 from themerr import storage
-from themerr import theme_errors
 
 # variables
 URL_SCHEME = None
@@ -55,7 +55,8 @@ mime_type_map = {
 app = Flask(
     import_name=__name__,
     root_path=os.path.join(Paths.ROOT_DIR, 'web'),
-    static_folder=os.path.join(Paths.ROOT_DIR, 'web'),
+    static_folder=os.path.join(Paths.ROOT_DIR, 'web', 'assets'),
+    static_url_path='/web/assets',
     template_folder=os.path.join(Paths.ROOT_DIR, 'web', 'templates'),
 )
 app.secret_key = os.urandom(32)
@@ -88,6 +89,9 @@ log_handlers = logger.get_logger(name=__name__).handlers
 for handler in log_handlers:
     app.logger.addHandler(handler)
 
+admin.init_app(app)
+app.register_blueprint(server_ui.blueprint)
+
 csrf = CSRFProtect()
 csrf.init_app(app)
 
@@ -118,13 +122,12 @@ def render_template(template_name_or_list, **context):
     --------
     >>> render_template(template_name_or_list='home.html', title=_('Home'))
     """
-    context['ui_config'] = common.CONFIG['User_Interface'].copy()
 
     return flask_render_template(template_name_or_list=template_name_or_list, **context)
 
 
-@app.route('/', methods=['GET'])
 @app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET'])
 def home() -> render_template:
     """
     Serve the webapp home page.
@@ -148,14 +151,13 @@ def home() -> render_template:
     >>> home()
     """
     try:
-        items = storage.get_dashboard()
+        items, errors, stats = server_ui.dashboard()
     except Exception:
-        logger.get_logger(__name__).exception('Unable to load dashboard')
-        return responses[500]
-    if items is None:
-        return render_template('home_db_not_cached.html', title='Home')
-
-    return render_template('home.html', title=_('Home'), items=items, theme_errors=theme_errors.get_errors())
+        app.logger.exception('Unable to load dashboard')
+        return render_template('error.html', title='Unable to load libraries',
+                               message='The dashboard could not be loaded. Try again or check the log.'), 500
+    return render_template('home.html', title='Overview', items=items, theme_errors=errors, stats=stats,
+                           servers=server_ui.servers.list_servers())
 
 
 def _stream_theme_audio(upstream: requests.Response, rating_key: int):
@@ -181,8 +183,9 @@ def _stream_theme_audio(upstream: requests.Response, rating_key: int):
         upstream.close()
 
 
-@app.route('/api/themes/<int:rating_key>', methods=['GET'])
-def play_theme(rating_key: int) -> Response:
+@app.route('/api/themes/<int:rating_key>', defaults={'server_id': 'default'}, methods=['GET'])
+@app.route('/api/servers/<server_id>/themes/<int:rating_key>', methods=['GET'])
+def play_theme(rating_key: int, server_id: str) -> Response:
     """Serve the item's current Plex theme without exposing the Plex token.
 
     Resolve the selected audio from fresh Plex metadata and forward byte range requests
@@ -192,6 +195,8 @@ def play_theme(rating_key: int) -> Response:
     ----------
     rating_key : int
         Item whose selected theme should be played, regardless of its provider.
+    server_id : str
+        Plex machine identifier.
 
     Returns
     -------
@@ -206,7 +211,8 @@ def play_theme(rating_key: int) -> Response:
     from plex import plexapi
 
     try:
-        server = plexapi.setup_plexapi()
+        with storage.server_scope(server_id):
+            server = plexapi.setup_plexapi()
         if server is None:
             return _make_response(jsonify({'message': 'Connect to Plex before playing themes.'}), 503)
         item = server.fetchItem(rating_key)
@@ -226,7 +232,7 @@ def play_theme(rating_key: int) -> Response:
         )
     except plex_exceptions.NotFound:
         return _make_response(jsonify({'message': 'This Plex item is no longer available.'}), 404)
-    except (plex_exceptions.PlexApiException, requests.RequestException) as error:
+    except (plex_exceptions.PlexApiException, requests.RequestException, OSError, ValueError) as error:
         app.logger.warning('Unable to load theme for rating_key=%s (%s)', rating_key, type(error).__name__)
         return _make_response(jsonify({'message': 'Unable to load theme audio from Plex.'}), 502)
 
@@ -242,6 +248,11 @@ def play_theme(rating_key: int) -> Response:
         status = 404 if upstream.status_code == 404 else 502
         app.logger.warning('Plex rejected theme playback for rating_key=%s (HTTP %s)', rating_key, upstream.status_code)
         return _make_response(jsonify({'message': 'Plex could not provide theme audio.'}), status)
+    content_type = upstream.headers.get('Content-Type', 'application/octet-stream').split(';', 1)[0].lower()
+    if not content_type.startswith('audio/') and content_type not in ('video/mp4', 'application/octet-stream'):
+        upstream.close()
+        return _make_response(jsonify({'message': 'Plex returned an unsupported audio format.'}), 502)
+    headers['Content-Type'] = content_type
     if request.method == 'HEAD':
         upstream.close()
         return Response(status=upstream.status_code, headers=headers)
@@ -383,7 +394,7 @@ def image(img: str) -> send_from_directory:
     --------
     >>> image('favicon.ico')
     """
-    directory = os.path.join(app.static_folder, 'images')
+    directory = os.path.join(Paths.ROOT_DIR, 'web', 'images')
     filename = os.path.basename(secure_filename(filename=img))  # sanitize the input
 
     if os.path.isfile(os.path.join(directory, filename)):
@@ -417,7 +428,7 @@ def status() -> dict:
     return web_status
 
 
-@app.route('/test_logger', methods=['GET'])
+@app.route('/test_logger', methods=['POST'])
 def test_logger() -> str:
     """
     Test logging functions.
@@ -542,6 +553,11 @@ def _save_settings(candidate: dict, changed: list[tuple[str, str]]) -> Response:
         on_change = config._CONFIG_SPEC_DICT[key][setting].get('on_change')
         if on_change:
             on_change()
+    if any(key == 'Themerr' and setting in (
+            'BOOL_THEMERR_ENABLED', 'INT_UPDATE_THEMES_INTERVAL', 'INT_UPDATE_DATABASE_CACHE_INTERVAL',
+    ) for key, setting in changed):
+        from themerr import scheduled_tasks
+        scheduled_tasks.configure_jobs()
     return jsonify({'status': 'OK', 'message': 'Selected settings are valid.'})
 
 
@@ -657,26 +673,11 @@ def plex_auth_check() -> Response:
     if not token:
         return _make_response(jsonify({'connected': False}), 202)
 
-    from plex import plexapi
-    try:
-        server = plexapi.connect_plex_server(plex_url=config.CONFIG['Plex']['PLEX_URL'], plex_token=token)
-    except Exception:
-        app.logger.exception('Plex sign-in succeeded, but the selected server could not be reached')
-        return _make_response(jsonify({
-            'message': 'Signed in to Plex, but could not connect to the configured Plex server.',
-        }), 400)
-
     try:
         plex_auth.set_token(token)
     except OSError:
         app.logger.exception('Unable to save Plex sign-in')
         return _make_response(jsonify({'message': 'Unable to save Plex sign-in.'}), 500)
-
-    plexapi.plex_server = server
-    try:
-        plexapi.plex_listener()
-    except Exception:
-        app.logger.exception('Plex sign-in succeeded, but the event listener could not start')
     session.pop('plex_login', None)
     return jsonify({'connected': True})
 
@@ -698,13 +699,14 @@ def plex_auth_disconnect() -> Response:
     <Response ...>
     """
     try:
-        plex_auth.disconnect()
+        server_ui.servers.disconnect_account()
     except OSError:
         app.logger.exception('Unable to disconnect Plex')
         return _make_response(jsonify({'message': 'Unable to disconnect Plex.'}), 500)
 
     from plex import plexapi
     plexapi.stop_plex_listener()
+    server_ui.servers.clear_connections()
     plexapi.plex_server = None
     session.pop('plex_login', None)
     return jsonify({'connected': False})
@@ -733,6 +735,7 @@ def start_webapp():
     global URL, URL_SCHEME
     URL_SCHEME = 'https' if config.CONFIG['Network']['SSL'] else 'http'
     URL = f"{URL_SCHEME}://127.0.0.1:{config.CONFIG['Network']['HTTP_PORT']}"
+    app.config['SESSION_COOKIE_SECURE'] = bool(config.CONFIG['Network']['SSL'])
 
     if config.CONFIG['Network']['SSL']:
         cert_file, key_file = crypto.initialize_certificate()
@@ -743,6 +746,7 @@ def start_webapp():
         host=config.CONFIG['Network']['HTTP_HOST'],
         port=config.CONFIG['Network']['HTTP_PORT'],
         debug=common.DEV,
+        use_debugger=False,
         ssl_context=(cert_file, key_file) if config.CONFIG['Network']['SSL'] else None,
         use_reloader=False  # reloader doesn't work when running in a separate thread
     )
@@ -785,3 +789,36 @@ def translations() -> Response:
             return Response(response=json.dumps(data),
                             status=200,
                             mimetype='application/json')
+
+
+@app.errorhandler(400)
+@app.errorhandler(403)
+@app.errorhandler(404)
+@app.errorhandler(413)
+@app.errorhandler(500)
+def browser_error(error):
+    """Return useful errors without disclosing exception details.
+
+    API callers receive JSON; browser pages receive the workspace error view.
+
+    Parameters
+    ----------
+    error : HTTPException
+        HTTP failure raised by Flask or CSRF protection.
+
+    Returns
+    -------
+    Response or tuple
+        JSON for an API caller, or the redesigned error page.
+
+    Examples
+    --------
+    >>> browser_error(error)  # Flask invokes this for an HTTP error
+    (..., 404)
+    """
+    code = error.code
+    message = ('Your session or form expired. Reload the page and try again.' if code == 400 else
+               'This page is unavailable.' if code == 404 else 'The request could not be completed.')
+    if request.path.startswith('/api/'):
+        return jsonify({'message': message}), code
+    return render_template('error.html', title=str(code), message=message), code
