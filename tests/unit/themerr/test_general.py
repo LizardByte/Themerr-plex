@@ -71,13 +71,6 @@ def test_data_file_round_trip(configured, item, tmp_path):
     assert not (tmp_path / 'data').exists()
 
 
-def test_settings_hash(configured):
-    first = general.get_themerr_settings_hash()
-    assert len(first) == 64
-    configured['Themerr']['BOOL_PREFER_MP4A_CODEC'] = not configured['Themerr']['BOOL_PREFER_MP4A_CODEC']
-    assert general.get_themerr_settings_hash() != first
-
-
 def test_remove_uploaded_media(configured, item, tmp_path):
     configured['Plex']['PLEX_APP_SUPPORT_PATH'] = str(tmp_path)
     path = Path(general.get_media_upload_path(item, 'themes'))

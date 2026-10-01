@@ -171,8 +171,8 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         log.debug(f'Not overwriting locked theme for {item.type}: {item.title}')
         theme_errors.set_error(item.ratingKey, None)
         return
-    if (not config.CONFIG['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] and
-            general.get_theme_provider(item=item) == 'plex'):
+    theme_provider = general.get_theme_provider(item=item)
+    if (not config.CONFIG['Themerr']['BOOL_OVERWRITE_PLEX_PROVIDED_THEMES'] and theme_provider == 'plex'):
         log.debug(f'Not overwriting Plex provided theme for {item.type}: {item.title}')
         theme_errors.set_error(item.ratingKey, None)
         return
@@ -182,14 +182,12 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         return
 
     yt_video_url = data['youtube_theme_url']
-    settings_hash = general.get_themerr_settings_hash()
     themerr_data = general.get_themerr_data(item=item)
-    try:
-        skip = (themerr_data['settings_hash'] == settings_hash and
-                themerr_data[media_type_dict['themes']['themerr_data_key']] == yt_video_url and
-                general.get_theme_provider(item=item) == 'themerr')
-    except KeyError:
-        skip = False
+    same_theme = themerr_data.get('youtube_theme_url') == yt_video_url and theme_provider == 'themerr'
+    skip = same_theme and (
+        not config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] or
+        themerr_data.get('audio_codec') == 'mp4a' or themerr_data.get('mp4a_available') is False
+    )
     if skip:
         log.info(f'Skipping {media_type_dict["themes"]["name"]} for '
                  f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
@@ -204,7 +202,7 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
 
     log.info('Resolving theme audio for %s', context)
     try:
-        theme_url = process_youtube(
+        audio = process_youtube(
             url=yt_video_url,
             on_error=report_extraction_error,
         )
@@ -212,8 +210,9 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         log.exception('Error processing YouTube theme for %s', context)
         theme_errors.set_error(item.ratingKey, 'Video processing failed')
         return
-    if theme_url:
-        if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=theme_url,
+    if audio:
+        if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=audio.url,
+                     audio_codec=audio.codec, mp4a_available=audio.mp4a_available,
                      on_error=lambda reason: theme_errors.set_error(item.ratingKey, reason)):
             theme_errors.set_error(item.ratingKey, None)
         elif str(item.ratingKey) not in theme_errors.get_errors():
@@ -282,6 +281,8 @@ def add_media(
         media_file: Optional[str] = None,
         media_url: Optional[str] = None,
         on_error: Callable[[str], None] | None = None,
+        audio_codec: str | None = None,
+        mp4a_available: bool | None = None,
 ) -> bool:
     """
     Apply media to the specified item.
@@ -303,6 +304,10 @@ def add_media(
         URL of media.
     on_error : callable or None, optional
         Receives an upload failure reason.
+    audio_codec : str or None, optional
+        Codec of the selected theme audio stream.
+    mp4a_available : bool or None, optional
+        Whether the source offers MP4A AAC audio, including when Opus was selected.
 
     Returns
     -------
@@ -316,7 +321,6 @@ def add_media(
     """
     uploaded = False
 
-    settings_hash = general.get_themerr_settings_hash()
     themerr_data = general.get_themerr_data(item=item)
 
     if (item.isLocked(field=media_type_dict[media_type]['plex_field']) and
@@ -328,12 +332,16 @@ def add_media(
         log.warning(f'No theme songs provided for type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
         return False
 
-    if (themerr_data.get('settings_hash') == settings_hash and
-            themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id and
-            (media_type != 'themes' or general.get_theme_provider(item=item) == 'themerr')):
+    same_source = themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id
+    same_codec = audio_codec is None or themerr_data.get('audio_codec') == audio_codec
+    aac_unavailable = config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and mp4a_available is False
+    if same_source and (media_type != 'themes' or (
+            (same_codec or aac_unavailable) and general.get_theme_provider(item=item) == 'themerr')):
+        if media_type == 'themes' and mp4a_available is not None:
+            general.update_themerr_data(item=item, new_themerr_data={'mp4a_available': mp4a_available})
         log.info(f'Skipping {media_type_dict[media_type]['name']} for '
                  f'type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
-        return False
+        return True
 
     log.info('Preparing %s upload for %s', media_type_dict[media_type]['name'], _item_log_context(item))
     if config.CONFIG['Themerr'][media_type_dict[media_type]['remove_pref']]:
@@ -347,18 +355,15 @@ def add_media(
                                 url=media_url, on_error=on_error)
 
     if uploaded:
-        new_themerr_data = {
-            'settings_hash': settings_hash
-        }
-        new_themerr_data[media_type_dict[media_type]['themerr_data_key']] = media_url_id
+        new_themerr_data = {media_type_dict[media_type]['themerr_data_key']: media_url_id}
         if media_type == 'themes':
+            new_themerr_data.update(audio_codec=audio_codec, mp4a_available=mp4a_available)
             try:
                 selected = next((theme for theme in item.themes() if getattr(theme, 'selected', False)), None)
             except Exception:
                 log.exception('%s: Unable to identify the newly uploaded theme', item.ratingKey)
                 selected = None
-            if selected is not None:
-                new_themerr_data['uploaded_theme_key'] = selected.ratingKey
+            new_themerr_data['uploaded_theme_key'] = selected.ratingKey if selected is not None else None
 
         general.update_themerr_data(item=item, new_themerr_data=new_themerr_data)
         if media_type == 'themes':
@@ -368,7 +373,7 @@ def add_media(
                 storage.mark_dashboard_theme_uploaded(item.ratingKey, provider)
             except Exception:
                 log.exception('Unable to update dashboard after theme upload for %s', _item_log_context(item))
-            log.info('Theme upload recorded for %s', _item_log_context(item))
+            log.info('Theme upload recorded for %s (codec=%s)', _item_log_context(item), audio_codec or 'unknown')
 
         # unlock the field since it contains an automatically added value
         change_lock_status(item=item, field=media_type_dict[media_type]['plex_field'], lock=False)

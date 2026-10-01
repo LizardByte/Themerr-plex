@@ -45,7 +45,10 @@ def test_select_audio(configured, monkeypatch, prefer_mp4a, expected):
     ]
     seen = extractor(monkeypatch, {'entries': [None, {'formats': formats}]})
 
-    assert youtube_dl.process_youtube('https://youtube.example/watch') == expected
+    audio = youtube_dl.process_youtube('https://youtube.example/watch')
+    assert audio.url == expected
+    assert audio.codec == ('mp4a' if prefer_mp4a else 'opus')
+    assert audio.mp4a_available is True
     assert seen['extract'] == {'url': 'https://youtube.example/watch', 'download': False}
     assert list((Path(configured.filename).parent / 'cookies').iterdir()) == []
 
@@ -58,7 +61,8 @@ def test_cookies_and_bitrate_fallback(configured, monkeypatch):
     seen = extractor(monkeypatch, {'formats': [
         {'format': 'audio only', 'acodec': 'opus', 'abr': 128, 'url': 'https://opus'},
     ]})
-    assert youtube_dl.process_youtube('https://youtube.example') == 'https://opus'
+    assert youtube_dl.process_youtube('https://youtube.example') == youtube_dl.AudioStream(
+        url='https://opus', codec='opus', mp4a_available=False)
     assert '.youtube.com\tTRUE\t/\tTRUE\t123\tPREF\tabc' in seen['cookies']
 
 

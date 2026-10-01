@@ -1,9 +1,14 @@
 """SQLite migration and transaction behavior for former JSON state."""
 
 import json
+from pathlib import Path
 
+# lib imports
+from alembic import command
+from alembic.config import Config
 import pytest
-from sqlalchemy import text
+from sqlalchemy import create_engine, inspect, text
+from sqlalchemy.engine import URL
 
 from common import definitions
 from themerr import storage
@@ -41,10 +46,10 @@ def test_legacy_state_import_survives_restart(configured, tmp_path):
     assert storage.get_credentials() == {}
     assert not credentials_path.exists()
     assert storage.get_tracking(42) == {
-        'settings_hash': 'hash', 'youtube_theme_url': 'https://youtube.example',
+        'youtube_theme_url': 'https://youtube.example',
     }
     with storage.engine().connect() as connection:
-        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20260930_01'
+        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20260930_02'
 
     storage.save_credentials({'client_id': 'abc'})
     storage.set_error(42, None)
@@ -64,6 +69,27 @@ def test_plaintext_token_row_is_discarded(configured):
     assert storage.get_credentials() == {}
     with storage.engine().connect() as connection:
         assert connection.execute(text("SELECT value FROM app_settings WHERE key='token'")).scalar_one_or_none() is None
+
+
+def test_codec_migration_preserves_existing_uploads(configured):
+    previous = create_engine(URL.create('sqlite', database=storage.database_path()))
+    migration = Config()
+    migration.set_main_option('script_location', str(Path(storage.__file__).parent / 'migrations'))
+    with previous.begin() as connection:
+        migration.attributes['connection'] = connection
+        command.upgrade(migration, '20260930_01')
+        connection.execute(text(
+            'INSERT INTO theme_records (rating_key, item_type, settings_hash, youtube_theme_url, uploaded_theme_key) '
+            "VALUES ('42', 'movie', 'former-hash', 'https://youtube.example/theme', 'upload://themes/tracked')"
+        ))
+    previous.dispose()
+
+    assert storage.get_tracking(42) == {
+        'youtube_theme_url': 'https://youtube.example/theme', 'uploaded_theme_key': 'upload://themes/tracked',
+    }
+    columns = {column['name'] for column in inspect(storage.engine()).get_columns('theme_records')}
+    assert 'settings_hash' not in columns
+    assert {'audio_codec', 'mp4a_available'} <= columns
 
 
 def test_dashboard_replacement_is_atomic(configured):

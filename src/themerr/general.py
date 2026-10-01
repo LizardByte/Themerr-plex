@@ -227,29 +227,6 @@ def get_themerr_data(item: PlexPartialObject) -> dict:
     return {}
 
 
-def get_themerr_settings_hash() -> str:
-    """
-    Get a hash of the current Themerr settings.
-
-    Returns
-    -------
-    str
-        Hash of the current Themerr settings.
-
-    Examples
-    --------
-    >>> get_themerr_settings_hash()
-    '...'
-    """
-    # use to compare previous settings to new settings
-    themerr_settings = {
-        'bool_prefer_mp4a_codec': config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'],
-        'int_plexapi_plexapi_timeout': config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
-    }
-    settings_hash = hashlib.sha256(json.dumps(themerr_settings, sort_keys=True).encode('utf-8')).hexdigest()
-    return settings_hash
-
-
 def remove_uploaded_media(item: PlexPartialObject, media_type: str) -> None:
     """
     Remove themes for the specified item.

@@ -1,6 +1,7 @@
 """Resolve a YouTube video's audio stream with yt-dlp."""
 
 # standard imports
+from dataclasses import dataclass, field
 import json
 import os
 import re
@@ -18,6 +19,25 @@ from common import definitions
 from common import logger
 
 log = logger.get_logger(name=__name__)
+
+
+@dataclass(frozen=True)
+class AudioStream:
+    """Selected audio and the codec information used to avoid duplicate uploads.
+
+    Attributes
+    ----------
+    url : str
+        Audio stream URL, omitted from the representation because it may be signed.
+    codec : str
+        Selected codec family, ``mp4a`` or ``opus``.
+    mp4a_available : bool
+        Whether the video offered a supported MP4A AAC stream.
+    """
+
+    url: str = field(repr=False)
+    codec: str
+    mp4a_available: bool
 
 
 def _js_runtime() -> dict:
@@ -146,7 +166,7 @@ def _extract_video(url: str, params: dict, on_error: Callable[[str], None] | Non
     return video
 
 
-def _select_audio(video: dict) -> Optional[str]:
+def _select_audio(video: dict) -> AudioStream | None:
     """Choose the largest supported audio stream from extracted formats.
 
     Parameters
@@ -156,8 +176,8 @@ def _select_audio(video: dict) -> Optional[str]:
 
     Returns
     -------
-    str or None
-        Selected stream URL.
+    AudioStream or None
+        Selected stream URL, codec, and AAC availability.
     """
     selected = {}
     for fmt in video.get('formats', []):
@@ -171,13 +191,17 @@ def _select_audio(video: dict) -> Optional[str]:
             selected[codec] = (size, fmt['url'])
 
     if config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and 'mp4a' in selected:
-        return selected['mp4a'][1]
-    return max(selected.values(), default=(0, None))[1]
+        codec = 'mp4a'
+    elif selected:
+        codec = max(selected, key=lambda value: selected[value][0])
+    else:
+        return None
+    return AudioStream(url=selected[codec][1], codec=codec, mp4a_available='mp4a' in selected)
 
 
-def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> Optional[str]:
+def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> AudioStream | None:
     """
-    Return the best audio stream URL from a YouTube video.
+    Return the best audio stream and its codec information from a YouTube video.
 
     Extract audio formats with yt-dlp and choose the largest supported stream,
     honoring the configured MP4A preference. Cookies are written to a temporary
@@ -192,8 +216,8 @@ def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> 
 
     Returns
     -------
-    str or None
-        Selected audio stream URL, or ``None`` if extraction fails.
+    AudioStream or None
+        Selected audio stream and codec information, or ``None`` if extraction fails.
     """
     cookie_dir = os.path.join(definitions.Paths.CONFIG_DIR, 'cookies')
     os.makedirs(cookie_dir, exist_ok=True)
