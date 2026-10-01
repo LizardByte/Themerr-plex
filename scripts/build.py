@@ -27,6 +27,7 @@ def build():
         '--onefile',
         '--noconfirm',
         '--paths=./src',
+        '--collect-all=av',
         f'--add-data=_site{os.pathsep}_site',
         f'--add-data=web{os.pathsep}web',
         f'--add-data=locale{os.pathsep}locale',

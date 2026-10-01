@@ -1,5 +1,6 @@
 """Plex-facing behavior is verified with controlled server and item doubles."""
 
+from contextlib import nullcontext
 from queue import Queue
 from types import SimpleNamespace
 from unittest.mock import Mock
@@ -9,7 +10,19 @@ import requests
 
 from common import config
 from plex import plexapi
-from youtube.youtube_dl import AudioStream
+from youtube.youtube_dl import AudioFile
+
+
+def audio_result(path, codec, available):
+    """Provide a disposable validated download context for Plex boundary tests."""
+    return nullcontext(AudioFile(path, codec, available, 'verified-digest', 60.0, 100))
+
+
+@pytest.fixture(autouse=True)
+def verified_uploads(request, monkeypatch):
+    """Plex item doubles do not serve audio; verification is tested independently."""
+    if 'item' in request.fixturenames:
+        monkeypatch.setattr(plexapi, '_verify_uploaded_theme', Mock())
 
 
 def test_setup_plexapi(configured, monkeypatch):
@@ -47,6 +60,7 @@ def test_listener_starts_after_login_and_stops_on_disconnect(monkeypatch):
 def test_listener_does_not_start_without_connection(monkeypatch):
     monkeypatch.setattr(plexapi, 'alert_listener', None)
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: None)
+    monkeypatch.setattr(plexapi.servers, 'list_servers', lambda **_: [])
     constructor = Mock()
     monkeypatch.setattr(plexapi, 'AlertListener', constructor)
     plexapi.plex_listener()
@@ -145,14 +159,14 @@ def test_theme_failure_is_saved_and_cleared(configured, item, monkeypatch):
 
     def fail_extract(**kwargs):
         kwargs['on_error']('Video unavailable')
-        return None
+        return nullcontext(None)
 
-    monkeypatch.setattr(plexapi, 'process_youtube', fail_extract)
+    monkeypatch.setattr(plexapi, 'download_youtube', fail_extract)
     plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
     assert saved[item.ratingKey] == 'Video unavailable'
 
-    monkeypatch.setattr(plexapi, 'process_youtube',
-                        lambda **_: AudioStream('https://audio.example/theme', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube',
+                        lambda **_: audio_result('https://audio.example/theme', 'mp4a', True))
     monkeypatch.setattr(plexapi, 'add_media', Mock(return_value=True))
     plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
     assert saved[item.ratingKey] is None
@@ -210,8 +224,8 @@ def test_unknown_upload_is_replaced_even_with_old_tracking(configured, item, mon
     monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {
         'youtube_theme_url': 'https://youtube.example/video',
     })
-    monkeypatch.setattr(plexapi, 'process_youtube',
-                        lambda **_: AudioStream('https://audio.example/stream', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube',
+                        lambda **_: audio_result('https://audio.example/stream', 'mp4a', True))
     upload = Mock(return_value=True)
     monkeypatch.setattr(plexapi, 'add_media', upload)
 
@@ -240,7 +254,7 @@ def _track_theme(item, codec, mp4a_available):
     item.themes.return_value = [SimpleNamespace(selected=True, provider=None, ratingKey='upload://themes/tracked')]
     plexapi.general.update_themerr_data(item, {
         'youtube_theme_url': 'https://youtube.example/theme', 'uploaded_theme_key': 'upload://themes/tracked',
-        'audio_codec': codec, 'mp4a_available': mp4a_available,
+        'audio_codec': codec, 'mp4a_available': mp4a_available, 'audio_sha256': 'verified-digest',
     })
 
 
@@ -259,7 +273,7 @@ def test_operational_settings_do_not_reupload_theme(configured, item, monkeypatc
     _track_theme(item, 'mp4a', True)
     configured['Themerr'][setting] = value
     extract = Mock()
-    monkeypatch.setattr(plexapi, 'process_youtube', extract)
+    monkeypatch.setattr(plexapi, 'download_youtube', extract)
 
     plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
 
@@ -278,7 +292,7 @@ def test_satisfied_codec_preference_skips_repeated_jobs(
     _track_theme(item, codec, available)
     configured['Themerr']['BOOL_PREFER_MP4A_CODEC'] = prefer_mp4a
     extract = Mock()
-    monkeypatch.setattr(plexapi, 'process_youtube', extract)
+    monkeypatch.setattr(plexapi, 'download_youtube', extract)
 
     for _ in range(2):
         plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
@@ -292,8 +306,8 @@ def test_aac_preference_uploads_once_and_survives_restart(configured, item, monk
     _track_theme(item, codec, available)
     configured['Themerr']['BOOL_REMOVE_UNUSED_THEMES'] = False
     configured['Themerr']['BOOL_PREFER_MP4A_CODEC'] = True
-    extract = Mock(return_value=AudioStream('https://audio.example/aac', 'mp4a', True))
-    monkeypatch.setattr(plexapi, 'process_youtube', extract)
+    extract = Mock(return_value=audio_result('https://audio.example/aac', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube', extract)
     monkeypatch.setattr(plexapi, 'change_lock_status', Mock())
 
     plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/theme'})
@@ -311,8 +325,8 @@ def test_aac_preference_uploads_once_and_survives_restart(configured, item, monk
 def test_aac_unavailable_keeps_existing_theme_without_repeated_extraction(configured, item, monkeypatch, codec):
     _track_theme(item, codec, True if codec else None)
     configured['Themerr']['BOOL_PREFER_MP4A_CODEC'] = True
-    extract = Mock(return_value=AudioStream('https://audio.example/opus', 'opus', False))
-    monkeypatch.setattr(plexapi, 'process_youtube', extract)
+    extract = Mock(return_value=audio_result('https://audio.example/opus', 'opus', False))
+    monkeypatch.setattr(plexapi, 'download_youtube', extract)
     plexapi.theme_errors.set_error(item.ratingKey, 'Previous failure')
 
     for _ in range(2):
@@ -330,7 +344,8 @@ def test_failed_codec_replacement_keeps_original_tracking_and_retries(configured
     configured['Themerr']['BOOL_REMOVE_UNUSED_THEMES'] = False
     configured['Themerr']['BOOL_PREFER_MP4A_CODEC'] = True
     configured['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX'] = 0
-    monkeypatch.setattr(plexapi, 'process_youtube', lambda **_: AudioStream('https://audio.example/aac', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube',
+                        lambda **_: audio_result('theme.m4a', 'mp4a', True))
     item.uploadTheme.side_effect = requests.HTTPError('406 rejected')
 
     for _ in range(2):
@@ -344,7 +359,8 @@ def test_failed_codec_replacement_keeps_original_tracking_and_retries(configured
 def test_changed_source_replaces_same_codec(configured, item, monkeypatch):
     _track_theme(item, 'mp4a', True)
     configured['Themerr']['BOOL_REMOVE_UNUSED_THEMES'] = False
-    monkeypatch.setattr(plexapi, 'process_youtube', lambda **_: AudioStream('https://audio.example/aac', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube',
+                        lambda **_: audio_result('theme.m4a', 'mp4a', True))
     monkeypatch.setattr(plexapi, 'change_lock_status', Mock())
 
     plexapi._update_theme(item, {'youtube_theme_url': 'https://youtube.example/new-theme'})
@@ -451,8 +467,8 @@ def test_update_collection_metadata_and_theme(configured, item, monkeypatch):
         'youtube_theme_url': 'https://youtube.example/theme',
     })
     monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {})
-    monkeypatch.setattr(plexapi, 'process_youtube',
-                        lambda **_: AudioStream('https://audio.example/theme', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube',
+                        lambda **_: audio_result('https://audio.example/theme', 'mp4a', True))
     add = Mock(return_value=True)
     monkeypatch.setattr(plexapi, 'add_media', add)
 

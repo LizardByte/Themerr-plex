@@ -83,3 +83,17 @@ def test_remove_uploaded_media(configured, item, tmp_path):
 
 def test_remove_error_handler():
     general.remove_uploaded_media_error_handler('remove', 'path', OSError('failure'))
+
+
+def test_remove_unused_themes_keeps_verified_file(configured, item, tmp_path):
+    configured['Plex']['PLEX_APP_SUPPORT_PATH'] = str(tmp_path)
+    path = Path(general.get_media_upload_path(item, 'themes'))
+    path.mkdir(parents=True)
+    current = path / 'new-theme'
+    current.write_bytes(b'complete audio')
+    previous = path / 'previous-theme'
+    previous.write_bytes(b'old audio')
+    digest = hashlib.sha256(current.read_bytes()).hexdigest()
+    general.remove_uploaded_media(item, 'themes', keep_sha256=digest)
+    assert current.read_bytes() == b'complete audio'
+    assert not previous.exists()

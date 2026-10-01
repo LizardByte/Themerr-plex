@@ -1,9 +1,10 @@
 """A standalone update path with all external services mocked."""
 
+from contextlib import nullcontext
 from unittest.mock import Mock
 
 from plex import plexapi
-from youtube.youtube_dl import AudioStream
+from youtube.youtube_dl import AudioFile
 
 
 def test_updates_theme_from_database(configured, item, monkeypatch):
@@ -18,8 +19,8 @@ def test_updates_theme_from_database(configured, item, monkeypatch):
         'youtube_theme_url': 'https://youtube.example/video',
     })
     monkeypatch.setattr(plexapi.general, 'get_themerr_data', lambda **_: {})
-    monkeypatch.setattr(plexapi, 'process_youtube',
-                        lambda **_: AudioStream('https://audio.example/stream', 'mp4a', True))
+    monkeypatch.setattr(plexapi, 'download_youtube',
+                        lambda **_: nullcontext(AudioFile('theme.m4a', 'mp4a', True, 'digest', 60.0, 100)))
     uploaded = Mock(return_value=True)
     monkeypatch.setattr(plexapi, 'add_media', uploaded)
 
@@ -29,7 +30,9 @@ def test_updates_theme_from_database(configured, item, monkeypatch):
     assert uploaded.call_args.kwargs['item'] is item
     assert uploaded.call_args.kwargs['media_type'] == 'themes'
     assert uploaded.call_args.kwargs['media_url_id'] == 'https://youtube.example/video'
-    assert uploaded.call_args.kwargs['media_url'] == 'https://audio.example/stream'
+    assert uploaded.call_args.kwargs['media_file'] == 'theme.m4a'
+    assert 'media_url' not in uploaded.call_args.kwargs
+    assert uploaded.call_args.kwargs['audio_sha256'] == 'digest'
     assert uploaded.call_args.kwargs['audio_codec'] == 'mp4a'
     assert uploaded.call_args.kwargs['mp4a_available'] is True
     assert callable(uploaded.call_args.kwargs['on_error'])

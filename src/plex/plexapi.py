@@ -1,4 +1,5 @@
 # standard imports
+import hashlib
 import queue
 import os
 import time
@@ -24,7 +25,7 @@ from themerr import storage
 from themerr import theme_errors
 from themerr import themerr_db
 from themerr import tmdb
-from youtube.youtube_dl import process_youtube
+from youtube.youtube_dl import download_youtube
 
 # fix random _strptime import bug in plexapi
 import _strptime  # noqa: F401
@@ -202,7 +203,7 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
     yt_video_url = data['youtube_theme_url']
     themerr_data = general.get_themerr_data(item=item)
     same_theme = themerr_data.get('youtube_theme_url') == yt_video_url and theme_provider == 'themerr'
-    skip = same_theme and (
+    skip = same_theme and bool(themerr_data.get('audio_sha256')) and (
         not config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] or
         themerr_data.get('audio_codec') == 'mp4a' or themerr_data.get('mp4a_available') is False
     )
@@ -218,23 +219,22 @@ def _update_theme(item: PlexPartialObject, data: dict) -> None:
         theme_errors.set_error(item.ratingKey, reason)
         log.warning('Theme audio extraction failed for %s: %s', context, reason)
 
-    log.info('Resolving theme audio for %s', context)
+    log.info('Downloading complete theme audio for %s', context)
     try:
-        audio = process_youtube(
-            url=yt_video_url,
-            on_error=report_extraction_error,
-        )
+        with download_youtube(url=yt_video_url, on_error=report_extraction_error) as audio:
+            if audio:
+                log.info('Theme audio verified for %s (codec=%s, duration=%.2fs, bytes=%d)',
+                         context, audio.codec, audio.duration, audio.size)
+                if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_file=audio.path,
+                             audio_codec=audio.codec, mp4a_available=audio.mp4a_available, audio_sha256=audio.sha256,
+                             on_error=lambda reason: theme_errors.set_error(item.ratingKey, reason)):
+                    theme_errors.set_error(item.ratingKey, None)
+                elif str(item.ratingKey) not in theme_errors.get_errors():
+                    theme_errors.set_error(item.ratingKey, 'Theme upload failed')
     except Exception:
         log.exception('Error processing YouTube theme for %s', context)
         theme_errors.set_error(item.ratingKey, 'Video processing failed')
         return
-    if audio:
-        if add_media(item=item, media_type='themes', media_url_id=yt_video_url, media_url=audio.url,
-                     audio_codec=audio.codec, mp4a_available=audio.mp4a_available,
-                     on_error=lambda reason: theme_errors.set_error(item.ratingKey, reason)):
-            theme_errors.set_error(item.ratingKey, None)
-        elif str(item.ratingKey) not in theme_errors.get_errors():
-            theme_errors.set_error(item.ratingKey, 'Theme upload failed')
 
 
 def update_plex_item(rating_key: int) -> bool:
@@ -308,6 +308,7 @@ def add_media(
         on_error: Callable[[str], None] | None = None,
         audio_codec: str | None = None,
         mp4a_available: bool | None = None,
+        audio_sha256: str | None = None,
 ) -> bool:
     """
     Apply media to the specified item.
@@ -333,6 +334,8 @@ def add_media(
         Codec of the selected theme audio stream.
     mp4a_available : bool or None, optional
         Whether the source offers MP4A AAC audio, including when Opus was selected.
+    audio_sha256 : str or None, optional
+        Digest of complete validated audio, used to verify Plex's stored file.
 
     Returns
     -------
@@ -361,7 +364,8 @@ def add_media(
     same_codec = audio_codec is None or themerr_data.get('audio_codec') == audio_codec
     aac_unavailable = config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and mp4a_available is False
     if same_source and (media_type != 'themes' or (
-            (same_codec or aac_unavailable) and general.get_theme_provider(item=item) == 'themerr')):
+            (same_codec or aac_unavailable) and (not audio_sha256 or themerr_data.get('audio_sha256')) and
+            general.get_theme_provider(item=item) == 'themerr')):
         if media_type == 'themes' and mp4a_available is not None:
             general.update_themerr_data(item=item, new_themerr_data={'mp4a_available': mp4a_available})
         log.info(f'Skipping {media_type_dict[media_type]['name']} for '
@@ -369,12 +373,13 @@ def add_media(
         return True
 
     log.info('Preparing %s upload for %s', media_type_dict[media_type]['name'], _item_log_context(item))
-    if config.CONFIG['Themerr'][media_type_dict[media_type]['remove_pref']]:
+    remove_unused = config.CONFIG['Themerr'][media_type_dict[media_type]['remove_pref']]
+    if remove_unused and not audio_sha256:
         general.remove_uploaded_media(item=item, media_type=media_type)
 
     if media_file:
         uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item),
-                                filepath=media_file, on_error=on_error)
+                                filepath=media_file, on_error=on_error, expected_sha256=audio_sha256)
     if media_url:
         uploaded = upload_media(item=item, method=media_type_dict[media_type]['method'](item),
                                 url=media_url, on_error=on_error)
@@ -383,6 +388,10 @@ def add_media(
         new_themerr_data = {media_type_dict[media_type]['themerr_data_key']: media_url_id}
         if media_type == 'themes':
             new_themerr_data.update(audio_codec=audio_codec, mp4a_available=mp4a_available)
+            if audio_sha256:
+                new_themerr_data['audio_sha256'] = audio_sha256
+                if remove_unused:
+                    general.remove_uploaded_media(item=item, media_type=media_type, keep_sha256=audio_sha256)
             try:
                 selected = next((theme for theme in item.themes() if getattr(theme, 'selected', False)), None)
             except Exception:
@@ -476,6 +485,7 @@ def upload_media(
         filepath: Optional[str] = None,
         url: Optional[str] = None,
         on_error: Callable[[str], None] | None = None,
+        expected_sha256: str | None = None,
 ) -> bool:
     """
     Upload media to the specified item.
@@ -494,6 +504,8 @@ def upload_media(
         The url to the theme song.
     on_error : callable or None, optional
         Receives the final upload failure reason.
+    expected_sha256 : str or None, optional
+        Digest to compare with the audio Plex serves after accepting the upload.
 
     Returns
     -------
@@ -521,6 +533,8 @@ def upload_media(
                     log.info('Submitting theme to Plex for %s (attempt %d/%d, timeout=%ds)',
                              context, count + 1, max_attempts, source['timeout'])
                 method(**source)
+                if is_theme and expected_sha256:
+                    _verify_uploaded_theme(item, expected_sha256, source['timeout'])
         except (BadRequest, requests.RequestException) as e:
             last_error = e
             sleep_time = 2 ** count
@@ -539,6 +553,44 @@ def upload_media(
     if last_error is not None and on_error:
         on_error(theme_errors.normalize_reason(last_error))
     return False
+
+
+def _verify_uploaded_theme(item: PlexPartialObject, expected_sha256: str, timeout: int) -> None:
+    """Verify Plex serves exactly the complete audio file that was uploaded.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Item whose theme was just uploaded.
+    expected_sha256 : str
+        SHA-256 of the validated local file.
+    timeout : int
+        Plex read timeout in seconds.
+
+    Raises
+    ------
+    BadRequest
+        Plex selected an incomplete or different theme.
+    requests.RequestException
+        Plex's stored audio cannot be retrieved.
+    """
+    item.reload()
+    path = item.theme
+    if not isinstance(path, str) or not path.startswith('/library/metadata/') or '/theme/' not in path:
+        raise BadRequest('Plex did not select the uploaded theme')
+    server = item._server
+    digest = hashlib.sha256()
+    with server._session.get(server.url(path, includeToken=False),
+                             headers=server._headers(**{'Accept-Encoding': 'identity'}),
+                             stream=True, allow_redirects=False, timeout=timeout) as response:
+        response.raise_for_status()
+        if response.status_code != 200:
+            raise BadRequest('Plex did not return the complete uploaded theme')
+        for chunk in response.iter_content(chunk_size=64 * 1024):
+            digest.update(chunk)
+    if digest.hexdigest() != expected_sha256:
+        raise BadRequest('Plex stored incomplete or different theme audio; the upload will be retried')
+    log.info('Plex theme file verified for %s', _item_log_context(item))
 
 
 def _guid_candidates(item: PlexPartialObject) -> list[tuple[str, str, str]]:

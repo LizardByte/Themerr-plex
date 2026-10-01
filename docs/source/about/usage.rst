@@ -159,6 +159,16 @@ Theme format
 Themerr-plex selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
 Plex clients that cannot play Opus theme audio. If MP4A is unavailable, Opus is used.
 
+Before uploading, Themerr-plex downloads the complete audio with yt-dlp, decodes it to check its duration and codec,
+and uploads the local file to Plex. It then verifies that Plex serves the same bytes. Validation uses PyAV's bundled
+FFmpeg libraries; a separate FFmpeg installation is not needed. Temporary downloads and cookies are deleted afterward.
+
+Themes previously uploaded by Themerr through a remote audio URL are replaced once using this verified file upload.
+This repairs potentially truncated themes. Locked themes and the setting for preserving Plex-provided themes still
+apply. Successful file uploads are recorded in SQLite and are skipped on later jobs unless the source changes or
+the AAC preference requires a different codec. A failed replacement does not delete the previous theme file or
+overwrite its tracking record.
+
 .. note::
 
    A theme can only be added when its item exists in ThemerrDB. See

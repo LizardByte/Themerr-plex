@@ -11,7 +11,7 @@ import pytest
 from youtube import youtube_dl
 
 
-def extractor(monkeypatch, result=None, error=None, seen=None):
+def extractor(monkeypatch, result=None, error=None, seen=None, payload=b'audio', download_error=None):
     seen = {} if seen is None else seen
 
     class FakeYDL:
@@ -30,6 +30,15 @@ def extractor(monkeypatch, result=None, error=None, seen=None):
             if error:
                 raise error
             return result
+
+        def process_info(self, info):
+            seen['download_info'] = info
+            Path(self.prepare_filename(info)).write_bytes(payload)
+            if download_error:
+                raise download_error
+
+        def prepare_filename(self, info):
+            return seen['params']['outtmpl'].replace('%(ext)s', info.get('ext', 'm4a'))
 
     monkeypatch.setattr(youtube_dl.yt_dlp, 'YoutubeDL', FakeYDL)
     return seen
@@ -141,3 +150,40 @@ def test_source_build_falls_back_to_node(configured, monkeypatch, tmp_path):
 
     assert youtube_dl.process_youtube('https://youtube.example') is None
     assert seen['params']['js_runtimes'] == {'node': {'path': '/tools/node'}}
+
+
+def test_complete_download_context_and_cleanup(configured, monkeypatch):
+    seen = extractor(monkeypatch, {'duration': 60, 'formats': [
+        {'vcodec': 'none', 'acodec': 'mp4a.40.2', 'ext': 'm4a', 'url': 'https://signed-audio',
+         'http_headers': {'Referer': 'https://youtube.example'}, 'filesize': 5},
+    ]})
+    monkeypatch.setattr(youtube_dl, 'validate_audio', lambda *_: 60.0)
+    with youtube_dl.download_youtube('https://youtube.example') as audio:
+        path = Path(audio.path)
+        assert path.read_bytes() == b'audio'
+        assert audio.codec == 'mp4a'
+        assert audio.size == 5
+        assert len(audio.sha256) == 64
+        assert Path(seen['params']['cookiefile']).exists()
+        assert seen['params']['skip_unavailable_fragments'] is False
+        assert seen['params']['fixup'] == 'never'
+        assert seen['download_info']['http_headers'] == {'Referer': 'https://youtube.example'}
+    assert not path.parent.exists()
+    assert not Path(seen['params']['cookiefile']).exists()
+
+
+@pytest.mark.parametrize('failure', ['fragment', 'size', 'validation', 'empty'])
+def test_failed_download_is_not_usable_and_is_cleaned(configured, monkeypatch, failure):
+    seen = extractor(monkeypatch, {'duration': 60, 'formats': [
+        {'vcodec': 'none', 'acodec': 'opus', 'url': 'https://signed-audio', 'ext': 'webm',
+         'filesize': 99 if failure == 'size' else 5},
+    ]}, payload=b'' if failure == 'empty' else b'audio', download_error=(
+        youtube_dl.yt_dlp.utils.DownloadError('fragment unavailable') if failure == 'fragment' else None))
+    monkeypatch.setattr(youtube_dl, 'validate_audio', lambda *_: (_ for _ in ()).throw(ValueError('Incomplete audio')))
+    errors = []
+    with youtube_dl.download_youtube('https://youtube.example', on_error=errors.append) as audio:
+        assert audio is None
+    assert len(errors) == 1
+    path = Path(seen['params']['outtmpl']).parent
+    assert not path.exists()
+    assert not Path(seen['params']['cookiefile']).exists()

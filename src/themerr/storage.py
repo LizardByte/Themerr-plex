@@ -128,6 +128,7 @@ class ThemeRecord(Base):
     youtube_theme_url: Mapped[str | None] = mapped_column(String)
     uploaded_theme_key: Mapped[str | None] = mapped_column(String)
     audio_codec: Mapped[str | None] = mapped_column(String)
+    audio_sha256: Mapped[str | None] = mapped_column(String)
     mp4a_available: Mapped[bool | None] = mapped_column(Boolean)
     art_url: Mapped[str | None] = mapped_column(String)
     poster_url: Mapped[str | None] = mapped_column(String)
@@ -469,7 +470,8 @@ def get_tracking(rating_key: int | str) -> dict:
         if row is None:
             return {}
         return {name: getattr(row, name) for name in (
-            'youtube_theme_url', 'uploaded_theme_key', 'audio_codec', 'mp4a_available', 'art_url', 'poster_url',
+            'youtube_theme_url', 'uploaded_theme_key', 'audio_codec', 'audio_sha256', 'mp4a_available',
+            'art_url', 'poster_url',
         ) if getattr(row, name) is not None}
 
 
@@ -485,7 +487,8 @@ def save_tracking(rating_key: int | str, item_type: str, values: dict) -> None:
     values : dict
         Upload fields to update.
     """
-    allowed = {'youtube_theme_url', 'uploaded_theme_key', 'audio_codec', 'mp4a_available', 'art_url', 'poster_url'}
+    allowed = {'youtube_theme_url', 'uploaded_theme_key', 'audio_codec', 'audio_sha256', 'mp4a_available',
+               'art_url', 'poster_url'}
     with Session(engine()) as session:
         row = session.get(ThemeRecord, (current_server_id(), str(rating_key)))
         if row is None:

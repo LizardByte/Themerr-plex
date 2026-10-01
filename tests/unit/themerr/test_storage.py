@@ -49,7 +49,7 @@ def test_legacy_state_import_survives_restart(configured, tmp_path):
         'youtube_theme_url': 'https://youtube.example',
     }
     with storage.engine().connect() as connection:
-        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20261001_03'
+        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20261001_04'
 
     storage.save_credentials({'client_id': 'abc'})
     storage.set_error(42, None)
@@ -89,7 +89,7 @@ def test_codec_migration_preserves_existing_uploads(configured):
     }
     columns = {column['name'] for column in inspect(storage.engine()).get_columns('theme_records')}
     assert 'settings_hash' not in columns
-    assert {'audio_codec', 'mp4a_available'} <= columns
+    assert {'audio_codec', 'mp4a_available', 'audio_sha256'} <= columns
 
 
 def test_dashboard_replacement_is_atomic(configured):

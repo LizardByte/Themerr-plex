@@ -1,8 +1,11 @@
-"""Resolve a YouTube video's audio stream with yt-dlp."""
+"""Download and validate complete YouTube theme audio with yt-dlp."""
 
 # standard imports
+from contextlib import contextmanager
 from dataclasses import dataclass, field
+import hashlib
 import json
+import math
 import os
 import re
 import shutil
@@ -11,6 +14,7 @@ import tempfile
 from typing import Callable, Optional, TextIO
 
 # lib imports
+import av
 import yt_dlp
 
 # local imports
@@ -33,11 +37,45 @@ class AudioStream:
         Selected codec family, ``mp4a`` or ``opus``.
     mp4a_available : bool
         Whether the video offered a supported MP4A AAC stream.
+    format_info : dict
+        Extracted format details required by yt-dlp's downloader.
+    duration : float or None
+        Expected source duration in seconds.
     """
 
     url: str = field(repr=False)
     codec: str
     mp4a_available: bool
+    format_info: dict = field(default_factory=dict, repr=False, compare=False)
+    duration: float | None = None
+
+
+@dataclass(frozen=True)
+class AudioFile:
+    """Validated temporary audio and its upload tracking information.
+
+    Attributes
+    ----------
+    path : str
+        Local file, valid only within the download context.
+    codec : str
+        ``mp4a`` or ``opus``.
+    mp4a_available : bool
+        Whether the source offers AAC audio.
+    sha256 : str
+        Digest used to verify the file Plex stores.
+    duration : float
+        Decoded audio duration in seconds.
+    size : int
+        File size in bytes.
+    """
+
+    path: str
+    codec: str
+    mp4a_available: bool
+    sha256: str
+    duration: float
+    size: int
 
 
 def _js_runtime() -> dict:
@@ -188,7 +226,7 @@ def _select_audio(video: dict) -> AudioStream | None:
             continue
         size = fmt.get('filesize') or fmt.get('filesize_approx') or fmt.get('abr') or 0
         if codec not in selected or size > selected[codec][0]:
-            selected[codec] = (size, fmt['url'])
+            selected[codec] = (size, fmt)
 
     if config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and 'mp4a' in selected:
         codec = 'mp4a'
@@ -196,7 +234,9 @@ def _select_audio(video: dict) -> AudioStream | None:
         codec = max(selected, key=lambda value: selected[value][0])
     else:
         return None
-    return AudioStream(url=selected[codec][1], codec=codec, mp4a_available='mp4a' in selected)
+    fmt = selected[codec][1]
+    return AudioStream(url=fmt['url'], codec=codec, mp4a_available='mp4a' in selected,
+                       format_info=fmt, duration=video.get('duration'))
 
 
 def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> AudioStream | None:
@@ -219,6 +259,19 @@ def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> 
     AudioStream or None
         Selected audio stream and codec information, or ``None`` if extraction fails.
     """
+    with _youtube_options() as params:
+        video = _extract_video(url, params, on_error=on_error)
+        if not video:
+            return None
+        audio = _select_audio(video)
+        if not audio and on_error:
+            on_error('No supported audio stream found')
+        return audio
+
+
+@contextmanager
+def _youtube_options():
+    """Keep temporary cookies available until extraction and downloading finish."""
     cookie_dir = os.path.join(definitions.Paths.CONFIG_DIR, 'cookies')
     os.makedirs(cookie_dir, exist_ok=True)
 
@@ -239,15 +292,99 @@ def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> 
         runtime = _js_runtime()
         if runtime:
             params['js_runtimes'] = runtime
-        video = _extract_video(url, params, on_error=on_error)
-        if not video:
-            return None
-        audio = _select_audio(video)
-        if not audio and on_error:
-            on_error('No supported audio stream found')
-        return audio
+        yield params
     finally:
         try:
             os.remove(cookie_path)
         except OSError:
             log.exception('Failed to delete YouTube cookie file: %s', cookie_path)
+
+
+def validate_audio(path: str, expected_duration: float, codec: str) -> float:
+    """Decode every audio frame and check the source duration and codec.
+
+    Parameters
+    ----------
+    path : str
+        Completed download.
+    expected_duration : float
+        Duration reported by the source extractor.
+    codec : str
+        Expected codec family.
+
+    Returns
+    -------
+    float
+        Decoded duration in seconds.
+
+    Raises
+    ------
+    ValueError
+        Audio is missing, has the wrong codec, or its duration is incomplete.
+    av.FFmpegError
+        The container or audio cannot be decoded.
+    """
+    if not expected_duration or not math.isfinite(expected_duration) or expected_duration <= 0:
+        raise ValueError('Unable to verify theme audio: source duration is missing')
+    with av.open(path) as container:
+        if len(container.streams.audio) != 1 or container.streams.video:
+            raise ValueError('Downloaded theme must contain only one audio stream')
+        stream = container.streams.audio[0]
+        if stream.codec_context.name != {'mp4a': 'aac', 'opus': 'opus'}[codec]:
+            raise ValueError('Downloaded theme codec does not match the selected audio')
+        stream.codec_context.options = {'err_detect': 'explode'}
+        duration = sum(frame.samples / frame.sample_rate for frame in container.decode(stream))
+    # Allow container padding and duration rounding, but reject missing audio.
+    tolerance = max(0.25, min(1.0, expected_duration * 0.01))
+    if abs(duration - expected_duration) > tolerance:
+        raise ValueError(f'Incomplete theme audio: decoded {duration:.2f}s; expected {expected_duration:.2f}s')
+    return duration
+
+
+@contextmanager
+def download_youtube(url: str, on_error: Callable[[str], None] | None = None):
+    """Download and verify a selected audio file, deleting it after the caller finishes.
+
+    Parameters
+    ----------
+    url : str
+        YouTube video URL.
+    on_error : callable or None, optional
+        Receives a safe download or validation failure reason.
+
+    Yields
+    ------
+    AudioFile or None
+        Complete validated audio, or ``None`` on failure.
+    """
+    with tempfile.TemporaryDirectory(prefix='themerr-audio-') as directory, _youtube_options() as params:
+        audio_file = None
+        try:
+            video = _extract_video(url, params, on_error=on_error)
+            audio = _select_audio(video) if video else None
+            if video and not audio:
+                raise ValueError('No supported audio stream found')
+            if audio:
+                params.update({
+                    'outtmpl': os.path.join(directory, 'theme.%(ext)s'),
+                    'skip_unavailable_fragments': False, 'retries': 3, 'fragment_retries': 3,
+                    'fixup': 'never', 'quiet': True, 'noprogress': True,
+                })
+                info = {**video, **audio.format_info}
+                with yt_dlp.YoutubeDL(params=params) as ydl:
+                    ydl.process_info(info)
+                    path = ydl.prepare_filename(info)
+                if not os.path.isfile(path) or not os.path.getsize(path):
+                    raise ValueError('Theme audio download did not produce a complete file')
+                if audio.format_info.get('filesize') and os.path.getsize(path) != audio.format_info['filesize']:
+                    raise ValueError('Incomplete theme audio: download size does not match the source')
+                duration = validate_audio(path, audio.duration, audio.codec)
+                with open(path, 'rb') as downloaded:
+                    digest = hashlib.file_digest(downloaded, 'sha256').hexdigest()
+                audio_file = AudioFile(path, audio.codec, audio.mp4a_available, digest, duration, os.path.getsize(path))
+        except (yt_dlp.utils.DownloadError, av.FFmpegError, OSError, ValueError, TypeError) as error:
+            reason = _error_reason(error)
+            log.warning('Theme audio download or validation failed: %s', reason)
+            if on_error:
+                on_error(reason)
+        yield audio_file

@@ -237,7 +237,7 @@ def get_themerr_data(item: PlexPartialObject) -> dict:
     return {}
 
 
-def remove_uploaded_media(item: PlexPartialObject, media_type: str) -> None:
+def remove_uploaded_media(item: PlexPartialObject, media_type: str, keep_sha256: str | None = None) -> None:
     """
     Remove themes for the specified item.
 
@@ -249,6 +249,8 @@ def remove_uploaded_media(item: PlexPartialObject, media_type: str) -> None:
         The item to remove the themes from.
     media_type : str
         The media type to remove the themes from. Must be one of 'art', 'posters', or 'themes'.
+    keep_sha256 : str or None, optional
+        Keep files matching the verified upload instead of removing the whole directory.
 
     Returns
     -------
@@ -262,7 +264,19 @@ def remove_uploaded_media(item: PlexPartialObject, media_type: str) -> None:
     """
     theme_upload_path = get_media_upload_path(item=item, media_type=media_type)
     if os.path.isdir(theme_upload_path):
-        shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_media_error_handler)
+        if keep_sha256:
+            for directory, _, files in os.walk(theme_upload_path):
+                for name in files:
+                    path = os.path.join(directory, name)
+                    try:
+                        with open(path, 'rb') as uploaded:
+                            matches = hashlib.file_digest(uploaded, 'sha256').hexdigest() == keep_sha256
+                        if not matches:
+                            os.remove(path)
+                    except OSError:
+                        log.exception('Unable to remove an unused theme for item %s', item.ratingKey)
+        else:
+            shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_media_error_handler)
 
 
 def remove_uploaded_media_error_handler(func: any, path: any, exc_info: any) -> None:
