@@ -100,6 +100,34 @@ def test_home_distinguishes_external_id_and_unknown_provider(client, configured)
     assert b'Plex ID: 43' in page
 
 
+def test_home_shows_failed_replacement_of_unknown_provider(client):
+    storage.replace_dashboard(_dashboard([
+        {
+            'rating_key': '43', 'title': 'Uploaded theme', 'type': 'movie', 'year': 2021,
+            'issue_url': None, 'theme_provider': 'uploaded', 'theme_status': 'complete', 'theme': True,
+        },
+        {
+            'rating_key': '44', 'title': 'Unattributed theme', 'type': 'movie', 'year': 2022,
+            'issue_url': None, 'theme_provider': None, 'theme_status': 'complete', 'theme': True,
+        },
+    ]))
+    theme_errors.set_error(43, 'Plex rejected the replacement')
+    theme_errors.set_error(44, 'Video unavailable')
+
+    page = re.sub(rb'\s+', b' ', client.get('/home').data)
+    assert page.count(b'Unknown provider') == 2
+    assert page.count(b'Outdated from ThemerrDB') == 2
+    assert b'Plex rejected the replacement' in page
+    assert b'Video unavailable' in page
+    assert b'Failed to add theme' not in page
+    assert page.count(b'table-warning border-dark') == 2
+
+    theme_errors.set_error(43, None)
+    page = client.get('/home').data
+    assert page.count(b'Outdated from ThemerrDB') == 1
+    assert b'Plex rejected the replacement' not in page
+
+
 def test_images_and_status(client):
     assert client.get('/favicon.ico').content_type == 'image/vnd.microsoft.icon'
     assert client.get('/images/missing.png').status_code == 404
