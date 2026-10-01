@@ -80,9 +80,7 @@ def schedule_loop() -> None:
     >>> schedule_loop()
     ...
     """
-    log.info('Scheduler started; initial jobs will run in 60 seconds')
-    time.sleep(60)  # give a little time for the server to start
-    log.info('Dispatching initial scheduled jobs')
+    log.info('Scheduler started; dispatching initial jobs')
     schedule.run_all()  # run all jobs once
 
     while True:

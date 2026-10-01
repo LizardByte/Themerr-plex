@@ -40,12 +40,12 @@ def test_scheduled_task_failure_is_logged_and_thread_exits(monkeypatch):
 def test_schedule_loop(monkeypatch):
     run_all = Mock()
     pending = Mock()
-    sleeps = iter([None, RuntimeError('stop')])
 
-    def sleep(_):
-        result = next(sleeps)
-        if result:
-            raise result
+    def sleep(seconds):
+        assert seconds == 1
+        run_all.assert_called_once()
+        pending.assert_called_once()
+        raise RuntimeError('stop')
 
     monkeypatch.setattr(scheduled_tasks.time, 'sleep', sleep)
     monkeypatch.setattr(scheduled_tasks.schedule, 'run_all', run_all)
