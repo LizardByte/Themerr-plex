@@ -9,6 +9,7 @@ from alembic import command
 from alembic.config import Config
 from cryptography.fernet import Fernet
 import pytest
+from requests.exceptions import ConnectTimeout
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
@@ -155,6 +156,19 @@ def test_manual_connection_works_when_account_discovery_is_unavailable(configure
     auth.disconnect()
     with pytest.raises(ValueError, match='Connect your Plex account'):
         servers.add_server('http://plex.example')
+
+
+def test_unreachable_server_does_not_save_credentials_or_register_it(configured, monkeypatch):
+    auth.set_token('account-secret')
+    monkeypatch.setattr(servers, 'account_resources', lambda: [])
+    monkeypatch.setattr(plexapi, 'connect_plex_server', Mock(side_effect=ConnectTimeout('unreachable')))
+    save = Mock()
+    monkeypatch.setattr(token_store, 'save_token', save)
+    with pytest.raises(ConnectTimeout):
+        servers.add_server('https://unreachable.example:32400')
+    save.assert_not_called()
+    assert servers.list_servers() == []
+    assert servers._connections == {}
 
 
 def test_server_preferences_pause_and_remove_only_selected_server(configured, monkeypatch):

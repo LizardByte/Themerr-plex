@@ -111,10 +111,13 @@ def discover_account() -> list[dict]:
     list of dict
         Safe resource metadata for server selection.
     """
-    return [{'id': resource.clientIdentifier, 'name': resource.name, 'owned': resource.owned,
-             'connections': [{'url': connection.uri, 'local': connection.local,
-                              'relay': connection.relay} for connection in resource.connections]}
-            for resource in account_resources()]
+    log.info('Finding servers advertised by the linked Plex account')
+    found = [{'id': resource.clientIdentifier, 'name': resource.name, 'owned': resource.owned,
+              'connections': [{'url': connection.uri, 'local': connection.local,
+                               'relay': connection.relay} for connection in resource.connections]}
+             for resource in account_resources()]
+    log.info('Plex account discovery finished: %d servers advertised; addresses have not been tested', len(found))
+    return found
 
 
 def discover_local() -> list[dict]:
@@ -125,6 +128,7 @@ def discover_local() -> list[dict]:
     list of dict
         Names and local addresses advertised by Plex.
     """
+    log.info('Discovering Plex servers on LAN using GDM multicast')
     discovery = GDM()
     discovery.scan()
     found = []
@@ -140,6 +144,7 @@ def discover_local() -> list[dict]:
         if 1 <= port <= 65535:
             found.append({'id': data.get('Resource-Identifier'), 'name': data.get('Name', host),
                           'connections': [{'url': f'http://{host}:{port}', 'local': True, 'relay': False}]})
+    log.info('Plex LAN discovery finished: %d servers responded', len(found))
     return found
 
 
@@ -216,6 +221,7 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
         raise ValueError('This server is not available to the connected Plex account.')
     token = resource.accessToken if resource else token
     logger.blacklist_config({'Plex': {'PLEX_TOKEN': token}})
+    log.info('Connecting to Plex server at %s', url)
     server = connect_plex_server(url, token)
     server_id = server.machineIdentifier
     if not isinstance(server_id, str) or not server_id or server_id == 'default':
@@ -236,6 +242,7 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
                 record.last_error = None
             session.commit()
         _connections[server_id] = server
+    log.info('Connected and saved Plex server %s at %s', server.friendlyName, url)
     return get_server(server_id)
 
 

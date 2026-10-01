@@ -42,6 +42,17 @@ manually, such as ``http://192.168.1.10:32400``. Discovery and manual addresses 
 signed-in Plex account. LAN discovery depends on multicast traffic reaching the machine running Themerr;
 containers and separate subnets may need the manual address option.
 
+Account discovery lists advertised addresses; it does not confirm that they are reachable. The connection list
+labels local, remote, and relay addresses and their HTTP or HTTPS protocol. Plex's advertised ``https://...plex.direct``
+addresses use its server certificate. Changing such an address to ``https://IP:32400`` can cause a certificate
+mismatch. See `Plex secure connections <https://support.plex.tv/articles/206225077-how-to-use-secure-server-connections/>`_.
+You can enter a known HTTP address manually if your Plex server allows insecure connections.
+
+If LAN discovery finds nothing, check **Enable local network discovery (GDM)** in Plex's network settings and
+whether multicast can reach Themerr's machine. If connecting times out, verify the chosen address and port are
+reachable from that machine, including its firewall and network route. Re-pairing Plex will not fix an unreachable
+server address.
+
 Each saved server has its own processing toggle, ignored library IDs, data directory, dashboard snapshot,
 upload history, and errors. Pausing a server prevents new work; an upload already in progress can finish.
 Removing a server erases its saved connection and local records, while themes already uploaded to Plex remain there.

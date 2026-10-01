@@ -7,6 +7,9 @@ from unittest.mock import Mock
 
 # lib imports
 import pytest
+from plexapi.exceptions import Unauthorized
+from requests.exceptions import (ConnectionError, ConnectTimeout, JSONDecodeError, ReadTimeout, RequestException,
+                                 SSLError)
 from sqlalchemy.orm import Session
 
 # local imports
@@ -110,7 +113,7 @@ def test_discovery_and_server_settings_require_csrf(client, monkeypatch):
     assert client.delete('/api/servers/one').status_code == 400
 
 
-def test_add_update_remove_and_sanitized_failures(client, monkeypatch):
+def test_add_update_and_remove_server(client, monkeypatch):
     add = Mock(return_value={'id': 'one', 'name': 'Plex'})
     monkeypatch.setattr(servers, 'add_server', add)
     response = client.post('/api/servers', json={'url': 'https://plex.example', 'resource_id': 'one'},
@@ -119,12 +122,6 @@ def test_add_update_remove_and_sanitized_failures(client, monkeypatch):
     add.assert_called_once_with('https://plex.example', 'one')
     server_ui._refresh.assert_called_once()
     plexapi.plex_listener.assert_called_once()
-    for error, status in [(ValueError('Invalid address.'), 400), (OSError('private key'), 500),
-                          (RuntimeError('private token'), 502)]:
-        add.side_effect = error
-        response = client.post('/api/servers', json={'url': 'https://plex.example'}, headers=headers(client))
-        assert response.status_code == status
-        assert 'private' not in str(response.json)
     save_server('one')
     assert client.post('/api/servers/one', json={'enabled': False}, headers=headers(client)).status_code == 200
     assert servers.get_server('one')['enabled'] is False
@@ -132,6 +129,43 @@ def test_add_update_remove_and_sanitized_failures(client, monkeypatch):
     assert client.post('/api/servers/missing', json={}, headers=headers(client)).status_code == 404
     assert client.delete('/api/servers/one', headers=headers(client)).status_code == 200
     assert servers.get_server('one') is None
+
+
+@pytest.mark.parametrize(('error', 'status', 'reason'), [
+    (ValueError('Invalid address.'), 400, 'Invalid address.'),
+    (token_store.TokenStorageError('private key'), 500, 'credential store'),
+    (ConnectTimeout('private token'), 502, 'timed out'),
+    (ReadTimeout('private token'), 502, 'timed out'),
+    (SSLError('private token'), 502, 'server certificate'),
+    (ConnectionError('private token'), 502, 'hostname, port, and network access'),
+    (Unauthorized('private token'), 502, 'denied access'),
+    (RequestException('private token'), 502, 'invalid response'),
+    (JSONDecodeError('private token', 'private body', 0), 502, 'invalid response'),
+    (OSError('private key'), 502, 'Could not connect'),
+    (RuntimeError('private token'), 502, 'Could not connect'),
+])
+def test_connect_failures_distinguish_network_from_credential_store(client, monkeypatch, error, status, reason):
+    monkeypatch.setattr(servers, 'add_server', Mock(side_effect=error))
+    log = Mock()
+    monkeypatch.setattr(server_ui, 'log', log)
+    response = client.post('/api/servers', json={'url': 'https://plex.example'}, headers=headers(client))
+    assert response.status_code == status
+    assert reason in response.json['message']
+    assert 'private' not in str(response.json)
+    assert 'private' not in str(log.warning.call_args)
+    if not isinstance(error, token_store.TokenStorageError):
+        assert 'credential store' not in response.json['message']
+    server_ui._refresh.assert_not_called()
+    plexapi.plex_listener.assert_not_called()
+
+
+def test_removing_server_reports_credential_store_failure_and_retains_connection(client, monkeypatch):
+    save_server('one')
+    monkeypatch.setattr(token_store, 'delete_token', Mock(side_effect=token_store.TokenStorageError('private key')))
+    response = client.delete('/api/servers/one', headers=headers(client))
+    assert response.status_code == 500
+    assert response.json['message'] == 'Could not update the secure credential store.'
+    assert servers.get_server('one') is not None
 
 
 @pytest.mark.parametrize('payload', ['not an object', ['list'], 123, None])

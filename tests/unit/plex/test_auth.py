@@ -61,14 +61,27 @@ def test_headless_requires_external_key(configured, monkeypatch):
     assert storage.get_encrypted_token() == ''
 
 
-def test_unavailable_os_credential_store_does_not_save_plaintext(configured, tmp_path, monkeypatch):
+@pytest.mark.parametrize('error', [
+    NoKeyringError('No credential store'), OSError('Native vault failure'), RuntimeError('Native vault failure'),
+])
+def test_unavailable_os_credential_store_does_not_save_plaintext(configured, tmp_path, monkeypatch, error):
     monkeypatch.setattr(token_store.keyring, 'set_password',
-                        Mock(side_effect=NoKeyringError('No credential store')))
+                        Mock(side_effect=error))
 
     with pytest.raises(token_store.TokenStorageError, match='credential store'):
         auth.set_token('plex-issued-token')
     assert auth.get_token() == ''
     assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
+
+
+@pytest.mark.parametrize('operation', ['get_password', 'delete_password'])
+def test_native_credential_errors_are_reported_as_store_failures(configured, monkeypatch, operation):
+    error = RuntimeError('Native vault failure')
+    monkeypatch.setattr(token_store.keyring, operation, Mock(side_effect=error))
+    handler = token_store.get_token if operation == 'get_password' else token_store.delete_token
+    with pytest.raises(token_store.TokenStorageError, match='credential store') as raised:
+        handler(auth._client_identifier())
+    assert raised.value.__cause__ is error
 
 
 def test_old_config_token_is_dropped(tmp_path, monkeypatch):

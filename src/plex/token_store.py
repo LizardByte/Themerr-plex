@@ -7,7 +7,7 @@ from pathlib import Path
 # lib imports
 from cryptography.fernet import Fernet, InvalidToken
 import keyring
-from keyring.errors import KeyringError, PasswordDeleteError
+from keyring.errors import PasswordDeleteError
 
 # local imports
 from themerr import storage
@@ -69,7 +69,8 @@ def get_token(client_id: str) -> str:
             raise TokenStorageError('The Plex token key does not match the stored token.') from exc
     try:
         return keyring.get_password(SERVICE, client_id) or ''
-    except KeyringError as exc:
+    # Native backends can raise errors outside keyring's exception hierarchy.
+    except Exception as exc:
         raise TokenStorageError('The OS credential store is unavailable.') from exc
 
 
@@ -89,7 +90,7 @@ def save_token(client_id: str, token: str) -> None:
         return
     try:
         keyring.set_password(SERVICE, client_id, token)
-    except KeyringError as exc:
+    except Exception as exc:
         raise TokenStorageError('The OS credential store is unavailable.') from exc
 
 
@@ -108,7 +109,7 @@ def delete_token(client_id: str) -> None:
         keyring.delete_password(SERVICE, client_id)
     except PasswordDeleteError:
         pass
-    except KeyringError as exc:
+    except Exception as exc:
         raise TokenStorageError('The OS credential store is unavailable.') from exc
 
 

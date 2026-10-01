@@ -2,12 +2,37 @@
 
 # lib imports
 from flask import Blueprint, abort, jsonify, render_template, request
+from plexapi.exceptions import Unauthorized
+from requests.exceptions import ConnectionError, RequestException, SSLError, Timeout
 
 # local imports
-from plex import auth, plexapi, servers
+from common import logger
+from plex import auth, plexapi, servers, token_store
 from themerr import storage
 
 blueprint = Blueprint('server_ui', __name__)
+log = logger.get_logger(__name__)
+
+
+def _failure(error: Exception, message: str, status: int = 502):
+    """Report the failure category without exposing upstream tokens or response bodies.
+
+    Parameters
+    ----------
+    error : Exception
+        Original failure; only its class name is logged.
+    message : str
+        Safe explanation for the administrator.
+    status : int, optional
+        HTTP response status.
+
+    Returns
+    -------
+    tuple
+        JSON response and status code.
+    """
+    log.warning('%s (%s)', message, type(error).__name__)
+    return jsonify({'message': message}), status
 
 
 def _payload() -> dict:
@@ -78,8 +103,8 @@ def discover():
         return jsonify({'message': 'Choose account or local discovery.'}), 400
     try:
         resources = servers.discover_account() if source == 'account' else servers.discover_local()
-    except Exception:
-        return jsonify({'message': 'Discovery failed. Check the Plex connection, or enter an address manually.'}), 502
+    except Exception as exc:
+        return _failure(exc, 'Discovery failed. Check the Plex connection, or enter an address manually.')
     return jsonify({'servers': resources})
 
 
@@ -95,12 +120,26 @@ def add_server():
     payload = _payload()
     try:
         record = servers.add_server(payload.get('url', ''), payload.get('resource_id'))
+    except token_store.TokenStorageError as exc:
+        return _failure(exc, 'Unable to save the Plex token. Check the configured credential store.', 500)
+    except SSLError as exc:
+        return _failure(exc, 'The secure connection to Plex failed. Use its advertised HTTPS address and check '
+                        'the server certificate.')
+    except Timeout as exc:
+        return _failure(exc, 'The Plex connection timed out. Check that the server is running and this address is '
+                        'reachable from the machine running Themerr. Try another advertised or manual address.')
+    except ConnectionError as exc:
+        return _failure(exc, 'Could not connect to this Plex address. Check its hostname, port, and network access '
+                        'from the machine running Themerr, or try another address.')
+    except Unauthorized as exc:
+        return _failure(exc, 'Plex denied access to this server. Check the linked account has permission, or '
+                        'reconnect your Plex account.')
+    except RequestException as exc:
+        return _failure(exc, 'Plex returned an invalid response. Check the address or try another connection.')
     except ValueError as exc:
         return jsonify({'message': str(exc)}), 400
-    except OSError:
-        return jsonify({'message': 'Unable to save the Plex token. Check the configured credential store.'}), 500
-    except Exception:
-        return jsonify({'message': 'Could not reach this Plex server. Check the address and account access.'}), 502
+    except Exception as exc:
+        return _failure(exc, 'Could not connect to this Plex server. Check the address and account access.')
     plexapi.plex_listener()
     _refresh()
     return jsonify({'server': record}), 201
@@ -129,8 +168,8 @@ def edit_server(server_id: str):
             servers.update_server(server_id, _payload())
     except ValueError as exc:
         return jsonify({'message': str(exc)}), 400
-    except OSError:
-        return jsonify({'message': 'Could not update the secure credential store.'}), 500
+    except token_store.TokenStorageError as exc:
+        return _failure(exc, 'Could not update the secure credential store.', 500)
     plexapi.plex_listener()
     return jsonify({'message': 'Server removed.' if request.method == 'DELETE' else 'Server settings saved.'})
 

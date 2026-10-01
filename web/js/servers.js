@@ -48,9 +48,21 @@ export function initServers() {
     const results = document.getElementById('discovery-results');
     document.querySelectorAll('[data-discover]').forEach(button => button.addEventListener('click', () => busy(button, async () => {
         results.textContent = 'Looking for Plex servers…';
-        const response = await api('/api/servers/discover', { body: { source: button.dataset.discover } });
+        let response;
+        try {
+            response = await api('/api/servers/discover', { body: { source: button.dataset.discover } });
+        } catch (error) {
+            results.textContent = error.message;
+            throw error;
+        }
         results.replaceChildren();
-        if (!response.servers.length) { results.textContent = 'No servers found. You can enter an address manually below.'; return; }
+        if (!response.servers.length) {
+            results.textContent = button.dataset.discover === 'local'
+                ? 'No Plex servers responded on LAN. Check that local network discovery (GDM) is enabled in Plex ' +
+                  'and multicast can reach this machine. You can use an account or manual address instead.'
+                : 'No servers are advertised for this Plex account. Check account access or enter an address manually.';
+            return;
+        }
         response.servers.forEach(resource => {
             const row = document.createElement('div');
             row.className = 'discovered-server';
@@ -64,7 +76,9 @@ export function initServers() {
                 .forEach(connection => {
                     const option = document.createElement('option');
                     option.value = connection.url;
-                    option.textContent = `${connection.url} (${connection.relay ? 'relay' : connection.local ? 'local' : 'remote'})`;
+                    const location = connection.relay ? 'Relay' : connection.local ? 'Local' : 'Remote';
+                    const protocol = connection.url.startsWith('https:') ? 'HTTPS' : 'HTTP';
+                    option.textContent = `${location} · ${protocol} · ${connection.url}`;
                     addresses.append(option);
                 });
             const connect = document.createElement('button');
