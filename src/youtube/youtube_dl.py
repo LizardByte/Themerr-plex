@@ -101,7 +101,7 @@ def _write_cookies(cookie_file: TextIO, raw_cookies: str) -> None:
                 ns_bool(cookie['domain'].startswith('.')),
                 cookie['path'],
                 ns_bool(cookie['secure']),
-                str(int(cookie.get('expiry', 0))),
+                str(int(cookie.get('expirationDate', cookie.get('expiry', 0)) or 0)),
                 cookie['name'],
                 cookie['value'],
             ]

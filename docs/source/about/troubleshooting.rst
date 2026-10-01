@@ -7,8 +7,10 @@ YouTube extraction
 ------------------
 
 Themerr-plex uses yt-dlp for YouTube audio. YouTube may rate limit anonymous requests or require a signed-in
-session for some videos. Export browser cookies in Chromium JSON format and place the JSON in the web UI's
-YouTube Cookies setting. Test again after an item update or the next scheduled scan. If extraction still
+session for some videos. Follow :ref:`the cookie export steps <about/usage:YouTube cookies>` and paste the entire
+JSON export in the web UI's **YouTube Cookies** setting. Select **JSON** in the exporter; Netscape text and
+cookie file paths are not accepted by this setting. If saved cookies stop working, export a fresh session.
+Test again after an item update or the next scheduled scan. If extraction still
 fails, update the locked yt-dlp version and check the application log for the extractor error.
 Themerr-plex selects an audio-only stream URL and does not require local FFmpeg for that extraction path.
 An unavailable video is a separate YouTube error.

@@ -404,7 +404,13 @@ _CONFIG_SPEC_DICT = {
         'STR_YOUTUBE_COOKIES': {
             'type': 'string',
             'name': _('YouTube Cookies'),
-            'description': _('Using cookies may improve the success rate of downloading themes. (JSON format)'),
+            'description': _(
+                'Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, '
+                'then paste the entire JSON array here and save. '
+                'Cookies contain your browser session; keep them private.'
+            ),
+            'help_url': '/docs/about/usage.html#youtube-cookies',
+            'help_label': _('Cookie export instructions'),
             'advanced': True,
         },
     },

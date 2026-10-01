@@ -1,9 +1,13 @@
 """yt-dlp extraction is tested with a fake extractor and a real temporary cookie file."""
 
+# standard imports
+import json
 from pathlib import Path
 
+# lib imports
 import pytest
 
+# local imports
 from youtube import youtube_dl
 
 
@@ -53,17 +57,22 @@ def test_select_audio(configured, monkeypatch, prefer_mp4a, expected):
     assert list((Path(configured.filename).parent / 'cookies').iterdir()) == []
 
 
-def test_cookies_and_bitrate_fallback(configured, monkeypatch):
-    configured['Themerr']['STR_YOUTUBE_COOKIES'] = (
-        '[{"domain": ".youtube.com", "path": "/", "secure": true, '
-        '"name": "PREF", "value": "abc", "expiry": 123}]'
-    )
+@pytest.mark.parametrize('expiry_field, expiry, expected', [
+    ('expiry', 123, 123),
+    ('expirationDate', 123.9, 123),
+    ('session', True, 0),
+])
+def test_cookies_and_bitrate_fallback(configured, monkeypatch, expiry_field, expiry, expected):
+    configured['Themerr']['STR_YOUTUBE_COOKIES'] = json.dumps([{
+        'domain': '.youtube.com', 'path': '/', 'secure': True,
+        'name': 'PREF', 'value': 'abc', expiry_field: expiry,
+    }])
     seen = extractor(monkeypatch, {'formats': [
         {'format': 'audio only', 'acodec': 'opus', 'abr': 128, 'url': 'https://opus'},
     ]})
     assert youtube_dl.process_youtube('https://youtube.example') == youtube_dl.AudioStream(
         url='https://opus', codec='opus', mp4a_available=False)
-    assert '.youtube.com\tTRUE\t/\tTRUE\t123\tPREF\tabc' in seen['cookies']
+    assert f'.youtube.com\tTRUE\t/\tTRUE\t{expected}\tPREF\tabc' in seen['cookies']
 
 
 @pytest.mark.parametrize('result', [None, {'entries': []}, {'formats': []}])

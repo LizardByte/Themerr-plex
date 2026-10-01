@@ -121,7 +121,14 @@
                                         {%- endif -%}
                                     </div>
 
-                                    <div id="{{ setting.lower() }}-help" class="form-text">{{ config_spec[key][setting]['description'] }}</div>
+                                    <div id="{{ setting.lower() }}-help" class="form-text">
+                                        {{ config_spec[key][setting]['description'] }}
+                                        {%- if config_spec[key][setting]['help_url'] %}
+                                            <a href="{{ config_spec[key][setting]['help_url'] }}" target="_blank" rel="noopener noreferrer">
+                                                {{ config_spec[key][setting]['help_label'] }}
+                                            </a>
+                                        {%- endif -%}
+                                    </div>
                                 </div>
                             {%- endif -%}
 

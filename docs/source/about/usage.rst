@@ -53,9 +53,35 @@ bundled with packaged and Docker builds.
 YouTube cookies
 ---------------
 
-If YouTube rejects anonymous requests, export cookies from a browser in Chromium JSON format and enter the JSON in
-the YouTube Cookies setting. Themerr-plex writes the cookies to a temporary Netscape file for yt-dlp and
-removes that file after each extraction.
+Cookies are optional. They can help when YouTube asks you to sign in or rejects anonymous requests.
+The **YouTube Cookies** setting accepts a JSON array of browser cookies. Paste the exported contents, including
+the opening ``[`` and closing ``]``. A file path, a ``Cookie:`` request header, and Netscape ``cookies.txt`` contents
+are not accepted by this setting.
+
+For Chrome or another compatible Chromium browser:
+
+1. Install `Get cookies.txt LOCALLY
+   <https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc>`_,
+   which is linked from the `yt-dlp cookie guide
+   <https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp>`_.
+   In the browser's extension settings, allow this extension in incognito/private windows.
+2. Open a new incognito/private window and visit YouTube. Sign in if the video requires an account.
+3. In that same tab, visit https://www.youtube.com/robots.txt. Keep it as the only tab in the private window.
+4. Open the extension, set **Export Format** to **JSON**, and select **Copy** or **Export** for the current site.
+   If you export a file, open it in a text editor and copy its entire contents. Avoid **Export All Cookies**;
+   Themerr-plex only needs the YouTube cookies.
+5. Close the private window. These steps follow `yt-dlp's YouTube export guidance
+   <https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies>`_ to reduce cookie rotation.
+6. In Themerr-plex, open **Settings** and find **YouTube Cookies** in the **Themerr** section. Paste the JSON and
+   select **Save**. It will be used on the next extraction; a restart is not required.
+
+If YouTube starts asking you to sign in again, repeat the export and replace the saved JSON.
+Cookies cannot make a deleted or unavailable video accessible.
+
+Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr-plex
+configuration private, and never include cookie values in screenshots, logs, or issue reports.
+Themerr-plex converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
+each extraction; the JSON remains in the configuration until you clear the setting and save.
 
 Theme format
 ------------
