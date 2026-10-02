@@ -13,6 +13,7 @@ from sqlalchemy.orm import Mapped, Session, mapped_column
 
 # local imports
 from common import logger
+from common.validation import ValidationError, ValidationMessage
 from plex import auth, token_store
 from themerr import storage
 
@@ -165,19 +166,26 @@ def validate_url(url: str) -> str:
 
     Raises
     ------
-    ValueError
+    ValidationError
         The address includes credentials or is not an HTTP base URL.
     """
     if not isinstance(url, str) or len(url) > 2048:
-        raise ValueError('Enter a valid Plex server address.')
+        raise ValidationError(ValidationMessage.PLEX_ADDRESS_INVALID)
     if '\\' in url or any(ord(character) < 32 for character in url):
-        raise ValueError('The server address contains invalid characters.')
-    parts = urlsplit(url.strip())
+        raise ValidationError(ValidationMessage.PLEX_ADDRESS_CHARACTERS)
+    try:
+        parts = urlsplit(url.strip())
+    except ValueError as exc:
+        raise ValidationError(ValidationMessage.PLEX_ADDRESS_INVALID) from exc
     if (parts.scheme not in ('http', 'https') or not parts.hostname or parts.username or parts.password or
             parts.query or parts.fragment or parts.path not in ('', '/')):
-        raise ValueError('Use an HTTP or HTTPS address without credentials, a query, or a path.')
-    if parts.port is not None and not 1 <= parts.port <= 65535:
-        raise ValueError('Invalid server port.')
+        raise ValidationError(ValidationMessage.PLEX_BASE_ADDRESS_REQUIRED)
+    try:
+        port = parts.port
+    except ValueError as exc:
+        raise ValidationError(ValidationMessage.PLEX_PORT_INVALID) from exc
+    if port is not None and not 1 <= port <= 65535:
+        raise ValidationError(ValidationMessage.PLEX_PORT_INVALID)
     return url.strip().rstrip('/')
 
 
@@ -198,7 +206,7 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
 
     Raises
     ------
-    ValueError
+    ValidationError
         The server is inaccessible or its identifier does not match.
     """
     from plex.plexapi import connect_plex_server
@@ -206,7 +214,7 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
     url = validate_url(url)
     token = auth.get_token()
     if not token:
-        raise ValueError('Connect your Plex account first.')
+        raise ValidationError(ValidationMessage.PLEX_ACCOUNT_REQUIRED)
     # Shared servers use a resource access token, rather than the account token.
     try:
         resources = account_resources()
@@ -220,16 +228,16 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
             connection.uri.rstrip('/') == url for connection in item.connections
         )), None)
     if resource_id and resource is None:
-        raise ValueError('This server is not available to the connected Plex account.')
+        raise ValidationError(ValidationMessage.PLEX_SERVER_UNAVAILABLE)
     token = resource.accessToken if resource else token
     logger.blacklist_config({'Plex': {'PLEX_TOKEN': token}})
     log.info('Connecting to Plex server at %s', url)
     server = connect_plex_server(url, token)
     server_id = server.machineIdentifier
     if not isinstance(server_id, str) or not server_id or server_id == 'default':
-        raise ValueError('Plex did not provide a valid machine identifier.')
+        raise ValidationError(ValidationMessage.PLEX_IDENTIFIER_INVALID)
     if resource_id and server_id != resource_id:
-        raise ValueError('This address belongs to a different Plex server.')
+        raise ValidationError(ValidationMessage.PLEX_SERVER_MISMATCH)
     token_store.save_token(credential_id(server_id), token)
     logger.blacklist_config({'Plex': {'PLEX_TOKEN': token}})
     with _lock:
@@ -292,14 +300,14 @@ def update_server(server_id: str, values: dict) -> None:
     with Session(storage.engine()) as session:
         record = session.get(ServerRecord, server_id)
         if record is None:
-            raise ValueError('Server not found.')
+            raise ValidationError(ValidationMessage.SERVER_NOT_FOUND)
         for key in ('enabled', 'data_directory', 'ignored_libraries'):
             if key in values:
                 value = values[key]
                 if key == 'enabled' and not isinstance(value, bool):
-                    raise ValueError('Enabled must be a boolean.')
+                    raise ValidationError(ValidationMessage.SERVER_ENABLED_INVALID)
                 if key != 'enabled' and (not isinstance(value, str) or len(value) > 4096 or '\x00' in value):
-                    raise ValueError('Invalid server setting.')
+                    raise ValidationError(ValidationMessage.SERVER_SETTING_INVALID)
                 setattr(record, key, value)
         session.commit()
 

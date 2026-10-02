@@ -18,6 +18,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # local imports
 from common import config
+from common.validation import ValidationError, ValidationMessage
 from themerr import storage
 
 blueprint = Blueprint('admin', __name__)
@@ -68,9 +69,9 @@ def account() -> dict | None:
 def _save(username: str, password: str) -> dict:
     """Validate and persist one salted password hash."""
     if not isinstance(username, str) or not 3 <= len(username.strip()) <= 64:
-        raise ValueError('Use a username between 3 and 64 characters.')
+        raise ValidationError(ValidationMessage.USERNAME_LENGTH)
     if not isinstance(password, str) or not 12 <= len(password) <= 256:
-        raise ValueError('Use a password between 12 and 256 characters.')
+        raise ValidationError(ValidationMessage.PASSWORD_LENGTH)
     value = {'username': username.strip(), 'password_hash': generate_password_hash(password, method=HASH_METHOD),
              'revision': secrets.token_hex(16)}
     with Session(storage.engine()) as database:
@@ -161,10 +162,14 @@ def setup():
         if request.method == 'POST':
             try:
                 if request.form.get('password') != request.form.get('confirm_password'):
-                    raise ValueError('The passwords do not match.')
+                    raise ValidationError(ValidationMessage.PASSWORD_MISMATCH)
                 current = _save(request.form.get('username', ''), request.form.get('password', ''))
-            except ValueError as exc:
-                error = str(exc)
+            except ValidationError as exc:
+                error = exc.reason.value
+            except Exception as exc:
+                logging.getLogger(__name__).warning(f'Could not create the admin account ({type(exc).__name__})')
+                return render_template(AUTH_TEMPLATE, mode='setup', title='Create your admin account',
+                                       error='Could not create the administrator account. Try again.'), 500
             else:
                 _login(current)
                 return redirect(url_for('server_ui.server_page'))
@@ -241,11 +246,14 @@ def change_password():
         if not check_password_hash(current['password_hash'], request.form.get('current_password', '')[:256]):
             return jsonify({'message': 'The current password is incorrect.'}), 400
         if request.form.get('password') != request.form.get('confirm_password'):
-            return jsonify({'message': 'The passwords do not match.'}), 400
+            return jsonify({'message': ValidationMessage.PASSWORD_MISMATCH.value}), 400
         try:
             updated = _save(current['username'], request.form.get('password', ''))
-        except ValueError as exc:
-            return jsonify({'message': str(exc)}), 400
+        except ValidationError as exc:
+            return jsonify({'message': exc.reason.value}), 400
+        except Exception as exc:
+            logging.getLogger(__name__).warning(f'Could not change the admin password ({type(exc).__name__})')
+            return jsonify({'message': 'Could not change the password. Try again.'}), 500
         _login(updated)
     return jsonify({'message': 'Password changed. Other sessions have been signed out.'})
 

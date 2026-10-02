@@ -11,6 +11,7 @@ from requests.exceptions import ConnectionError, RequestException, SSLError, Tim
 
 # local imports
 from common import logger
+from common.validation import ValidationError
 from plex import auth, plexapi, servers, token_store
 from themerr import storage, theme_errors
 
@@ -176,8 +177,8 @@ def add_server():
                         'reconnect your Plex account.')
     except RequestException as exc:
         return _failure(exc, 'Plex returned an invalid response. Check the address or try another connection.')
-    except ValueError as exc:
-        return jsonify({'message': str(exc)}), 400
+    except ValidationError as exc:
+        return _failure(exc, exc.reason.value, 400)
     except Exception as exc:
         return _failure(exc, 'Could not connect to this Plex server. Check the address and account access.')
     plexapi.plex_listener()
@@ -206,10 +207,12 @@ def edit_server(server_id: str):
             servers.remove_server(server_id)
         else:
             servers.update_server(server_id, _payload())
-    except ValueError as exc:
-        return jsonify({'message': str(exc)}), 400
+    except ValidationError as exc:
+        return _failure(exc, exc.reason.value, 400)
     except token_store.TokenStorageError as exc:
         return _failure(exc, 'Could not update the secure credential store.', 500)
+    except Exception as exc:
+        return _failure(exc, 'Could not update this Plex server. Check its connection and settings.', 500)
     plexapi.plex_listener()
     return jsonify({'message': 'Server removed.' if request.method == 'DELETE' else 'Server settings saved.'})
 

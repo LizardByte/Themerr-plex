@@ -4,6 +4,7 @@
 import json
 import logging
 import re
+from unittest.mock import Mock
 
 # lib imports
 import pytest
@@ -79,8 +80,25 @@ def test_setup_validation(browser, password, confirm, username, message):
     assert admin.account() is None
 
 
+@pytest.mark.parametrize('failure', [ValueError, RuntimeError])
+def test_setup_unexpected_failure_is_not_exposed(browser, monkeypatch, caplog, failure):
+    browser.get('/setup?token=' + admin.SETUP_TOKEN)
+    token = csrf(browser, '/setup')
+    monkeypatch.setattr(admin, '_save', Mock(side_effect=failure('private database details')))
+    with caplog.at_level(logging.WARNING, logger=admin.__name__):
+        response = browser.post('/setup', data={
+            'csrf_token': token, 'username': 'admin', 'password': PASSWORD, 'confirm_password': PASSWORD,
+        })
+    assert response.status_code == 500
+    assert b'Could not create the administrator account. Try again.' in response.data
+    assert b'private database details' not in response.data
+    assert 'private database details' not in caplog.text
+    assert failure.__name__ in caplog.text
+    assert admin.account() is None
+
+
 @pytest.mark.parametrize('path', ['/api/settings', '/api/plex/auth', '/api/themes/42',
-                                  '/api/servers/server-a/themes/42', '/api/tasks'])
+                                  '/api/servers/server-a/themes/42', '/api/tasks', '/api/directories'])
 def test_private_apis_require_login(browser, path):
     response = browser.get(path)
     assert response.status_code == 401
@@ -135,10 +153,14 @@ def test_translation_hosts_are_allowed_only_for_bundled_docs(browser, monkeypatc
         result = browser.get(path, follow_redirects=True)
         assert result.status_code == 200
         policy = result.headers['Content-Security-Policy']
-        assert 'https://cdn.jsdelivr.net' in policy
-        assert 'https://website-translator.app.crowdin.net' in policy
-        assert 'https://distributions.crowdin.net' in policy
-        assert "frame-ancestors 'none'" in policy
+        directives = {parts[0]: set(parts[1:]) for entry in policy.split(';') if (parts := entry.split())}
+        assert directives['script-src'] == {
+            "'self'", 'https://cdn.jsdelivr.net', 'https://website-translator.app.crowdin.net',
+        }
+        assert directives['connect-src'] == {
+            "'self'", 'https://cdn.jsdelivr.net', 'https://distributions.crowdin.net',
+        }
+        assert directives['frame-ancestors'] == {"'none'"}
         assert result.headers['X-Frame-Options'] == 'DENY'
     assert 'crowdin.net' not in browser.get('/').headers['Content-Security-Policy']
     assert 'cdn.jsdelivr.net' not in browser.get('/').headers['Content-Security-Policy']
@@ -203,6 +225,38 @@ def test_password_change_requires_current_password_and_invalidates_other_session
     assert check_password_hash(admin.account()['password_hash'], data['password'])
     admin.reset_password(PASSWORD)
     assert browser.get('/api/settings').status_code == 401
+
+
+def test_password_change_retains_public_validation_and_current_session(browser):
+    create_account(browser)
+    current = admin.account()
+    response = browser.post('/api/admin/password', data={
+        'csrf_token': csrf(browser, '/settings/'), 'current_password': PASSWORD,
+        'password': 'short', 'confirm_password': 'short',
+    })
+    assert response.status_code == 400
+    assert response.json == {'message': 'Use a password between 12 and 256 characters.'}
+    assert admin.account() == current
+    assert browser.get('/api/settings').status_code == 200
+
+
+@pytest.mark.parametrize('failure', [ValueError, RuntimeError])
+def test_password_change_unexpected_failure_is_not_exposed(browser, monkeypatch, caplog, failure):
+    create_account(browser)
+    current = admin.account()
+    token = csrf(browser, '/settings/')
+    monkeypatch.setattr(admin, '_save', Mock(side_effect=failure('private database details')))
+    with caplog.at_level(logging.WARNING, logger=admin.__name__):
+        response = browser.post('/api/admin/password', data={
+            'csrf_token': token, 'current_password': PASSWORD,
+            'password': 'a different long passphrase', 'confirm_password': 'a different long passphrase',
+        })
+    assert response.status_code == 500
+    assert response.json == {'message': 'Could not change the password. Try again.'}
+    assert 'private database details' not in caplog.text
+    assert failure.__name__ in caplog.text
+    assert admin.account() == current
+    assert browser.get('/api/settings').status_code == 200
 
 
 def test_setup_token_is_redacted_from_access_logs():

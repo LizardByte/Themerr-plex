@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 
 # local imports
 from common import admin, server_ui, webapp
+from common.validation import ValidationError, ValidationMessage
 from plex import auth, plexapi, servers, token_store
 from themerr import storage
 
@@ -155,7 +156,8 @@ def test_add_update_and_remove_server(client, monkeypatch):
 
 
 @pytest.mark.parametrize(('error', 'status', 'reason'), [
-    (ValueError('Invalid address.'), 400, 'Invalid address.'),
+    (ValidationError(ValidationMessage.PLEX_ADDRESS_INVALID), 400, 'valid Plex server address'),
+    (ValueError('private token'), 502, 'Could not connect'),
     (token_store.TokenStorageError('private key'), 500, 'credential store'),
     (ConnectTimeout('private token'), 502, 'timed out'),
     (ReadTimeout('private token'), 502, 'timed out'),
@@ -178,6 +180,34 @@ def test_connect_failures_distinguish_network_from_credential_store(client, monk
     assert 'private' not in str(log.warning.call_args)
     if not isinstance(error, token_store.TokenStorageError):
         assert 'credential store' not in response.json['message']
+    server_ui._refresh.assert_not_called()
+    plexapi.plex_listener.assert_not_called()
+
+
+@pytest.mark.parametrize('method, operation', [('POST', 'update_server'), ('DELETE', 'remove_server')])
+@pytest.mark.parametrize('failure', [ValueError, RuntimeError])
+def test_server_edit_unexpected_failure_is_not_exposed(client, monkeypatch, method, operation, failure):
+    save_server('one')
+    monkeypatch.setattr(servers, operation, Mock(side_effect=failure('private token and database details')))
+    log = Mock()
+    monkeypatch.setattr(server_ui, 'log', log)
+    response = client.open('/api/servers/one', method=method, json={'enabled': False}, headers=headers(client))
+    assert response.status_code == 500
+    assert response.json == {'message': 'Could not update this Plex server. Check its connection and settings.'}
+    assert 'private' not in str(log.warning.call_args)
+    assert servers.get_server('one') is not None
+    plexapi.plex_listener.assert_not_called()
+
+
+@pytest.mark.parametrize('address, message', [
+    ('http://[invalid', 'Enter a valid Plex server address.'),
+    ('http://plex.example:private-port', 'Invalid server port.'),
+    ('http://plex.example:99999', 'Invalid server port.'),
+])
+def test_malformed_server_address_returns_public_validation(client, address, message):
+    response = client.post('/api/servers', json={'url': address}, headers=headers(client))
+    assert response.status_code == 400
+    assert response.json == {'message': message}
     server_ui._refresh.assert_not_called()
     plexapi.plex_listener.assert_not_called()
 
