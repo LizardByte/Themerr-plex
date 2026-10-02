@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ghcr.io/astral-sh/uv:0.12.22-python3.14-trixie-slim AS base
+FROM ghcr.io/astral-sh/uv:0.12-python3.14-trixie-slim AS base
 
 COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
 
