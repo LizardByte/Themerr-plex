@@ -18,17 +18,15 @@ from themerr import general, storage, theme_errors
 from youtube import youtube_dl
 
 
-@pytest.fixture(params=['mp4a', 'opus'])
-def audio_source(request, tmp_path):
-    """Encode three seconds of valid audio without an external FFmpeg executable."""
-    codec = request.param
-    path = tmp_path / ('theme.m4a' if codec == 'mp4a' else 'theme.webm')
+def write_audio(path, codec, duration):
+    """Encode valid audio without an external FFmpeg executable."""
+    samples = round(duration * 48000)
     with av.open(str(path), 'w', format='mp4' if codec == 'mp4a' else 'webm') as output:
         stream = output.add_stream('aac' if codec == 'mp4a' else 'libopus', rate=48000)
         stream.layout = 'mono'
-        for offset in range(0, 144000, 1024):
+        for offset in range(0, samples, 1024):
             frame = av.AudioFrame(format='fltp' if codec == 'mp4a' else 's16', layout='mono',
-                                  samples=min(1024, 144000 - offset))
+                                  samples=min(1024, samples - offset))
             frame.sample_rate = 48000
             frame.pts = offset
             for plane in frame.planes:
@@ -37,6 +35,14 @@ def audio_source(request, tmp_path):
                 output.mux(packet)
         for packet in stream.encode():
             output.mux(packet)
+
+
+@pytest.fixture(params=['mp4a', 'opus'])
+def audio_source(request, tmp_path):
+    """Provide three seconds of audio in each supported codec."""
+    codec = request.param
+    path = tmp_path / ('theme.m4a' if codec == 'mp4a' else 'theme.webm')
+    write_audio(path, codec, 3.0)
     return path, codec
 
 
@@ -172,6 +178,18 @@ def test_failed_replacement_does_not_record_success(configured, audio_http, monk
         removed.assert_not_called()
     finally:
         session.close()
+
+
+@pytest.mark.parametrize('expected, actual', [
+    (39, 39.50), (21, 21.32), (32, 32.32), (7, 7.45),
+    (31, 31.42), (31, 30.64), (22, 21.55),
+])
+def test_whole_second_metadata_accepts_complete_audio(audio_source, tmp_path, expected, actual):
+    """Accept the reported library failures when real decoded audio differs by less than a second."""
+    source, codec = audio_source
+    path = tmp_path / ('fractional' + source.suffix)
+    write_audio(path, codec, actual)
+    assert youtube_dl.validate_audio(str(path), expected, codec) == pytest.approx(actual, abs=0.1)
 
 
 def test_invalid_audio_and_codec(audio_source, tmp_path):

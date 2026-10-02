@@ -1,8 +1,11 @@
 """yt-dlp extraction is tested with a fake extractor and a real temporary cookie file."""
 
 # standard imports
+from contextlib import nullcontext
 import json
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import Mock
 
 # lib imports
 import pytest
@@ -170,6 +173,16 @@ def test_complete_download_context_and_cleanup(configured, monkeypatch):
         assert seen['download_info']['http_headers'] == {'Referer': 'https://youtube.example'}
     assert not path.parent.exists()
     assert not Path(seen['params']['cookiefile']).exists()
+
+
+def test_empty_decoded_audio_is_rejected(monkeypatch):
+    """Duration rounding must not allow a header-only file for a short video."""
+    stream = SimpleNamespace(codec_context=SimpleNamespace(name='aac', options={}))
+    container = SimpleNamespace(streams=SimpleNamespace(audio=[stream], video=[]),
+                                decode=Mock(return_value=iter(())))
+    monkeypatch.setattr(youtube_dl.av, 'open', lambda _: nullcontext(container))
+    with pytest.raises(ValueError, match='Incomplete theme audio'):
+        youtube_dl.validate_audio('header-only.m4a', 1.0, 'mp4a')
 
 
 @pytest.mark.parametrize('failure', ['fragment', 'size', 'validation', 'empty'])

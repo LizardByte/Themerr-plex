@@ -308,7 +308,7 @@ def validate_audio(path: str, expected_duration: float, codec: str) -> float:
     path : str
         Completed download.
     expected_duration : float
-        Duration reported by the source extractor.
+        Video duration reported by the source extractor, in whole seconds for YouTube.
     codec : str
         Expected codec family.
 
@@ -334,9 +334,8 @@ def validate_audio(path: str, expected_duration: float, codec: str) -> float:
             raise ValueError('Downloaded theme codec does not match the selected audio')
         stream.codec_context.options = {'err_detect': 'explode'}
         duration = sum(frame.samples / frame.sample_rate for frame in container.decode(stream))
-    # Allow container padding and duration rounding, but reject missing audio.
-    tolerance = max(0.25, min(1.0, expected_duration * 0.01))
-    if abs(duration - expected_duration) > tolerance:
+    # YouTube reports whole seconds; decoded samples include fractional seconds and codec padding.
+    if duration <= 0 or abs(duration - expected_duration) > 1.0:
         raise ValueError(f'Incomplete theme audio: decoded {duration:.2f}s; expected {expected_duration:.2f}s')
     return duration
 
