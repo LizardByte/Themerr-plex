@@ -36,7 +36,10 @@ jobs:
         run: uv sync --locked --no-build --no-install-project --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Update Strings
-        run: uv run --locked --no-build --no-sync python ./scripts/_locale.py --extract
+        run: |
+          uv run --locked --no-build --no-sync python ./scripts/_locale.py --extract
+          # Remove Babel's trailing blank line before checking for changed strings.
+          sed -i '${/^$/d;}' locale/themerr-plex.po
 
       - name: git diff
         run: |
