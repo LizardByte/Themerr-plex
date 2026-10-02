@@ -171,8 +171,29 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
 
+      - name: Import macOS signing certificate
+        if: runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
+        uses: apple-actions/import-codesign-certs@5142e029c445c10ffc7149d172e540235a065466  # v7.0.0
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_P12_PASSWORD }}
+
+      - name: Validate macOS signing identity
+        if: runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
+        env:
+          APPLE_CODESIGN_IDENTITY: ${{ secrets.APPLE_CODESIGN_IDENTITY }}
+        run: test -n "${APPLE_CODESIGN_IDENTITY}"
+
       - name: Build pyinstaller package
+        env:
+          APPLE_CODESIGN_IDENTITY: >-
+            ${{ runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
+            && secrets.APPLE_CODESIGN_IDENTITY || '' }}
         run: uv run --locked --all-extras --no-build --no-sync python ./scripts/build.py
+
+      - name: Verify macOS signature
+        if: runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
+        run: codesign --verify --strict --verbose=2 ./dist/themerr_plex
 
       - name: Smoke test executable
         shell: bash

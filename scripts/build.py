@@ -43,6 +43,9 @@ def build():
     elif sys.platform.lower() == 'darwin':  # macOS
         pyinstaller_args.append('--console')
         pyinstaller_args.append('--osx-bundle-identifier=dev.lizardbyte.app.themerr-plex')
+        codesign_identity = os.environ.get('APPLE_CODESIGN_IDENTITY')
+        if codesign_identity:
+            pyinstaller_args.append(f'--codesign-identity={codesign_identity}')
 
     elif sys.platform.lower() == 'linux':  # linux
         pyinstaller_args.append('--splash=./web/images/icon-default.png')
