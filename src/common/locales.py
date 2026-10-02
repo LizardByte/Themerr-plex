@@ -27,10 +27,10 @@ from babel import localedata
 
 # local imports
 from common import config
-from common.definitions import Paths
+from common.definitions import Names, Paths
 from common import logger
 
-default_domain = 'themerr-plex'
+default_domain = Names.name.lower()
 default_locale = 'en'
 default_timezone = 'UTC'
 supported_locales = ['en', 'es']

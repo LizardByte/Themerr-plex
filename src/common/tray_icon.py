@@ -91,7 +91,7 @@ def tray_initialize() -> Icon | bool:
     """
     if not icon_supported:
         return False
-    tray_icon = icon_class(name='themerr-plex')
+    tray_icon = icon_class(name=definitions.Names.name.lower())
     tray_icon.title = definitions.Names.name
 
     image = Image.open(os.path.join(definitions.Paths.ROOT_DIR, 'web', 'images', 'favicon.ico'))

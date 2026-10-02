@@ -1,8 +1,10 @@
 """Scheduling behavior without a live background loop."""
 
+# standard imports
 from threading import Event
 from unittest.mock import Mock
 
+# local imports
 from themerr import scheduled_tasks
 
 

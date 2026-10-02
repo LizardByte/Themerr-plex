@@ -1,13 +1,16 @@
 """Plex-facing behavior is verified with controlled server and item doubles."""
 
+# standard imports
 from contextlib import nullcontext
 from queue import Queue
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+# lib imports
 import pytest
 import requests
 
+# local imports
 from common import config
 from plex import plexapi
 from youtube.youtube_dl import AudioFile

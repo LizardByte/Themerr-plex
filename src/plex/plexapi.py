@@ -16,6 +16,7 @@ from plexapi.utils import reverseSearchType
 
 # local imports
 from common import config
+from common import definitions
 from common import helpers
 from common import logger
 from plex import auth, servers
@@ -1084,7 +1085,7 @@ def _scheduled_update_server() -> None:
 
         # check if the agent is enabled
         if not general.continue_update(item_agent=section.agent):
-            log.debug(f'Themerr-plex is disabled for agent "{section.agent}"')
+            log.debug(f'{definitions.Names.name} is disabled for agent "{section.agent}"')
             continue
 
         section_queued = 0

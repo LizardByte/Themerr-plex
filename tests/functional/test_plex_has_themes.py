@@ -1,8 +1,10 @@
 """A standalone update path with all external services mocked."""
 
+# standard imports
 from contextlib import nullcontext
 from unittest.mock import Mock
 
+# local imports
 from plex import plexapi
 from youtube.youtube_dl import AudioFile
 

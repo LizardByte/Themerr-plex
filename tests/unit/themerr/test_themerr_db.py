@@ -1,7 +1,9 @@
 """ThemerrDB indexing and lookup without hosted data."""
 
+# standard imports
 from threading import Event, Thread
 
+# local imports
 from themerr import themerr_db
 
 

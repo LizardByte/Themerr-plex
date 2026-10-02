@@ -1,4 +1,4 @@
-# lib imports
+# standard imports
 from urllib.parse import quote_plus
 
 # local imports

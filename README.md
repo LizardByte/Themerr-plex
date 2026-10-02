@@ -16,6 +16,8 @@
   <a href="https://themerr-plex.readthedocs.io/"><img src="https://img.shields.io/readthedocs/themerr-plex?label=docs&style=for-the-badge&logo=readthedocs" alt="Read the Docs"></a>
 </div>
 
+# Overview
+
 ## ℹ️ About
 
 Themerr-plex adds theme music to Plex movies and TV shows from [ThemerrDB](https://github.com/LizardByte/ThemerrDB).
@@ -24,8 +26,5 @@ resolved with `yt-dlp`.
 
 It works with the Plex Movie (`tv.plex.agents.movie`) and Plex Series (`tv.plex.agents.series`) agents. Install and
 configure the application separately from Plex; no Plex plug-in directory is used.
-
-Application state and Plex sign-in are stored in `config/themerr-plex.db` (`/config/themerr-plex.db` in Docker).
-Existing JSON state is imported automatically on first use; the old files are retained as backups.
 
 LizardByte has the full documentation hosted on [Read the Docs](https://themerr-plex.readthedocs.io/).

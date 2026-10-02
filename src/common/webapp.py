@@ -814,8 +814,8 @@ def translations() -> Response:
     locale = locales.get_locale()
 
     po_files = [
-        f'{Paths.LOCALE_DIR}/{locale}/LC_MESSAGES/themerr-plex.po',  # selected locale
-        f'{Paths.LOCALE_DIR}/themerr-plex.po',  # fallback to default domain
+        f'{Paths.LOCALE_DIR}/{locale}/LC_MESSAGES/{locales.default_domain}.po',  # selected locale
+        f'{Paths.LOCALE_DIR}/{locales.default_domain}.po',  # fallback to default domain
     ]
 
     for po_file in po_files:

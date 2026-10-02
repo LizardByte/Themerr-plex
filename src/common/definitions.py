@@ -108,6 +108,8 @@ class Files:
 
     CONFIG : str
         The default config file name. i.e. `config.ini`.
+    DATABASE : str
+        The SQLite database file name.
 
     Examples
     --------
@@ -115,6 +117,7 @@ class Files:
     'config.ini'
     """
     CONFIG = 'config.ini'
+    DATABASE = f'{Names.name.lower()}.db'
 
 
 class Paths:

@@ -1,10 +1,12 @@
 """Alembic migration environment for the Themerr SQLite database."""
 
+# lib imports
 from alembic import context
 
-from themerr.storage import Base
+# local imports
+from plex.servers import ServerRecord
 
-target_metadata = Base.metadata
+target_metadata = ServerRecord.metadata
 
 
 def run_migrations_online() -> None:

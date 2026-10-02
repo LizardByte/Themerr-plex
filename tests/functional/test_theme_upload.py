@@ -131,7 +131,7 @@ def test_complete_download_file_upload_and_repeated_job(configured, audio_http, 
     configured['Themerr']['BOOL_REMOVE_UNUSED_THEMES'] = False
     configured['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX'] = 0
     monkeypatch.setattr(plexapi, 'change_lock_status', Mock())
-    # A legacy tracked upload still needs one replacement through the complete-file path.
+    # An unverified upload needs replacement through the complete-file path.
     general.update_themerr_data(item, {
         'youtube_theme_url': 'https://youtube.example/theme', 'uploaded_theme_key': 'upload://themes/audio',
         'audio_codec': codec, 'mp4a_available': codec == 'mp4a',

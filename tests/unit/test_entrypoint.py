@@ -85,8 +85,8 @@ def test_wait_keyboard_interrupt(monkeypatch):
 
 
 def test_console_password_reset_invalidates_sessions_without_starting_services(configured, monkeypatch, capsys):
-    from common import admin
     from werkzeug.security import check_password_hash
+    from common import admin
     monkeypatch.setattr(admin, 'HASH_METHOD', 'scrypt:16384:8:1')
     previous = admin._save('admin', 'the original test passphrase')
     monkeypatch.setattr(sys, 'argv', ['themerr_plex.py', '--reset-admin-password'])

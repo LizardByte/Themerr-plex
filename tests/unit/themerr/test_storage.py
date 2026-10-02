@@ -1,21 +1,25 @@
-"""SQLite migration and transaction behavior for former JSON state."""
+"""SQLite schema, persistence, and transaction behavior."""
 
-import json
+# standard imports
 from pathlib import Path
 
 # lib imports
 from alembic import command
+from alembic.autogenerate import compare_metadata
 from alembic.config import Config
+from alembic.migration import MigrationContext
+from alembic.script import ScriptDirectory
 import pytest
-from sqlalchemy import create_engine, inspect, text
-from sqlalchemy.engine import URL
+from sqlalchemy import inspect, text
 
+# local imports
 from common import definitions
+from plex.servers import ServerRecord
 from themerr import storage
 
 
 def _dashboard() -> dict:
-    """Return one complete legacy dashboard snapshot."""
+    """Return one complete dashboard snapshot."""
     return {'1': {
         'key': 1, 'title': 'Movies', 'agent': 'tv.plex.agents.movie', 'type': 'movie',
         'media_count': 1, 'media_percent_complete': 0, 'collection_count': 0,
@@ -29,67 +33,55 @@ def _dashboard() -> dict:
     }}
 
 
-def test_legacy_state_import_survives_restart(configured, tmp_path):
-    dashboard_path = tmp_path / 'database_cache.json'
-    errors_path = tmp_path / 'theme_errors.json'
-    credentials_path = tmp_path / 'plex-auth.json'
-    record_path = tmp_path / 'data' / 'Movies' / '42.json'
-    record_path.parent.mkdir(parents=True)
-    dashboard_path.write_text(json.dumps(_dashboard()), encoding='utf-8')
-    errors_path.write_text(json.dumps({'42': 'Video unavailable'}), encoding='utf-8')
-    credentials_path.write_text(json.dumps({'client_id': 'abc', 'token': 'issued'}), encoding='utf-8')
-    record_path.write_text(json.dumps({'settings_hash': 'hash', 'youtube_theme_url': 'https://youtube.example',
-                                       'downloaded_timestamp': 1}), encoding='utf-8')
-
+def test_state_survives_restart(configured):
+    storage.replace_dashboard(_dashboard())
+    storage.set_error(42, 'Video unavailable')
+    storage.save_tracking(42, 'movie', {
+        'youtube_theme_url': 'https://youtube.example', 'uploaded_theme_key': 'upload://themes/verified',
+        'audio_codec': 'mp4a', 'mp4a_available': True, 'audio_sha256': 'verified-digest',
+    })
+    storage.save_credentials({'client_id': 'abc'})
+    storage.close()
     assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
     assert storage.get_errors() == {'42': 'Video unavailable'}
-    assert storage.get_credentials() == {}
-    assert not credentials_path.exists()
+    assert storage.get_credentials() == {'client_id': 'abc'}
     assert storage.get_tracking(42) == {
-        'youtube_theme_url': 'https://youtube.example',
+        'youtube_theme_url': 'https://youtube.example', 'uploaded_theme_key': 'upload://themes/verified',
+        'audio_codec': 'mp4a', 'mp4a_available': True, 'audio_sha256': 'verified-digest',
     }
-    with storage.engine().connect() as connection:
-        assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one() == '20261001_04'
-
-    storage.save_credentials({'client_id': 'abc'})
     storage.set_error(42, None)
     storage.close()
-    assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
-    assert storage.get_credentials() == {'client_id': 'abc'}
     assert storage.get_errors() == {}
-    assert all(path.exists() for path in (dashboard_path, errors_path, record_path))
 
 
-def test_plaintext_token_row_is_discarded(configured):
-    database = storage.engine()
-    with database.begin() as connection:
-        connection.execute(text("INSERT INTO app_settings (key, value) VALUES ('token', 'old-plaintext-token')"))
-    storage.close()
-
-    assert storage.get_credentials() == {}
-    with storage.engine().connect() as connection:
-        assert connection.execute(text("SELECT value FROM app_settings WHERE key='token'")).scalar_one_or_none() is None
-
-
-def test_codec_migration_preserves_existing_uploads(configured):
-    previous = create_engine(URL.create('sqlite', database=storage.database_path()))
+def _migration_config(connection):
     migration = Config()
     migration.set_main_option('script_location', str(Path(storage.__file__).parent / 'migrations'))
-    with previous.begin() as connection:
-        migration.attributes['connection'] = connection
-        command.upgrade(migration, '20260930_01')
-        connection.execute(text(
-            'INSERT INTO theme_records (rating_key, item_type, settings_hash, youtube_theme_url, uploaded_theme_key) '
-            "VALUES ('42', 'movie', 'former-hash', 'https://youtube.example/theme', 'upload://themes/tracked')"
-        ))
-    previous.dispose()
+    migration.attributes['connection'] = connection
+    return migration
 
-    assert storage.get_tracking(42) == {
-        'youtube_theme_url': 'https://youtube.example/theme', 'uploaded_theme_key': 'upload://themes/tracked',
-    }
-    columns = {column['name'] for column in inspect(storage.engine()).get_columns('theme_records')}
-    assert 'settings_hash' not in columns
-    assert {'audio_codec', 'mp4a_available', 'audio_sha256'} <= columns
+
+def test_initial_migration_creates_complete_model_schema(configured):
+    with storage.engine().connect() as connection:
+        script = ScriptDirectory.from_config(_migration_config(connection))
+        revisions = list(script.walk_revisions())
+        assert len(revisions) == 1
+        assert revisions[0].down_revision is None
+        assert len(revisions[0].revision) == 12
+        assert int(revisions[0].revision, 16) >= 0
+        revision = connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one()
+        assert revision == script.get_current_head()
+        context = MigrationContext.configure(connection, opts={'compare_server_default': True})
+        assert compare_metadata(context, ServerRecord.metadata) == []
+
+
+def test_initial_migration_can_downgrade_and_rebuild(configured):
+    with storage.engine().begin() as connection:
+        migration = _migration_config(connection)
+        command.downgrade(migration, 'base')
+        assert inspect(connection).get_table_names() == ['alembic_version']
+        command.upgrade(migration, 'head')
+        assert compare_metadata(MigrationContext.configure(connection), ServerRecord.metadata) == []
 
 
 def test_dashboard_replacement_is_atomic(configured):
@@ -145,9 +137,11 @@ def test_dashboard_refresh_retains_upload_completed_during_scan(configured):
     assert data['media_percent_complete'] == 100
 
 
-def test_legacy_import_uses_active_config_directory(configured, tmp_path, monkeypatch):
+def test_database_uses_active_config_directory(configured, tmp_path, monkeypatch):
     monkeypatch.setattr(definitions.Paths, 'CONFIG_DIR', str(tmp_path / 'inactive'))
-    (tmp_path / 'theme_errors.json').write_text(json.dumps({'42': 'Video unavailable'}), encoding='utf-8')
 
+    storage.set_error(42, 'Video unavailable')
+    storage.close()
     assert storage.get_errors() == {'42': 'Video unavailable'}
-    assert (tmp_path / 'themerr-plex.db').is_file()
+    assert (tmp_path / definitions.Files.DATABASE).is_file()
+    assert not (tmp_path / 'inactive').exists()

@@ -7,11 +7,16 @@ Functions related to building, initializing, updating, and compiling localizatio
 import argparse
 import os
 import subprocess
-
-project_name = 'Themerr-plex'
+import sys
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.dirname(script_dir)
+sys.path.insert(0, os.path.join(root_dir, 'src'))
+
+# local imports
+from common.definitions import Names  # noqa: E402 - standalone script uses the source tree
+
+project_name = Names.name
 locale_dir = os.path.join(root_dir, 'locale')
 
 # target locales

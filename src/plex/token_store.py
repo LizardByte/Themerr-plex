@@ -10,10 +10,11 @@ import keyring
 from keyring.errors import PasswordDeleteError
 
 # local imports
+from common.definitions import Names
 from themerr import storage
 
 
-SERVICE = 'Themerr-plex'
+SERVICE = Names.name
 KEY_FILE_ENV = 'THEMERR_PLEX_TOKEN_KEY_FILE'
 
 

@@ -1,16 +1,19 @@
 """Flask routes exercised with temporary configuration and cache data."""
 
+# standard imports
 import re
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+# lib imports
 import pytest
 import requests
 from plexapi.exceptions import NotFound
+from sqlalchemy.orm import Session
 
+# local imports
 from common import admin, webapp
 from plex import servers
-from sqlalchemy.orm import Session
 from plex import auth, plexapi
 from themerr import storage
 from themerr import theme_errors

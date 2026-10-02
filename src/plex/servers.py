@@ -8,11 +8,11 @@ from urllib.parse import urlsplit
 # lib imports
 from plexapi.gdm import GDM
 from plexapi.myplex import MyPlexAccount
-from sqlalchemy import Boolean, String, delete, select, update
+from sqlalchemy import Boolean, String, delete, select
 from sqlalchemy.orm import Mapped, Session, mapped_column
 
 # local imports
-from common import config, logger
+from common import logger
 from plex import auth, token_store
 from themerr import storage
 
@@ -340,24 +340,6 @@ def remove_server(server_id: str) -> None:
                 session.execute(delete(model).where(model.server_id == server_id))
             session.execute(delete(ServerRecord).where(ServerRecord.id == server_id))
             session.commit()
-
-
-def adopt_legacy() -> None:
-    """Identify the former single server and retain its upload history."""
-    if list_servers() or not auth.get_token():
-        return
-    try:
-        server = add_server(config.CONFIG['Plex']['PLEX_URL'])
-        update_server(server['id'], {
-            'data_directory': config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH'],
-            'ignored_libraries': config.CONFIG['Themerr']['IGNORED_LIBRARY_IDS'],
-        })
-        with Session(storage.engine()) as session:
-            for model in (storage.LibrarySection, storage.LibraryItem, storage.ThemeRecord, storage.ThemeError):
-                session.execute(update(model).where(model.server_id == 'default').values(server_id=server['id']))
-            session.commit()
-    except Exception:
-        log.warning('Previous Plex connection could not be restored; reconnect it on the Servers page.')
 
 
 def clear_connections() -> None:

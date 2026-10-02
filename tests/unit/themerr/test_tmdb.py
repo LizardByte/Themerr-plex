@@ -1,9 +1,12 @@
 """TMDB IDs resolved from ThemerrDB, Plex, and the optional TMDB API."""
 
+# standard imports
 from unittest.mock import Mock
 
+# lib imports
 import requests
 
+# local imports
 from themerr import tmdb
 
 

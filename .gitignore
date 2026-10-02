@@ -163,3 +163,5 @@ _site/
 .dockle/
 coverage/
 junit-python.xml
+http_cache.sqlite
+http_cache.sqlite-*

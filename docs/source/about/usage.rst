@@ -116,11 +116,6 @@ Themerr-plex stores its server registry, admin password hash, dashboard snapshot
 and non-secret Plex client ID in
 ``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
 ``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted Plex tokens there.
-Alembic applies schema migrations on startup. Existing ``database_cache.json``, ``theme_errors.json``, and per-item JSON
-records are copied into SQLite on first use; those old files remain as backups. Any old plaintext Plex token row and
-``plex-auth.json`` file are removed without importing the token, so you must sign in again.
-The former single-server connection is adopted on startup when its saved authorization still works; its existing
-upload history is kept. Otherwise, reconnect the server from the Servers page.
 
 The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
 bundled with packaged and Docker builds.
@@ -164,15 +159,9 @@ Theme format
 Themerr-plex selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
 Plex clients that cannot play Opus theme audio. If MP4A is unavailable, Opus is used.
 
-Before uploading, Themerr-plex downloads the complete audio with yt-dlp, decodes it to check its duration and codec,
-and uploads the local file to Plex. It then verifies that Plex serves the same bytes. Validation uses PyAV's bundled
-FFmpeg libraries; a separate FFmpeg installation is not needed. Temporary downloads and cookies are deleted afterward.
-
-Themes previously uploaded by Themerr through a remote audio URL are replaced once using this verified file upload.
-This repairs potentially truncated themes. Locked themes and the setting for preserving Plex-provided themes still
-apply. Successful file uploads are recorded in SQLite and are skipped on later jobs unless the source changes or
-the AAC preference requires a different codec. A failed replacement does not delete the previous theme file or
-overwrite its tracking record.
+Themes are skipped on later jobs unless the source changes or the AAC preference requires a different codec.
+Locked themes and the setting for preserving Plex-provided themes still apply. A failed replacement keeps the
+previous theme.
 
 .. note::
 

@@ -20,7 +20,7 @@ from common import locales
 from common import logger
 from common import threads
 
-app_name = 'themerr-plex'
+app_name = definitions.Names.name.lower()
 
 # locales
 _ = locales.get_text()
@@ -119,13 +119,13 @@ def _apply_cli_options(args: argparse.Namespace) -> None:
     common.initialize(config_file=config_file)
 
     if args.config:
-        log.info(msg=f"Themerr-plex is using custom config file: {config_file}.")
+        log.info(f'{definitions.Names.name} is using custom config file: {config_file}.')
     if args.debug:
-        log.info(msg="Themerr-plex will log debug messages.")
+        log.info(f'{definitions.Names.name} will log debug messages.')
     if args.dev:
-        log.info(msg="Themerr-plex is running in the dev environment.")
+        log.info(f'{definitions.Names.name} is running in the dev environment.')
     if args.quiet:
-        log.info(msg="Themerr-plex is running in quiet mode. Nothing will be printed to console.")
+        log.info(f'{definitions.Names.name} is running in quiet mode. Nothing will be printed to console.')
 
     if args.port:
         config.CONFIG['Network']['HTTP_PORT'] = args.port
@@ -148,27 +148,31 @@ def main():
     if definitions.Modes.FROZEN and definitions.Modes.SPLASH:
         try:
             import pyi_splash  # module cannot be installed outside of pyinstaller builds
-            pyi_splash.update_text("Attempting to start Themerr-plex")
+            pyi_splash.update_text(f'Attempting to start {definitions.Names.name}')
         except (ImportError, RuntimeError):
             pass  # the splash may be unavailable on headless machines
         else:
             splash = pyi_splash
 
     # Set up and gather command line arguments
-    parser = argparse.ArgumentParser(description=_('Themerr-plex is an application that manages theme songs for Plex.\n'
-                                                   'Arguments supplied here are meant to be temporary.'),
+    parser = argparse.ArgumentParser(description=_('%(app_name)s manages theme songs for Plex.\n'
+                                                   'Arguments supplied here are meant to be temporary.')
+                                     % {'app_name': definitions.Names.name},
                                      add_help=False)
     parser.add_argument('-h', '--help', action='help', help=_('Show this help message and exit'))
 
     parser.add_argument('--config', help=_('Specify a config file to use'))
     parser.add_argument('--debug', action='store_true', help=_('Use debug logging level'))
-    parser.add_argument('--dev', action='store_true', help=_('Start Themerr-plex in the development environment'))
+    parser.add_argument('--dev', action='store_true', help=_('Start %(app_name)s in the development environment')
+                        % {'app_name': definitions.Names.name})
     parser.add_argument('--docker_healthcheck', action='store_true', help=_('Health check the container and exit'))
     parser.add_argument('--reset-admin-password', action='store_true',
                         help='Reset the application admin password from this console')
-    parser.add_argument('--nolaunch', action='store_true', help=_('Do not open Themerr-plex in browser'))
+    parser.add_argument('--nolaunch', action='store_true', help=_('Do not open %(app_name)s in browser')
+                        % {'app_name': definitions.Names.name})
     parser.add_argument('-p', '--port', default=9494, type=IntRange(21, 65535),
-                        help=_('Force Themerr-plex to run on a specified port, default=9494')
+                        help=_('Force %(app_name)s to run on a specified port, default=9494')
+                        % {'app_name': definitions.Names.name}
                         )
     parser.add_argument('-q', '--quiet', action='store_true', help=_('Turn off console logging'))
     parser.add_argument('-v', '--version', action='store_true', help=_('Print the version details and exit'))
@@ -215,8 +219,6 @@ def main():
     from plex import plexapi  # import at use due to config
     from themerr import scheduled_tasks
 
-    from plex import servers
-    servers.adopt_legacy()
     scheme = 'https' if config.CONFIG['Network']['SSL'] else 'http'
     browser_url = admin.startup_url(f"{scheme}://127.0.0.1:{config.CONFIG['Network']['HTTP_PORT']}")
     if not admin.account():
@@ -250,7 +252,7 @@ def wait():
     --------
     >>> wait()
     """
-    log.info("Themerr-plex is ready!")
+    log.info(f'{definitions.Names.name} is ready!')
 
     while True:  # wait endlessly for a signal
         if not common.SIGNAL:

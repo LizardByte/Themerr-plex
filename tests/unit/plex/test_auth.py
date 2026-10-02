@@ -11,12 +11,11 @@ import pytest
 import requests
 
 # local imports
-from common import config
 from plex import auth, token_store
 from themerr import storage
 
 
-def test_credentials_persist_without_exposing_legacy_token(configured, tmp_path):
+def test_credentials_persist_without_exposing_token(configured, tmp_path):
     """Only a token obtained through sign-in is read by the Plex client."""
     assert 'PLEX_TOKEN' not in configured['Plex']
     assert auth.get_token() == ''
@@ -28,7 +27,6 @@ def test_credentials_persist_without_exposing_legacy_token(configured, tmp_path)
     assert storage.get_credentials() == {'client_id': identifier}
     assert (tmp_path / 'themerr-plex.db').is_file()
     assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
-    assert not (tmp_path / 'plex-auth.json').exists()
     assert auth.get_token() == 'plex-issued-token'
     auth.disconnect()
     assert auth.get_token() == ''
@@ -82,17 +80,6 @@ def test_native_credential_errors_are_reported_as_store_failures(configured, mon
     with pytest.raises(token_store.TokenStorageError, match='credential store') as raised:
         handler(auth._client_identifier())
     assert raised.value.__cause__ is error
-
-
-def test_old_config_token_is_dropped(tmp_path, monkeypatch):
-    """Upgrading must not silently keep using a manually supplied token."""
-    path = tmp_path / 'config.ini'
-    path.write_text('[Plex]\nPLEX_TOKEN = old-manual-token\n', encoding='utf-8')
-    with monkeypatch.context() as patch:
-        patch.setattr(config, 'CONFIG', config.CONFIG)
-        settings = config.create_config(str(path))
-    assert 'PLEX_TOKEN' not in settings['Plex']
-    assert 'PLEX_TOKEN' not in path.read_text(encoding='utf-8')
 
 
 def test_start_login_uses_stable_client_and_plex_auth_url(configured, monkeypatch):

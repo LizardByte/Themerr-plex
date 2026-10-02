@@ -3,6 +3,7 @@
 # lib imports
 import pytest
 
+# local imports
 from themerr import theme_errors
 
 

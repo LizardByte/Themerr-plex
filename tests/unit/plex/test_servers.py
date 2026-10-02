@@ -5,12 +5,9 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 # lib imports
-from alembic import command
-from alembic.config import Config
 from cryptography.fernet import Fernet
 import pytest
 from requests.exceptions import ConnectTimeout
-from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 # local imports
@@ -306,35 +303,7 @@ def test_proxy_and_metadata_paths_follow_current_server(configured, monkeypatch,
     servers.update_server('a', {'data_directory': '', 'enabled': False})
     with storage.server_scope('a'):
         assert general.get_media_upload_path(item, 'themes') == ''
-        assert general._legacy_themerr_json_path(item) == ''
         assert tmdb._plex_get('find/tt42', {}) == {}
-
-
-def test_existing_database_upgrade_and_legacy_server_adoption(configured, monkeypatch):
-    from pathlib import Path
-    database = create_engine('sqlite:///' + storage.database_path())
-    migration = Config()
-    migration.set_main_option('script_location', str(Path(storage.__file__).parent / 'migrations'))
-    with database.begin() as connection:
-        migration.attributes['connection'] = connection
-        command.upgrade(migration, '20260930_02')
-        connection.execute(text("INSERT INTO theme_records (rating_key,item_type,youtube_theme_url,audio_codec) "
-                                "VALUES ('42','movie','https://youtube.example','mp4a')"))
-        connection.execute(text("INSERT INTO theme_errors VALUES ('42','Video unavailable')"))
-    database.dispose()
-    assert storage.get_tracking(42)['audio_codec'] == 'mp4a'
-    assert storage.get_errors() == {'42': 'Video unavailable'}
-    auth.set_token('account-secret')
-    monkeypatch.setattr(servers, 'account_resources', lambda: [])
-    monkeypatch.setattr(plexapi, 'connect_plex_server', lambda *args: SimpleNamespace(
-        machineIdentifier='original', friendlyName='Original Plex'))
-    servers.adopt_legacy()
-    assert servers.get_server('original')
-    with storage.server_scope('original'):
-        assert storage.get_tracking(42)['audio_codec'] == 'mp4a'
-        assert storage.get_errors() == {'42': 'Video unavailable'}
-    assert storage.get_tracking(42) == {}
-    assert servers.credential_id('original').startswith('server:')
 
 
 def test_workers_keep_server_scope_deduplicate_active_work_and_release_failed_items(monkeypatch):

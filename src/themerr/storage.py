@@ -1,7 +1,6 @@
 """SQLite persistence for dashboard, upload tracking, errors, and Plex sign-in."""
 
 # standard imports
-import json
 from contextlib import contextmanager
 from contextvars import ContextVar
 import os
@@ -11,17 +10,14 @@ from threading import RLock
 # lib imports
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import Boolean, ForeignKeyConstraint, Integer, String, create_engine, delete, func, select, text
+from sqlalchemy import Boolean, ForeignKeyConstraint, Integer, String, create_engine, delete, func, select
 from sqlalchemy.engine import URL, Engine
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 # local imports
 from common import config as app_config
 from common import definitions
-from common import logger
 
-log = logger.get_logger(__name__)
 _lock = RLock()
 _engine: Engine | None = None
 _engine_path: str | None = None
@@ -37,7 +33,7 @@ def current_server_id() -> str:
     Returns
     -------
     str
-        Plex machine identifier, or the legacy default scope.
+        Plex machine identifier, or the default scope.
     """
     return _server_scope.get()
 
@@ -163,29 +159,8 @@ def database_path() -> str:
         Absolute database path.
     """
     if app_config.CONFIG is not None and getattr(app_config.CONFIG, 'filename', None):
-        return os.path.join(os.path.dirname(os.path.abspath(app_config.CONFIG.filename)), 'themerr-plex.db')
-    return os.path.join(definitions.Paths.CONFIG_DIR, 'themerr-plex.db')
-
-
-def _legacy_json(path: Path) -> dict:
-    """Read one former JSON state file without changing it.
-
-    Parameters
-    ----------
-    path : Path
-        Former state file.
-
-    Returns
-    -------
-    dict
-        JSON object, or an empty dictionary if unreadable.
-    """
-    try:
-        data = json.loads(path.read_text(encoding='utf-8'))
-    except (OSError, ValueError) as exc:
-        log.warning('Unable to migrate %s: %s', path, exc)
-        return {}
-    return data if isinstance(data, dict) else {}
+        return os.path.join(os.path.dirname(os.path.abspath(app_config.CONFIG.filename)), definitions.Files.DATABASE)
+    return os.path.join(definitions.Paths.CONFIG_DIR, definitions.Files.DATABASE)
 
 
 def _replace_dashboard(session: Session, sections: dict) -> None:
@@ -215,84 +190,13 @@ def _replace_dashboard(session: Session, sections: dict) -> None:
             )}
             if fields['database_id'] is not None:
                 fields['database_id'] = str(fields['database_id'])
-            if fields['theme_provider'] == 'themerr_inferred':
-                fields['theme_provider'] = 'uploaded'
             session.add(LibraryItem(
                 rating_key=str(item['rating_key']), section_key=int(section['key']), position=position, **fields,
             ))
 
 
-def _import_legacy(engine: Engine) -> None:
-    """Copy existing JSON state into SQLite once.
-
-    Parameters
-    ----------
-    engine : Engine
-        Migrated SQLite engine.
-    """
-    config_dir = Path(database_path()).parent
-    with Session(engine) as session:
-        if session.get(AppSetting, 'legacy_imported') is not None:
-            return
-        dashboard = config_dir / 'database_cache.json'
-        if dashboard.is_file() and not session.scalar(select(LibrarySection.key).limit(1)):
-            sections = _legacy_json(dashboard)
-            if sections:
-                try:
-                    _replace_dashboard(session, sections)
-                    session.flush()
-                except (KeyError, TypeError, ValueError, SQLAlchemyError) as exc:
-                    session.rollback()
-                    log.warning('Unable to migrate dashboard cache: %s', exc)
-
-        errors = config_dir / 'theme_errors.json'
-        if errors.is_file():
-            for key, reason in _legacy_json(errors).items():
-                if isinstance(reason, str) and session.get(ThemeError, (current_server_id(), str(key))) is None:
-                    session.add(ThemeError(rating_key=str(key), reason=reason))
-
-        data_dir = config_dir / 'data'
-        if data_dir.is_dir():
-            item_types = {'Movies': 'movie', 'Collections': 'collection', 'TV Shows': 'show',
-                          'Albums': 'album', 'Artists': 'artist'}
-            for item_type_dir in data_dir.iterdir():
-                item_type = item_types.get(item_type_dir.name)
-                if not item_type or not item_type_dir.is_dir():
-                    continue
-                for path in item_type_dir.glob('*.json'):
-                    if session.get(ThemeRecord, (current_server_id(), path.stem)) is None:
-                        data = _legacy_json(path)
-                        if data:
-                            session.add(ThemeRecord(rating_key=path.stem, item_type=item_type,
-                                                    **{name: data.get(name) for name in (
-                                                        'youtube_theme_url', 'art_url', 'poster_url',
-                                                    )}))
-
-        session.add(AppSetting(key='legacy_imported', value='1'))
-        session.commit()
-
-
-def _discard_legacy_credentials(engine: Engine) -> None:
-    """Erase formerly stored plaintext credentials without importing them.
-
-    Parameters
-    ----------
-    engine : Engine
-        Active SQLite engine.
-    """
-    with Session(engine) as session:
-        session.execute(text('PRAGMA secure_delete=ON'))
-        session.execute(delete(AppSetting).where(AppSetting.key == 'token'))
-        session.commit()
-    old_file = Path(database_path()).parent / 'plex-auth.json'
-    try:
-        old_file.unlink(missing_ok=True)
-    except OSError:
-        log.warning('Unable to remove the old plaintext Plex token file: %s', old_file)
-
-
 def engine() -> Engine:
-    """Open SQLite, apply migrations, and import older JSON state once.
+    """Open SQLite and apply schema migrations.
 
     Returns
     -------
@@ -318,8 +222,6 @@ def engine() -> Engine:
                 command.upgrade(migration_config, 'head')
             if was_missing and os.name != 'nt':
                 os.chmod(path, 0o600)
-            _import_legacy(candidate)
-            _discard_legacy_credentials(candidate)
         except Exception:
             candidate.dispose()
             raise

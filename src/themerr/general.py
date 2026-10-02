@@ -1,6 +1,5 @@
 # standard imports
 import hashlib
-import json
 import os
 import shutil
 from typing import Optional
@@ -10,7 +9,6 @@ from plexapi.base import PlexPartialObject
 
 # local imports
 from common import config
-from common import helpers
 from common import logger
 from themerr.constants import metadata_type_map
 from themerr import storage
@@ -182,35 +180,9 @@ def get_theme_provider(item: PlexPartialObject) -> Optional[str]:
     return provider
 
 
-def _legacy_themerr_json_path(item: PlexPartialObject) -> str:
-    """Locate an existing record from the former Plex plugin installation.
-
-    Parameters
-    ----------
-    item : PlexPartialObject
-        Plex item.
-
-    Returns
-    -------
-    str
-        Path to the former plugin's tracking record.
-    """
-    record = servers.get_server(storage.current_server_id())
-    directory = record['data_directory'] if record else config.CONFIG['Plex']['PLEX_APP_SUPPORT_PATH']
-    if not directory:
-        return ''
-    return os.path.join(
-        directory, 'Plug-in Support', 'Data',
-        'dev.lizardbyte.themerr-plex', 'DataItems', metadata_type_map[item.type],
-        f'{item.ratingKey}.json',
-    )
-
-
 def get_themerr_data(item: PlexPartialObject) -> dict:
     """
     Get persisted upload metadata for the specified item.
-
-    Previously saved plugin records are imported when first encountered.
 
     Parameters
     ----------
@@ -222,19 +194,7 @@ def get_themerr_data(item: PlexPartialObject) -> dict:
     dict
         Tracked upload fields, or an empty dict when none exist.
     """
-    data = storage.get_tracking(item.ratingKey)
-    if data:
-        return data
-    path = _legacy_themerr_json_path(item=item)
-    if os.path.isfile(path):
-        try:
-            data = json.loads(s=str(helpers.file_load(filename=path, binary=False)))
-            if isinstance(data, dict) and data:
-                storage.save_tracking(item.ratingKey, item.type, data)
-                return storage.get_tracking(item.ratingKey)
-        except (OSError, TypeError, ValueError):
-            log.warning('Invalid Themerr tracking data for item %s', item.ratingKey)
-    return {}
+    return storage.get_tracking(item.ratingKey)
 
 
 def remove_uploaded_media(item: PlexPartialObject, media_type: str, keep_sha256: str | None = None) -> None:

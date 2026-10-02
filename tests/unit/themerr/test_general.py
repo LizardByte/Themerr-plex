@@ -1,12 +1,14 @@
 """Tests for media paths, metadata, and provider selection."""
 
+# standard imports
 import hashlib
-import json
 from pathlib import Path
 from types import SimpleNamespace
 
+# lib imports
 import pytest
 
+# local imports
 from themerr import general
 
 
@@ -50,21 +52,13 @@ def test_uploaded_theme_without_tracking_is_inferred(monkeypatch, item):
     assert general.get_theme_provider(item) == 'uploaded'
 
 
-def test_legacy_plugin_tracking_record(configured, item, tmp_path):
-    configured['Plex']['PLEX_APP_SUPPORT_PATH'] = str(tmp_path)
-    path = Path(general._legacy_themerr_json_path(item))
-    path.parent.mkdir(parents=True)
-    path.write_text(json.dumps({'youtube_theme_url': 'https://youtube.example/theme'}), encoding='utf-8')
-    assert general.get_themerr_data(item)['youtube_theme_url'] == 'https://youtube.example/theme'
-
-
 def test_no_selected_theme(item):
     assert general.get_theme_provider(item) is None
     item.themes.return_value = [SimpleNamespace(selected=False)]
     assert general.get_theme_provider(item) is None
 
 
-def test_data_file_round_trip(configured, item, tmp_path):
+def test_tracking_round_trip(configured, item, tmp_path):
     assert general.get_themerr_data(item) == {}
     general.update_themerr_data(item, {'youtube_theme_url': 'https://youtube.example/theme'})
     assert general.get_themerr_data(item) == {'youtube_theme_url': 'https://youtube.example/theme'}

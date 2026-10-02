@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 import requests
 
 # local imports
+from common.definitions import Names
 from common import logger
 from plex import token_store
 from themerr import storage
@@ -16,7 +17,7 @@ from themerr import storage
 
 PLEX_PIN_URL = 'https://plex.tv/api/v2/pins'
 PLEX_AUTH_URL = 'https://app.plex.tv/auth#?'
-PRODUCT = 'Themerr-plex'
+PRODUCT = Names.name
 TIMEOUT = 10
 _lock = threading.RLock()
 log = logger.get_logger(__name__)
