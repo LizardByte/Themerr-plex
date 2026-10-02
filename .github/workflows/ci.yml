@@ -66,10 +66,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - windows-2022
-          - ubuntu-22.04
-          - macos-14
+        include:
+          - os: windows-2022
+            arch: AMD64
+          - os: windows-11-arm
+            arch: ARM64
+          - os: ubuntu-22.04
+            arch: x86_64
+          - os: ubuntu-22.04-arm
+            arch: aarch64
+          - os: macos-15-intel
+            arch: x86_64
+          - os: macos-14
+            arch: arm64
     permissions:
       contents: read
 
@@ -92,9 +101,22 @@ jobs:
         with:
           deno-version: 2.9.7
 
+      - name: Build OpenSSL for Windows ARM64
+        if: runner.os == 'Windows' && matrix.arch == 'ARM64'
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_INSTALLATION_ROOT/vcpkg.exe" install openssl:arm64-windows-static-md --classic
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $opensslDir = "$env:VCPKG_INSTALLATION_ROOT/installed/arm64-windows-static-md"
+          "OPENSSL_DIR=$opensslDir" >> $env:GITHUB_ENV
+          "OPENSSL_STATIC=1" >> $env:GITHUB_ENV
+
       - name: Setup Python Dependencies
+        env:
+          UV_NO_BUILD: ${{ (matrix.os == 'windows-11-arm' || matrix.os == 'macos-15-intel') && 'false' || 'true' }}
         run: >-
-          uv sync --locked --all-extras --no-build --no-install-project
+          uv sync --locked --all-extras --no-install-project
           --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Compile Locale Translations
@@ -130,7 +152,7 @@ jobs:
         with:
           fail_ci_if_error: true
           files: ./coverage/python-coverage.xml
-          flags: "${{ runner.os }}"
+          flags: "${{ runner.os }}-${{ matrix.arch }}"
           report_type: coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
@@ -144,7 +166,7 @@ jobs:
         with:
           fail_ci_if_error: true
           files: ./junit-python.xml
-          flags: "${{ runner.os }}"
+          flags: "${{ runner.os }}-${{ matrix.arch }}"
           report_type: test_results
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
@@ -163,15 +185,15 @@ jobs:
 
       - name: Package Release
         run: |
-          7z a "./Themerr-plex_${{ runner.os }}.zip" "dist"
+          7z a "./Themerr-plex_${{ runner.os }}_${{ matrix.arch }}.zip" "dist"
 
           mkdir artifacts
-          mv "./Themerr-plex_${{ runner.os }}.zip" ./artifacts/
+          mv "./Themerr-plex_${{ runner.os }}_${{ matrix.arch }}.zip" ./artifacts/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: Themerr-plex_${{ runner.os }}
+          name: Themerr-plex_${{ runner.os }}_${{ matrix.arch }}
           if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
           path: |
             ${{ github.workspace }}/artifacts

@@ -10,12 +10,10 @@ remove the old Themerr-plex bundle from its Plug-Ins directory, and restart Plex
 Release archive
 ---------------
 
-Download the archive for your operating system from https://github.com/LizardByte/Themerr-plex/releases/latest,
-extract it, and run the themerr_plex executable. Deno is bundled for yt-dlp's YouTube challenge solver. Open the web UI
-at https://localhost:9494 to configure the
-Plex URL and sign in through Plex. Set the Plex data directory only if you want to remove old uploaded media.
-The default web server uses a locally generated certificate,
-so your browser may ask you to trust it.
+Download the archive for your operating system and architecture from https://github.com/LizardByte/Themerr-plex/releases/latest.
+Extract it and run the themerr_plex executable. Deno is bundled for yt-dlp's YouTube challenge solver. Open the web UI
+at https://localhost:9494 to configure the Plex URL and sign in through Plex. Set the Plex data directory only if you want
+to remove old uploaded media. The default web server uses a locally generated certificate, so your browser may ask you to trust it.
 
 Docker
 ------
