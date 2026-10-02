@@ -2,7 +2,7 @@
 {% block content %}
 <div class="auth-layout">
     <section class="auth-story" aria-label="Themerr">
-        <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark"><i data-lucide="audio-lines"></i></span><span>Themerr<small>FOR PLEX</small></span></a>
+        <a class="brand" href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>FOR PLEX</small></span></a>
         <div class="auth-story-content">
             <span class="eyebrow">{{ _('THE SOUND OF YOUR LIBRARY') }}</span>
             <h1>{{ _('Every story') }}<br>{{ _('has a soundtrack.') }}</h1>

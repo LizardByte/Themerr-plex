@@ -11,6 +11,7 @@ import { initDirectoryPicker } from './directories.js';
 import { initSettings } from './config.js';
 import { initServers } from './servers.js';
 import { initActivity } from './activity.js';
+import { initDatabaseStatus } from './database_status.js';
 
 refreshIcons();
 initNavigation();
@@ -20,3 +21,4 @@ initDirectoryPicker();
 initSettings();
 initServers();
 initActivity();
+initDatabaseStatus();

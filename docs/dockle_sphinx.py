@@ -23,7 +23,7 @@ numpydoc_validation_exclude = {
     # upstream docstrings are outside this project's NumPy style contract.
     r'^(?:common(?:\.[^.]+)?|themerr_plex)\.(?:Union|ConfigObj|ValidateError|Validator|datetime|timedelta|'
     r'quote|quote_plus|unquote|unquote_plus|QueueHandler|QueueListener|Icon|Menu|MenuItem|Babel|'
-    r'CSRFProtect|Flask|Response|flask_render_template|jsonify|secure_filename|send_from_directory)$',
+    r'CSRFProtect|Flask|Response|flask_render_template|jsonify|secure_filename|send_from_directory|lru_cache|url_for)$',
 }
 numpydoc_show_class_members = True
 numpydoc_show_inherited_class_members = False

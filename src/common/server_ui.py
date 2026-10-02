@@ -92,8 +92,11 @@ def dashboard() -> tuple[dict, dict, dict]:
             failures = storage.get_errors()
         for key, section in snapshot.items():
             identity = record['id'] + ':' + key
+            server_url = ('https://app.plex.tv/desktop/#!/media/' + quote(record['id'], safe='') +
+                          '/com.plexapp.plugins.library')
             libraries[identity] = {**section, 'server_id': record['id'], 'server_name': record['name'],
-                                   'enabled': record['enabled']}
+                                   'enabled': record['enabled'], 'server_url': server_url,
+                                   'library_url': server_url + '?' + urlencode({'source': section['key']})}
             for item in section['items']:
                 item['server_id'] = record['id']
                 item['error'] = failures.get(item['rating_key'])
@@ -239,6 +242,19 @@ def refresh():
         scheduled_tasks.run_threaded(target=plexapi.scheduled_update, task_name='Theme scan and queue')
     job = _refresh()
     return jsonify({'message': 'Refreshing libraries. Follow progress in Activity.', 'job_id': job.job_id}), 202
+
+
+@blueprint.route('/api/themerrdb', methods=['GET'])
+def database_status():
+    """Return the latest successful ThemerrDB Pages deployment from the hourly cache.
+
+    Returns
+    -------
+    Response
+        Deployment metadata and check timestamps.
+    """
+    from themerr import github_status
+    return jsonify(github_status.publication_status())
 
 
 @blueprint.route('/activity')

@@ -48,6 +48,29 @@ def test_home(client, configured):
     assert client.get('/home').status_code == 200
 
 
+def test_asset_urls_change_when_compiled_content_changes(client, monkeypatch, tmp_path):
+    monkeypatch.setattr(webapp.app, 'static_folder', str(tmp_path))
+    css = tmp_path / 'app.css'
+    css.write_text('body {color: red}', encoding='utf-8')
+    with webapp.app.test_request_context():
+        first = webapp.asset_url('app.css')
+        assert first == webapp.asset_url('app.css')
+        css.write_text('body {color: green}', encoding='utf-8')
+        second = webapp.asset_url('app.css')
+        assert first != second
+        assert webapp.asset_url('missing.css') == '/web/assets/missing.css'
+    assert b'href="' + second.encode() + b'"' in client.get('/').data
+
+
+def test_branding_uses_the_project_asset_and_links(client):
+    page = client.get('/').data
+    assert b'class="brand-logo"' in page and b'src="/images/icon-default.png"' in page
+    assert b'href="https://app.lizardbyte.dev/" target="_blank" rel="noopener noreferrer"' in page
+    assert b'href="https://github.com/LizardByte/Themerr-plex" target="_blank" rel="noopener noreferrer"' in page
+    for body in re.findall(rb'<a\b[^>]*target="_blank"[^>]*>(.*?)</a>', page, re.DOTALL):
+        assert b'data-lucide="arrow-up-right"' in body
+
+
 def test_theme_controls_only_for_installed_themes(client):
     providers = ['plex', 'user', 'themerr', 'uploaded', None]
     items = [{

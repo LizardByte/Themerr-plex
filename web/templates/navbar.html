@@ -1,6 +1,6 @@
 <button class="sidebar-scrim" data-sidebar-toggle type="button" aria-label="{{ _('Close navigation') }}" tabindex="-1"></button>
 <aside class="app-sidebar" aria-label="{{ _('Main navigation') }}">
-    <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark"><i data-lucide="audio-lines"></i></span><span>Themerr<small>FOR PLEX</small></span></a>
+    <a class="brand" href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>FOR PLEX</small></span></a>
     <p class="nav-eyebrow">{{ _('YOUR WORKSPACE') }}</p>
     <nav class="primary-nav">
         {% for endpoint, label, icon in [('home', _('Overview'), 'layout-dashboard'), ('server_ui.server_page', _('Servers'), 'server'), ('settings', _('Settings'), 'sliders-horizontal'), ('server_ui.activity', _('Activity'), 'activity')] %}
@@ -18,6 +18,6 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="nav-item"><i data-lucide="log-out"></i>{{ _('Sign out') }}</button>
         </form>
-        <small class="sidebar-footer">LizardByte <span>·</span> Themerr-plex</small>
+        <small class="sidebar-footer"><a href="https://app.lizardbyte.dev/" target="_blank" rel="noopener noreferrer">LizardByte<i data-lucide="arrow-up-right" aria-hidden="true"></i></a><span>·</span><a href="https://github.com/LizardByte/Themerr-plex" target="_blank" rel="noopener noreferrer">Themerr-plex<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small>
     </div>
 </aside>

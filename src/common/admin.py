@@ -281,6 +281,17 @@ def init_app(app) -> None:
             "img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; "
             "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         )
+        if request.endpoint == 'docs':
+            response.headers['Content-Security-Policy'] = (
+                "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net "
+                "https://website-translator.app.crowdin.net; "
+                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net "
+                "https://website-translator.app.crowdin.net; "
+                "img-src 'self' data: https://cdn.jsdelivr.net https://website-translator.app.crowdin.net; "
+                "font-src 'self' https://cdn.jsdelivr.net https://website-translator.app.crowdin.net; "
+                "connect-src 'self' https://cdn.jsdelivr.net https://distributions.crowdin.net; "
+                "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+            )
         if request.endpoint != 'static' and request.endpoint != 'image':
             response.headers['Cache-Control'] = 'no-store'
         return response

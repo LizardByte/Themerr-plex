@@ -125,6 +125,28 @@ def test_login_csrf_session_rotation_logout_and_security_headers(browser):
         assert PASSWORD not in str(session)
 
 
+def test_translation_hosts_are_allowed_only_for_bundled_docs(browser, monkeypatch, tmp_path):
+    from common.definitions import Paths
+    (tmp_path / 'index.html').write_text('<html>Documentation</html>', encoding='utf-8')
+    monkeypatch.setattr(Paths, 'DOCS_DIR', str(tmp_path))
+    create_account(browser)
+    for path in ('/docs/', '/docs/index.html'):
+        result = browser.get(path, follow_redirects=True)
+        assert result.status_code == 200
+        policy = result.headers['Content-Security-Policy']
+        assert 'https://cdn.jsdelivr.net' in policy
+        assert 'https://website-translator.app.crowdin.net' in policy
+        assert 'https://distributions.crowdin.net' in policy
+        assert "frame-ancestors 'none'" in policy
+        assert result.headers['X-Frame-Options'] == 'DENY'
+    assert 'crowdin.net' not in browser.get('/').headers['Content-Security-Policy']
+    assert 'cdn.jsdelivr.net' not in browser.get('/').headers['Content-Security-Policy']
+    with browser.session_transaction(base_url='https://127.0.0.1:9494') as session:
+        session['admin_revision'] = admin.account()['revision']
+    translated = browser.get('/docs/?lng=es-ES', base_url='https://127.0.0.1:9494')
+    assert translated.status_code == 200 and b'Documentation' in translated.data
+
+
 def test_https_csrf_requires_same_origin_referer(browser):
     admin._save('admin', PASSWORD)
     token = csrf(browser, base_url='https://localhost')

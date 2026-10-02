@@ -7,7 +7,7 @@
     --bs-primary-rgb: 255,121,94; --bs-link-color: var(--accent); --bs-link-hover-color: var(--accent-hover);
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--canvas); font-size: 14px; line-height: 1.6; }
+body { margin: 0; background: var(--canvas); font-size: 14px; line-height: 1.6; visibility: visible; animation: none; }
 a { text-decoration: none; }
 button, input, select, summary, a { -webkit-tap-highlight-color: transparent; }
 button, input, select { font: inherit; }
@@ -47,8 +47,7 @@ small, .muted { color: var(--muted); }
 .app-sidebar { width: 236px; position: fixed; inset: 0 auto 0 0; padding: 32px 18px 20px; background: var(--sidebar); border-right: 1px solid var(--line); display: flex; flex-direction: column; z-index: 50; }
 .brand { display: flex; gap: 12px; align-items: center; color: var(--ink); font-size: 23px; font-weight: 700; letter-spacing: -.7px; line-height: 1.1; }
 .brand small { display: block; font-size: 8px; letter-spacing: 2.9px; font-weight: 700; margin-top: 8px; color: var(--muted); }
-.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; color: var(--accent); background: #ff795e12; border: 1px solid #ff795e2e; }
-.brand-mark .lucide { width: 25px; height: 25px; stroke-width: 2.2; }
+.brand-logo { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; }
 .app-sidebar .brand { margin: 0 12px 48px; }
 .nav-eyebrow { color: #8691a4; margin: 0 14px 13px; font-size: 9px; letter-spacing: 1.4px; }
 .primary-nav { display: grid; gap: 5px; }
@@ -68,6 +67,18 @@ small, .muted { color: var(--muted); }
 .logout-form .nav-item { font-size: 11px; font-weight: 500; padding: 10px 12px; }
 .sidebar-footer { display: block; margin: 18px 12px 0; color: #8792a5; font-size: 9px; }
 .sidebar-footer span { margin: 0 7px; }
+.sidebar-footer a, .library-title small a { color: inherit; }
+.sidebar-footer a:hover, .library-title small a:hover { color: var(--ink); text-decoration: underline; }
+.sidebar-footer a, .library-title small a, .database-status a { display: inline-flex; align-items: center; gap: 3px; }
+.sidebar-footer .lucide { width: 10px; height: 10px; }
+.library-title small a .lucide, .database-status a .lucide { width: 12px; height: 12px; }
+.database-status { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: -8px 0 22px; min-height: 24px; font-size: 11px; color: var(--muted); }
+.database-status > .lucide { width: 15px; height: 15px; }
+.database-status a { color: var(--violet); }
+.database-status a:hover { color: var(--ink); text-decoration: underline; }
+.database-status time { color: var(--ink); }
+.database-stale { display: inline-flex; align-items: center; gap: 5px; color: #f3c978; }
+.database-stale .lucide { width: 13px; height: 13px; }
 .workspace { margin-left: 236px; min-height: 100vh; }
 .workspace-header { height: 70px; border-bottom: 1px solid var(--line); padding: 0 38px; display: flex; align-items: center; justify-content: space-between; background: #101217e8; }
 .workspace-breadcrumb { font-size: 11px; color: var(--muted); }

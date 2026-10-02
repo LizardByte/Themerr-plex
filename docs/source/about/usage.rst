@@ -85,6 +85,11 @@ preserved instead of reloading; the completion message tells you when the new sn
 **Activity** shows scheduled task starts, completion, duration, the upload queue, and per-item failure reasons.
 Its **Scan for themes** button also starts a processing scan when theme updates are enabled.
 
+The Overview's **ThemerrDB > Last deployed** indicator shows the age of its latest successful Pages deployment,
+not the last local library refresh. Hover over the age for the completion time, or follow the link to its workflow run.
+The GitHub check runs at most once per hour across page loads and application restarts, including failed checks.
+If GitHub is unavailable, the last known deployment remains visible with a warning until the next check.
+
 The search field's clear button removes just the title search, retaining the other filters. Plex and metadata IDs
 open the item on Plex or its metadata provider in a new tab. Media type icons remain visible beside theme playback.
 **Edit** appears for source video issues such as removal, privacy, or age restrictions. Local network, upload, and

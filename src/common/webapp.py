@@ -5,13 +5,15 @@ Responsible for serving the webapp.
 """
 # standard imports
 import copy
+from functools import lru_cache
+import hashlib
 import json
 import os
 import time
 
 # lib imports
 from flask import Flask, Response, make_response as _make_response, session
-from flask import jsonify, render_template as flask_render_template, request, send_from_directory
+from flask import jsonify, render_template as flask_render_template, request, send_from_directory, url_for
 from flask_babel import Babel
 from flask_wtf import CSRFProtect
 from plexapi import exceptions as plex_exceptions
@@ -71,6 +73,47 @@ jinja_functions = {
     'str': str,
 }
 app.jinja_env.globals.update(jinja_functions)
+
+
+@lru_cache(maxsize=8)
+def _asset_version(path: str, modified: int, size: int) -> str:
+    """Cache a content fingerprint until a browser asset changes on disk."""
+    with open(path, 'rb') as asset:
+        return hashlib.file_digest(asset, 'sha256').hexdigest()[:16]
+
+
+def asset_url(filename: str) -> str:
+    """Return a browser asset URL that changes when its compiled contents change.
+
+    Reuse the content fingerprint while the file's size and modification time are
+    unchanged. Missing files retain their normal URL so the browser can report them.
+
+    Parameters
+    ----------
+    filename : str
+        Compiled asset name supplied by the application template.
+
+    Returns
+    -------
+    str
+        Same-origin URL with a content fingerprint when the asset exists.
+
+    Examples
+    --------
+    >>> with app.test_request_context():
+    ...     asset_url('app.css').startswith('/web/assets/app.css')
+    True
+    """
+    path = os.path.join(app.static_folder, filename)
+    try:
+        stat = os.stat(path)
+        version = _asset_version(path, stat.st_mtime_ns, stat.st_size)
+    except OSError:
+        version = None
+    return url_for('static', filename=filename, v=version)
+
+
+app.jinja_env.globals['asset_url'] = asset_url
 
 # localization
 babel = Babel(

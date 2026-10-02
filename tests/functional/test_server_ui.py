@@ -69,9 +69,26 @@ def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(clie
     for identifier in ('a', 'b'):
         assert ('/api/servers/' + identifier + '/themes/42').encode() in page
         assert ('Title ' + identifier).encode() in page
+        server_url = 'https://app.plex.tv/desktop/#!/media/' + identifier + '/com.plexapp.plugins.library'
+        assert f'href="{server_url}" target="_blank" rel="noopener noreferrer"'.encode() in page
+        assert f'href="{server_url}?source=1" target="_blank" rel="noopener noreferrer"'.encode() in page
     assert page.count(b'B cannot update its theme') == 1
     assert b'Outdated from ThemerrDB' in page
     assert b'B cannot update its theme' in client.get('/activity').data
+
+
+def test_publication_api_requires_login_and_returns_cached_status(client, monkeypatch):
+    from themerr import github_status
+    status = {'updated_at': '2026-10-02T12:00:00+00:00', 'next_check': 12345, 'stale': False}
+    lookup = Mock(return_value=status)
+    monkeypatch.setattr(github_status, 'publication_status', lookup)
+    with webapp.app.test_client() as anonymous:
+        assert anonymous.get('/api/themerrdb').status_code == 401
+    lookup.assert_not_called()
+    result = client.get('/api/themerrdb')
+    assert result.status_code == 200 and result.json == status
+    assert result.headers['Cache-Control'] == 'no-store'
+    lookup.assert_called_once()
 
 
 def test_playback_selects_the_requested_server(client, monkeypatch):

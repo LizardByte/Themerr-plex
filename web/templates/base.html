@@ -7,7 +7,12 @@
     <meta name="color-scheme" content="dark">
     <title>{{ title or 'Overview' }} · Themerr</title>
     <link rel="icon" href="{{ url_for('image', img='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    <style>
+        html { background: #101217; color-scheme: dark; }
+        body { visibility: hidden; animation: stylesheet-fallback 0s 3s forwards; }
+        @keyframes stylesheet-fallback { to { visibility: visible; } }
+    </style>
+    <link rel="stylesheet" blocking="render" href="{{ asset_url('app.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body class="{{ 'app-body' if admin_username else 'auth-body' }}">
@@ -27,6 +32,6 @@
     </main>
     <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
     {% block modals %}{% endblock %}
-    <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+    <script defer src="{{ asset_url('app.js') }}"></script>
 </body>
 </html>

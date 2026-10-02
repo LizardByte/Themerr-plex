@@ -1,0 +1,54 @@
+import { api } from './api.js';
+
+export function publicationAge(date, now = Date.now(), locale = undefined) {
+    const seconds = (new Date(date).getTime() - now) / 1000;
+    if (!date || !Number.isFinite(seconds)) return null;
+    const absolute = Math.abs(seconds);
+    const [unit, divisor] = absolute >= 86400 ? ['day', 86400] : absolute >= 3600 ? ['hour', 3600] :
+        absolute >= 60 ? ['minute', 60] : ['second', 1];
+    return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(Math.round(seconds / divisor), unit);
+}
+
+export function initDatabaseStatus(root = document, query = () => api('/api/themerrdb', { method: 'GET' })) {
+    const status = root.querySelector('[data-database-status]');
+    if (!status) return;
+    const time = status.querySelector('[data-database-time]');
+    const link = status.querySelector('[data-database-link]');
+    const warning = status.querySelector('[data-database-stale]');
+    let snapshot;
+    let pollTimer;
+    let active = true;
+    function render() {
+        const age = publicationAge(snapshot?.updated_at);
+        time.textContent = age ?? status.dataset.unknownLabel;
+        if (age) {
+            const date = new Date(snapshot.updated_at);
+            time.dateTime = date.toISOString();
+            time.title = date.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'long' });
+        }
+        warning.hidden = !snapshot?.stale;
+        warning.title = status.dataset.staleLabel;
+        if (snapshot?.url) link.href = snapshot.url;
+    }
+    async function update() {
+        let delay = 3600000;
+        try {
+            snapshot = await query();
+            if (Number.isFinite(snapshot.next_check)) delay = Math.max(60000, snapshot.next_check * 1000 - Date.now());
+        } catch {
+            snapshot = { ...snapshot, stale: true };
+        } finally {
+            if (active) {
+                render();
+                pollTimer = setTimeout(update, delay);
+            }
+        }
+    }
+    const ageTimer = setInterval(() => { if (snapshot) render(); }, 60000);
+    window.addEventListener('pagehide', () => {
+        active = false;
+        clearTimeout(pollTimer);
+        clearInterval(ageTimer);
+    }, { once: true });
+    update();
+}
