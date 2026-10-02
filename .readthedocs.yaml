@@ -3,36 +3,25 @@
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
-# Required
 version: 2
 
-# Set the version of Python
 build:
-  os: ubuntu-20.04
+  os: ubuntu-26.04
   tools:
-    python: "2.7"
+    python: "3.14"
   jobs:
-    pre_build:
-      - python ./scripts/build_plist.py
-    post_build:
-      - rstcheck -r .  # lint rst files
-      # - rstfmt --check --diff -w 120 .  # check rst formatting
-
-# submodules required to include youtube-dl
-submodules:
-  include: all
-  recursive: true
-
-# Build documentation in the docs/ directory with Sphinx
-sphinx:
-  builder: html
-  configuration: docs/source/conf.py
-  fail_on_warning: true
-
-# Using Sphinx, build docs in additional formats
-formats: all
+    build:
+      html:
+        - |
+          uv run --no-sync python scripts/_locale.py --compile
+          uv run --no-sync dockle check
+          uv run --no-sync dockle build
+          mkdir -p "${READTHEDOCS_OUTPUT}html/"
+          cp -r _site/. "${READTHEDOCS_OUTPUT}html/"
 
 python:
   install:
-    - requirements: requirements.txt  # plugin requirements
-    - requirements: requirements-dev.txt  # docs requirements
+    - method: uv
+      command: sync
+      extras:
+        - docs

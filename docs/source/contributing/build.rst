@@ -2,82 +2,40 @@
 
 Build
 =====
-Compiling Themerr-plex is fairly simple; however it is recommended to use Python 2.7 since the Plex framework is using
-Python 2.7.
 
-Clone
------
-Ensure `git <https://git-scm.com/>`__ is installed and run the following:
+Themerr-plex uses Python 3.14, uv, npm, Deno, and Dockle. Python dependencies are specified in pyproject.toml and
+resolved in uv.lock. The npm lockfile supplies reproducible web assets. esbuild bundles browser dependencies and local
+scripts into ``web/assets``.
 
-   .. code-block:: bash
+From the repository root, install dependencies and compile translations:
 
-      git clone --recurse-submodules https://github.com/lizardbyte/themerr-plex.git themerr-plex.bundle
-      cd ./themerr-plex.bundle
+.. code-block:: shell
 
-Setup venv
-----------
-It is recommended to setup and activate a `venv`_.
+   uv sync --locked --all-extras
+   uv run --locked --all-extras python scripts/_locale.py --compile
+   npm ci --ignore-scripts
+   npm run build
 
-.. Apply Patches
-.. -------------
-.. Patch YouTube-DL
-..    .. code-block:: bash
-..
-..       pushd ./third-party/youtube-dl
-..       git apply -v ../../patches/youtube_dl-compat.patch
-..       popd
+For local development, run ``scripts/run_dev.py`` with the project's Python interpreter. The wrapper installs locked
+npm dependencies when needed, rebuilds changed browser assets and documentation when Dockle is available,
+and starts the Python source in the same process. Point an IDE debugger at this script to use normal breakpoints in
+``src``. It uses Deno from ``PATH`` or ``.build-tools``; if Deno is unavailable, yt-dlp can use Node instead.
 
-Install Requirements
---------------------
-Install Requirements
-   .. code-block:: bash
+.. code-block:: shell
 
-      python -m pip install --upgrade --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
+   uv run --locked --all-extras python scripts/run_dev.py --nolaunch
 
-Development Requirements
-   .. code-block:: bash
+Build the documentation and standalone executable:
 
-      python -m pip install -r requirements-dev.txt
+.. code-block:: shell
 
-Compile Translations
---------------------
-   .. code-block:: bash
+   uv run --locked --all-extras python -m dockle check
+   uv run --locked --all-extras python -m dockle build
+   uv run --locked --all-extras python scripts/build.py
 
-      python ./scripts/_locale.py --compile
+Dockle writes the site to _site. PyInstaller includes that site, the web assets, and translations in the
+executable under dist, including Deno for yt-dlp. Docker uses the same lockfile and Dockle build:
 
-Build Plist
------------
-   .. code-block:: bash
+.. code-block:: shell
 
-      python ./scripts/build_plist.py
-
-npm dependencies
-----------------
-Install nodejs and npm. Downloads available `here <https://nodejs.org/en/download/>`__.
-
-Install npm dependencies.
-   .. code-block:: bash
-
-      npm install
-
-Move modules directory.
-   Linux/macOS
-      .. code-block:: bash
-
-         mv ./node_modules ./Contents/Resources/web
-
-   Windows
-      .. code-block:: batch
-
-         move .\node_modules .\Contents\Resources\web
-
-Remote Build
-------------
-It may be beneficial to build remotely in some cases. This will enable easier building on different operating systems.
-
-#. Fork the project
-#. Activate workflows
-#. Trigger the `CI` workflow manually
-#. Download the artifacts from the workflow run summary
-
-.. _venv: https://docs.python.org/3/library/venv.html
+   docker build -t themerr-plex .

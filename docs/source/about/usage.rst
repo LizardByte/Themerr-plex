@@ -3,359 +3,167 @@
 Usage
 =====
 
-Minimal setup is required to use Themerr-plex. In addition to the installation, a couple of settings must be configured.
-
-   #. Navigate to the `Plugins` menu within the Plex server settings.
-   #. Select the gear cog when hovering over the Themerr-plex plugin tile.
-   #. Set the values of the preferences and save.
-
-      .. Warning:: Plex stores configuration values in the log. If you upload your logs for support, it would be wise to
-         review the data in the log file.
-
-   #. For legacy agents and plugins, enable `Themerr-plex` in your agent settings. This is not necessary for the
-      new Plex Movie agent.
-   #. Refresh Metadata
-
-.. Note:: If a movie's metadata was refreshed and no theme song was added, it is most likely that the movie is not in
-   the database. Please see :ref:`contributing/database <contributing/database:database>` for information on how to
-   contribute.
-
-.. Attention:: It may take several minutes after completing a metadata refresh for a theme song to be available.
-
-Web UI
-------
-
-A web interface is provided by the plugin. Currently the web ui only provides a couple of end points.
-
-/ (root)
-^^^^^^^^
-
-This endpoint will display a report showing the theme song status for each item in a library supported by Themerr-plex.
-A supported library is any that has the default agent as one supported by Themerr-plex.
-
-The report provides an easy means to contribute to `ThemerrDB <https://github.com/LizardByte/ThemerrDB>`__ by providing
-`Add/Edit` buttons for items that can be added to ThemerrDB.
-
-/status
-^^^^^^^
-
-An endpoint that provides a JSON response. If a valid response is returned, Themerr-plex is running.
-
-**Example Response**
-
-.. code-block:: json
-
-   {
-     "message":"Ok",
-     "result":"success"
-   }
-
-Preferences
------------
-
-Plex Movie agent support
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will add themes to movies using the Plex Movie agent. This is the new agent that is
-   not using the Plex plugin framework, so Themerr-plex cannot contribute to this agent with standard techniques.
-   Instead Themerr-plex will start a websocket server and listen for events from the Plex server. Whenever a movie
-   is added or has it's metadata refreshed, Themerr-plex will attempt to add a theme song to the movie (if the theme
-   song is available in ThemerrDB).
-
-Default
-   ``True``
-
-Plex Series agent support
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will add themes to shows using the Plex Series agent. This is the new agent that is
-   not using the Plex plugin framework, so Themerr-plex cannot contribute to this agent with standard techniques.
-   Instead Themerr-plex will start a websocket server and listen for events from the Plex server. Whenever a show
-   is added or has it's metadata refreshed, Themerr-plex will attempt to add a theme song to the show (if the theme
-   song is available in ThemerrDB).
-
-Default
-   ``True``
-
-Overwrite Plex provided themes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will overwrite any TV Show theme songs provided by Plex.
-
-Default
-   ``False``
-
-Prefer MP4A AAC Codec
-^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   Some Plex clients, such as AppleTV, do not support the Opus audio codec for theme songs. This setting will
-   force Themerr to select the MP4A AAC codec over the Opus codec when both are available. If the MP4A AAC codec is
-   not available, the Opus codec will be used and the theme song will not be playable on clients that do not support
-   the Opus codec.
-
-Default
-   ``True``
-
-Remove unused theme songs
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When Themerr-plex uploads a theme song to the Plex server, it will remove any existing theme songs for the same
-   item. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory. This will only remove
-   items that were uploaded by Themerr-plex or via the hidden Plex rest API method, it will not affect local media
-   assets.
-
-Default
-   ``True``
-
-Remove unused art
-^^^^^^^^^^^^^^^^^
-
-Description
-   When Themerr-plex uploads art to the Plex server, it will remove any existing art for the same
-   item. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory. This will only remove
-   items that are user uploaded, it will not affect items added by metadata agents or local media assets.
-
-Default
-   ``False``
-
-Remove unused posters
-^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When Themerr-plex uploads posters to the Plex server, it will remove any existing posters for the same
-   item. With this setting enabled, Themerr-plex can free up space in Plex's metadata directory. This will only remove
-   items that are user uploaded, it will not affect items added by metadata agents or local media assets.
-
-Default
-   ``False``
-
-Automatically update items
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will periodically check for changes in ThemerrDB and apply the changes to the items in
-   your Plex Media Server automatically.
-
-Default
-   ``True``
-
-Update movie themes during automatic update
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will update movie themes during automatic updates.
-
-Default
-   ``True``
-
-Update tv show themes during automatic update
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will update tv show themes during automatic updates.
-
-Default
-   ``True``
-
-Update collection themes during automatic update
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will update collection themes during automatic updates.
-
-Default
-   ``True``
-
-Update collection metadata for Plex Movie agent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will update collection metadata for the Plex Movie agent during automatic updates.
-   Requires ``Update collection themes during automatic update`` to be enabled.
-
-Default
-   ``False``
-
-Update collection metadata for legacy agents
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will update collection metadata for legacy agents during automatic updates. Themerr-plex
-   must also be enabled in the agent settings.
-   Requires ``Update collection themes during automatic update`` to be enabled.
-
-Default
-   ``True``
-
-Interval for automatic update task
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   The interval (in minutes) to run the automatic update task.
-
-Default
-   ``60``
-
-Minimum
-   ``15``
-
-Interval for database cache update task
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   The interval (in minutes) to run the database cache update task. This data is used to display the Web UI dashboard.
-
-Default
-   ``60``
-
-Minimum
-   ``15``
-
-PlexAPI Timeout
-^^^^^^^^^^^^^^^
-
-Description
-   The timeout (in seconds) when uploading media to the Plex server.
-
-Default
-   ``180``
-
-Minimum
-   ``1``
-
-Max Retries
-^^^^^^^^^^^
-
-Description
-   The number of times to retry uploading theme audio to the Plex server. The time between retries will increase
-   exponentially. The time between is calculated as ``2 ^ retry_number``. For example, the first retry will occur
-   after 2 seconds, the second retry will occur after 4 seconds, and the third retry will occur after 8 seconds.
-
-Default
-   ``6``
-
-Minimum
-   ``0``
-
-Multiprocessing Threads
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   The number of simultaneous themes to upload for libraries using the Plex Movie agent. Does not apply to legacy
-   agents or plugin agents.
-
-Default
-   ``3``
-
-Minimum
-   ``1``
-
-YouTube Cookies
-^^^^^^^^^^^^^^^^
-
-Description
-   The cookies to use for the requests to YouTube. Should be in Chromium JSON export format.
-   `Example exporter <https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid>`__.
-
-Default
-   None
-
-Web UI Locale
-^^^^^^^^^^^^^
-
-Description
-   The localization value to use for translations.
-
-Default
-   ``en``
-
-Web UI Host Address
-^^^^^^^^^^^^^^^^^^^
-
-Description
-   The host address to bind the Web UI to.
-
-.. Attention::
-   Changing this value requires a Plex Media Server restart.
-
-Default
-   ``0.0.0.0``
-
-Web UI Port
-^^^^^^^^^^^
-
-Description
-   The port to bind the Web UI to.
-
-.. Attention::
-   Changing this value requires a Plex Media Server restart.
-
-Default
-   ``9494``
-
-Log all web server messages
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   If set to ``True``, all web server messages will be logged. This will include logging requests and status codes when
-   requesting any resource. It is recommended to keep this disabled unless debugging.
-
-.. Attention::
-   Changing this value requires a Plex Media Server restart.
-
-Default
-   ``False``
-
-Migrate from < v0.3.0
-^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   Prior to v0.3.0, Themerr-plex uploaded themes were locked and there was no way to determine if a theme was supplied
-   by Themerr-plex. Therefore, if you used Themerr-plex prior to v0.3.0, you will need to enable this setting to
-   automatically unlock all existing themes (for agents that Themerr-plex supports). Once the migration has completed,
-   the unlock function will never run again.
-
-   If you see many of the ``Unknown provider`` status in the web UI, it is a good indication that you need to enable
-   this option, unless you have many themes provided by other tools.
-
-Default
-   ``False``
-
-Migrate themes from < v0.3.0
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   Prior to v0.3.0, Themerr-plex uploaded themes were locked and there was no way to determine if a theme was supplied
-   by Themerr-plex. Therefore, if you used Themerr-plex prior to v0.3.0, you will need to enable this setting to
-   automatically unlock all existing themes (for agents that Themerr-plex supports). Once the migration has completed,
-   the unlock function will never run again.
-
-   If you see many of the ``Unknown provider`` status in the web UI, it is a good indication that you need to enable
-   this option, unless you have many themes provided by other tools.
-
-Default
-   ``False``
-
-Migrate collection metadata from < v0.3.0
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Description
-   Prior to v0.3.0, fields for collections modified by Themerr-plex were locked which leads to an issue in v0.3.0
-   and newer, since Themerr-plex will not update locked fields.
-
-Default
-   ``False``
-
-Ignore locked fields
-^^^^^^^^^^^^^^^^^^^^
-
-Description
-   When enabled, Themerr-plex will ignore locked fields when updating themes and collection metadata.
-
-Default
-   ``False``
+Start Themerr-plex, then open its web UI at https://localhost:9494 (or the host and port you configured).
+
+Admin account
+-------------
+
+On first start, Themerr-plex prints a one-time setup link in the console and opens it if browser launching is enabled.
+Use this link to create the installation's single admin account with a password of at least 12 characters.
+For a remote or Docker installation, replace ``127.0.0.1`` in the link with the reachable hostname, retaining the setup
+token. Opening the normal address before setup shows instructions for obtaining this link.
+
+The admin password is stored as a salted scrypt hash in SQLite. Sign in with this account to access libraries,
+settings, server connections, theme playback, and bundled documentation. Sessions expire after 12 hours of inactivity and
+restarting the application signs them out. Every form and modifying API request requires a CSRF token, and the
+web UI cannot be embedded in an iframe.
+
+Change your password under **Settings > Security**. This signs out other sessions. If you forget it, stop the
+application and run its executable with ``--reset-admin-password`` from a local console. For a source checkout:
+
+.. code-block:: shell
+
+   uv run --locked python src/themerr_plex.py --reset-admin-password
+
+Supply ``--config`` if you normally use a different configuration file. The command prompts for a new password
+without echoing it and exits without starting the server.
+
+Plex servers
+------------
+
+Open **Servers**, select **Sign in with Plex**, complete the sign-in in the Plex browser window, and return to Themerr.
+The application admin account and your Plex account have separate roles: the former protects the web UI;
+the latter authorizes access to your Plex servers. Plex sign-in is the only way to authorize a server connection.
+
+Select **Find account servers** to list servers available to your account, including shared servers. Choose a
+reachable address from the server's connection list and select **Connect**. Repeat for each server you want to manage.
+You can also use **Discover on LAN** to find Plex's GDM announcements, or enter an HTTP or HTTPS base address
+manually, such as ``http://192.168.1.10:32400``. Discovery and manual addresses still require access through your
+signed-in Plex account. LAN discovery depends on multicast traffic reaching the machine running Themerr;
+containers and separate subnets may need the manual address option.
+
+Account discovery lists advertised addresses; it does not confirm that they are reachable. The connection list
+labels local, remote, and relay addresses and their HTTP or HTTPS protocol. Plex's advertised ``https://...plex.direct``
+addresses use its server certificate. Changing such an address to ``https://IP:32400`` can cause a certificate
+mismatch. See `Plex secure connections <https://support.plex.tv/articles/206225077-how-to-use-secure-server-connections/>`_.
+You can enter a known HTTP address manually if your Plex server allows insecure connections.
+
+If LAN discovery finds nothing, check **Enable local network discovery (GDM)** in Plex's network settings and
+whether multicast can reach Themerr's machine. If connecting times out, verify the chosen address and port are
+reachable from that machine, including its firewall and network route. Re-pairing Plex will not fix an unreachable
+server address.
+
+Each saved server has its own processing toggle, ignored library IDs, data directory, dashboard snapshot,
+upload history, and errors. Pausing a server prevents new work; an upload already in progress can finish.
+Removing a server erases its saved connection and local records, while themes already uploaded to Plex remain there.
+Select **Disconnect Plex** to erase Plex credentials and pause saved servers. After signing in again, reconnect
+each server to resume processing with its retained upload history.
+
+On desktop systems, account and server tokens are saved in the operating system's credential store.
+For Docker or headless systems, provide ``THEMERR_PLEX_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
+the configuration directory. Themerr-plex uses that key to encrypt tokens stored in SQLite. Keep the key file private;
+losing it requires signing in again. Docker sign-in requires this key file.
+
+Expand **Processing settings** on a server card to set its Plex data directory if you want Themerr-plex to remove
+older uploaded media from Plex's metadata directory. Use the folder button to browse directories on the machine
+running Themerr-plex. The same button is available for the log directory in Settings.
+
+When Themerr-plex runs on another machine, use the Plex server's reachable URL and mount its data directory if you
+want this cleanup. Otherwise, disable the three **Remove unused** settings.
+
+Enable movie, series, and collection updates as needed. Themerr-plex listens for supported Plex library
+events and also scans on the configured schedule. The home page reports theme status for each supported
+library item and links to ThemerrDB contribution forms when a TMDB ID is known. It shows an IMDb or TVDB ID when Plex
+supplies one but a TMDB ID cannot be resolved. A Plex ID is shown for collections without a verified external ID;
+Plex's ``collection://`` GUID is local to the server. Themes with no matching provider or Themerr upload record are
+labeled **Unknown provider**. Themerr can replace these themes when a matching theme exists in ThemerrDB and
+the overwrite settings allow it.
+
+Use the Overview search and server, type, and status filters to find individual items. **Refresh libraries** updates
+the dashboard and reloads the page when the refresh finishes, retaining those filters. Active theme playback is
+preserved instead of reloading; the completion message tells you when the new snapshot is ready.
+**Activity** shows scheduled task starts, completion, duration, the upload queue, and per-item failure reasons.
+Its **Scan for themes** button also starts a processing scan when theme updates are enabled.
+
+The Overview's **ThemerrDB > Last deployed** indicator shows the age of its latest successful Pages deployment,
+not the last local library refresh. Hover over the age for the completion time, or follow the link to its workflow run.
+The GitHub check runs at most once per hour across page loads and application restarts, including failed checks.
+If GitHub is unavailable, the last known deployment remains visible with a warning until the next check.
+
+The search field's clear button removes just the title search, retaining the other filters. Plex and metadata IDs
+open the item on Plex or its metadata provider in a new tab. Media type icons remain visible beside theme playback.
+**Edit** appears for source video issues such as removal, privacy, or age restrictions. Local network, upload, and
+regional failures do not by themselves require replacing the ThemerrDB video. ThemerrDB checks US availability
+when accepting themes; a regional failure elsewhere cannot establish that it is currently unavailable in the US.
+
+Select the play button beside an item's title to listen to its currently selected Plex theme, regardless of provider.
+The button changes to pause during playback, and the ring around it shows playback progress. Pausing retains your
+position; selecting another item stops the previous theme. Items without an installed theme have no play button.
+
+To exclude a library from updates, enter its ID in **Ignored library IDs** in its server's processing settings.
+The home page shows each library's ID beside its name. Separate multiple IDs with commas.
+
+TMDB IDs for titles already in ThemerrDB are resolved from ThemerrDB's index. Movie collections can also be resolved
+from matching collection metadata on their member movies. Themerr-plex asks the item's Plex server's TMDB proxy to
+resolve other IMDb or TVDB IDs and collection names. If the Plex proxy is unavailable, you can set the optional
+``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
+web settings and configuration file.
+
+Local data
+----------
+
+Themerr-plex stores its server registry, admin password hash, dashboard snapshots, upload records, processing errors,
+and non-secret Plex client ID in
+``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
+``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted Plex tokens there.
+
+The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
+bundled with packaged and Docker builds.
+
+YouTube cookies
+---------------
+
+Cookies are optional. They can help when YouTube asks you to sign in or rejects anonymous requests.
+The **YouTube Cookies** setting accepts a JSON array of browser cookies. Paste the exported contents, including
+the opening ``[`` and closing ``]``. A file path, a ``Cookie:`` request header, and Netscape ``cookies.txt`` contents
+are not accepted by this setting.
+
+For Chrome or another compatible Chromium browser:
+
+1. Install `Get cookies.txt LOCALLY
+   <https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc>`_,
+   which is linked from the `yt-dlp cookie guide
+   <https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp>`_.
+   In the browser's extension settings, allow this extension in incognito/private windows.
+2. Open a new incognito/private window and visit YouTube. Sign in if the video requires an account.
+3. In that same tab, visit https://www.youtube.com/robots.txt. Keep it as the only tab in the private window.
+4. Open the extension, set **Export Format** to **JSON**, and select **Copy** or **Export** for the current site.
+   If you export a file, open it in a text editor and copy its entire contents. Avoid **Export All Cookies**;
+   Themerr-plex only needs the YouTube cookies.
+5. Close the private window. These steps follow `yt-dlp's YouTube export guidance
+   <https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies>`_ to reduce cookie rotation.
+6. In Themerr-plex, open **Settings** and find **YouTube Cookies** in the **Themerr** section. Paste the JSON and
+   select **Save changes**. It will be used on the next extraction; a restart is not required.
+
+If YouTube starts asking you to sign in again, repeat the export and replace the saved JSON.
+Cookies cannot make a deleted or unavailable video accessible.
+
+Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr-plex
+configuration private, and never include cookie values in screenshots, logs, or issue reports.
+Themerr-plex converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
+each extraction; the JSON remains in the configuration until you clear the setting and save.
+
+Theme format
+------------
+
+Themerr-plex selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
+Plex clients that cannot play Opus theme audio. If MP4A is unavailable, Opus is used.
+
+Themes are skipped on later jobs unless the source changes or the AAC preference requires a different codec.
+Locked themes and the setting for preserving Plex-provided themes still apply. A failed replacement keeps the
+previous theme.
+
+.. note::
+
+   A theme can only be added when its item exists in ThemerrDB. See
+   :ref:`contributing/database <contributing/database:database>` to contribute a missing theme.

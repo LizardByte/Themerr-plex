@@ -1,0 +1,4 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="empty-state"><span class="empty-icon"><i data-lucide="library"></i></span><h1>{{ _('Your library is on its way.') }}</h1><p>{{ _('The first refresh builds your library view. You can follow progress in Activity.') }}</p><a class="btn btn-primary" href="{{ url_for('server_ui.activity') }}">{{ _('View activity') }}</a></section>
+{% endblock %}

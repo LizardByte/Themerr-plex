@@ -1,0 +1,207 @@
+---
+name: CI
+permissions: {}
+
+env:
+  PYTHON_VERSION: '3.14'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  setup_release:
+    name: Setup Release
+    outputs:
+      publish_release: ${{ steps.setup_release.outputs.publish_release }}
+      release_body: ${{ steps.setup_release.outputs.release_body }}
+      release_commit: ${{ steps.setup_release.outputs.release_commit }}
+      release_generate_release_notes: ${{ steps.setup_release.outputs.release_generate_release_notes }}
+      release_tag: ${{ steps.setup_release.outputs.release_tag }}
+      release_version: ${{ steps.setup_release.outputs.release_version }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Setup Release
+        id: setup_release
+        uses: LizardByte/actions/actions/release_setup@39c468549cfb87ccb917e5e5342e18abc926dc48  # v2026.909.30231
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-docker:
+    name: Docker
+    needs: setup_release
+    permissions:
+      contents: read
+      packages: write
+    uses: LizardByte/.github/.github/workflows/__call-docker.yml@master
+    with:
+      docker_hub_username: ${{ vars.DOCKER_HUB_USERNAME }}
+      gh_bot_name: ${{ vars.GH_BOT_NAME }}
+      publish_release: ${{ needs.setup_release.outputs.publish_release }}
+      release_commit: ${{ needs.setup_release.outputs.release_commit }}
+      release_tag: ${{ needs.setup_release.outputs.release_tag }}
+      release_version: ${{ needs.setup_release.outputs.release_version }}
+    secrets:
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    needs:
+      - setup_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2022
+          - ubuntu-22.04
+          - macos-14
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+        with:
+          enable-cache: true
+
+      - name: Install Deno for YouTube support
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed  # v2.0.5
+        with:
+          deno-version: 2.9.7
+
+      - name: Setup Python Dependencies
+        run: >-
+          uv sync --locked --all-extras --no-build --no-install-project
+          --no-python-downloads --python ${{ env.PYTHON_VERSION }}
+
+      - name: Compile Locale Translations
+        run: uv run --locked --all-extras --no-build --no-sync python ./scripts/_locale.py --compile
+
+      - name: Build and test web assets
+        run: |
+          npm ci --ignore-scripts
+          npm run build
+          npm test
+
+      - name: Build Docs with Dockle
+        run: |
+          uv run --locked --all-extras --no-build --no-sync python -m dockle check
+          uv run --locked --all-extras --no-build --no-sync python -m dockle build
+
+      - name: Set up virtual desktop
+        if: runner.os == 'Linux'
+        uses: LizardByte/actions/actions/virtual_desktop@28374bf43cc8b6ee88b9b8a3419b2ac7a6573906
+        with:
+          environment: fluxbox
+
+      - name: Test with pytest
+        id: test
+        run: uv run --locked --all-extras --no-build --no-sync python -m pytest
+
+      - name: Upload coverage
+        if: >-
+          always() &&
+          (steps.test.outcome == 'success' || steps.test.outcome == 'failure') &&
+          startsWith(github.repository, 'LizardByte/')
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
+        with:
+          fail_ci_if_error: true
+          files: ./coverage/python-coverage.xml
+          flags: "${{ runner.os }}"
+          report_type: coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+
+      - name: Upload test results
+        if: >-
+          always() &&
+          (steps.test.outcome == 'success' || steps.test.outcome == 'failure') &&
+          startsWith(github.repository, 'LizardByte/')
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
+        with:
+          fail_ci_if_error: true
+          files: ./junit-python.xml
+          flags: "${{ runner.os }}"
+          report_type: test_results
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+
+      - name: Build pyinstaller package
+        run: uv run --locked --all-extras --no-build --no-sync python ./scripts/build.py
+
+      - name: Smoke test executable
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            ./dist/themerr_plex.exe --help
+          else
+            ./dist/themerr_plex --help
+          fi
+
+      - name: Package Release
+        run: |
+          7z a "./Themerr-plex_${{ runner.os }}.zip" "dist"
+
+          mkdir artifacts
+          mv "./Themerr-plex_${{ runner.os }}.zip" ./artifacts/
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: Themerr-plex_${{ runner.os }}
+          if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
+          path: |
+            ${{ github.workspace }}/artifacts
+
+  release:
+    name: Create GitHub Release
+    needs:
+      - setup_release
+      - build
+    if: ${{ needs.setup_release.outputs.publish_release == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131  # v7.0.0
+        with:
+          pattern: Themerr-plex_*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: LizardByte/actions/actions/release_create@39c468549cfb87ccb917e5e5342e18abc926dc48  # v2026.909.30231
+        with:
+          allowUpdates: false
+          body: ${{ needs.setup_release.outputs.release_body }}
+          generateReleaseNotes: ${{ needs.setup_release.outputs.release_generate_release_notes }}
+          name: ${{ needs.setup_release.outputs.release_tag }}
+          prerelease: true
+          tag: ${{ needs.setup_release.outputs.release_tag }}
+          token: ${{ secrets.GH_BOT_TOKEN }}
+          virustotal_api_key: ${{ secrets.VIRUSTOTAL_API_KEY }}

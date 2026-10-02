@@ -1,14 +1,18 @@
 ---
 name: localize
 
+env:
+  PYTHON_VERSION: '3.14'
+
 on:
   push:
-    branches: [master]
+    branches:
+      - master
     paths:  # prevents workflow from running unless these files change
       - '.github/workflows/localize.yml'
-      - 'Contents/Strings/Themerr-plex.po'
-      - 'Contents/Code/**.py'
-      - 'Contents/Resources/web/templates/**'
+      - 'locale/themerr-plex.po'
+      - 'src/**.py'
+      - 'web/templates/**'
   workflow_dispatch:
 
 jobs:
@@ -18,23 +22,21 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
-      - name: Set up Python
-        uses: LizardByte/setup-python-action@v2024.609.5111
+      - name: Install Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
-          python-version: '2.7'
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Set up Python Dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools requests
-          python -m pip install -r requirements.txt  # requests is required to install python-plexapi
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+
+      - name: Setup Python Dependencies
+        run: uv sync --locked --no-build --no-install-project --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Update Strings
-        run: |
-          python ./scripts/_locale.py --extract
+        run: uv run --locked --no-build --no-sync python ./scripts/_locale.py --extract
 
       - name: git diff
         run: |
@@ -42,26 +44,25 @@ jobs:
           git config --global pager.diff false
 
           # print the git diff
-          git diff Contents/Strings/themerr-plex.po
+          git diff locale/themerr-plex.po
 
           # set the variable with minimal output, replacing `\t` with ` `
-          OUTPUT=$(git diff --numstat Contents/Strings/themerr-plex.po | sed -e "s#\t# #g")
-          echo "git_diff=${OUTPUT}" >> $GITHUB_ENV
+          OUTPUT=$(git diff --numstat locale/themerr-plex.po | sed -e "s#\t# #g")
+          echo "git_diff=${OUTPUT}" >> "$GITHUB_ENV"
 
       - name: git reset
-        if: ${{ env.git_diff == '1 1 Contents/Strings/themerr-plex.po' }}  # only run if more than 1 line changed
-        run: |
-          git reset --hard
+        if: ${{ env.git_diff == '1 1 locale/themerr-plex.po' }}  # only run if more than 1 line changed
+        run: git reset --hard
 
       - name: Get current date
         id: date
-        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
       - name: Create/Update Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
         with:
           add-paths: |
-            Contents/Strings/*.po
+            locale/*.po
           token: ${{ secrets.GH_BOT_TOKEN }}  # must trigger PR tests
           commit-message: "chore(l10n): new babel updates"
           branch: localize/update

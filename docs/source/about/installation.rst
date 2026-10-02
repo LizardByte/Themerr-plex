@@ -2,32 +2,39 @@
 
 Installation
 ============
-The recommended method for running Themerr-plex is to use the `bundle`_ in the `latest release`_.
 
-Bundle
-------
-The bundle is cross platform, meaning Linux, macOS, and Windows are supported.
+Themerr-plex runs as a separate application alongside Plex Media Server. It does not use the Plex plug-in framework.
+The application needs network access to Plex, ThemerrDB, and YouTube. To remove old plug-in behavior, stop Plex,
+remove the old Themerr-plex bundle from its Plug-Ins directory, and restart Plex before starting the standalone app.
 
-#. Download the ``themerr-plex.bundle.zip`` from the `latest release`_
-#. Extract the contents to your Plex Media Server Plugins directory.
+Release archive
+---------------
 
-.. Tip:: See
-   `How do I find the Plug-Ins folder <https://support.plex.tv/articles/201106098-how-do-i-find-the-plug-ins-folder>`__
-   for information specific to your Plex server install.
+Download the archive for your operating system from https://github.com/LizardByte/Themerr-plex/releases/latest,
+extract it, and run the themerr_plex executable. Deno is bundled for yt-dlp's YouTube challenge solver. Open the web UI
+at https://localhost:9494 to configure the
+Plex URL and sign in through Plex. Set the Plex data directory only if you want to remove old uploaded media.
+The default web server uses a locally generated certificate,
+so your browser may ask you to trust it.
 
 Docker
 ------
-Docker images are available on `Dockerhub`_ and `ghcr.io`_.
 
-See :ref:`Docker <about/docker:docker>` for additional information.
+Docker images are available from Docker Hub and GitHub Container Registry. See :ref:`Docker <about/docker:docker>`
+for volume and port settings.
 
 Source
 ------
-.. Caution:: Installing from source is not recommended most users.
 
-#. Follow the steps in :ref:`Build <contributing/build:build>`.
-#. Move the compiled ``themerr-plex.bundle`` to your Plex Media Server Plugins directory.
+Install Python 3.14, uv, npm, and `Deno <https://docs.deno.com/runtime/getting_started/installation/>`_ 2.3 or newer.
+Then run from the repository root:
 
-.. _latest release: https://github.com/LizardByte/Themerr-plex/releases/latest
-.. _Dockerhub: https://hub.docker.com/repository/docker/lizardbyte/themerr-plex
-.. _ghcr.io: https://github.com/orgs/LizardByte/packages?repo_name=themerr-plex
+.. code-block:: shell
+
+   uv sync --locked
+   uv run --locked python scripts/_locale.py --compile
+   npm ci --ignore-scripts
+   npm run build
+   uv run --locked python src/themerr_plex.py
+
+For a packaged build with web assets and documentation, see :ref:`Build <contributing/build:build>`.

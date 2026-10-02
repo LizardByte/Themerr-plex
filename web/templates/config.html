@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% macro setting_field(section, key, spec) %}
+{% set value = config_settings[section][key] %}
+<div class="setting-row {{ 'setting-row-switch' if spec.type == 'boolean' }}">
+    <div class="setting-description"><label for="{{ key }}">{{ spec.name }}</label><p id="{{ key }}-help">{{ spec.description }}{% if spec.help_url %} <a href="{{ spec.help_url }}" target="_blank" rel="noopener noreferrer">{{ spec.help_label }}<i data-lucide="arrow-up-right"></i></a>{% endif %}</p></div>
+    <div class="setting-control">
+        {% if spec.type == 'boolean' %}<input id="{{ key }}" type="checkbox" class="form-check-input" category="{{ section }}" aria-describedby="{{ key }}-help" {% if value %}checked{% endif %}>
+        {% elif spec.type == 'option' %}<select id="{{ key }}" class="form-select" category="{{ section }}" aria-describedby="{{ key }}-help">{% for option in spec.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ spec.option_names[loop.index0] }}</option>{% endfor %}</select>
+        {% else %}
+        <div class="{{ 'input-group' if spec.button_directory }}">
+            <input id="{{ key }}" category="{{ section }}" class="form-control" value="{{ value }}" aria-describedby="{{ key }}-help"
+                type="{{ 'number' if spec.type in ['integer','float'] else 'password' if spec.mask else 'text' }}"
+                {% if spec.type in ['integer','float'] %}step="{{ '1' if spec.type == 'integer' else 'any' }}"{% if spec.min is number %} min="{{ spec.min }}"{% endif %}{% if spec.max is number %} max="{{ spec.max }}"{% endif %}{% endif %}
+                {% if spec.pattern %}pattern="{{ spec.pattern }}"{% endif %}>
+            {% if spec.button_directory %}<button type="button" class="btn btn-outline-light" data-directory-target="{{ key }}" aria-label="{{ _('Browse directories for') }} {{ spec.name }}"><i data-lucide="folder-open" aria-hidden="true"></i></button>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">{{ _('TUNE YOUR WORKSPACE') }}</span><h1>{{ _('Settings') }}<span class="heading-dot">.</span></h1><p>{{ _('Make Themerr work the way your library does.') }}</p></div></div>
+<div class="settings-layout">
+    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for key in ['Themerr','General','Logging','Network'] %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ config_spec[key].name }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
+    <div class="settings-content">
+        <form id="configForm" data-csrf-token="{{ csrf_token() }}" method="post">
+        {% for section in ['Themerr','General','Logging','Network'] %}
+            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ config_spec[section].name }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else config_spec[section].description }}</p></div></div>
+                {% for key, spec in config_spec[section].items() %}{% if spec is mapping and not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' %}{{ setting_field(section, key, spec) }}{% endif %}{% endfor %}
+            </section>
+        {% endfor %}
+        </form>
+        <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem"><i data-lucide="shield-check"></i></span></div>
+            <form id="password-form" class="password-form"><label for="current-password">{{ _('Current password') }}</label><input id="current-password" name="current_password" type="password" class="form-control" autocomplete="current-password" required maxlength="256"><label for="new-password">{{ _('New password') }}</label><input id="new-password" name="password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><label for="confirm-new-password">{{ _('Confirm new password') }}</label><input id="confirm-new-password" name="confirm_password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><button type="submit" class="btn btn-outline-light">{{ _('Change password') }}</button></form>
+        </section>
+        <div class="settings-save-bar"><output id="settings-save-status" class="save-status">{{ _('All changes saved.') }}</output><button id="save-button" type="submit" form="configForm" class="btn btn-primary" disabled><i data-lucide="check"></i>{{ _('Save changes') }}</button></div>
+    </div>
+</div>
+{% endblock %}
+{% block modals %}{% include 'directory_picker.html' %}{% endblock %}

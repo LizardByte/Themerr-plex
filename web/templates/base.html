@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="dark">
+    <title>{{ title or 'Overview' }} · Themerr</title>
+    <link rel="icon" href="{{ url_for('image', img='favicon.ico') }}">
+    <style>
+        html { background: #101217; color-scheme: dark; }
+        body { visibility: hidden; animation: stylesheet-fallback 0s 3s forwards; }
+        @keyframes stylesheet-fallback { to { visibility: visible; } }
+    </style>
+    <link rel="stylesheet" blocking="render" href="{{ asset_url('app.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="{{ 'app-body' if admin_username else 'auth-body' }}">
+    <a class="skip-link" href="#main-content">{{ _('Skip to content') }}</a>
+    {% if admin_username %}{% include 'navbar.html' %}{% endif %}
+    <main id="main-content" class="{{ 'workspace' if admin_username else 'auth-workspace' }}" tabindex="-1">
+        {% if admin_username %}
+        <header class="workspace-header">
+            <div class="d-flex align-items-center gap-3">
+                <button class="icon-button mobile-menu" type="button" data-sidebar-toggle aria-label="{{ _('Toggle navigation') }}" aria-expanded="false"><i data-lucide="menu"></i></button>
+                <span class="workspace-breadcrumb">{{ _('Workspace') }} <span>/</span> <strong>{{ title }}</strong></span>
+            </div>
+            <span class="workspace-account"><span class="presence-dot"></span>{{ admin_username }}</span>
+        </header>
+        {% endif %}
+        <div class="{{ 'page-content' if admin_username else '' }}">{% block content %}{% endblock %}</div>
+    </main>
+    <output id="toast-region" class="toast-region" aria-live="polite"></output>
+    {% block modals %}{% endblock %}
+    <script defer src="{{ asset_url('app.js') }}"></script>
+</body>
+</html>

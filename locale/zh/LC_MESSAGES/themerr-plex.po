@@ -1,0 +1,139 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
+"POT-Creation-Date: 2024-03-15 14:05+0000\n"
+"PO-Revision-Date: 2024-03-16 18:25\n"
+"Last-Translator: \n"
+"Language-Team: Chinese Simplified\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: zh_CN\n"
+
+#: Contents/Resources/web/templates/home.html:35
+msgid "Games"
+msgstr "游戏"
+
+#: Contents/Resources/web/templates/home.html:37
+msgid "Movies"
+msgstr "电影"
+
+#: Contents/Resources/web/templates/home.html:39
+msgid "Shows"
+msgstr "电视"
+
+#: Contents/Resources/web/templates/home.html:41
+msgid "Artists"
+msgstr "艺人"
+
+#: Contents/Resources/web/templates/home.html:43
+msgid "Photos"
+msgstr "照片"
+
+#: Contents/Resources/web/templates/home.html:45
+msgid "Items"
+msgstr "项目"
+
+#: Contents/Resources/web/templates/home.html:88
+msgid "Collections"
+msgstr "合集"
+
+#: Contents/Resources/web/templates/home.html:108
+msgid "Title"
+msgstr "标题"
+
+#: Contents/Resources/web/templates/home.html:109
+msgid "Type"
+msgstr "类型"
+
+#: Contents/Resources/web/templates/home.html:110
+msgid "Year"
+msgstr "年份"
+
+#: Contents/Resources/web/templates/home.html:111
+msgid "Contribute"
+msgstr "贡献"
+
+#: Contents/Resources/web/templates/home.html:112
+msgid "Status"
+msgstr "状态"
+
+#: Contents/Resources/web/templates/home.html:128
+msgid "Add"
+msgstr "添加"
+
+#: Contents/Resources/web/templates/home.html:131
+msgid "Edit"
+msgstr "编辑"
+
+#: Contents/Resources/web/templates/home.html:147
+msgid "No known ID"
+msgstr "未知ID"
+
+#: Contents/Resources/web/templates/home.html:152
+msgid "Plex provided"
+msgstr "Plex提供"
+
+#: Contents/Resources/web/templates/home.html:154
+msgid "User provided"
+msgstr "用户提供"
+
+#: Contents/Resources/web/templates/home.html:156
+msgid "Themerr provided"
+msgstr "Themerr提供"
+
+#: Contents/Resources/web/templates/home.html:158
+msgid "provided"
+msgstr "提供"
+
+#: Contents/Resources/web/templates/home.html:160
+msgid "Unknown provider"
+msgstr "未知提供者"
+
+#: Contents/Resources/web/templates/home.html:162
+msgid "Missing from ThemerrDB"
+msgstr "不在ThemerrDB中"
+
+#: Contents/Resources/web/templates/home.html:164
+msgid "Failed to download"
+msgstr "下载失败"
+
+#: Contents/Resources/web/templates/home.html:166
+msgid "Unknown status"
+msgstr "未知状态"
+
+#: Contents/Resources/web/templates/home_db_not_cached.html:9
+msgid "Database is being cached, please try again soon."
+msgstr "数据库正在缓存，请稍后再试。"
+
+#: Contents/Resources/web/templates/navbar.html:23
+msgid "Donate"
+msgstr "捐赠"
+
+#: Contents/Resources/web/templates/navbar.html:28
+msgid "GitHub Sponsors"
+msgstr "GitHub Sponsors"
+
+#: Contents/Resources/web/templates/navbar.html:44
+msgid "Support"
+msgstr "支持"
+
+#: Contents/Resources/web/templates/navbar.html:49
+msgid "Docs"
+msgstr "文档"
+
+#: Contents/Resources/web/templates/navbar.html:53
+msgid "Support Center"
+msgstr "支持中心"
+
+#: Contents/Resources/web/templates/navbar.html:59
+msgid "Home"
+msgstr "主页"

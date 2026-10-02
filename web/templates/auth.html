@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-layout">
+    <section class="auth-story" aria-label="Themerr">
+        <a class="brand" href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>FOR PLEX</small></span></a>
+        <div class="auth-story-content">
+            <span class="eyebrow">{{ _('THE SOUND OF YOUR LIBRARY') }}</span>
+            <h1>{{ _('Every story') }}<br>{{ _('has a soundtrack.') }}</h1>
+            <p>{{ _('Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between.') }}</p>
+            <div class="sound-wave" aria-hidden="true">{% for height in [24,48,34,72,102,58,84,126,94,60,110,80,46,68,32,52,24] %}<span style="--wave-height: {{ height }}px"></span>{% endfor %}</div>
+        </div>
+        <small>Made by LizardByte. Built for your library.</small>
+    </section>
+    <section class="auth-panel">
+        <div class="auth-card">
+            <span class="auth-emblem"><i data-lucide="{{ 'shield-check' if mode != 'login' else 'lock-keyhole' }}"></i></span>
+            {% if mode == 'setup-link' %}
+                <h2>{{ _('Your workspace, secured.') }}</h2>
+                <p>{{ _('Open the one-time setup link printed in the application console to create your admin account.') }}</p>
+                <div class="inline-note"><i data-lucide="terminal"></i><span>{{ _('The link is generated each time the application starts, until setup is complete.') }}</span></div>
+            {% else %}
+                <span class="eyebrow">{{ _('GET STARTED') if mode == 'setup' else _('WELCOME BACK') }}</span>
+                <h2>{{ _('Make it yours.') if mode == 'setup' else _('Sign in to Themerr.') }}</h2>
+                <p>{{ _('Create the administrator account for this installation.') if mode == 'setup' else _('Your libraries are waiting for their next soundtrack.') }}</p>
+                {% if error %}<div class="form-error" role="alert"><i data-lucide="circle-alert"></i>{{ error }}</div>{% endif %}
+                <form method="post" class="auth-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <label for="username">{{ _('Username') }}</label>
+                    <input id="username" name="username" class="form-control" autocomplete="username" required minlength="3" maxlength="64" value="{{ request.form.get('username', 'admin' if mode == 'setup' else '') }}">
+                    <label for="password">{{ _('Password') }}</label>
+                    <input id="password" name="password" type="password" class="form-control" {% if mode == 'setup' %}autocomplete="new-password"{% else %}autocomplete="current-password"{% endif %} required {% if mode == 'setup' %}minlength="12"{% endif %} maxlength="256">
+                    {% if mode == 'setup' %}
+                    <small>{{ _('Use at least 12 characters. A long, unique passphrase works well.') }}</small>
+                    <label for="confirm-password">{{ _('Confirm password') }}</label>
+                    <input id="confirm-password" name="confirm_password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256">
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary auth-submit">{{ _('Create workspace') if mode == 'setup' else _('Sign in') }}<i data-lucide="arrow-right"></i></button>
+                </form>
+                <p class="auth-footnote"><i data-lucide="shield-check"></i>{{ _('Plex account linking happens inside your workspace.') }}</p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

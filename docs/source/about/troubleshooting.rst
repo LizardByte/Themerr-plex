@@ -3,38 +3,35 @@
 Troubleshooting
 ===============
 
-Rate Limiting / Videos Not Downloading
---------------------------------------
+YouTube extraction
+------------------
 
-By default, YouTube-DL will perform queries to YouTube anonymously. As a result, YouTube may rate limit the
-requests, or sometimes simply block the content (e.g. for age-restricted content, but not only).
+Themerr-plex uses yt-dlp for YouTube audio. YouTube may rate limit anonymous requests or require a signed-in
+session for some videos. Follow :ref:`the cookie export steps <about/usage:YouTube cookies>` and paste the entire
+JSON export in the web UI's **YouTube Cookies** setting. Select **JSON** in the exporter; Netscape text and
+cookie file paths are not accepted by this setting. If saved cookies stop working, export a fresh session.
+Test again after an item update or the next scheduled scan. If extraction still
+fails, update the locked yt-dlp version and check the application log for the extractor error.
+Themerr-plex selects an audio-only stream URL and does not require local FFmpeg for that extraction path.
+An unavailable video is a separate YouTube error.
+The home page shows the latest recorded extraction or upload failure beside the affected item. A theme that is listed
+in ThemerrDB but has not been installed and has no recorded failure is shown as **Theme not installed yet**.
 
-A workaround is to login in a web browser, and then export your YouTube cookies with a tool such as `Get cookies.txt
-locally <https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc>`__. Note
-that Themerr currently only supports Chromium's JSON export format. In the exporter you use, if prompted, you need to
-use the "JSON" or "Chrome" format.
+Plex connection
+---------------
 
-You can then paste that value in the "YouTube Cookies" field in the plugin preferences page. On the next media update
-or scheduled run, the cookies will be used and hopefully videos will start downloading again.
+Check the Plex URL and connection status in Settings, and sign in through Plex again if needed. The configured Plex
+data directory is needed for removing old
+uploads; theme upload itself uses the Plex API. The Plex Movie and Plex Series agents are supported.
+For an HTTPS Plex URL, the server certificate must be trusted. Set ``REQUESTS_CA_BUNDLE`` to a CA certificate file
+when using a private certificate authority.
+If theme uploads through a reverse proxy return an HTTP 504 gateway timeout, use a direct LAN Plex URL when the
+application can reach the server on the local network, or increase the reverse proxy's upstream timeout. The
+**PlexAPI timeout** setting controls how long Themerr-plex waits for Plex; it cannot extend a proxy's timeout.
 
-Plugin Logs
------------
+Application logs
+----------------
 
-See `Plugin Log Files <https://support.plex.tv/articles/201106148-channel-log-files/>`__ for the plugin
-log directory.
-
-Plex uses rolling logs. There will be six log files available. The newest log file will be named
-``dev.lizardbyte.themerr-plex.log``. There will be additional log files with the same name, appended with a `1-5`.
-
-It is best to replicate the issue you are experiencing, then review the latest log file. The information in the log
-file may seem cryptic. If so it would be best to reach out for `support <https://app.lizardbyte.dev/support>`__.
-
-.. Attention:: Before uploading logs, it would be wise to review the data in the log file. Plex does not filter
-   the masked settings (e.g. credentials) out of the log file.
-
-Plex Media Server Logs
-----------------------
-
-If you have a more severe problem, you may need to troubleshoot an issue beyond the plugin itself. See
-`Plex Media Server Logs <https://support.plex.tv/articles/200250417-plex-media-server-log-files/>`__
-for more information.
+Logs are written under the application's config/logs directory, or under /config/logs in Docker.
+Reproduce the problem, inspect the newest log, and remove tokens or cookies before sharing it. For Plex server
+problems, see https://support.plex.tv/articles/200250417-plex-media-server-log-files/.

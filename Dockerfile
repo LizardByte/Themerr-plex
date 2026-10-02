@@ -1,93 +1,93 @@
-# syntax=docker/dockerfile:1.4
-# artifacts: false
-# platforms: linux/amd64,linux/arm64/v8,linux/arm/v7
-FROM ubuntu:22.04 AS buildstage
+# syntax=docker/dockerfile:1
+FROM ghcr.io/astral-sh/uv:0.12.21-python3.14-trixie-slim AS base
 
-# build args
-ARG BUILD_VERSION
-ARG COMMIT
-ARG GITHUB_SHA=$COMMIT
-# note: BUILD_VERSION may be blank, COMMIT is also available
-# note: build_plist.py uses BUILD_VERSION and GITHUB_SHA
+COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# install dependencies
-RUN <<_DEPS
-#!/bin/bash
-set -e
+FROM base AS build
+
+# install build dependencies
+RUN <<EOF
+set -eu
 apt-get update -y
 apt-get install -y --no-install-recommends \
-  npm=8.5.* \
-  patch \
-  python2=2.7.18* \
-  python-pip=20.3.4*
+    build-essential \
+    libjpeg-dev \
+    libopenblas-dev \
+    npm \
+    pkg-config \
+    zlib1g-dev
 apt-get clean
 rm -rf /var/lib/apt/lists/*
-_DEPS
+EOF
 
-# create build dir and copy GitHub repo there
-COPY --link . /build
+# uv creates the environment at a stable path for the runtime stage.
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# set build dir
+# setup app directory
 WORKDIR /build
+COPY . .
 
-# update pip
-RUN <<_PIP
-#!/bin/bash
-set -e
-python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  pip setuptools requests
-# requests required to install python-plexapi
-# dev requirements not necessary for docker image, significantly speeds up build since lxml doesn't need to build
-_PIP
+# setup locked Python dependencies
+RUN uv sync --locked --extra docs --no-build --no-install-project --no-python-downloads
 
-# build plugin
-RUN <<_BUILD
-#!/bin/bash
-set -e
-python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  -r requirements-build.txt
-python2 -m pip --no-python-version-warning --disable-pip-version-check install --no-cache-dir --upgrade \
-  --target=./Contents/Libraries/Shared -r requirements.txt --no-warn-script-location
-python2 ./scripts/_locale.py --compile
-python2 ./scripts/build_plist.py
-_BUILD
-
-## patch youtube-dl, cannot use git apply because we don't pass in any git files
-#WORKDIR /build/Contents/Libraries/Shared
-#RUN <<_PATCH
-##!/bin/bash
-#set -e
-#patch_dir=/build/patches
-#patch -p1 < "${patch_dir}/youtube_dl-compat.patch"
-#_PATCH
-
-WORKDIR /build
+# compile locales
+RUN python scripts/_locale.py --compile
 
 # setup npm and dependencies
-RUN <<_NPM
-#!/bin/bash
-set -e
-npm install
-mv ./node_modules ./Contents/Resources/web
-_NPM
+RUN npm ci --ignore-scripts && npm run build
 
-# clean
-RUN <<_CLEAN
-#!/bin/bash
-set -e
-rm -rf ./patches/
-rm -rf ./scripts/
-# list contents
-ls -a
-_CLEAN
+# build bundled documentation with Dockle
+RUN python -m dockle check && python -m dockle build
 
-FROM scratch AS deploy
+FROM base AS app
 
-# variables
-ARG PLUGIN_NAME="Themerr-plex.bundle"
-ARG PLUGIN_DIR="/config/Library/Application Support/Plex Media Server/Plug-ins"
+# copy runtime files from builder
+COPY --from=build /build/src/ /app/src/
+COPY --from=build /build/web/ /app/web/
+COPY --from=build /build/locale/ /app/locale/
+COPY --from=build /build/_site/ /app/_site/
+COPY --from=build /build/scripts/_locale.py /app/scripts/_locale.py
+COPY --from=build /build/LICENSE /app/LICENSE
 
-# add files from buildstage
-# trailing slash on build directory copies the contents of the directory, instead of the directory itself
-COPY --link --from=buildstage /build/ $PLUGIN_DIR/$PLUGIN_NAME
+# copy python venv
+COPY --from=build /opt/venv/ /opt/venv/
+# use the venv
+ENV PATH="/opt/venv/bin:$PATH"
+# site-packages are in /opt/venv/lib/python<version>/site-packages/
+
+# setup remaining env variables
+ENV THEMERR_DOCKER=True
+
+# network setup
+EXPOSE 9494
+
+# setup user
+ARG PGID=1000
+ENV PGID=${PGID}
+ARG PUID=1000
+ENV PUID=${PUID}
+ENV TZ="UTC"
+ARG UNAME=lizard
+ENV UNAME=${UNAME}
+
+ENV HOME=/home/$UNAME
+
+# setup user
+RUN <<EOF
+set -eu
+groupadd -f -g "${PGID}" "${UNAME}"
+useradd -lm -d "${HOME}" -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}"
+mkdir -p "${HOME}/.config/themerr-plex"
+ln -s "${HOME}/.config/themerr-plex" /config
+chown -R "${UNAME}" "${HOME}"
+EOF
+
+# mounts
+VOLUME /config
+
+USER ${UNAME}
+WORKDIR ${HOME}
+
+ENTRYPOINT ["python", "/app/src/themerr_plex.py"]
+HEALTHCHECK --start-period=90s CMD ["python", "/app/src/themerr_plex.py", "--docker_healthcheck"]
