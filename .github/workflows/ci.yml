@@ -102,8 +102,10 @@ jobs:
           deno-version: 2.9.7
 
       - name: Setup Python Dependencies
+        env:
+          UV_NO_BUILD: ${{ (matrix.os == 'windows-11-arm' || matrix.os == 'macos-15-intel') && 'false' || 'true' }}
         run: >-
-          uv sync --locked --all-extras --no-build --no-install-project
+          uv sync --locked --all-extras --no-install-project
           --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Compile Locale Translations
