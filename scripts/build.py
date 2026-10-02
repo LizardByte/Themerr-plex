@@ -11,11 +11,6 @@ import sys
 # lib imports
 import PyInstaller.__main__
 
-# Make source modules available when running this script directly.
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'src'))
-# local imports
-from common.definitions import Names  # noqa: E402 - standalone script uses the source tree
-
 
 def build():
     """Sets arguments for pyinstaller, creates spec, and builds binaries."""
@@ -47,7 +42,7 @@ def build():
 
     elif sys.platform.lower() == 'darwin':  # macOS
         pyinstaller_args.append('--console')
-        pyinstaller_args.append(f'--osx-bundle-identifier=dev.lizardbyte.{Names.name.lower()}')
+        pyinstaller_args.append('--osx-bundle-identifier=dev.lizardbyte.app.themerr-plex')
 
     elif sys.platform.lower() == 'linux':  # linux
         pyinstaller_args.append('--splash=./web/images/icon-default.png')

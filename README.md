@@ -9,11 +9,12 @@
 </div>
 
 <div align="center">
-  <a href="https://github.com/LizardByte/Themerr-plex/actions/workflows/CI.yml?query=branch%3Amaster"><img src="https://img.shields.io/github/actions/workflow/status/lizardbyte/themerr-plex/CI.yml.svg?branch=master&label=build&logo=github&style=for-the-badge" alt="GitHub Workflow Status"></a>
-  <a href="https://github.com/LizardByte/Themerr-plex/releases/latest"><img src="https://img.shields.io/github/downloads/lizardbyte/themerr-plex/total?style=for-the-badge&logo=github" alt="GitHub Releases"></a>
-  <a href="https://hub.docker.com/r/lizardbyte/themerr-plex"><img src="https://img.shields.io/docker/pulls/lizardbyte/themerr-plex?style=for-the-badge&logo=docker" alt="Docker"></a>
-  <a href="https://codecov.io/gh/LizardByte/Themerr-plex"><img src="https://img.shields.io/codecov/c/gh/LizardByte/Themerr-plex?token=1LYYVYWY9D&style=for-the-badge&logo=codecov" alt="Codecov"></a>
-  <a href="https://themerr-plex.readthedocs.io/"><img src="https://img.shields.io/readthedocs/themerr-plex?label=docs&style=for-the-badge&logo=readthedocs" alt="Read the Docs"></a>
+  <a href="https://github.com/LizardByte/Themerr-plex"><img src="https://img.shields.io/github/stars/lizardbyte/Themerr-plex.svg?logo=github&style=for-the-badge" alt="GitHub stars"></a>
+  <a href="https://github.com/LizardByte/Themerr-plex/releases/latest"><img src="https://img.shields.io/github/downloads/lizardbyte/Themerr-plex/total.svg?style=for-the-badge&logo=github" alt="GitHub Releases"></a>
+  <a href="https://hub.docker.com/r/lizardbyte/themerr-plex"><img src="https://img.shields.io/docker/pulls/lizardbyte/themerr-plex.svg?style=for-the-badge&logo=docker" alt="Docker"></a>
+  <a href="https://github.com/LizardByte/Themerr-plex/actions/workflows/ci.yml?query=branch%3Amaster"><img src="https://img.shields.io/github/actions/workflow/status/lizardbyte/Themerr-plex/ci.yml.svg?branch=master&label=build&logo=github&style=for-the-badge" alt="GitHub Workflow Status"></a>
+  <a href="https://codecov.io/gh/LizardByte/Themerr-plex"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fapp.lizardbyte.dev%2Fdashboard%2Fshields%2Fcodecov%2FThemerr-plex.json&style=for-the-badge&logo=codecov" alt="Codecov"></a>
+  <a href="https://sonarcloud.io/project/overview?id=LizardByte_Themerr-plex"><img src="https://img.shields.io/sonar/quality_gate/LizardByte_Themerr-plex.svg?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonarqubecloud&label=sonarcloud" alt="SonarCloud"></a>
 </div>
 
 # Overview
