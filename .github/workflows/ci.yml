@@ -101,6 +101,17 @@ jobs:
         with:
           deno-version: 2.9.7
 
+      - name: Build OpenSSL for Windows ARM64
+        if: runner.os == 'Windows' && matrix.arch == 'ARM64'
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_INSTALLATION_ROOT/vcpkg.exe" install openssl:arm64-windows-static-md --classic
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $opensslDir = "$env:VCPKG_INSTALLATION_ROOT/installed/arm64-windows-static-md"
+          "OPENSSL_DIR=$opensslDir" >> $env:GITHUB_ENV
+          "OPENSSL_STATIC=1" >> $env:GITHUB_ENV
+
       - name: Setup Python Dependencies
         env:
           UV_NO_BUILD: ${{ (matrix.os == 'windows-11-arm' || matrix.os == 'macos-15-intel') && 'false' || 'true' }}
