@@ -142,8 +142,10 @@ def discover_local() -> list[dict]:
         except (ValueError, TypeError):
             continue
         if 1 <= port <= 65535:
+            # GDM advertises an IP and port; Plex's HTTPS certificate requires its account-provided plex.direct host.
+            address = f'http://{host}:{port}'  # NOSONAR python:S5332: Preserve the advertised LAN HTTP connection.
             found.append({'id': data.get('Resource-Identifier'), 'name': data.get('Name', host),
-                          'connections': [{'url': f'http://{host}:{port}', 'local': True, 'relay': False}]})
+                          'connections': [{'url': address, 'local': True, 'relay': False}]})
     log.info('Plex LAN discovery finished: %d servers responded', len(found))
     return found
 

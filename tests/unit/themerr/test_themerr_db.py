@@ -94,7 +94,8 @@ def test_concurrent_refresh_logs_only_one_update(monkeypatch):
         if second.ident is not None:
             second.join(timeout=10)
 
-    assert not first.is_alive() and not second.is_alive()
+    assert not first.is_alive()
+    assert not second.is_alive()
     assert len(requests) == 3
     assert messages.count('Updating ThemerrDB cache') == 1
     assert 'ThemerrDB index was refreshed by another task; skipping' in messages

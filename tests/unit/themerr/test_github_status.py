@@ -71,7 +71,8 @@ def test_failed_check_preserves_publication_and_does_not_retry_early(configured,
     get.side_effect = failure
     failed = github_status.publication_status()
     assert failed['stale'] is True
-    assert failed['updated_at'] == first['updated_at'] and failed['url'] == first['url']
+    assert failed['updated_at'] == first['updated_at']
+    assert failed['url'] == first['url']
     assert failed['next_check'] == 17200
     storage.close()
     clock.return_value = 17199
@@ -97,7 +98,8 @@ def test_invalid_response_is_not_published_or_retried(configured, monkeypatch, p
     get = Mock(return_value=response(payload, status))
     monkeypatch.setattr(github_status.requests, 'get', get)
     failed = github_status.publication_status()
-    assert failed['updated_at'] is None and failed['stale'] is True
+    assert failed['updated_at'] is None
+    assert failed['stale'] is True
     assert failed['url'] == github_status._WORKFLOW_URL
     assert github_status.publication_status() == failed
     get.assert_called_once()
@@ -107,7 +109,8 @@ def test_no_successful_deployment_is_unknown_without_a_failure_warning(configure
     get = Mock(return_value=response({'workflow_runs': []}))
     monkeypatch.setattr(github_status.requests, 'get', get)
     status = github_status.publication_status()
-    assert status['updated_at'] is None and status['stale'] is False
+    assert status['updated_at'] is None
+    assert status['stale'] is False
     assert status['url'] == github_status._WORKFLOW_URL
     assert github_status.publication_status() == status
     get.assert_called_once()

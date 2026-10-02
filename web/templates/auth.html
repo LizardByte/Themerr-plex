@@ -26,9 +26,9 @@
                 <form method="post" class="auth-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <label for="username">{{ _('Username') }}</label>
-                    <input id="username" name="username" class="form-control" autocomplete="username" required minlength="3" maxlength="64" value="{{ request.form.get('username', 'admin' if mode == 'setup' else '') }}" autofocus>
+                    <input id="username" name="username" class="form-control" autocomplete="username" required minlength="3" maxlength="64" value="{{ request.form.get('username', 'admin' if mode == 'setup' else '') }}">
                     <label for="password">{{ _('Password') }}</label>
-                    <input id="password" name="password" type="password" class="form-control" autocomplete="{{ 'new-password' if mode == 'setup' else 'current-password' }}" required {% if mode == 'setup' %}minlength="12"{% endif %} maxlength="256">
+                    <input id="password" name="password" type="password" class="form-control" {% if mode == 'setup' %}autocomplete="new-password"{% else %}autocomplete="current-password"{% endif %} required {% if mode == 'setup' %}minlength="12"{% endif %} maxlength="256">
                     {% if mode == 'setup' %}
                     <small>{{ _('Use at least 12 characters. A long, unique passphrase works well.') }}</small>
                     <label for="confirm-password">{{ _('Confirm password') }}</label>

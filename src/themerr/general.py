@@ -223,20 +223,36 @@ def remove_uploaded_media(item: PlexPartialObject, media_type: str, keep_sha256:
     ...
     """
     theme_upload_path = get_media_upload_path(item=item, media_type=media_type)
-    if os.path.isdir(theme_upload_path):
-        if keep_sha256:
-            for directory, _, files in os.walk(theme_upload_path):
-                for name in files:
-                    path = os.path.join(directory, name)
-                    try:
-                        with open(path, 'rb') as uploaded:
-                            matches = hashlib.file_digest(uploaded, 'sha256').hexdigest() == keep_sha256
-                        if not matches:
-                            os.remove(path)
-                    except OSError:
-                        log.exception('Unable to remove an unused theme for item %s', item.ratingKey)
-        else:
-            shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_media_error_handler)
+    if not os.path.isdir(theme_upload_path):
+        return
+    if keep_sha256:
+        _remove_unused_uploads(theme_upload_path, keep_sha256, item.ratingKey)
+    else:
+        shutil.rmtree(path=theme_upload_path, ignore_errors=True, onerror=remove_uploaded_media_error_handler)
+
+
+def _remove_unused_uploads(directory: str, keep_sha256: str, rating_key: int) -> None:
+    """Remove old uploads while retaining the verified theme.
+
+    Parameters
+    ----------
+    directory : str
+        Plex media upload directory.
+    keep_sha256 : str
+        Digest of the upload to retain.
+    rating_key : int
+        Item identifier for cleanup failure messages.
+    """
+    for current, _, files in os.walk(directory):
+        for name in files:
+            path = os.path.join(current, name)
+            try:
+                with open(path, 'rb') as uploaded:
+                    matches = hashlib.file_digest(uploaded, 'sha256').hexdigest() == keep_sha256
+                if not matches:
+                    os.remove(path)
+            except OSError:
+                log.exception(f'Unable to remove an unused theme for item {rating_key}')
 
 
 def remove_uploaded_media_error_handler(func: any, path: any, exc_info: any) -> None:

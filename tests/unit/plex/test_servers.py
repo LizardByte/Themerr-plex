@@ -64,11 +64,13 @@ def test_storage_rating_keys_sections_errors_and_upload_revisions_are_isolated(c
 
 
 def test_scope_is_restored_when_operation_fails():
-    with pytest.raises(RuntimeError):
+    def failing_operation():
         with storage.server_scope('a'):
             with storage.server_scope('b'):
                 assert storage.current_server_id() == 'b'
-                raise RuntimeError()
+                raise RuntimeError('Operation failed')
+    with pytest.raises(RuntimeError, match='Operation failed'):
+        failing_operation()
     assert storage.current_server_id() == 'default'
 
 
@@ -124,7 +126,8 @@ def test_shared_server_uses_resource_token_and_checks_machine_id(configured, mon
     monkeypatch.setattr(plexapi, 'connect_plex_server', connect)
     record = servers.add_server('https://plex.example/', 'shared')
     connect.assert_called_once_with('https://plex.example', 'shared-secret')
-    assert record['id'] == 'shared' and record['name'] == 'Family Plex'
+    assert record['id'] == 'shared'
+    assert record['name'] == 'Family Plex'
     assert 'secret' not in str(record)
     assert token_store.get_token(servers.credential_id('shared')) == 'shared-secret'
     assert servers.connect('shared') is server
@@ -191,7 +194,9 @@ def test_server_preferences_pause_and_remove_only_selected_server(configured, mo
     stop.assert_called_once_with('a')
     assert token_store.get_token(servers.credential_id('a')) == ''
     with storage.server_scope('a'):
-        assert storage.get_dashboard() is None and not storage.get_tracking(42) and not storage.get_errors()
+        assert storage.get_dashboard() is None
+        assert not storage.get_tracking(42)
+        assert not storage.get_errors()
     with storage.server_scope('b'):
         assert storage.get_dashboard()['1']['items'][0]['title'] == 'b'
         assert storage.get_tracking(42)['youtube_theme_url'] == 'b'
@@ -336,7 +341,8 @@ def test_workers_keep_server_scope_deduplicate_active_work_and_release_failed_it
     with pytest.raises(KeyboardInterrupt):
         plexapi.process_queue()
     assert seen == [('a', 42), ('b', 42)]
-    assert queue.unfinished_tasks == 0 and not plexapi._active_items
+    assert queue.unfinished_tasks == 0
+    assert not plexapi._active_items
     assert storage.current_server_id() == 'default'
     with storage.server_scope('a'):
         assert plexapi.enqueue(42)

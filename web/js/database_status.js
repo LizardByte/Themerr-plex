@@ -4,8 +4,8 @@ export function publicationAge(date, now = Date.now(), locale = undefined) {
     const seconds = (new Date(date).getTime() - now) / 1000;
     if (!date || !Number.isFinite(seconds)) return null;
     const absolute = Math.abs(seconds);
-    const [unit, divisor] = absolute >= 86400 ? ['day', 86400] : absolute >= 3600 ? ['hour', 3600] :
-        absolute >= 60 ? ['minute', 60] : ['second', 1];
+    const [unit, divisor] = [['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]]
+        .find(([, duration]) => absolute >= duration) ?? ['second', 1];
     return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(Math.round(seconds / divisor), unit);
 }
 
@@ -50,5 +50,5 @@ export function initDatabaseStatus(root = document, query = () => api('/api/them
         clearTimeout(pollTimer);
         clearInterval(ageTimer);
     }, { once: true });
-    update();
+    void update();
 }

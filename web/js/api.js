@@ -13,7 +13,7 @@ export async function api(path, { method = 'POST', body, form } = {}) {
 
 export function toast(message, error = false) {
     const region = document.getElementById('toast-region');
-    const notice = document.createElement('div');
+    const notice = document.createElement('span');
     notice.className = `app-toast${error ? ' error' : ''}`;
     const text = document.createElement('span');
     text.textContent = message;

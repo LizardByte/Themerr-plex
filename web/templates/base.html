@@ -30,7 +30,7 @@
         {% endif %}
         <div class="{{ 'page-content' if admin_username else '' }}">{% block content %}{% endblock %}</div>
     </main>
-    <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+    <output id="toast-region" class="toast-region" aria-live="polite"></output>
     {% block modals %}{% endblock %}
     <script defer src="{{ asset_url('app.js') }}"></script>
 </body>

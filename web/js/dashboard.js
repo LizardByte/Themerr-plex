@@ -59,12 +59,39 @@ export function initDashboard(root = document) {
 
 export async function waitForRefresh(id, query, delay) {
     for (let attempt = 0; attempt < 60; attempt += 1) {
-        const result = await query();
+        const result = await query(); // NOSONAR javascript:S9382: Polls must finish before checking the next task state.
         const job = result.jobs.find(item => item.id === id);
         if (job && job.status !== 'running') return job.status;
-        await delay();
+        await delay(); // NOSONAR javascript:S9382: Wait between polls to avoid flooding the server.
     }
     return 'running';
+}
+
+async function refreshLibraries(button) {
+    const result = await api('/api/tasks/refresh', { body: { scan: button.dataset.scan === 'true' } });
+    toast(result.message);
+    const status = await waitForRefresh(result.job_id, () => api('/api/tasks', { method: 'GET' }),
+        () => new Promise(resolve => setTimeout(resolve, 2000)));
+    if (status === 'failed') throw new Error('Refresh failed. Check Activity for details.');
+    if (status === 'running') {
+        toast('The refresh is still running. Follow its progress in Activity.');
+        return;
+    }
+    const audio = document.getElementById('theme-player');
+    if (audio && !audio.paused) {
+        toast('Refresh finished. Reload the page when you finish listening to see updated libraries.');
+        return;
+    }
+    const search = document.getElementById('library-search');
+    if (search) {
+        try {
+            sessionStorage.setItem('themerr-refresh-filters', JSON.stringify({ search: search.value,
+                fields: ['server', 'type', 'status'].map(name => document.getElementById(`${name}-filter`).value) }));
+        } catch {
+            // Reloading does not require browser storage.
+        }
+    }
+    window.location.reload();
 }
 
 export function initNavigation() {
@@ -95,32 +122,8 @@ export function initNavigation() {
             document.querySelector('.mobile-menu').focus();
         }
     });
-    document.querySelectorAll('[data-refresh]').forEach(button => button.addEventListener('click', () => busy(button, async () => {
-        const result = await api('/api/tasks/refresh', { body: { scan: button.dataset.scan === 'true' } });
-        toast(result.message);
-        const status = await waitForRefresh(result.job_id, () => api('/api/tasks', { method: 'GET' }),
-            () => new Promise(resolve => setTimeout(resolve, 2000)));
-        if (status === 'failed') throw new Error('Refresh failed. Check Activity for details.');
-        if (status === 'running') {
-            toast('The refresh is still running. Follow its progress in Activity.');
-            return;
-        }
-        const audio = document.getElementById('theme-player');
-        if (audio && !audio.paused) {
-            toast('Refresh finished. Reload the page when you finish listening to see updated libraries.');
-            return;
-        }
-        const search = document.getElementById('library-search');
-        if (search) {
-            try {
-                sessionStorage.setItem('themerr-refresh-filters', JSON.stringify({ search: search.value,
-                    fields: ['server', 'type', 'status'].map(name => document.getElementById(`${name}-filter`).value) }));
-            } catch {
-                // Reloading does not require browser storage.
-            }
-        }
-        window.location.reload();
-    })));
+    document.querySelectorAll('[data-refresh]').forEach(button => button.addEventListener('click',
+        () => busy(button, () => refreshLibraries(button))));
     document.querySelectorAll('time').forEach(element => {
         const date = new Date(element.textContent);
         if (!Number.isNaN(date.valueOf())) {

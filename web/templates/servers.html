@@ -16,7 +16,7 @@
     <small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
     <details class="server-settings"><summary>{{ _('Processing settings') }}<i data-lucide="chevron-down"></i></summary>
         <form data-server-form data-server-id="{{ server.id }}">
-            <div class="setting-switch"><label for="enabled-{{ loop.index }}">{{ _('Process this server') }}</label><input id="enabled-{{ loop.index }}" type="checkbox" name="enabled" class="form-check-input" role="switch" {% if server.enabled %}checked{% endif %}></div>
+            <div class="setting-switch"><label for="enabled-{{ loop.index }}">{{ _('Process this server') }}</label><input id="enabled-{{ loop.index }}" type="checkbox" name="enabled" class="form-check-input" {% if server.enabled %}checked{% endif %}></div>
             <label for="directory-{{ loop.index }}">{{ _('Plex data directory') }} <span class="muted">{{ _('optional') }}</span></label>
             <div class="input-group"><input id="directory-{{ loop.index }}" class="form-control" name="data_directory" value="{{ server.data_directory }}"><button type="button" class="btn btn-outline-light" data-directory-target="directory-{{ loop.index }}" aria-label="{{ _('Browse Plex data directory') }}"><i data-lucide="folder-open"></i></button></div>
             <p class="form-text">{{ _('A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers.') }}</p>

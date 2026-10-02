@@ -175,7 +175,7 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .theme-playback-ring circle { fill: none; stroke-width: 1.6; }
 .theme-playback-track { stroke: #8cd8bc26; }
 .theme-playback-progress { stroke: var(--mint); stroke-linecap: round; }
-.theme-playback-error { color: #ffb0b8; font-size: 10px; margin-top: 8px; max-width: 300px; }
+.theme-playback-error { display: block; color: #ffb0b8; font-size: 10px; margin-top: 8px; max-width: 300px; }
 .empty-state { text-align: center; padding: 65px 24px; display: flex; align-items: center; flex-direction: column; gap: 16px; }
 .empty-state h2 { font-size: 26px; letter-spacing: -.8px; }
 .empty-state p { color: var(--muted); max-width: 490px; font-size: 12px; line-height: 1.8; }
@@ -205,7 +205,7 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .server-card header .status-badge .presence-dot { height: 5px; width: 5px; }
 .server-card header .neutral .presence-dot { background: #9ba5b7; }
 .server-card header .warning .presence-dot { background: #ffd39e; }
-.server-address { display: flex; gap: 8px; align-items: center; margin: 20px 0 7px; color: #bec7d7; font-size: 11px; overflow-wrap: anywhere; word-break: break-word; }
+.server-address { display: flex; gap: 8px; align-items: center; margin: 20px 0 7px; color: #bec7d7; font-size: 11px; overflow-wrap: anywhere; }
 .server-address .lucide { color: #8e9aaf; width: 14px; height: 14px; }
 .server-refresh { font-size: 10px; }
 .server-refresh time { color: #c1cad9; }

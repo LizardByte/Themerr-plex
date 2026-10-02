@@ -19,8 +19,7 @@ export function initActivity() {
                     const symbol = document.createElement('span');
                     symbol.className = 'job-symbol';
                     const icon = document.createElement('i');
-                    icon.dataset.lucide = job.status === 'running' ? 'loader-circle' :
-                        job.status === 'finished' ? 'circle-check' : 'circle-alert';
+                    icon.dataset.lucide = { running: 'loader-circle', finished: 'circle-check' }[job.status] ?? 'circle-alert';
                     symbol.append(icon);
                     const info = document.createElement('div');
                     const title = document.createElement('strong');
@@ -30,7 +29,8 @@ export function initActivity() {
                     time.textContent = new Date(job.started).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
                     info.append(title, time);
                     const badge = document.createElement('span');
-                    badge.className = `status-badge ${job.status === 'finished' ? 'success' : job.status === 'failed' ? 'warning' : 'pending'}`;
+                    const badgeStyle = { finished: 'success', failed: 'warning' }[job.status] ?? 'pending';
+                    badge.className = `status-badge ${badgeStyle}`;
                     badge.textContent = job.status[0].toUpperCase() + job.status.slice(1);
                     const duration = document.createElement('small');
                     duration.textContent = job.duration === null ? 'In progress' : `${job.duration}s`;

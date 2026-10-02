@@ -110,7 +110,8 @@ def test_login_csrf_session_rotation_logout_and_security_headers(browser):
     response = sign_in(browser)
     assert response.location == '/'
     cookie = response.headers['Set-Cookie']
-    assert 'HttpOnly' in cookie and 'SameSite=Lax' in cookie
+    assert 'HttpOnly' in cookie
+    assert 'SameSite=Lax' in cookie
     for path in ('/', '/login', '/servers', '/settings/', '/activity', '/status'):
         response = browser.get(path)
         assert response.headers['X-Frame-Options'] == 'DENY'
@@ -144,7 +145,8 @@ def test_translation_hosts_are_allowed_only_for_bundled_docs(browser, monkeypatc
     with browser.session_transaction(base_url='https://127.0.0.1:9494') as session:
         session['admin_revision'] = admin.account()['revision']
     translated = browser.get('/docs/?lng=es-ES', base_url='https://127.0.0.1:9494')
-    assert translated.status_code == 200 and b'Documentation' in translated.data
+    assert translated.status_code == 200
+    assert b'Documentation' in translated.data
 
 
 def test_https_csrf_requires_same_origin_referer(browser):
@@ -159,11 +161,15 @@ def test_https_csrf_requires_same_origin_referer(browser):
     assert response.status_code == 302
 
 
-@pytest.mark.parametrize('target', ['https://evil.example', '//evil.example', '/\\evil.example', '//[invalid'])
+@pytest.mark.parametrize('target', [
+    'https://evil.example', '//evil.example', '/\\evil.example', '//[invalid',
+    '/%00/evil.example', '/%09/evil.example', '/%0d%0a//evil.example',
+])
 def test_login_rejects_external_redirects(browser, target):
     admin._save('admin', PASSWORD)
     response = sign_in(browser, query='?next=' + target)
     assert response.location == '/'
+    assert browser.get('/login?next=' + target).location == '/'
     assert browser.get('/login?next=/settings/').location == '/settings/'
 
 

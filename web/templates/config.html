@@ -4,7 +4,7 @@
 <div class="setting-row {{ 'setting-row-switch' if spec.type == 'boolean' }}">
     <div class="setting-description"><label for="{{ key }}">{{ spec.name }}</label><p id="{{ key }}-help">{{ spec.description }}{% if spec.help_url %} <a href="{{ spec.help_url }}" target="_blank" rel="noopener noreferrer">{{ spec.help_label }}<i data-lucide="arrow-up-right"></i></a>{% endif %}</p></div>
     <div class="setting-control">
-        {% if spec.type == 'boolean' %}<input id="{{ key }}" type="checkbox" class="form-check-input" role="switch" category="{{ section }}" aria-describedby="{{ key }}-help" {% if value %}checked{% endif %}>
+        {% if spec.type == 'boolean' %}<input id="{{ key }}" type="checkbox" class="form-check-input" category="{{ section }}" aria-describedby="{{ key }}-help" {% if value %}checked{% endif %}>
         {% elif spec.type == 'option' %}<select id="{{ key }}" class="form-select" category="{{ section }}" aria-describedby="{{ key }}-help">{% for option in spec.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ spec.option_names[loop.index0] }}</option>{% endfor %}</select>
         {% else %}
         <div class="{{ 'input-group' if spec.button_directory }}">
@@ -33,7 +33,7 @@
         <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem"><i data-lucide="shield-check"></i></span></div>
             <form id="password-form" class="password-form"><label for="current-password">{{ _('Current password') }}</label><input id="current-password" name="current_password" type="password" class="form-control" autocomplete="current-password" required maxlength="256"><label for="new-password">{{ _('New password') }}</label><input id="new-password" name="password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><label for="confirm-new-password">{{ _('Confirm new password') }}</label><input id="confirm-new-password" name="confirm_password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><button type="submit" class="btn btn-outline-light">{{ _('Change password') }}</button></form>
         </section>
-        <div class="settings-save-bar"><span id="settings-save-status" class="save-status" role="status">{{ _('All changes saved.') }}</span><button id="save-button" type="submit" form="configForm" class="btn btn-primary" disabled><i data-lucide="check"></i>{{ _('Save changes') }}</button></div>
+        <div class="settings-save-bar"><output id="settings-save-status" class="save-status">{{ _('All changes saved.') }}</output><button id="save-button" type="submit" form="configForm" class="btn btn-primary" disabled><i data-lucide="check"></i>{{ _('Save changes') }}</button></div>
     </div>
 </div>
 {% endblock %}

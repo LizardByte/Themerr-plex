@@ -41,7 +41,8 @@ def test_headless_token_uses_external_key(configured, tmp_path, monkeypatch):
 
     auth.set_token('plex-issued-token')
     encrypted = storage.get_encrypted_token()
-    assert encrypted and 'plex-issued-token' not in encrypted
+    assert encrypted
+    assert 'plex-issued-token' not in encrypted
     assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
     storage.close()
     assert auth.get_token() == 'plex-issued-token'
@@ -77,8 +78,9 @@ def test_native_credential_errors_are_reported_as_store_failures(configured, mon
     error = RuntimeError('Native vault failure')
     monkeypatch.setattr(token_store.keyring, operation, Mock(side_effect=error))
     handler = token_store.get_token if operation == 'get_password' else token_store.delete_token
+    client_id = auth._client_identifier()
     with pytest.raises(token_store.TokenStorageError, match='credential store') as raised:
-        handler(auth._client_identifier())
+        handler(client_id)
     assert raised.value.__cause__ is error
 
 

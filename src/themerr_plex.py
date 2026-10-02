@@ -132,6 +132,26 @@ def _apply_cli_options(args: argparse.Namespace) -> None:
         config.CONFIG.write()
 
 
+def _start_splash():
+    """Initialize the optional packaged startup splash.
+
+    Returns
+    -------
+    module or None
+        PyInstaller splash module when it can be used on this machine.
+    """
+    splash = None
+    if definitions.Modes.FROZEN and definitions.Modes.SPLASH:
+        try:
+            import pyi_splash  # module cannot be installed outside of pyinstaller builds
+            pyi_splash.update_text(f'Attempting to start {definitions.Names.name}')
+        except (ImportError, RuntimeError):
+            pass  # the splash may be unavailable on headless machines
+        else:
+            splash = pyi_splash
+    return splash
+
+
 def main():
     """
     Application entry point.
@@ -144,15 +164,7 @@ def main():
     ...     main()
     """
     # Fixed paths
-    splash = None
-    if definitions.Modes.FROZEN and definitions.Modes.SPLASH:
-        try:
-            import pyi_splash  # module cannot be installed outside of pyinstaller builds
-            pyi_splash.update_text(f'Attempting to start {definitions.Names.name}')
-        except (ImportError, RuntimeError):
-            pass  # the splash may be unavailable on headless machines
-        else:
-            splash = pyi_splash
+    splash = _start_splash()
 
     # Set up and gather command line arguments
     parser = argparse.ArgumentParser(description=_('%(app_name)s manages theme songs for Plex.\n'

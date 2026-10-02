@@ -32,6 +32,8 @@ from youtube.youtube_dl import download_youtube
 import _strptime  # noqa: F401
 
 log = logger.get_logger(__name__)
+MOVIE_AGENT = 'tv.plex.agents.movie'
+SERIES_AGENT = 'tv.plex.agents.series'
 PLEX_SETUP_ERROR = 'Unable to setup plex server, cannot proceed. Ensure Plex is properly configured in the settings.'
 
 plex_server = None
@@ -165,7 +167,7 @@ def _update_collection_metadata(item: PlexPartialObject, agent: str, data: dict)
     data : dict
         ThemerrDB metadata.
     """
-    if item.type != 'collection' or agent != 'tv.plex.agents.movie' or not config.CONFIG['Themerr'][
+    if item.type != 'collection' or agent != MOVIE_AGENT or not config.CONFIG['Themerr'][
             'BOOL_UPDATE_COLLECTION_METADATA']:
         return
 
@@ -300,6 +302,114 @@ def update_plex_item(rating_key: int) -> bool:
     return True
 
 
+def _media_matches(item: PlexPartialObject, media_type: str, tracked: dict, source_id: str,
+                   audio_codec: str | None, mp4a_available: bool | None, audio_sha256: str | None) -> bool:
+    """Check whether the current tracked upload still satisfies this request.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Target Plex item.
+    media_type : str
+        Media field to update.
+    tracked : dict
+        Previously recorded upload metadata.
+    source_id : str
+        Requested media source version.
+    audio_codec : str or None
+        Requested theme codec.
+    mp4a_available : bool or None
+        Whether the source offers AAC audio.
+    audio_sha256 : str or None
+        Digest requiring an already verified theme upload.
+
+    Returns
+    -------
+    bool
+        Whether an upload can be skipped.
+    """
+    if tracked.get(media_type_dict[media_type]['themerr_data_key']) != source_id:
+        return False
+    if media_type != 'themes':
+        return True
+    same_codec = audio_codec is None or tracked.get('audio_codec') == audio_codec
+    aac_unavailable = config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and mp4a_available is False
+    has_verified_upload = not audio_sha256 or tracked.get('audio_sha256')
+    return bool((same_codec or aac_unavailable) and has_verified_upload and
+                general.get_theme_provider(item=item) == 'themerr')
+
+
+def _theme_upload_metadata(item: PlexPartialObject, audio_codec: str | None, mp4a_available: bool | None,
+                           audio_sha256: str | None, remove_unused: bool) -> dict:
+    """Record theme details after a successful upload, retaining verified audio.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Updated Plex item.
+    audio_codec : str or None
+        Codec of the uploaded audio.
+    mp4a_available : bool or None
+        Whether the source offers AAC audio.
+    audio_sha256 : str or None
+        Digest of the verified upload.
+    remove_unused : bool
+        Whether older uploaded files should be removed.
+
+    Returns
+    -------
+    dict
+        Codec, digest, and selected Plex theme key.
+    """
+    metadata = {'audio_codec': audio_codec, 'mp4a_available': mp4a_available}
+    if audio_sha256:
+        metadata['audio_sha256'] = audio_sha256
+        if remove_unused:
+            general.remove_uploaded_media(item=item, media_type='themes', keep_sha256=audio_sha256)
+    try:
+        selected = next((theme for theme in item.themes() if getattr(theme, 'selected', False)), None)
+    except Exception:
+        log.exception(f'{item.ratingKey}: Unable to identify the newly uploaded theme')
+        selected = None
+    metadata['uploaded_theme_key'] = selected.ratingKey if selected is not None else None
+    return metadata
+
+
+def _record_media_upload(item: PlexPartialObject, media_type: str, source_id: str, audio_codec: str | None,
+                         mp4a_available: bool | None, audio_sha256: str | None, remove_unused: bool) -> None:
+    """Persist successful media uploads and publish their dashboard state.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Updated Plex item.
+    media_type : str
+        Uploaded Plex media field.
+    source_id : str
+        Uploaded source version.
+    audio_codec : str or None
+        Codec of the uploaded theme.
+    mp4a_available : bool or None
+        Whether the source offers AAC audio.
+    audio_sha256 : str or None
+        Digest of the verified upload.
+    remove_unused : bool
+        Whether older uploaded files should be removed.
+    """
+    metadata = {media_type_dict[media_type]['themerr_data_key']: source_id}
+    if media_type == 'themes':
+        metadata.update(_theme_upload_metadata(item, audio_codec, mp4a_available, audio_sha256, remove_unused))
+    general.update_themerr_data(item=item, new_themerr_data=metadata)
+    if media_type == 'themes':
+        uploaded_key = str(metadata.get('uploaded_theme_key', ''))
+        provider = 'themerr' if uploaded_key.startswith('upload://themes/') else 'uploaded'
+        try:
+            storage.mark_dashboard_theme_uploaded(item.ratingKey, provider)
+        except Exception:
+            log.exception(f'Unable to update dashboard after theme upload for {_item_log_context(item)}')
+        log.info(f'Theme upload recorded for {_item_log_context(item)} (codec={audio_codec or "unknown"})')
+
+
 def add_media(
         item: PlexPartialObject,
         media_type: str,
@@ -361,12 +471,7 @@ def add_media(
         log.warning(f'No theme songs provided for type: {item.type}, title: {item.title}, rating_key: {item.ratingKey}')
         return False
 
-    same_source = themerr_data.get(media_type_dict[media_type]['themerr_data_key']) == media_url_id
-    same_codec = audio_codec is None or themerr_data.get('audio_codec') == audio_codec
-    aac_unavailable = config.CONFIG['Themerr']['BOOL_PREFER_MP4A_CODEC'] and mp4a_available is False
-    if same_source and (media_type != 'themes' or (
-            (same_codec or aac_unavailable) and (not audio_sha256 or themerr_data.get('audio_sha256')) and
-            general.get_theme_provider(item=item) == 'themerr')):
+    if _media_matches(item, media_type, themerr_data, media_url_id, audio_codec, mp4a_available, audio_sha256):
         if media_type == 'themes' and mp4a_available is not None:
             general.update_themerr_data(item=item, new_themerr_data={'mp4a_available': mp4a_available})
         log.info(f'Skipping {media_type_dict[media_type]['name']} for '
@@ -386,29 +491,7 @@ def add_media(
                                 url=media_url, on_error=on_error)
 
     if uploaded:
-        new_themerr_data = {media_type_dict[media_type]['themerr_data_key']: media_url_id}
-        if media_type == 'themes':
-            new_themerr_data.update(audio_codec=audio_codec, mp4a_available=mp4a_available)
-            if audio_sha256:
-                new_themerr_data['audio_sha256'] = audio_sha256
-                if remove_unused:
-                    general.remove_uploaded_media(item=item, media_type=media_type, keep_sha256=audio_sha256)
-            try:
-                selected = next((theme for theme in item.themes() if getattr(theme, 'selected', False)), None)
-            except Exception:
-                log.exception('%s: Unable to identify the newly uploaded theme', item.ratingKey)
-                selected = None
-            new_themerr_data['uploaded_theme_key'] = selected.ratingKey if selected is not None else None
-
-        general.update_themerr_data(item=item, new_themerr_data=new_themerr_data)
-        if media_type == 'themes':
-            uploaded_key = new_themerr_data.get('uploaded_theme_key', '')
-            provider = 'themerr' if str(uploaded_key).startswith('upload://themes/') else 'uploaded'
-            try:
-                storage.mark_dashboard_theme_uploaded(item.ratingKey, provider)
-            except Exception:
-                log.exception('Unable to update dashboard after theme upload for %s', _item_log_context(item))
-            log.info('Theme upload recorded for %s (codec=%s)', _item_log_context(item), audio_codec or 'unknown')
+        _record_media_upload(item, media_type, media_url_id, audio_codec, mp4a_available, audio_sha256, remove_unused)
 
         # unlock the field since it contains an automatically added value
         change_lock_status(item=item, field=media_type_dict[media_type]['plex_field'], lock=False)
@@ -480,6 +563,39 @@ def change_lock_status(item: PlexPartialObject, field: str, lock: bool = False) 
     return locked == lock
 
 
+def _submit_media(item: PlexPartialObject, method: Callable, source: dict, context: str | None,
+                  expected_sha256: str | None, attempt: int, max_attempts: int) -> None:
+    """Submit one upload attempt and verify the stored theme when requested.
+
+    Parameters
+    ----------
+    item : PlexPartialObject
+        Target Plex item.
+    method : callable
+        Plex upload method.
+    source : dict
+        File path or media URL to submit.
+    context : str or None
+        Theme upload log context.
+    expected_sha256 : str or None
+        Expected digest of the uploaded theme.
+    attempt : int
+        Current attempt number.
+    max_attempts : int
+        Maximum number of attempts.
+    """
+    if not any(source.values()):
+        return
+    is_theme = method == item.uploadTheme
+    if is_theme:
+        source['timeout'] = int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'])
+        log.info(f'Submitting theme to Plex for {context} '
+                 f'(attempt {attempt}/{max_attempts}, timeout={source["timeout"]}s)')
+    method(**source)
+    if is_theme and expected_sha256:
+        _verify_uploaded_theme(item, expected_sha256, source['timeout'])
+
+
 def upload_media(
         item: PlexPartialObject,
         method: Callable,
@@ -520,31 +636,24 @@ def upload_media(
     >>> upload_media(item=..., method=item.uploadTheme, url=...)
     ...
     """
+    source = {'filepath': filepath} if filepath else {'url': url}
     count = 0
     last_error = None
     max_attempts = int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_RETRIES_MAX']) + 1
     is_theme = method == item.uploadTheme
-    context = _item_log_context(item) if is_theme else None
+    context = _item_log_context(item) if is_theme else f'rating_key={item.ratingKey}'
     while count < max_attempts:
         try:
-            if filepath or url:
-                source = {'filepath': filepath} if filepath else {'url': url}
-                if is_theme:
-                    source['timeout'] = int(config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'])
-                    log.info('Submitting theme to Plex for %s (attempt %d/%d, timeout=%ds)',
-                             context, count + 1, max_attempts, source['timeout'])
-                method(**source)
-                if is_theme and expected_sha256:
-                    _verify_uploaded_theme(item, expected_sha256, source['timeout'])
+            _submit_media(item, method, source, context, expected_sha256, count + 1, max_attempts)
         except (BadRequest, requests.RequestException) as e:
             last_error = e
             sleep_time = 2 ** count
             reason = theme_errors.normalize_reason(e)
             log.error('Plex media upload failed for %s (attempt %d/%d): %s',
-                      context or f'rating_key={item.ratingKey}', count + 1, max_attempts, reason)
+                      context, count + 1, max_attempts, reason)
             if count + 1 < max_attempts:
                 log.warning('Retrying Plex media upload for %s in %d seconds',
-                            context or f'rating_key={item.ratingKey}', sleep_time)
+                            context, sleep_time)
                 time.sleep(sleep_time)
             count += 1
         else:
@@ -662,8 +771,8 @@ def _movie_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Option
     for preferred in ('themoviedb', 'imdb'):
         for _, database, identifier in candidates:
             if database == preferred:
-                return 'movies', database, 'tv.plex.agents.movie', identifier
-    return 'movies', None, 'tv.plex.agents.movie', None
+                return 'movies', database, MOVIE_AGENT, identifier
+    return 'movies', None, MOVIE_AGENT, None
 
 
 def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
@@ -686,7 +795,7 @@ def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optiona
     external_guid = None
     for scheme, database, identifier in candidates:
         if database == 'themoviedb':
-            return 'tv_shows', database, 'tv.plex.agents.series', identifier
+            return 'tv_shows', database, SERIES_AGENT, identifier
         if database in ('imdb', 'thetvdb') and external_guid is None:
             external_guid = ('tvdb' if database == 'thetvdb' else 'imdb', identifier)
 
@@ -695,8 +804,8 @@ def _show_database_info(item: PlexPartialObject) -> Tuple[Optional[str], Optiona
             external_id=external_guid[1], database=external_guid[0], item_type='tv', title=item.title,
         )
         if database_id:
-            return 'tv_shows', 'themoviedb', 'tv.plex.agents.series', database_id
-    return 'tv_shows', None, 'tv.plex.agents.series', None
+            return 'tv_shows', 'themoviedb', SERIES_AGENT, database_id
+    return 'tv_shows', None, SERIES_AGENT, None
 
 
 def _collection_database_info(
@@ -723,6 +832,29 @@ def _collection_database_info(
     if database_id is None:
         database_id = _collection_id_from_members(item)
     return 'movie_collections', 'themoviedb', section.agent, database_id
+
+
+def _collection_member_id(member: PlexPartialObject) -> tuple[str, str] | None:
+    """Find a member movie that has ThemerrDB metadata to inspect.
+
+    Parameters
+    ----------
+    member : PlexPartialObject
+        Plex collection member.
+
+    Returns
+    -------
+    tuple of str or None
+        Database and movie ID when usable for collection lookup.
+    """
+    if getattr(member, 'type', None) != 'movie':
+        return None
+    database, identifier = get_external_id(member)
+    if database not in ('imdb', 'themoviedb') or not identifier:
+        return None
+    if not themerr_db.item_exists(database_type='movies', database=database, id=identifier):
+        return None
+    return database, identifier
 
 
 def _collection_id_from_members(item: PlexPartialObject) -> Optional[str]:
@@ -753,13 +885,10 @@ def _collection_id_from_members(item: PlexPartialObject) -> Optional[str]:
     for member in members:
         if checked >= 3:
             break
-        if getattr(member, 'type', None) != 'movie':
+        source_id = _collection_member_id(member)
+        if source_id is None:
             continue
-        database, identifier = get_external_id(member)
-        if database not in ('imdb', 'themoviedb') or not identifier:
-            continue
-        if not themerr_db.item_exists(database_type='movies', database=database, id=identifier):
-            continue
+        database, identifier = source_id
         checked += 1
         try:
             metadata = helpers.json_get(

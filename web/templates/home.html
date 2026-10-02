@@ -35,7 +35,7 @@
     <details class="library-card" data-library data-server="{{ section.server_id }}" open>
         <summary class="library-header">
             <span class="library-symbol"><i data-lucide="{{ 'tv' if section.type == 'show' else 'clapperboard' }}"></i></span>
-            <span class="library-title"><strong>{{ section.title }}</strong><small><a href="{{ section.server_url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ _('Open Plex server') }}: {{ section.server_name }}">{{ section.server_name }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a><span>·</span><a href="{{ section.library_url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ _('Open Plex library') }}: {{ section.title }}">{{ _('Library ID') }} {{ section.key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% if not section.enabled %} <span>·</span> {{ _('Paused') }}{% endif %}</small></span>
+            <span class="library-title"><strong>{{ section.title }}</strong><small><a href="{{ section.server_url }}" target="_blank" rel="noopener noreferrer">{{ section.server_name }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a><span>·</span><a href="{{ section.library_url }}" target="_blank" rel="noopener noreferrer">{{ _('Library ID') }} {{ section.key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% if not section.enabled %} <span>·</span> {{ _('Paused') }}{% endif %}</small></span>
             <span class="library-coverage"><strong>{{ section.media_percent_complete }}%</strong><span class="mini-progress"><span style="width: {{ section.media_percent_complete }}%"></span></span></span>
             <i data-lucide="chevron-down" class="details-chevron"></i>
         </summary>
@@ -59,9 +59,9 @@
                         </button>
                         {% endif %}
                         </span>
-                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.plex_url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ _('Open in Plex') }}: {{ item.title }}">{{ _('Plex ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
+                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.plex_url }}" target="_blank" rel="noopener noreferrer" title="{{ _('Open in Plex') }}: {{ item.title }}">{{ _('Plex ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
                     </div>
-                    {% if item.theme %}<div id="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}" class="theme-playback-error" role="status" hidden></div>{% endif %}
+                    {% if item.theme %}<output id="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}" class="theme-playback-error" hidden></output>{% endif %}
                 </td>
                 <td class="metadata-cell">{% if item.database_id or item.source_id %}{% if item.metadata_url %}<a class="metadata-id metadata-link" href="{{ item.metadata_url }}" target="_blank" rel="noopener noreferrer">{% else %}<span class="metadata-id">{% endif %}{% if item.database_id %}{{ 'IMDb' if item.database_id.startswith('tt') else 'TMDB' }} {{ item.database_id }}{% else %}{{ {'themoviedb':'TMDB','imdb':'IMDb','thetvdb':'TVDB'}.get(item.source_database, item.source_database|upper) }} {{ item.source_id }}{% endif %}{% if item.metadata_url %}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% else %}</span>{% endif %}{% else %}<span class="muted">{{ _('External ID unavailable') }}</span>{% endif %}</td>
                 <td class="status-cell">

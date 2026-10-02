@@ -61,8 +61,9 @@ def _metadata_url(item: dict) -> str | None:
         Provider URL when the ID and media type are supported.
     """
     identifier = str(item.get('database_id') or item.get('source_id') or '')
-    database = ('imdb' if identifier.startswith('tt') else 'themoviedb') if item.get('database_id') else (
-        item.get('source_database'))
+    database = item.get('source_database')
+    if item.get('database_id'):
+        database = 'imdb' if identifier.startswith('tt') else 'themoviedb'
     if database == 'imdb' and re.fullmatch(r'tt\d+', identifier):
         return 'https://www.imdb.com/title/' + identifier + '/'
     if not identifier.isascii() or not identifier.isdigit():
@@ -114,7 +115,7 @@ def dashboard() -> tuple[dict, dict, dict]:
                                'libraries': len(libraries)}
 
 
-@blueprint.route('/servers')
+@blueprint.route('/servers', methods=['GET'])
 def server_page():
     """Render saved connections and discovery options.
 
@@ -257,7 +258,7 @@ def database_status():
     return jsonify(github_status.publication_status())
 
 
-@blueprint.route('/activity')
+@blueprint.route('/activity', methods=['GET'])
 def activity():
     """Show real task state and actionable media failures.
 
@@ -280,7 +281,7 @@ def activity():
                            failures=failures, queue_size=plexapi.q.qsize())
 
 
-@blueprint.route('/api/tasks')
+@blueprint.route('/api/tasks', methods=['GET'])
 def task_status():
     """Return bounded job history for the activity view.
 

@@ -194,14 +194,30 @@ def _extract_video(url: str, params: dict, on_error: Callable[[str], None] | Non
                 on_error('Video extraction failed')
             return None
 
-    if not result:
-        if on_error:
-            on_error('No video found')
-        return None
-    video = next((entry for entry in result['entries'] if entry), None) if 'entries' in result else result
+    video = _first_video(result)
     if not video and on_error:
         on_error('No video found')
     return video
+
+
+def _first_video(result: dict | None) -> dict | None:
+    """Select the first available video from an extraction result.
+
+    Parameters
+    ----------
+    result : dict or None
+        Extracted video or playlist data.
+
+    Returns
+    -------
+    dict or None
+        A video entry, or no video when extraction was empty.
+    """
+    if not result:
+        return None
+    if 'entries' in result:
+        return next((entry for entry in result['entries'] if entry), None)
+    return result
 
 
 def _select_audio(video: dict) -> AudioStream | None:

@@ -16,6 +16,7 @@ from themerr import storage
 
 SERVICE = Names.name
 KEY_FILE_ENV = 'THEMERR_PLEX_TOKEN_KEY_FILE'
+STORE_UNAVAILABLE = 'The OS credential store is unavailable.'
 
 
 class TokenStorageError(OSError):
@@ -72,7 +73,7 @@ def get_token(client_id: str) -> str:
         return keyring.get_password(SERVICE, client_id) or ''
     # Native backends can raise errors outside keyring's exception hierarchy.
     except Exception as exc:
-        raise TokenStorageError('The OS credential store is unavailable.') from exc
+        raise TokenStorageError(STORE_UNAVAILABLE) from exc
 
 
 def save_token(client_id: str, token: str) -> None:
@@ -92,7 +93,7 @@ def save_token(client_id: str, token: str) -> None:
     try:
         keyring.set_password(SERVICE, client_id, token)
     except Exception as exc:
-        raise TokenStorageError('The OS credential store is unavailable.') from exc
+        raise TokenStorageError(STORE_UNAVAILABLE) from exc
 
 
 def delete_token(client_id: str) -> None:
@@ -111,7 +112,7 @@ def delete_token(client_id: str) -> None:
     except PasswordDeleteError:
         pass
     except Exception as exc:
-        raise TokenStorageError('The OS credential store is unavailable.') from exc
+        raise TokenStorageError(STORE_UNAVAILABLE) from exc
 
 
 def _namespace(client_id: str) -> str:

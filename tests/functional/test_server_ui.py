@@ -62,7 +62,9 @@ def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(clie
     with storage.server_scope('b'):
         storage.set_error(42, 'B cannot update its theme')
     libraries, _, stats = server_ui.dashboard()
-    assert len(libraries) == 2 and stats['installed'] == 2 and stats['attention'] == 1
+    assert len(libraries) == 2
+    assert stats['installed'] == 2
+    assert stats['attention'] == 1
     assert libraries['a:1']['items'][0]['error'] is None
     assert libraries['b:1']['items'][0]['error'] == 'B cannot update its theme'
     page = client.get('/').data
@@ -86,7 +88,8 @@ def test_publication_api_requires_login_and_returns_cached_status(client, monkey
         assert anonymous.get('/api/themerrdb').status_code == 401
     lookup.assert_not_called()
     result = client.get('/api/themerrdb')
-    assert result.status_code == 200 and result.json == status
+    assert result.status_code == 200
+    assert result.json == status
     assert result.headers['Cache-Control'] == 'no-store'
     lookup.assert_called_once()
 
@@ -106,7 +109,8 @@ def test_playback_selects_the_requested_server(client, monkeypatch):
 
     monkeypatch.setattr(plexapi, 'setup_plexapi', setup)
     response = client.get('/api/servers/b/themes/42')
-    assert response.data == b'audio' and response.status_code == 200
+    assert response.data == b'audio'
+    assert response.status_code == 200
     assert seen == ['b']
     assert storage.current_server_id() == 'default'
     response.close()
@@ -117,11 +121,13 @@ def test_discovery_and_server_settings_require_csrf(client, monkeypatch):
     monkeypatch.setattr(servers, 'discover_account', discover)
     assert client.post('/api/servers/discover', json={'source': 'account'}).status_code == 400
     response = client.post('/api/servers/discover', json={'source': 'account'}, headers=headers(client))
-    assert response.status_code == 200 and response.json['servers'][0]['name'] == 'Living room'
+    assert response.status_code == 200
+    assert response.json['servers'][0]['name'] == 'Living room'
     discover.assert_called_once()
     monkeypatch.setattr(servers, 'discover_local', Mock(side_effect=OSError('private token')))
     response = client.post('/api/servers/discover', json={'source': 'local'}, headers=headers(client))
-    assert response.status_code == 502 and 'private token' not in str(response.json)
+    assert response.status_code == 502
+    assert 'private token' not in str(response.json)
     assert client.post('/api/servers/discover', json={'source': 'invalid'}, headers=headers(client)).status_code == 400
     save_server('one')
     for path, payload in [('/api/servers', {'url': 'http://plex.example'}), ('/api/servers/one', {'enabled': False}),
@@ -200,7 +206,8 @@ def test_disconnecting_account_pauses_servers_and_keeps_tracking(client):
         storage.save_tracking(42, 'movie', {'youtube_theme_url': 'tracked'})
     response = client.post('/api/plex/auth/disconnect', headers=headers(client))
     assert response.status_code == 200
-    assert auth.get_token() == '' and token_store.get_token(servers.credential_id('one')) == ''
+    assert auth.get_token() == ''
+    assert token_store.get_token(servers.credential_id('one')) == ''
     assert servers.get_server('one')['enabled'] is False
     with storage.server_scope('one'):
         assert storage.get_tracking(42)['youtube_theme_url'] == 'tracked'
@@ -210,7 +217,7 @@ def test_refresh_dispatch_and_task_status(client, configured, monkeypatch):
     from themerr import scheduled_tasks
     run = Mock()
     monkeypatch.setattr(scheduled_tasks, 'run_threaded', run)
-    server_ui._refresh.return_value = SimpleNamespace(job_id='dashboard-job')
+    monkeypatch.setattr(server_ui, '_refresh', Mock(return_value=SimpleNamespace(job_id='dashboard-job')))
     response = client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client))
     assert response.status_code == 202
     assert response.json['job_id'] == 'dashboard-job'
@@ -263,7 +270,9 @@ def test_provider_links_and_scoped_plex_links(client, kind, database_id, source_
         storage.replace_dashboard(data)
     rendered = client.get('/').data
     assert b'https://app.plex.tv/desktop/#!/server/a/details?key=%2Flibrary%2Fmetadata%2F42' in rendered
-    assert b'target="_blank" rel="noopener noreferrer" aria-label="Open in Plex: Linked title"' in rendered
+    link = re.search(rb'<a class="plex-item-link"[^>]*>.*?</a>', rendered).group()
+    assert b'target="_blank" rel="noopener noreferrer" title="Open in Plex: Linked title"' in link
+    assert b'Plex ID: 42' in link
     if url:
         assert ('href="' + url + '" target="_blank" rel="noopener noreferrer"').encode() in rendered
     else:
@@ -286,4 +295,5 @@ def test_contribution_actions_reflect_video_issues(client, reason, action, visib
     assert (b'class="contribute-link"' in rendered) is visible
     assert b'class="media-controls"' in rendered
     assert b'title="Movie" aria-hidden="true"' in rendered
-    assert b'data-lucide="film"' in rendered and b'data-lucide="play"' in rendered
+    assert b'data-lucide="film"' in rendered
+    assert b'data-lucide="play"' in rendered

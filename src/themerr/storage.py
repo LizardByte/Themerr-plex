@@ -312,14 +312,13 @@ def replace_dashboard(sections: dict, since_revision: int | None = None) -> None
     since_revision : int or None, optional
         Upload revision captured before the scan. Newer uploads are retained in the snapshot.
     """
-    with _dashboard_lock:
-        with Session(engine()) as session:
-            _replace_dashboard(session, sections)
-            if since_revision is not None:
-                for (server_id, key), (revision, provider) in _theme_uploads.items():
-                    if server_id == current_server_id() and revision > since_revision:
-                        _set_dashboard_theme_uploaded(session, key, provider)
-            session.commit()
+    with _dashboard_lock, Session(engine()) as session:
+        _replace_dashboard(session, sections)
+        if since_revision is not None:
+            for (server_id, key), (revision, provider) in _theme_uploads.items():
+                if server_id == current_server_id() and revision > since_revision:
+                    _set_dashboard_theme_uploaded(session, key, provider)
+        session.commit()
 
 
 def get_dashboard() -> dict | None:

@@ -21,6 +21,9 @@ from common import config
 from themerr import storage
 
 blueprint = Blueprint('admin', __name__)
+LOGIN_ENDPOINT = 'admin.login'
+SETUP_ENDPOINT = 'admin.setup'
+AUTH_TEMPLATE = 'auth.html'
 HASH_METHOD = 'scrypt:131072:8:1'
 SETUP_TOKEN = secrets.token_urlsafe(32)
 _lock = RLock()
@@ -119,6 +122,8 @@ def _signed_in(current: dict | None) -> bool:
 def _next_url() -> str:
     """Keep login redirects on this application's origin."""
     target = request.args.get('next', '')
+    if any(ord(character) < 32 or ord(character) == 127 for character in target):
+        return url_for('home')
     try:
         parts = urlsplit(target)
     except ValueError:
@@ -145,13 +150,13 @@ def setup():
     """
     with _lock:
         if account():
-            return redirect(url_for('admin.login'))
+            return redirect(url_for(LOGIN_ENDPOINT))
         token = request.args.get('token', '')
         if token and hmac.compare_digest(token, SETUP_TOKEN):
             session['setup_authorized'] = True
-            return redirect(url_for('admin.setup'))
+            return redirect(url_for(SETUP_ENDPOINT))
         if not session.get('setup_authorized'):
-            return render_template('auth.html', mode='setup-link', title='Secure setup'), 403
+            return render_template(AUTH_TEMPLATE, mode='setup-link', title='Secure setup'), 403
         error = None
         if request.method == 'POST':
             try:
@@ -163,7 +168,7 @@ def setup():
             else:
                 _login(current)
                 return redirect(url_for('server_ui.server_page'))
-        return render_template('auth.html', mode='setup', error=error, title='Create your admin account')
+        return render_template(AUTH_TEMPLATE, mode='setup', error=error, title='Create your admin account')
 
 
 @blueprint.route('/login', methods=['GET', 'POST'])
@@ -177,9 +182,9 @@ def login():
     """
     current = account()
     if current is None:
-        return redirect(url_for('admin.setup'))
+        return redirect(url_for(SETUP_ENDPOINT))
     if _signed_in(current):
-        return redirect(_next_url())
+        return redirect(_next_url())  # NOSONAR pythonsecurity:S5146: _next_url validates local paths.
     error = None
     if request.method == 'POST':
         # Serialize expensive hashes and bound memory used by failed-login counters.
@@ -189,7 +194,8 @@ def login():
             recent = [stamp for stamp in _attempts.get(address, []) if now - stamp < LOGIN_WINDOW]
             total = sum(sum(now - stamp < LOGIN_WINDOW for stamp in stamps) for stamps in _attempts.values())
             if len(recent) >= 5 or total >= 100:
-                return (render_template('auth.html', mode='login', error='Too many attempts. Try again in 15 minutes.',
+                return (render_template(AUTH_TEMPLATE, mode='login',
+                                        error='Too many attempts. Try again in 15 minutes.',
                                         title='Sign in'), 429, {'Retry-After': str(LOGIN_WINDOW)})
             password = request.form.get('password', '')
             valid_password = check_password_hash(current['password_hash'], password[:256])
@@ -198,13 +204,14 @@ def login():
             if valid_password and valid_username and len(password) <= 256:
                 _attempts.pop(address, None)
                 _login(current)
-                return redirect(_next_url())
+                # _next_url rejects schemes, authorities, backslashes, and control characters.
+                return redirect(_next_url())  # NOSONAR pythonsecurity:S5146: Validated local redirect.
             _attempts[address] = recent + [now]
             _attempts.move_to_end(address)
             if len(_attempts) > 1024:
                 _attempts.popitem(last=False)
             error = 'The username or password is incorrect.'
-    return render_template('auth.html', mode='login', error=error, title='Sign in')
+    return render_template(AUTH_TEMPLATE, mode='login', error=error, title='Sign in')
 
 
 @blueprint.route('/logout', methods=['POST'])
@@ -217,7 +224,7 @@ def logout():
         Login redirect.
     """
     session.clear()
-    return redirect(url_for('admin.login'))
+    return redirect(url_for(LOGIN_ENDPOINT))
 
 
 @blueprint.route('/api/admin/password', methods=['POST'])
@@ -243,6 +250,77 @@ def change_password():
     return jsonify({'message': 'Password changed. Other sessions have been signed out.'})
 
 
+def _require_admin():
+    """Reject private requests without a current admin session.
+
+    Returns
+    -------
+    Response or tuple or None
+        Login response, or no response when access is permitted.
+    """
+    # Flask confines public assets to the compiled assets directory.
+    if request.endpoint == 'static':
+        return None
+    if request.endpoint in (LOGIN_ENDPOINT, SETUP_ENDPOINT, 'image', 'status'):
+        return None
+    if not _signed_in(account()):
+        if request.path.startswith('/api/'):
+            return jsonify({'message': 'Sign in to continue.'}), 401
+        return redirect(url_for(LOGIN_ENDPOINT, next=request.full_path.rstrip('?')))
+    return None
+
+
+def _security_headers(response):
+    """Apply security and cache headers to a browser response.
+
+    Parameters
+    ----------
+    response : Response
+        Response produced by the current route.
+
+    Returns
+    -------
+    Response
+        Response with the appropriate security policy.
+    """
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['Referrer-Policy'] = (
+        'no-referrer' if request.endpoint == SETUP_ENDPOINT and request.args.get('token') else 'same-origin'
+    )
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; "
+        "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    )
+    if request.endpoint == 'docs':
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net "
+            "https://website-translator.app.crowdin.net; "
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net "
+            "https://website-translator.app.crowdin.net; "
+            "img-src 'self' data: https://cdn.jsdelivr.net https://website-translator.app.crowdin.net; "
+            "font-src 'self' https://cdn.jsdelivr.net https://website-translator.app.crowdin.net; "
+            "connect-src 'self' https://cdn.jsdelivr.net https://distributions.crowdin.net; "
+            "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        )
+    if request.endpoint != 'static' and request.endpoint != 'image':
+        response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+def _admin_context():
+    """Supply the current username to private templates.
+
+    Returns
+    -------
+    dict
+        Username when the current admin session is valid.
+    """
+    current = account()
+    return {'admin_username': current['username'] if _signed_in(current) else None}
+
+
 def init_app(app) -> None:
     """Protect private routes and apply browser security headers.
 
@@ -255,51 +333,9 @@ def init_app(app) -> None:
                       PERMANENT_SESSION_LIFETIME=timedelta(hours=12), MAX_CONTENT_LENGTH=64 * 1024)
     app.register_blueprint(blueprint)
     logging.getLogger('werkzeug').addFilter(_SetupLinkFilter())
-
-    @app.before_request
-    def require_admin():
-        # Flask confines public assets to the compiled assets directory.
-        if request.endpoint == 'static':
-            return None
-        if request.endpoint in ('admin.login', 'admin.setup', 'image', 'status'):
-            return None
-        if not _signed_in(account()):
-            if request.path.startswith('/api/'):
-                return jsonify({'message': 'Sign in to continue.'}), 401
-            return redirect(url_for('admin.login', next=request.full_path.rstrip('?')))
-        return None
-
-    @app.after_request
-    def security_headers(response):
-        response.headers['X-Frame-Options'] = 'DENY'
-        response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['Referrer-Policy'] = (
-            'no-referrer' if request.endpoint == 'admin.setup' and request.args.get('token') else 'same-origin'
-        )
-        response.headers['Content-Security-Policy'] = (
-            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
-            "img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; "
-            "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
-        )
-        if request.endpoint == 'docs':
-            response.headers['Content-Security-Policy'] = (
-                "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net "
-                "https://website-translator.app.crowdin.net; "
-                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net "
-                "https://website-translator.app.crowdin.net; "
-                "img-src 'self' data: https://cdn.jsdelivr.net https://website-translator.app.crowdin.net; "
-                "font-src 'self' https://cdn.jsdelivr.net https://website-translator.app.crowdin.net; "
-                "connect-src 'self' https://cdn.jsdelivr.net https://distributions.crowdin.net; "
-                "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
-            )
-        if request.endpoint != 'static' and request.endpoint != 'image':
-            response.headers['Cache-Control'] = 'no-store'
-        return response
-
-    @app.context_processor
-    def admin_context():
-        current = account()
-        return {'admin_username': current['username'] if _signed_in(current) else None}
+    app.before_request(_require_admin)
+    app.after_request(_security_headers)
+    app.context_processor(_admin_context)
 
     # Set before the server accepts its first request; no mutation of cookie policy per request.
     app.config['SESSION_COOKIE_SECURE'] = bool(config.CONFIG and config.CONFIG['Network']['SSL'])

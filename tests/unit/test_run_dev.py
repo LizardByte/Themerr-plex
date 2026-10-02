@@ -68,11 +68,8 @@ def test_main_runs_source_in_current_process(tmp_path, monkeypatch):
     app = ModuleType('themerr_plex')
     app.main = Mock()
     monkeypatch.setitem(sys.modules, 'themerr_plex', app)
-    previous_path = sys.path.copy()
-    try:
-        run_dev.main()
-    finally:
-        sys.path[:] = previous_path
+    monkeypatch.syspath_prepend(str(tmp_path))
+    run_dev.main()
 
     app.main.assert_called_once_with()
     run_dev._ensure_assets.assert_called_once_with()

@@ -16,7 +16,7 @@ export function initSettings() {
     form.addEventListener('input', markDirty);
     form.addEventListener('change', markDirty);
     window.addEventListener('beforeunload', event => {
-        if (dirty) { event.preventDefault(); event.returnValue = ''; }
+        if (dirty) event.preventDefault();
     });
     form.addEventListener('submit', async event => {
         event.preventDefault();

@@ -33,7 +33,7 @@ export function initDirectoryPicker() {
             const name = document.createElement('span');
             name.textContent = directory.name;
             button.append(icon, name);
-            button.addEventListener('click', () => loadDirectory(directory.path).catch(exc => { error.textContent = exc.message; }));
+            button.addEventListener('click', () => loadDirectory(directory.path).catch(error_ => { error.textContent = error_.message; }));
             list.append(button);
         });
         refreshIcons();
@@ -44,14 +44,14 @@ export function initDirectoryPicker() {
         picker.showModal();
         try {
             await loadDirectory(field.value || '');
-        } catch (exc) {
-            error.textContent = exc.message;
+        } catch (error_) {
+            error.textContent = error_.message;
             if (field.value) {
-                try { await loadDirectory(''); } catch (fallback) { error.textContent = fallback.message; }
+                try { await loadDirectory(''); } catch (error_) { error.textContent = error_.message; }
             }
         }
     }));
-    up.addEventListener('click', () => loadDirectory(up.dataset.path).catch(exc => { error.textContent = exc.message; }));
+    up.addEventListener('click', () => loadDirectory(up.dataset.path).catch(error_ => { error.textContent = error_.message; }));
     document.getElementById('directory-cancel').addEventListener('click', () => picker.close());
     picker.addEventListener('close', () => { requestNumber++; });
     select.addEventListener('click', () => {

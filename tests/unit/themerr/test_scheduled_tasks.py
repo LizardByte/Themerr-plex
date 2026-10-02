@@ -92,7 +92,8 @@ def test_duplicate_dispatch_returns_the_running_job_and_history_is_a_copy(monkey
         assert started.wait(timeout=2)
         assert scheduled_tasks.run_threaded(target=refresh, task_name='Dashboard refresh') is first
         history = scheduled_tasks.job_history()
-        assert len(history) == 1 and history[0]['id'] == first.job_id
+        assert len(history) == 1
+        assert history[0]['id'] == first.job_id
         history[0]['status'] = 'modified'
         assert scheduled_tasks.job_history()[0]['status'] == 'running'
     finally:

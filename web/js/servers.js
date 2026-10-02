@@ -1,5 +1,43 @@
 import { api, busy, toast } from './api.js';
 
+function connectionOption(connection) {
+    const option = document.createElement('option');
+    option.value = connection.url;
+    let location = connection.local ? 'Local' : 'Remote';
+    if (connection.relay) location = 'Relay';
+    const protocol = connection.url.startsWith('https:') ? 'HTTPS' : 'HTTP';
+    option.textContent = `${location} · ${protocol} · ${connection.url}`;
+    return option;
+}
+
+function connectionOrder(a, b) {
+    return Number(b.local) - Number(a.local) || Number(a.relay) - Number(b.relay) ||
+        Number(b.url.startsWith('https:')) - Number(a.url.startsWith('https:'));
+}
+
+function discoveredServer(resource, source) {
+    const row = document.createElement('div');
+    row.className = 'discovered-server';
+    const name = document.createElement('strong');
+    name.textContent = resource.name;
+    const addresses = document.createElement('select');
+    addresses.className = 'form-select';
+    addresses.setAttribute('aria-label', `Address for ${resource.name}`);
+    addresses.append(...[...resource.connections].sort(connectionOrder).map(connectionOption));
+    const connect = document.createElement('button');
+    connect.type = 'button';
+    connect.className = 'btn btn-primary btn-sm';
+    connect.textContent = 'Connect';
+    connect.disabled = !resource.connections.length;
+    connect.addEventListener('click', () => busy(connect, async () => {
+        await api('/api/servers', { body: { url: addresses.value,
+            resource_id: source === 'account' ? resource.id : undefined } });
+        window.location.reload();
+    }));
+    row.append(name, addresses, connect);
+    return row;
+}
+
 export function initServers() {
     const authStart = document.getElementById('plex-auth-start');
     if (!authStart) return;
@@ -43,7 +81,7 @@ export function initServers() {
     const disconnect = document.getElementById('plex-auth-disconnect');
     disconnect.addEventListener('click', () => {
         if (!window.confirm('Disconnect Plex and pause all saved servers? Your local theme history will be kept.')) return;
-        busy(disconnect, async () => { await api('/api/plex/auth/disconnect'); window.location.reload(); });
+        void busy(disconnect, async () => { await api('/api/plex/auth/disconnect'); window.location.reload(); });
     });
     const results = document.getElementById('discovery-results');
     document.querySelectorAll('[data-discover]').forEach(button => button.addEventListener('click', () => busy(button, async () => {
@@ -63,48 +101,18 @@ export function initServers() {
                 : 'No servers are advertised for this Plex account. Check account access or enter an address manually.';
             return;
         }
-        response.servers.forEach(resource => {
-            const row = document.createElement('div');
-            row.className = 'discovered-server';
-            const name = document.createElement('strong');
-            name.textContent = resource.name;
-            const addresses = document.createElement('select');
-            addresses.className = 'form-select';
-            addresses.setAttribute('aria-label', `Address for ${resource.name}`);
-            [...resource.connections].sort((a, b) => Number(b.local) - Number(a.local) ||
-                Number(a.relay) - Number(b.relay) || Number(b.url.startsWith('https:')) - Number(a.url.startsWith('https:')))
-                .forEach(connection => {
-                    const option = document.createElement('option');
-                    option.value = connection.url;
-                    const location = connection.relay ? 'Relay' : connection.local ? 'Local' : 'Remote';
-                    const protocol = connection.url.startsWith('https:') ? 'HTTPS' : 'HTTP';
-                    option.textContent = `${location} · ${protocol} · ${connection.url}`;
-                    addresses.append(option);
-                });
-            const connect = document.createElement('button');
-            connect.type = 'button';
-            connect.className = 'btn btn-primary btn-sm';
-            connect.textContent = 'Connect';
-            connect.disabled = !resource.connections.length;
-            connect.addEventListener('click', () => busy(connect, async () => {
-                await api('/api/servers', { body: { url: addresses.value,
-                    resource_id: button.dataset.discover === 'account' ? resource.id : undefined } });
-                window.location.reload();
-            }));
-            row.append(name, addresses, connect);
-            results.append(row);
-        });
+        response.servers.forEach(resource => results.append(discoveredServer(resource, button.dataset.discover)));
     })));
     document.getElementById('manual-server-form').addEventListener('submit', event => {
         event.preventDefault();
-        busy(event.target.querySelector('button[type="submit"]'), async () => {
+        void busy(event.target.querySelector('button[type="submit"]'), async () => {
             await api('/api/servers', { body: { url: new FormData(event.target).get('url') } });
             window.location.reload();
         });
     });
     document.querySelectorAll('[data-server-form]').forEach(form => form.addEventListener('submit', event => {
         event.preventDefault();
-        busy(form.querySelector('button[type="submit"]'), async () => {
+        void busy(form.querySelector('button[type="submit"]'), async () => {
             const data = new FormData(form);
             const result = await api(`/api/servers/${encodeURIComponent(form.dataset.serverId)}`, { body: {
                 enabled: form.elements.enabled.checked, data_directory: data.get('data_directory'),
@@ -116,7 +124,7 @@ export function initServers() {
     }));
     document.querySelectorAll('[data-remove-server]').forEach(button => button.addEventListener('click', () => {
         if (!window.confirm('Remove this server and its local theme history? Plex media will stay on the server.')) return;
-        busy(button, async () => {
+        void busy(button, async () => {
             await api(`/api/servers/${encodeURIComponent(button.dataset.removeServer)}`, { method: 'DELETE' });
             window.location.reload();
         });

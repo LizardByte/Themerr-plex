@@ -56,6 +56,43 @@ def _index_title(index: dict, title: str, item_id: int) -> None:
         index.setdefault(key[:-len(' collection')], item_id)
 
 
+def _refresh_database(database_type: str, databases: dict) -> None:
+    """Fetch and publish one complete ThemerrDB index.
+
+    Parameters
+    ----------
+    database_type : str
+        ThemerrDB media category.
+    databases : dict
+        External database names and their metadata ID fields.
+    """
+    pages = helpers.json_get(
+        cache_time=3600,
+        url=f'https://app.lizardbyte.dev/ThemerrDB/{database_type}/pages.json',
+    )
+    page_count = pages['pages']
+
+    id_index = {db: set() for db in databases}
+    lookups = {'title': {}, 'imdb': {}}
+
+    for page in range(page_count):
+        page_data = helpers.json_get(
+            cache_time=3600,
+            url=f'https://app.lizardbyte.dev/ThemerrDB/{database_type}/all_page_{page + 1}.json',
+        )
+
+        for db in databases:
+            id_index[db].update(str(item[db_field_name[database_type][db]]) for item in page_data)
+        for item in page_data:
+            if item.get('title'):
+                _index_title(lookups['title'], item['title'], int(item['id']))
+            if database_type == 'movies' and item.get('imdb_id'):
+                lookups['imdb'][item['imdb_id']] = int(item['id'])
+
+    database_cache[database_type] = id_index
+    lookup_cache[database_type] = lookups
+
+
 def update_cache() -> None:
     """
     Update the ThemerrDB cache.
@@ -83,31 +120,7 @@ def update_cache() -> None:
         log.info('Updating ThemerrDB cache')
         for database_type, databases in db_field_name.items():
             try:
-                pages = helpers.json_get(
-                    cache_time=3600,
-                    url=f'https://app.lizardbyte.dev/ThemerrDB/{database_type}/pages.json',
-                )
-                page_count = pages['pages']
-
-                id_index = {db: set() for db in databases}
-                lookups = {'title': {}, 'imdb': {}}
-
-                for page in range(page_count):
-                    page_data = helpers.json_get(
-                        cache_time=3600,
-                        url=f'https://app.lizardbyte.dev/ThemerrDB/{database_type}/all_page_{page + 1}.json',
-                    )
-
-                    for db in databases:
-                        id_index[db].update(str(item[db_field_name[database_type][db]]) for item in page_data)
-                    for item in page_data:
-                        if item.get('title'):
-                            _index_title(lookups['title'], item['title'], int(item['id']))
-                        if database_type == 'movies' and item.get('imdb_id'):
-                            lookups['imdb'][item['imdb_id']] = int(item['id'])
-
-                database_cache[database_type] = id_index
-                lookup_cache[database_type] = lookups
+                _refresh_database(database_type, databases)
 
                 log.info(f'{database_type}: database updated')
             except Exception as e:

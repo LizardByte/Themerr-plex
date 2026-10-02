@@ -1,3 +1,12 @@
+function setPlaying(button, playing) {
+    button.querySelector('.theme-play-icon').classList.toggle('d-none', playing);
+    button.querySelector('.theme-pause-icon').classList.toggle('d-none', !playing);
+    const label = playing ? button.dataset.pauseLabel : button.dataset.playLabel;
+    button.setAttribute('aria-label', label);
+    button.setAttribute('aria-pressed', String(playing));
+    button.title = label;
+}
+
 export function initThemePlayer(root = document) {
     const audio = root.querySelector('#theme-player');
     if (!audio) return;
@@ -5,15 +14,6 @@ export function initThemePlayer(root = document) {
     let activeButton;
     let playRequest = 0;
     let animation;
-
-    function setPlaying(button, playing) {
-        button.querySelector('.theme-play-icon').classList.toggle('d-none', playing);
-        button.querySelector('.theme-pause-icon').classList.toggle('d-none', !playing);
-        const label = playing ? button.dataset.pauseLabel : button.dataset.playLabel;
-        button.setAttribute('aria-label', label);
-        button.setAttribute('aria-pressed', String(playing));
-        button.title = label;
-    }
 
     function updateProgress() {
         if (!activeButton) return;

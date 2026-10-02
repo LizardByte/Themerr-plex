@@ -267,18 +267,37 @@ def play_theme(rating_key: int, server_id: str) -> Response:
 
         headers = {'Accept-Encoding': 'identity'}
         for header in ('Range', 'If-Range'):
-            if header in request.headers:
-                headers[header] = request.headers[header]
+            value = request.headers.get(header)
+            if value is not None:
+                headers[header] = value
         upstream = server._session.get(
             server.url(theme_path, includeToken=False), headers=server._headers(**headers),
             stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
         )
     except plex_exceptions.NotFound:
         return _make_response(jsonify({'message': 'This Plex item is no longer available.'}), 404)
-    except (plex_exceptions.PlexApiException, requests.RequestException, OSError, ValueError) as error:
+    except (plex_exceptions.PlexApiException, OSError, ValueError) as error:
         app.logger.warning('Unable to load theme for rating_key=%s (%s)', rating_key, type(error).__name__)
         return _make_response(jsonify({'message': 'Unable to load theme audio from Plex.'}), 502)
 
+    return _theme_audio_response(upstream, rating_key)
+
+
+def _theme_audio_response(upstream: requests.Response, rating_key: int) -> Response:
+    """Build a browser response and close rejected Plex audio streams.
+
+    Parameters
+    ----------
+    upstream : requests.Response
+        Stream returned by Plex.
+    rating_key : int
+        Plex item identifier for playback diagnostics.
+
+    Returns
+    -------
+    Response
+        Validated audio stream, or a sanitized playback error.
+    """
     headers = {'Cache-Control': 'no-store'}
     for header in ('Content-Type', 'Content-Length', 'Content-Range', 'Accept-Ranges', 'ETag', 'Last-Modified'):
         if header in upstream.headers:
@@ -860,8 +879,9 @@ def browser_error(error):
     (..., 404)
     """
     code = error.code
-    message = ('Your session or form expired. Reload the page and try again.' if code == 400 else
-               'This page is unavailable.' if code == 404 else 'The request could not be completed.')
+    messages = {400: 'Your session or form expired. Reload the page and try again.',
+                404: 'This page is unavailable.'}
+    message = messages.get(code, 'The request could not be completed.')
     if request.path.startswith('/api/'):
         return jsonify({'message': message}), code
     return render_template('error.html', title=str(code), message=message), code
