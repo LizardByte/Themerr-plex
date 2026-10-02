@@ -1204,4 +1204,3 @@ msgstr ""
 #: web/templates/translations.html:3
 msgid "Help translate"
 msgstr ""
-
