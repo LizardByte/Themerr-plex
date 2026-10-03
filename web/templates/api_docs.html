@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block head %}
 <link rel="stylesheet" href="{{ asset_url('api_docs.css') }}">
-<script defer src="{{ asset_url('api_docs.js') }}"></script>
+<script type="module" src="{{ asset_url('api_docs.js') }}"></script>
 {% endblock %}
 {% block content %}
 <div class="page-heading"><div><h1>{{ _('API documentation') }}<span class="heading-dot">.</span></h1><p>{{ _('Explore the API using your signed-in session.') }}</p></div></div>

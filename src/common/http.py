@@ -65,6 +65,16 @@ def csrf_token(request: Request) -> str:
     return URLSafeTimedSerializer(request.app.state.secret_key, salt='csrf-token').dumps(value)
 
 
+def _same_https_origin(request: Request) -> bool:
+    """Check the referer's HTTPS scheme, host, and effective port."""
+    try:
+        origin = urlsplit(request.headers.get('referer', ''))
+        return (origin.scheme == 'https' and origin.hostname == request.url.hostname and
+                (origin.port or 443) == (request.url.port or 443))
+    except ValueError:
+        return False
+
+
 async def validate_csrf(request: Request) -> None:
     """Validate unsafe requests, including the same-origin HTTPS referer."""
     if request.method in ('GET', 'HEAD', 'OPTIONS', 'TRACE') or not request.app.state.csrf_enabled:
@@ -83,15 +93,8 @@ async def validate_csrf(request: Request) -> None:
     expected = request.session.get('csrf_token')
     if not isinstance(value, str) or not isinstance(expected, str) or not hmac.compare_digest(value, expected):
         raise HTTPException(400, 'The CSRF token does not match this session.')
-    if request.url.scheme == 'https':
-        try:
-            origin = urlsplit(request.headers.get('referer', ''))
-            same_origin = (origin.scheme == 'https' and origin.hostname == request.url.hostname and
-                           (origin.port or 443) == (request.url.port or 443))
-        except ValueError:
-            same_origin = False
-        if not same_origin:
-            raise HTTPException(400, 'A same-origin referer is required.')
+    if request.url.scheme == 'https' and not _same_https_origin(request):
+        raise HTTPException(400, 'A same-origin referer is required.')
 
 
 async def read_form(request: Request) -> FormData:
@@ -113,7 +116,8 @@ async def read_form(request: Request) -> FormData:
     --------
     >>> form = await read_form(request)
     """
-    return await request.form(max_files=0, max_fields=256, max_part_size=64 * 1024)
+    # The security middleware already caps the entire request body at 64 KiB.
+    return await request.form(max_files=0, max_fields=256)
 
 
 async def read_json(request: Request):
@@ -142,7 +146,7 @@ async def read_json(request: Request):
         return None
     try:
         return await request.json()
-    except (ValueError, UnicodeDecodeError):
+    except ValueError:
         return None
 
 

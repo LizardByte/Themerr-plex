@@ -17,7 +17,8 @@ await build({
     assetNames: 'files/[name]-[hash]',
     bundle: true,
     minify: true,
-    target: ['es2020'],
+    target: ['es2022'],
+    format: 'esm',
     platform: 'browser',
     loader: {
         '.eot': 'file',

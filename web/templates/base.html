@@ -32,6 +32,6 @@
     </main>
     <output id="toast-region" class="toast-region" aria-live="polite"></output>
     {% block modals %}{% endblock %}
-    <script defer src="{{ asset_url('app.js') }}"></script>
+    <script type="module" src="{{ asset_url('app.js') }}"></script>
 </body>
 </html>

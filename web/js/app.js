@@ -14,16 +14,13 @@ import { initActivity } from './activity.js';
 import { initDatabaseStatus } from './database_status.js';
 import { initTranslations } from './i18n.js';
 
-async function start() {
-    refreshIcons();
-    initNavigation();
-    await initTranslations();
-    initThemePlayer();
-    initDashboard();
-    initDirectoryPicker();
-    initSettings();
-    initServers();
-    initActivity();
-    initDatabaseStatus();
-}
-void start();
+refreshIcons();
+initNavigation();
+await initTranslations();
+initThemePlayer();
+initDashboard();
+initDirectoryPicker();
+initSettings();
+initServers();
+initActivity();
+initDatabaseStatus();

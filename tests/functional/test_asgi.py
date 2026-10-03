@@ -107,6 +107,30 @@ def test_chunked_requests_cannot_bypass_the_body_limit(browser):
     asyncio.run(submit())
 
 
+@pytest.mark.parametrize('multipart', [False, True])
+def test_oversized_forms_are_rejected_before_parsing(browser, multipart):
+    field = 'x' * (64 * 1024)
+    payload = {'files': {'General|LOCALE': (None, field)}} if multipart else {'data': {'General|LOCALE': field}}
+    response = browser.post('/api/settings', **payload)
+    assert response.status_code == 413
+    assert response.json() == {'message': 'Request body is too large.'}
+
+
+@pytest.mark.parametrize('payload, message', [
+    ({'data': {f'field-{index}': 'value' for index in range(257)}}, 'Too many fields.'),
+    ({'files': [(f'field-{index}', (None, 'value')) for index in range(257)]}, 'Too many fields.'),
+    ({'files': {'upload': ('theme.mp3', b'audio', 'audio/mpeg')}}, 'Too many files.'),
+])
+def test_browser_forms_reject_excess_fields_and_uploads(browser, payload, message):
+    browser.get('/settings/')
+    token = URLSafeTimedSerializer(browser.app.state.secret_key, salt='csrf-token').dumps(
+        get_session(browser)['csrf_token'],
+    )
+    response = browser.post('/api/settings', headers={'X-CSRFToken': token}, **payload)
+    assert response.status_code == 400
+    assert response.json()['message'].startswith(message)
+
+
 def test_blocking_plex_requests_do_not_block_the_event_loop(browser, monkeypatch):
     started, release = Event(), Event()
 
@@ -239,6 +263,8 @@ def test_api_documentation_requires_session_and_uses_local_assets(browser):
     assert 'id="swagger-ui"' in page.text
     assert '/web/assets/api_docs.js' in page.text
     assert '/web/assets/api_docs.css' in page.text
+    assert '<script type="module"' in page.text
+    assert '<script defer' not in page.text
     assert 'cdn.jsdelivr.net' not in page.text
     assert 'script-src \'self\'' in page.headers['Content-Security-Policy']
     assert 'href="/api/docs"' in browser.get('/settings/').text
@@ -271,6 +297,16 @@ def test_openapi_describes_request_bodies_authentication_and_unique_operations(b
     assert 'requestBody' not in paths['/api/servers/{server_id}']['delete']
     body = paths['/api/servers/discover']['post']['requestBody']['content']['application/json']
     assert body['schema']['properties']['source']['enum'] == ['account', 'local']
+    assert '201' in paths['/api/servers']['post']['responses']
+    assert '200' not in paths['/api/servers']['post']['responses']
+    assert '202' in paths['/api/tasks/refresh']['post']['responses']
+    assert '200' not in paths['/api/tasks/refresh']['post']['responses']
+    audio = paths['/api/themes/{rating_key}']['get']
+    assert any(parameter['name'] == 'Range' for parameter in audio['parameters'])
+    for status in ('200', '206'):
+        assert audio['responses'][status]['content']['audio/mpeg']['schema']['format'] == 'binary'
+    assert '416' in audio['responses']
+    assert 'security' not in paths['/status']['get']
 
 
 def test_documentation_supplies_session_bound_csrf_defaults(browser):
