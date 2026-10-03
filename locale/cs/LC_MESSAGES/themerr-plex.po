@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Restartovat"
 msgid "Quit"
 msgstr "Ukončit"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Nastavení"
@@ -413,6 +413,34 @@ msgstr "Vypnout logování konzole"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "Vytisknout podrobnosti o verzi a ukončit"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Vaše relace vypršela. Chcete-li pokračovat, přihlaste se."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Zrušit zprávu"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Neuložené změny"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Všechny změny byly uloženy."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Nastavení uloženo. Změny sítě se projeví po restartování Themerr."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "Změny nelze uložit."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "Před změnou hesla uložte změny nastavení."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex ID"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "Zastaralé od ThemerrDB"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Prozkoumejte API pomocí Vaší relace."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "API dokumentace"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Potvrdit nové heslo"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Změnit heslo"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Všechny změny byly uloženy."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Mnohem více ovzduší."
 msgid "Resources"
 msgstr "Zdroje"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Dokumentace"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Přispějte k tématu"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "Podpora LizardByte"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Odhlásit se"
 

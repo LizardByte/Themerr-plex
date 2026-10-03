@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Reiniciar"
 msgid "Quit"
 msgstr "Encerrar"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Confirgurações"
@@ -413,6 +413,34 @@ msgstr "Desativar registro do console"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "Imprima os detalhes da versão e saia"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Sua sessão expirou. Entre para continuar."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Rejeitar mensagem"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Alterações não salvas"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Todas as alterações salvas."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Configurações salvas. As alterações de rede terão efeito após reiniciar o Themerr."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "Não é possível salvar as alterações."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "Salve suas alterações de configurações antes de alterar sua senha."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex ID"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "Desatualizado do ThemerrDB"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Explore a API usando sua sessão conectada."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "Documentação da API"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Confirme a nova senha"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Mudar Senha"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Todas as alterações salvas."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Muito mais atmosfera."
 msgid "Resources"
 msgstr "Recursos"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Documentação"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Contribuir com um tema"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "Apoie LizardByte"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Encerrar sessão"
 
