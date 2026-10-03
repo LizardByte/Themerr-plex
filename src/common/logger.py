@@ -9,7 +9,6 @@ import errno
 import logging
 import multiprocessing
 import os
-import pkgutil
 import re
 import sys
 import threading
@@ -26,7 +25,8 @@ from common import definitions
 from common import helpers
 
 # These settings are for file logging only
-app_name = 'common'
+app_name = 'themerr'
+LOG_NAMES = ('themerr', 'backend', 'yt-dlp')
 MAX_SIZE = 5000000  # 5 MB
 MAX_FILES = 5
 
@@ -34,9 +34,10 @@ MAX_FILES = 5
 _BLACKLIST_KEYS = ['_APITOKEN', '_TOKEN', '_KEY', '_SECRET', '_PASSWORD', '_APIKEY', '_ID', '_HOOK']
 _WHITELIST_KEYS = ['HTTPS_KEY']
 
-LOG_BLACKLIST = []
+LOG_BLACKLIST = [True]
 
 _BLACKLIST_WORDS = set()
+_session_handler = None
 
 # Global queue for multiprocessing logging
 queue = None
@@ -67,7 +68,7 @@ def blacklist_config(config: ConfigObj):
     >>> blacklist_config(config=config_object)
     """
     blacklist = set()
-    blacklist_keys = ['HOOK', 'APIKEY', 'KEY', 'PASSWORD', 'TOKEN']
+    blacklist_keys = ['HOOK', 'APIKEY', 'KEY', 'PASSWORD', 'TOKEN', 'STR_YOUTUBE_COOKIES']
 
     for k, v in config.items():
         for key, value in v.items():
@@ -416,7 +417,7 @@ class PlexTokenFilter(RegexFilter):
     def __init__(self):
         super(PlexTokenFilter, self).__init__()
 
-        self.regex = re.compile(pattern=r'X-Plex-Token(?:=|%3D)([a-zA-Z0-9]+)')
+        self.regex = re.compile(pattern=r'X-Plex-Token(?:=|%3D|:\s*)([a-zA-Z0-9_-]+)', flags=re.IGNORECASE)
 
     def replace(self, text: str, token: str) -> str:
         """
@@ -533,7 +534,8 @@ def get_logger(name: str) -> logging.Logger:  # this also exists in helpers.py t
     """
     Get a logger.
 
-    Return the logging.Logger object for a given name. Additionally, replaces logger.warn with logger.warning.
+    Application modules share ``themerr``. External logger names are preserved for library integration.
+    Additionally, replace logger.warn with logger.warning.
 
     Parameters
     ----------
@@ -550,7 +552,7 @@ def get_logger(name: str) -> logging.Logger:  # this also exists in helpers.py t
     >>> get_logger(name='themerr-plex')
     <Logger themerr-plex (WARNING)>
     """
-    logger = logging.getLogger(name)
+    logger = helpers.get_logger(name)
     logger.warn = logger.warning  # replace warn with warning
 
     return logger
@@ -566,16 +568,235 @@ def setup_loggers():
     --------
     >>> setup_loggers()
     """
-    loggers_list = [app_name, 'uvicorn', 'uvicorn.error', 'uvicorn.access', 'plex', 'themerr',
-                    'youtube', 'themerr_plex', 'schedule']
+    global _session_handler
+    if _session_handler is None or _session_handler._closed:
+        from common.log_viewer import _SessionLogHandler
+        try:
+            _session_handler = _SessionLogHandler()
+        except OSError:
+            _session_handler = None
 
-    submodules = pkgutil.iter_modules(common.__path__)
-
-    for submodule in submodules:
-        loggers_list.append(f'{app_name}.{submodule.name}')
-
-    for logger_name in loggers_list:
+    for logger_name in LOG_NAMES:
         init_logger(log_name=logger_name)
+        if _session_handler is not None:
+            logging.getLogger(logger_name).addHandler(_session_handler)
+
+    # Libraries retain their native logger names and share the three output channels.
+    for name, destination in (('uvicorn', 'backend'), ('schedule', 'themerr')):
+        target = logging.getLogger(name)
+        _remove_handlers(target)
+        target.handlers = logging.getLogger(destination).handlers[:]
+        target.setLevel(logging.getLogger(destination).level)
+        target.propagate = False
+    for name in ('uvicorn.error', 'uvicorn.access'):
+        target = logging.getLogger(name)
+        _remove_handlers(target)
+        target.setLevel(logging.NOTSET)
+        target.propagate = True
+    access_logger = logging.getLogger('uvicorn.access')
+    if not any(isinstance(value, LogPollFilter) for value in access_logger.filters):
+        access_logger.filters.insert(0, LogPollFilter())
+
+
+def _remove_handlers(target: logging.Logger):
+    """Detach and close each old handler before rebuilding a logging channel."""
+    for handler in target.handlers[:]:
+        target.removeHandler(handler)
+        if handler is not _session_handler:
+            handler.close()
+
+
+def redact(text: str) -> str:
+    """Mask configured secrets and private values.
+
+    Apply the configured secret blacklist and the public IP, email, and Plex token
+    filters to the complete text, including any formatted traceback.
+
+    Parameters
+    ----------
+    text : str
+        Message or formatted log record to sanitize.
+
+    Returns
+    -------
+    str
+        Text with matching sensitive values replaced by asterisks.
+
+    Examples
+    --------
+    >>> redact('X-Plex-Token=example_token')
+    'X-Plex-Token=****************'
+    """
+    for word in _BLACKLIST_WORDS:
+        text = text.replace(word, 16 * '*')
+    for log_filter in (PublicIPFilter(), EmailFilter(), PlexTokenFilter()):
+        for match in log_filter.regex.findall(text):
+            text = log_filter.replace(text, match)
+    return text
+
+
+class PrivateFormatter(logging.Formatter):
+    """Apply privacy filters to complete log records.
+
+    Format the message, arguments, and exception before masking sensitive values.
+    Accept the same formatting options as ``logging.Formatter``.
+
+    Parameters
+    ----------
+    fmt : str or None, optional
+        Record format, defaulting to the message alone.
+    datefmt : str or None, optional
+        Timestamp format, defaulting to the standard logging format.
+    style : str, optional
+        Format style: ``%``, ``{``, or ``$``. Defaults to ``%``.
+    validate : bool, optional
+        Validate the format against its style. Defaults to True.
+    defaults : dict or None, optional
+        Default values for custom record fields.
+
+    Examples
+    --------
+    >>> formatter = PrivateFormatter('%(message)s')
+    >>> record = logging.makeLogRecord({'msg': 'X-Plex-Token=example_token'})
+    >>> formatter.format(record)
+    'X-Plex-Token=****************'
+    """
+
+    def format(self, record):
+        """Return a fully formatted, masked log record.
+
+        Include interpolated arguments and exception details in the privacy pass.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            Record containing the message and optional exception details.
+
+        Returns
+        -------
+        str
+            Formatted record with matching sensitive values masked.
+
+        Examples
+        --------
+        >>> record = logging.makeLogRecord({'msg': 'Ready'})
+        >>> PrivateFormatter('%(message)s').format(record)
+        'Ready'
+        """
+        return redact(super().format(record))
+
+
+class LogPollFilter(logging.Filter):
+    """Suppress successful log viewer access records.
+
+    Prevent live refresh requests from creating an endless stream of their own
+    access messages. Retain failed polls and requests to other routes.
+
+    Parameters
+    ----------
+    name : str, optional
+        Inherited logging filter name, defaulting to an empty string. Poll
+        suppression checks the request arguments regardless of this name.
+
+    Examples
+    --------
+    >>> poll_filter = LogPollFilter()
+    >>> record = logging.makeLogRecord({'msg': 'Server started', 'args': ()})
+    >>> poll_filter.filter(record)
+    True
+    """
+
+    def filter(self, record):
+        """Retain failed polls and other Uvicorn access records.
+
+        Suppress only successful GET requests to ``/api/logs``, including requests
+        with query parameters. Other records remain available for diagnostics.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            Uvicorn access record containing its request arguments.
+
+        Returns
+        -------
+        bool
+            False for a successful viewer poll, otherwise True.
+
+        Examples
+        --------
+        >>> record = logging.makeLogRecord({'args': ('localhost', 'GET', '/api/logs', '1.1', 200)})
+        >>> LogPollFilter().filter(record)
+        False
+        """
+        args = record.args
+        return not (isinstance(args, tuple) and len(args) == 5 and args[1] == 'GET'
+                    and str(args[2]).partition('?')[0] == '/api/logs' and args[4] == 200)
+
+
+class YtDlpLogger:
+    """Route yt-dlp diagnostics to its logging channel.
+
+    Implement yt-dlp's logger interface with the shared ``yt-dlp`` logger. Preserve
+    normal progress messages as INFO and messages prefixed with ``[debug]`` as DEBUG.
+
+    Examples
+    --------
+    >>> extractor_logger = YtDlpLogger()
+    >>> options = {'logger': extractor_logger}
+    """
+
+    def debug(self, message):
+        """Record an informational or debug extractor message.
+
+        Distinguish DEBUG messages by yt-dlp's ``[debug]`` prefix followed by a space. Send other
+        messages to INFO so download progress remains visible without debug logging.
+
+        Parameters
+        ----------
+        message : str
+            Diagnostic text supplied by yt-dlp.
+
+        Examples
+        --------
+        >>> YtDlpLogger().debug('[download] Audio download complete')
+        """
+        target = get_logger('yt-dlp')
+        if message.startswith('[debug] '):
+            target.debug(message, stacklevel=2)
+        else:
+            target.info(message, stacklevel=2)
+
+    def warning(self, message):
+        """Record an extractor warning.
+
+        Send the diagnostic to the ``yt-dlp`` channel at WARNING severity.
+
+        Parameters
+        ----------
+        message : str
+            Warning text supplied by yt-dlp.
+
+        Examples
+        --------
+        >>> YtDlpLogger().warning('Retrying extraction after a timeout')
+        """
+        get_logger('yt-dlp').warning(message, stacklevel=2)
+
+    def error(self, message):
+        """Record an extractor failure.
+
+        Send the diagnostic to the ``yt-dlp`` channel at ERROR severity.
+
+        Parameters
+        ----------
+        message : str
+            Failure text supplied by yt-dlp.
+
+        Examples
+        --------
+        >>> YtDlpLogger().error('The source video is unavailable')
+        """
+        get_logger('yt-dlp').error(message, stacklevel=2)
 
 
 def init_logger(log_name: str) -> logging.Logger:
@@ -602,23 +823,18 @@ def init_logger(log_name: str) -> logging.Logger:
     logger = logging.getLogger(name=log_name)
 
     # Close and remove old handlers. This is required to reinitialize the loggers at runtime
-    log_handlers = logger.handlers
-    for handler in log_handlers:
-        # Just make sure it is cleaned up.
-        if isinstance(handler, handlers.RotatingFileHandler):
-            handler.close()
-        elif isinstance(handler, logging.StreamHandler):
-            handler.flush()
-
-        logger.removeHandler(handler)
+    _remove_handlers(logger)
 
     # Configure the logger to accept all messages
     logger.propagate = False
     logger.setLevel(logging.DEBUG if common.DEBUG else logging.INFO)
 
     # Setup file logger
-    file_formatter = logging.Formatter('%(asctime)s - %(levelname)-7s :: %(threadName)s : %(message)s',
-                                       '%Y-%m-%d %H:%M:%S')
+    formatter_class = logging.Formatter if common.DEV else PrivateFormatter
+    file_formatter = formatter_class(
+        '%(asctime)s.%(msecs)03d - %(levelname)-7s :: %(threadName)s : %(module)s : %(message)s',
+        '%Y-%m-%d %H:%M:%S',
+    )
 
     # Setup file logger
     log_dir = definitions.Paths.LOG_DIR
@@ -633,27 +849,15 @@ def init_logger(log_name: str) -> logging.Logger:
 
     # Setup console logger
     if not common.QUIET:
-        console_formatter = logging.Formatter('%(asctime)s - %(levelname)s :: %(threadName)s : %(message)s',
-                                              '%Y-%m-%d %H:%M:%S')
+        console_formatter = file_formatter
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(console_formatter)
         console_handler.setLevel(logging.DEBUG)
 
         logger.addHandler(console_handler)
 
-    # Add filters to log handlers
-    # Only add filters after the config file has been initialized
-    # Nothing prior to initialization should contain sensitive information
-    if not common.DEV and common.CONFIG:
-        log_handlers = logger.handlers
-        for handler in log_handlers:
-            handler.addFilter(BlacklistFilter())
-            handler.addFilter(PublicIPFilter())
-            handler.addFilter(EmailFilter())
-            handler.addFilter(PlexTokenFilter())
-
     # Install exception hooks
-    if log_name == app_name:  # all tracebacks go to 'common.log'
+    if log_name == app_name:  # all uncaught tracebacks go to 'themerr.log'
         _init_hooks(logger)
 
     return logger

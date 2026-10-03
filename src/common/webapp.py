@@ -11,7 +11,7 @@ import time
 from threading import Event
 
 # lib imports
-from fastapi import APIRouter, Depends, FastAPI, Request
+from fastapi import APIRouter, Depends, FastAPI, Query, Request
 from starlette.responses import JSONResponse, PlainTextResponse, Response, StreamingResponse
 from starlette.requests import ClientDisconnect
 from starlette.middleware.sessions import SessionMiddleware
@@ -24,7 +24,7 @@ import requests
 
 # local imports
 import common
-from common import admin, api_docs, server_ui
+from common import admin, api_docs, log_viewer, server_ui
 from common.http import csrf_token as _csrf_token
 from common.http import SafeStaticFiles, error_response, file_response, read_form, read_json, render_template
 from common import config
@@ -56,6 +56,68 @@ mime_type_map = {
 router = APIRouter()
 log = logger.get_logger(__name__)
 PLEX_LOGIN_LIFETIME = 600
+
+
+@router.api_route('/logs', methods=['GET', 'HEAD'], name='logs', response_model=None)
+def logs(request: Request) -> Response:
+    """Serve the authenticated application log viewer.
+
+    Render the Logs page with controls for the three application logging channels.
+    The browser security middleware requires an administrator session.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming authenticated browser request.
+
+    Returns
+    -------
+    Response
+        Rendered log viewer page.
+
+    Examples
+    --------
+    >>> response = logs(request)  # FastAPI invokes this for GET /logs.
+    """
+    return render_template(request, 'logs.html', title=_('Logs'), sources=logger.LOG_NAMES)
+
+
+@router.get('/api/logs', name='log_entries')
+def log_entries(source: str = Query('all', pattern='^(all|themerr|backend|yt-dlp)$'),
+                limit: int = Query(1000, ge=1, le=log_viewer.MAX_ENTRIES),
+                scope: str = Query('recent', pattern='^(recent|startup)$'),
+                cursor: int = Query(0, ge=0)) -> dict:
+    """Read recent or current-session log records.
+
+    Select recent file history or records since application logging started. Session
+    history uses batches and a cursor, preserving records across rotation. Browser session required.
+
+    Parameters
+    ----------
+    source : str, optional
+        Logging channel: ``all``, ``themerr``, ``backend``, or ``yt-dlp``. Defaults to ``all``.
+    limit : int, optional
+        Maximum records per request, between 1 and 2000. Defaults to 1000.
+    scope : str, optional
+        ``recent`` for rotating files or ``startup`` for current-session records.
+    cursor : int, optional
+        Cursor returned by the preceding startup batch. Defaults to zero.
+
+    Returns
+    -------
+    dict
+        Masked entries, unavailable sources, and a truncation flag. Startup batches
+        also include the next cursor and whether more records remain.
+
+    Examples
+    --------
+    >>> data = log_entries(source='themerr', limit=250)
+    >>> sorted(data)
+    ['entries', 'truncated', 'unavailable']
+    """
+    if scope == 'startup':
+        return log_viewer.session_snapshot(source, limit, cursor)
+    return log_viewer.snapshot(source, limit)
 
 
 @router.api_route('/home', methods=['GET', 'HEAD'], name='home', response_model=None)
@@ -476,7 +538,7 @@ def test_logger() -> Response:
     """
     Test logging functions.
 
-    Check `./logs/common.webapp.log` for output.
+    Check `./logs/themerr.log` for output.
 
     Returns
     -------
@@ -499,7 +561,7 @@ def test_logger() -> Response:
     log.error(message)
     log.critical(message)
     log.debug(message)
-    return PlainTextResponse(f'Testing complete, check "logs/{__name__}.log" for output.')
+    return PlainTextResponse('Testing complete, check "logs/themerr.log" for output.')
 
 
 def _parse_setting(option: str, value: str) -> tuple[str, str, object]:

@@ -48,7 +48,7 @@ def test_logger_setup(configured, monkeypatch, tmp_path):
     target = logger.init_logger(logger.app_name)
     assert any(isinstance(handler, logging.StreamHandler) for handler in target.handlers)
     assert any(isinstance(handler, logger.handlers.RotatingFileHandler) for handler in target.handlers)
-    assert all(handler.filters for handler in target.handlers)
+    assert all(isinstance(handler.formatter, logger.PrivateFormatter) for handler in target.handlers)
 
     configured['Logging']['DEBUG_LOGGING'] = True
     monkeypatch.setattr(common, 'DEBUG', True)
@@ -64,10 +64,11 @@ def test_plex_child_info_reaches_file(configured, monkeypatch, tmp_path):
     monkeypatch.setattr(logger.definitions.Paths, 'LOG_DIR', str(tmp_path))
     monkeypatch.setattr(common, 'QUIET', False)
     monkeypatch.setattr(common, 'DEV', False)
-    target = logger.init_logger('plex')
+    monkeypatch.setattr(logger, '_init_hooks', Mock())
+    target = logger.init_logger('themerr')
     try:
         logger.get_logger('plex.plexapi').info('Theme upload started for rating_key=42')
-        assert 'Theme upload started for rating_key=42' in (tmp_path / 'plex.log').read_text(encoding='utf-8')
+        assert 'Theme upload started for rating_key=42' in (tmp_path / 'themerr.log').read_text(encoding='utf-8')
     finally:
         for handler in target.handlers[:]:
             handler.close()
@@ -78,9 +79,7 @@ def test_setup_loggers_and_listener(monkeypatch):
     initialized = []
     monkeypatch.setattr(logger, 'init_logger', lambda log_name: initialized.append(log_name))
     logger.setup_loggers()
-    assert logger.app_name in initialized
-    assert {'uvicorn', 'uvicorn.error', 'uvicorn.access'} <= set(initialized)
-    assert {'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule'} <= set(initialized)
+    assert initialized == ['themerr', 'backend', 'yt-dlp']
 
     target = logging.getLogger('listener-test')
     monkeypatch.setattr(logger, 'queue', False)

@@ -3,7 +3,7 @@
     <a class="brand" href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>FOR PLEX</small></span></a>
     <p class="nav-eyebrow">{{ _('YOUR WORKSPACE') }}</p>
     <nav class="primary-nav" aria-label="{{ _('Workspace pages') }}">
-        {% for endpoint, label, icon in [('home', _('Overview'), 'layout-dashboard'), ('server_ui.server_page', _('Servers'), 'server'), ('settings', _('Settings'), 'sliders-horizontal'), ('server_ui.activity', _('Activity'), 'activity')] %}
+        {% for endpoint, label, icon in [('home', _('Overview'), 'layout-dashboard'), ('server_ui.server_page', _('Servers'), 'server'), ('settings', _('Settings'), 'sliders-horizontal'), ('server_ui.activity', _('Activity'), 'activity'), ('logs', _('Logs'), 'terminal')] %}
         <a href="{{ url_for(endpoint) }}" class="nav-item {{ 'active' if current_endpoint == endpoint }}" {% if current_endpoint == endpoint %}aria-current="page"{% endif %}><i data-lucide="{{ icon }}"></i><span>{{ label }}</span>{% if current_endpoint == endpoint %}<span class="nav-active-dot"></span>{% endif %}</a>
         {% endfor %}
     </nav>

@@ -301,7 +301,7 @@ def _youtube_options():
         params = {
             'cookiefile': cookie_path,
             'format': 'bestaudio',
-            'logger': log,
+            'logger': logger.YtDlpLogger(),
             'socket_timeout': 10,
             'youtube_include_dash_manifest': False,
         }
