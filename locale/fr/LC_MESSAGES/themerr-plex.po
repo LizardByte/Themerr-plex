@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Redémarrer"
 msgid "Quit"
 msgstr "Quitter"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Réglages"
@@ -413,6 +413,34 @@ msgstr "Désactiver la journalisation de la console"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "Imprimer les détails de la version et quitter"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Votre session a expiré. Connectez-vous pour continuer."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Rejeter le message"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Modifications non enregistrées"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Toutes les modifications ont été enregistrées."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Paramètres enregistrés. Les modifications de réseau prennent effet après le redémarrage du Themerr."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "Impossible d'enregistrer les modifications."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "Enregistrez vos modifications de paramètres avant de changer votre mot de passe."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex ID"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "Dépassé de ThemerrDB"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Explorez l'API en utilisant votre session connectée."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "Documentation de l'API"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Confirmer le nouveau mot de passe"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Changer le mot de passe"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Toutes les modifications ont été enregistrées."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Beaucoup plus d'ambiance."
 msgid "Resources"
 msgstr "Ressource"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Documentation"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Contribuer à un thème"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "Support LizardByte"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Se déconnecter"
 
