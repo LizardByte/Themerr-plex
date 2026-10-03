@@ -85,13 +85,12 @@ def initialize(config_file: str) -> bool:
             sys.stderr.write("Unable to create the log directory. Logging to screen only.\n")
 
         # setup loggers... cannot use logging until this is finished
+        DEBUG = DEBUG or bool(CONFIG['Logging']['DEBUG_LOGGING'])
         logger.setup_loggers()
 
         if CONFIG['Network']['HTTP_PORT'] < 21 or CONFIG['Network']['HTTP_PORT'] > 65535:
             log.warning(msg=f"HTTP_PORT out of bounds: 21 < {CONFIG['Network']['HTTP_PORT']} < 65535")
             CONFIG['Network']['HTTP_PORT'] = 9494
-
-        DEBUG = DEBUG or bool(CONFIG['Logging']['DEBUG_LOGGING'])
 
         _INITIALIZED = True
         return True
