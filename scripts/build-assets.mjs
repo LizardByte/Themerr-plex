@@ -10,10 +10,10 @@ if (!outdir.startsWith(`${webDir}${sep}`)) {
 await rm(outdir, { recursive: true, force: true });
 
 await build({
-    entryPoints: [resolve(webDir, 'js/app.js')],
+    entryPoints: [resolve(webDir, 'js/app.js'), resolve(webDir, 'js/api_docs.js')],
     absWorkingDir: process.cwd(),
     outdir,
-    entryNames: 'app',
+    entryNames: '[name]',
     assetNames: 'files/[name]-[hash]',
     bundle: true,
     minify: true,

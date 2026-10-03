@@ -119,9 +119,6 @@ jobs:
           uv sync --locked --all-extras --no-install-project
           --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
-      - name: Compile Locale Translations
-        run: uv run --locked --all-extras --no-build --no-sync python ./scripts/_locale.py --compile
-
       - name: Build and test web assets
         run: |
           npm ci --ignore-scripts

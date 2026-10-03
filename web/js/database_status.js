@@ -19,12 +19,13 @@ export function initDatabaseStatus(root = document, query = () => api('/api/them
     let pollTimer;
     let active = true;
     function render() {
-        const age = publicationAge(snapshot?.updated_at);
+        const locale = root.documentElement?.lang || undefined;
+        const age = publicationAge(snapshot?.updated_at, Date.now(), locale);
         time.textContent = age ?? status.dataset.unknownLabel;
         if (age) {
             const date = new Date(snapshot.updated_at);
             time.dateTime = date.toISOString();
-            time.title = date.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'long' });
+            time.title = date.toLocaleString(locale, { dateStyle: 'full', timeStyle: 'long' });
         }
         warning.hidden = !snapshot?.stale;
         warning.title = status.dataset.staleLabel;

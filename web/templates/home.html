@@ -50,7 +50,7 @@
                         <span class="media-controls">
                         <span class="media-placeholder" title="{{ item.type|capitalize }}" aria-hidden="true"><i data-lucide="{{ 'tv' if item.type == 'show' else 'layers' if item.type == 'collection' else 'film' }}"></i></span>
                         {% if item.theme %}
-                        <button type="button" class="theme-playback" data-theme-url="{{ url_for('play_theme', server_id=section.server_id, rating_key=item.rating_key) }}"
+                        <button type="button" class="theme-playback" data-theme-url="{{ url_for('play_theme_default', rating_key=item.rating_key) if section.server_id == 'default' else url_for('play_theme', server_id=section.server_id, rating_key=item.rating_key) }}"
                             data-play-label="{{ _('Play theme for') }} {{ item.title }}" data-pause-label="{{ _('Pause theme for') }} {{ item.title }}"
                             data-error-label="{{ _('Unable to play this theme. Check the Plex connection and browser audio support.') }}"
                             aria-label="{{ _('Play theme for') }} {{ item.title }}" aria-pressed="false" aria-describedby="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}">

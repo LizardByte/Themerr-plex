@@ -79,7 +79,7 @@ def test_setup_loggers_and_listener(monkeypatch):
     monkeypatch.setattr(logger, 'init_logger', lambda log_name: initialized.append(log_name))
     logger.setup_loggers()
     assert logger.app_name in initialized
-    assert 'werkzeug' in initialized
+    assert {'uvicorn', 'uvicorn.error', 'uvicorn.access'} <= set(initialized)
     assert {'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule'} <= set(initialized)
 
     target = logging.getLogger('listener-test')

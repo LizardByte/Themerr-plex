@@ -1,17 +1,20 @@
 import { api, toast } from './api.js';
+import { _ } from './i18n.js';
 
 export function initSettings() {
     const form = document.getElementById('configForm');
     if (!form) return;
     const save = document.getElementById('save-button');
     const status = document.getElementById('settings-save-status');
+    const locale = document.getElementById('LOCALE');
+    const pageLocale = locale.value;
     let dirty = false;
     let revision = 0;
     function markDirty() {
         revision += 1;
         dirty = true;
         save.disabled = false;
-        status.textContent = 'Unsaved changes';
+        status.textContent = _('Unsaved changes');
     }
     form.addEventListener('input', markDirty);
     form.addEventListener('change', markDirty);
@@ -29,16 +32,18 @@ export function initSettings() {
         save.disabled = true;
         save.setAttribute('aria-busy', 'true');
         const submittedRevision = revision;
+        const submittedLocale = locale.value;
         try {
             await api('/api/settings', { form: data });
             dirty = revision !== submittedRevision;
             save.disabled = !dirty;
-            status.textContent = dirty ? 'Unsaved changes' : 'All changes saved.';
-            toast('Settings saved. Network changes take effect after restarting Themerr.');
+            status.textContent = dirty ? _('Unsaved changes') : _('All changes saved.');
+            if (!dirty && submittedLocale !== pageLocale) window.location.reload();
+            toast(_('Settings saved. Network changes take effect after restarting Themerr.'));
         } catch (error) {
             toast(error.message, true);
             save.disabled = false;
-            status.textContent = 'Unable to save changes.';
+            status.textContent = _('Unable to save changes.');
         } finally {
             save.removeAttribute('aria-busy');
         }
@@ -46,7 +51,7 @@ export function initSettings() {
     document.getElementById('password-form').addEventListener('submit', async event => {
         event.preventDefault();
         if (dirty) {
-            toast('Save your settings changes before changing your password.', true);
+            toast(_('Save your settings changes before changing your password.'), true);
             return;
         }
         const button = event.target.querySelector('button');

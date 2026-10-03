@@ -5,6 +5,7 @@ from pathlib import Path
 
 # lib imports
 import babel
+import polib
 import pytest
 
 # local imports
@@ -77,3 +78,62 @@ def test_new_catalog_has_display_name_and_runtime_support(tmp_path, monkeypatch)
     monkeypatch.setattr(config, 'CONFIG', {'General': {'LOCALE': 'ko'}})
     assert locales.get_locale() == 'ko'
     assert locales.get_locale_names() == ['English (English)', 'Korean (한국어)']
+
+
+def write_catalog(path, **messages):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    catalog = polib.POFile()
+    catalog.metadata = {'Content-Type': 'text/plain; charset=UTF-8',
+                        'Plural-Forms': 'nplurals=2; plural=(n != 1);'}
+    for message, translation in messages.items():
+        catalog.append(polib.POEntry(msgid=message, msgstr=translation))
+    catalog.save(str(path))
+    return catalog
+
+
+def test_source_catalog_overrides_stale_mo_and_reloads_edits(tmp_path, monkeypatch):
+    monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
+    path = tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po'
+    old = write_catalog(path, Settings='Ancien')
+    old.save_as_mofile(str(path.with_suffix('.mo')))
+    write_catalog(path, Settings='Paramètres')
+    assert locales.get_translation('fr').gettext('Settings') == 'Paramètres'
+    write_catalog(path, Settings='Nouveaux paramètres')
+    assert locales.get_translation('fr').gettext('Settings') == 'Nouveaux paramètres'
+
+
+def test_english_uses_root_source_without_an_english_directory(tmp_path, monkeypatch):
+    monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
+    write_catalog(tmp_path / 'themerr-plex.po', Greeting='Default greeting')
+    write_catalog(tmp_path / 'en' / 'LC_MESSAGES' / 'themerr-plex.po', Greeting='Old greeting')
+    assert locales.get_translation('en').gettext('Greeting') == 'Default greeting'
+    (tmp_path / 'en' / 'LC_MESSAGES' / 'themerr-plex.po').unlink()
+    assert locales.get_translation('en').gettext('Greeting') == 'Default greeting'
+    assert locales.get_translation('en').gettext('Missing') == 'Missing'
+    assert locales.get_translation('en_US').gettext('Greeting') == 'Default greeting'
+
+
+def test_dynamic_translator_follows_setting_and_regional_fallback(tmp_path, monkeypatch):
+    monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
+    write_catalog(tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po', Settings='Paramètres')
+    monkeypatch.setattr(config, 'CONFIG', {'General': {'LOCALE': 'fr'}})
+    translate = locales.get_text()
+    assert translate('Settings') == 'Paramètres'
+    config.CONFIG['General']['LOCALE'] = 'en'
+    assert translate('Settings') == 'Settings'
+    assert locales.get_translation('fr_CA').gettext('Settings') == 'Paramètres'
+
+
+def test_plural_fuzzy_and_untranslated_entries(tmp_path, monkeypatch):
+    monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
+    path = tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po'
+    catalog = write_catalog(path, Missing='')
+    catalog.append(polib.POEntry(msgid='Fuzzy', msgstr='Unreviewed', flags=['fuzzy']))
+    catalog.append(polib.POEntry(msgid='item', msgid_plural='items', msgstr_plural={0: 'objet', 1: 'objets'}))
+    catalog.save(str(path))
+    language = locales.get_translation('fr')
+    assert language.gettext('Missing') == 'Missing'
+    assert language.gettext('Fuzzy') == 'Fuzzy'
+    assert language.ngettext('item', 'items', 1) == 'objet'
+    assert language.ngettext('item', 'items', 2) == 'objets'
+    assert not path.with_suffix('.mo').exists()

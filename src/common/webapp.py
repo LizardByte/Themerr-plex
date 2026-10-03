@@ -5,25 +5,30 @@ Responsible for serving the webapp.
 """
 # standard imports
 import copy
-from functools import lru_cache
-import hashlib
-import json
 import os
+import secrets
 import time
+from threading import Event
 
 # lib imports
-from flask import Flask, Response, make_response as _make_response, session
-from flask import jsonify, render_template as flask_render_template, request, send_from_directory, url_for
-from flask_babel import Babel
-from flask_wtf import CSRFProtect
+from fastapi import APIRouter, Depends, FastAPI, Request
+from starlette.responses import JSONResponse, PlainTextResponse, Response, StreamingResponse
+from starlette.requests import ClientDisconnect
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
+from starlette.exceptions import HTTPException
+import uvicorn
+import anyio
 from plexapi import exceptions as plex_exceptions
-import polib
 import requests
 from werkzeug.utils import secure_filename
 
 # local imports
 import common
-from common import admin, server_ui
+from common import admin, api_docs, server_ui
+from common.http import csrf_token as _csrf_token
+from common.http import error_response, file_response, read_form, read_json, render_template
 from common import config
 from common import crypto
 from common.definitions import Paths
@@ -40,10 +45,6 @@ MIMETYPE_TEXT_PLAIN = 'text/plain'
 # localization
 _ = locales.get_text()
 
-responses = {
-    500: Response(response='Internal Server Error', status=500, mimetype=MIMETYPE_TEXT_PLAIN)
-}
-
 # mime type map
 mime_type_map = {
     'gif': 'image/gif',
@@ -54,129 +55,23 @@ mime_type_map = {
     'svg': 'image/svg+xml',
 }
 
-# setup flask app
-app = Flask(
-    import_name=__name__,
-    root_path=os.path.join(Paths.ROOT_DIR, 'web'),
-    static_folder=os.path.join(Paths.ROOT_DIR, 'web', 'assets'),
-    static_url_path='/web/assets',
-    template_folder=os.path.join(Paths.ROOT_DIR, 'web', 'templates'),
-)
-app.secret_key = os.urandom(32)
-
-# remove extra lines rendered jinja templates
-app.jinja_env.trim_blocks = True
-app.jinja_env.lstrip_blocks = True
-
-# add python builtins to jinja templates
-jinja_functions = {
-    'int': int,
-    'str': str,
-}
-app.jinja_env.globals.update(jinja_functions)
-
-
-@lru_cache(maxsize=8)
-def _asset_version(path: str, modified: int, size: int) -> str:
-    """Cache a content fingerprint until a browser asset changes on disk."""
-    with open(path, 'rb') as asset:
-        return hashlib.file_digest(asset, 'sha256').hexdigest()[:16]
-
-
-def asset_url(filename: str) -> str:
-    """Return a browser asset URL that changes when its compiled contents change.
-
-    Reuse the content fingerprint while the file's size and modification time are
-    unchanged. Missing files retain their normal URL so the browser can report them.
-
-    Parameters
-    ----------
-    filename : str
-        Compiled asset name supplied by the application template.
-
-    Returns
-    -------
-    str
-        Same-origin URL with a content fingerprint when the asset exists.
-
-    Examples
-    --------
-    >>> with app.test_request_context():
-    ...     asset_url('app.css').startswith('/web/assets/app.css')
-    True
-    """
-    path = os.path.join(app.static_folder, filename)
-    try:
-        stat = os.stat(path)
-        version = _asset_version(path, stat.st_mtime_ns, stat.st_size)
-    except OSError:
-        version = None
-    return url_for('static', filename=filename, v=version)
-
-
-app.jinja_env.globals['asset_url'] = asset_url
-
-# localization
-babel = Babel(
-    app=app,
-    default_locale=locales.default_locale,
-    default_timezone=locales.default_timezone,
-    default_translation_directories=Paths.LOCALE_DIR,
-    default_domain=locales.default_domain,
-    configure_jinja=True,
-    locale_selector=locales.get_locale
-)
-
-# setup logging for flask
-log_handlers = logger.get_logger(name=__name__).handlers
-
-for handler in log_handlers:
-    app.logger.addHandler(handler)
-
-admin.init_app(app)
-app.register_blueprint(server_ui.blueprint)
-
-csrf = CSRFProtect()
-csrf.init_app(app)
-
+router = APIRouter()
+log = logger.get_logger(__name__)
 PLEX_LOGIN_LIFETIME = 600
 
 
-def render_template(template_name_or_list, **context):
-    """
-    Render a template, while providing our default context.
-
-    This function is a wrapper around ``flask.render_template``.
-    Our UI config is added to the template context.
-    In the future, this function may be used to add other default contexts to templates.
-
-    Parameters
-    ----------
-    template_name_or_list : str
-        The name of the template to render.
-    **context
-        The context to pass to the template.
-
-    Returns
-    -------
-    render_template
-        The rendered template.
-
-    Examples
-    --------
-    >>> render_template(template_name_or_list='home.html', title=_('Home'))
-    """
-
-    return flask_render_template(template_name_or_list=template_name_or_list, **context)
-
-
-@app.route('/home', methods=['GET'])
-@app.route('/', methods=['GET'])
-def home() -> render_template:
+@router.api_route('/home', methods=['GET', 'HEAD'], name='home', response_model=None)
+@router.api_route('/', methods=['GET', 'HEAD'], name='home', response_model=None)
+def home(request: Request) -> Response:
     """
     Serve the webapp home page.
 
     Show cached Plex library data once it is available. Until then, show a progress page.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser or API request.
 
     Returns
     -------
@@ -192,19 +87,31 @@ def home() -> render_template:
 
     Examples
     --------
-    >>> home()
+    >>> home(request)
     """
     try:
         items, errors, stats = server_ui.dashboard()
     except Exception:
-        app.logger.exception('Unable to load dashboard')
-        return render_template('error.html', title='Unable to load libraries',
-                               message='The dashboard could not be loaded. Try again or check the log.'), 500
-    return render_template('home.html', title='Overview', items=items, theme_errors=errors, stats=stats,
-                           servers=server_ui.servers.list_servers())
+        log.exception('Unable to load dashboard')
+        return render_template(
+            request,
+            'error.html',
+            title='Unable to load libraries',
+            message='The dashboard could not be loaded. Try again or check the log.',
+            status_code=500,
+        )
+    return render_template(
+        request,
+        'home.html',
+        title='Overview',
+        items=items,
+        theme_errors=errors,
+        stats=stats,
+        servers=server_ui.servers.list_servers(),
+    )
 
 
-def _stream_theme_audio(upstream: requests.Response, rating_key: int):
+async def _stream_theme_audio(upstream: requests.Response, rating_key: int):
     """Stream Plex audio and release the connection when playback stops.
 
     Parameters
@@ -219,17 +126,82 @@ def _stream_theme_audio(upstream: requests.Response, rating_key: int):
     bytes
         Audio chunks without buffering the entire theme in memory.
     """
+    chunks = upstream.iter_content(chunk_size=64 * 1024)
     try:
-        yield from upstream.iter_content(chunk_size=64 * 1024)
+        while True:
+            chunk = await anyio.to_thread.run_sync(next, chunks, None, abandon_on_cancel=True)
+            if chunk is None:
+                break
+            yield chunk
     except requests.RequestException as error:
-        app.logger.warning('Theme playback interrupted for rating_key=%s (%s)', rating_key, type(error).__name__)
-    finally:
-        upstream.close()
+        log.warning('Theme playback interrupted for rating_key=%s (%s)', rating_key, type(error).__name__)
 
 
-@app.route('/api/themes/<int:rating_key>', defaults={'server_id': 'default'}, methods=['GET'])
-@app.route('/api/servers/<server_id>/themes/<int:rating_key>', methods=['GET'])
-def play_theme(rating_key: int, server_id: str) -> Response:
+class ThemeAudioResponse(StreamingResponse):
+    """Stream theme audio with guaranteed upstream cleanup.
+
+    Close the Plex connection even when sending headers or chunks is cancelled.
+
+    Parameters
+    ----------
+    upstream : requests.Response
+        Open audio response from Plex.
+    rating_key : int
+        Item identifier used for playback diagnostics.
+    headers : dict
+        Validated media headers for the browser response.
+
+    Examples
+    --------
+    >>> response = ThemeAudioResponse(upstream, 42, {'Content-Type': 'audio/mpeg'})
+    """
+
+    def __init__(self, upstream: requests.Response, rating_key: int, headers: dict):
+        """Stream the open upstream response without buffering its audio."""
+        self.upstream = upstream
+        super().__init__(_stream_theme_audio(upstream, rating_key), status_code=upstream.status_code,
+                         headers=headers)
+
+    async def __call__(self, scope, receive, send):
+        """Send the streaming response and release its upstream connection.
+
+        Close the connection outside the event loop, including on ASGI disconnects.
+
+        Parameters
+        ----------
+        scope : dict
+            ASGI request scope.
+        receive : callable
+            ASGI receive function.
+        send : callable
+            ASGI send function.
+
+        Examples
+        --------
+        >>> await response(scope, receive, send)
+        """
+        try:
+            await super().__call__(scope, receive, send)
+        except ClientDisconnect:
+            pass
+        finally:
+            with anyio.CancelScope(shield=True):
+                await run_in_threadpool(self.upstream.close)
+
+
+@router.api_route(
+    '/api/themes/{rating_key:int}',
+    methods=['GET', 'HEAD'],
+    name='play_theme_default',
+    response_model=None,
+)
+@router.api_route(
+    '/api/servers/{server_id}/themes/{rating_key:int}',
+    methods=['GET', 'HEAD'],
+    name='play_theme',
+    response_model=None,
+)
+def play_theme(request: Request, rating_key: int, server_id: str = 'default') -> Response:
     """Serve the item's current Plex theme without exposing the Plex token.
 
     Resolve the selected audio from fresh Plex metadata and forward byte range requests
@@ -237,6 +209,8 @@ def play_theme(rating_key: int, server_id: str) -> Response:
 
     Parameters
     ----------
+    request : Request
+        Incoming browser or API request.
     rating_key : int
         Item whose selected theme should be played, regardless of its provider.
     server_id : str
@@ -249,7 +223,7 @@ def play_theme(rating_key: int, server_id: str) -> Response:
 
     Examples
     --------
-    >>> play_theme(rating_key=42)  # Flask invokes this for GET /api/themes/42
+    >>> play_theme(request, rating_key=42)  # FastAPI invokes this for GET /api/themes/42
     <Response ...>
     """
     from plex import plexapi
@@ -258,13 +232,13 @@ def play_theme(rating_key: int, server_id: str) -> Response:
         with storage.server_scope(server_id):
             server = plexapi.setup_plexapi()
         if server is None:
-            return _make_response(jsonify({'message': 'Connect to Plex before playing themes.'}), 503)
+            return JSONResponse({'message': 'Connect to Plex before playing themes.'}, status_code=503)
         item = server.fetchItem(rating_key)
         theme_path = getattr(item, 'theme', None)
         if not theme_path:
-            return _make_response(jsonify({'message': 'This item has no theme.'}), 404)
+            return JSONResponse({'message': 'This item has no theme.'}, status_code=404)
         if not theme_path.startswith('/library/metadata/') or '/theme/' not in theme_path:
-            return _make_response(jsonify({'message': 'Plex returned an unsupported theme path.'}), 502)
+            return JSONResponse({'message': 'Plex returned an unsupported theme path.'}, status_code=502)
 
         headers = {'Accept-Encoding': 'identity'}
         for header in ('Range', 'If-Range'):
@@ -276,19 +250,21 @@ def play_theme(rating_key: int, server_id: str) -> Response:
             stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
         )
     except plex_exceptions.NotFound:
-        return _make_response(jsonify({'message': 'This Plex item is no longer available.'}), 404)
+        return JSONResponse({'message': 'This Plex item is no longer available.'}, status_code=404)
     except (plex_exceptions.PlexApiException, OSError, ValueError) as error:
-        app.logger.warning('Unable to load theme for rating_key=%s (%s)', rating_key, type(error).__name__)
-        return _make_response(jsonify({'message': 'Unable to load theme audio from Plex.'}), 502)
+        log.warning('Unable to load theme for rating_key=%s (%s)', rating_key, type(error).__name__)
+        return JSONResponse({'message': 'Unable to load theme audio from Plex.'}, status_code=502)
 
-    return _theme_audio_response(upstream, rating_key)
+    return _theme_audio_response(request, upstream, rating_key)
 
 
-def _theme_audio_response(upstream: requests.Response, rating_key: int) -> Response:
+def _theme_audio_response(request: Request, upstream: requests.Response, rating_key: int) -> Response:
     """Build a browser response and close rejected Plex audio streams.
 
     Parameters
     ----------
+    request : Request
+        Incoming browser or API request.
     upstream : requests.Response
         Stream returned by Plex.
     rating_key : int
@@ -307,30 +283,33 @@ def _theme_audio_response(upstream: requests.Response, rating_key: int) -> Respo
         upstream.close()
         if upstream.status_code == 416:
             headers['Content-Length'] = '0'
-            return Response(status=416, headers=headers)
+            return Response(status_code=416, headers=headers)
         status = 404 if upstream.status_code == 404 else 502
-        app.logger.warning('Plex rejected theme playback for rating_key=%s (HTTP %s)', rating_key, upstream.status_code)
-        return _make_response(jsonify({'message': 'Plex could not provide theme audio.'}), status)
+        log.warning('Plex rejected theme playback for rating_key=%s (HTTP %s)', rating_key, upstream.status_code)
+        return JSONResponse({'message': 'Plex could not provide theme audio.'}, status_code=status)
     content_type = upstream.headers.get('Content-Type', 'application/octet-stream').split(';', 1)[0].lower()
     if not content_type.startswith('audio/') and content_type not in ('video/mp4', 'application/octet-stream'):
         upstream.close()
-        return _make_response(jsonify({'message': 'Plex returned an unsupported audio format.'}), 502)
+        return JSONResponse({'message': 'Plex returned an unsupported audio format.'}, status_code=502)
     headers['Content-Type'] = content_type
     if request.method == 'HEAD':
         upstream.close()
-        return Response(status=upstream.status_code, headers=headers)
+        return Response(status_code=upstream.status_code, headers=headers)
 
-    response = Response(_stream_theme_audio(upstream, rating_key), status=upstream.status_code, headers=headers)
-    response.call_on_close(upstream.close)
-    return response
+    return ThemeAudioResponse(upstream, rating_key, headers)
 
 
-@app.route('/settings/', methods=['GET'])
-def settings() -> render_template:
+@router.api_route('/settings/', methods=['GET', 'HEAD'], name='settings', response_model=None)
+def settings(request: Request) -> Response:
     """
     Serve the configuration page.
 
     Decode any masked settings for display and render the current configuration specification.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser or API request.
 
     Returns
     -------
@@ -345,19 +324,29 @@ def settings() -> render_template:
 
     Examples
     --------
-    >>> settings()
+    >>> settings(request)
     """
     config_settings = config.decode_config(common.CONFIG)
-    return render_template('config.html', title=_('Settings'), config_settings=config_settings,
-                           config_spec=config._CONFIG_SPEC_DICT)
+    return render_template(
+        request,
+        'config.html',
+        title=_('Settings'),
+        config_settings=config_settings,
+        config_spec=config._CONFIG_SPEC_DICT,
+    )
 
 
-@app.route('/api/directories', methods=['POST'])
-def browse_directories() -> Response:
+@router.api_route('/api/directories', methods=['POST'], name='browse_directories', response_model=None)
+def browse_directories(payload=Depends(read_json)) -> Response:
     """List server directories for the configuration folder picker.
 
     The response contains directory names and paths, without file contents. The request is
     protected by the same CSRF check as other settings actions.
+
+    Parameters
+    ----------
+    payload : object or None
+        Decoded JSON body, supplied by the request dependency.
 
     Returns
     -------
@@ -366,15 +355,14 @@ def browse_directories() -> Response:
 
     Examples
     --------
-    >>> browse_directories()  # Flask invokes this for POST /api/directories
+    >>> browse_directories()  # FastAPI invokes this for POST /api/directories
     """
-    payload = request.get_json(silent=True)
     requested = payload.get('path', '') if isinstance(payload, dict) else None
     if not isinstance(requested, str) or len(requested) > 4096 or '\x00' in requested:
-        return _make_response(jsonify({'message': 'Invalid directory path.'}), 400)
+        return JSONResponse({'message': 'Invalid directory path.'}, status_code=400)
     requested = requested or os.path.expanduser('~')
     if not os.path.isabs(requested):
-        return _make_response(jsonify({'message': 'Directory path must be absolute.'}), 400)
+        return JSONResponse({'message': 'Directory path must be absolute.'}, status_code=400)
 
     try:
         directory = os.path.realpath(requested)
@@ -385,15 +373,15 @@ def browse_directories() -> Response:
                 key=lambda entry: entry['name'].casefold(),
             )
     except OSError:
-        return _make_response(jsonify({'message': 'Directory is unavailable.'}), 400)
+        return JSONResponse({'message': 'Directory is unavailable.'}, status_code=400)
 
     parent = os.path.dirname(directory)
-    return jsonify({'path': directory, 'parent': parent if parent != directory else None, 'directories': children})
+    return JSONResponse({'path': directory, 'parent': parent if parent != directory else None, 'directories': children})
 
 
-@app.route('/docs/', defaults={'filename': 'index.html'}, methods=['GET'])
-@app.route('/docs/<path:filename>', methods=['GET'])
-def docs(filename) -> send_from_directory:
+@router.api_route('/docs/', methods=['GET', 'HEAD'], name='docs', response_model=None)
+@router.api_route('/docs/{filename:path}', methods=['GET', 'HEAD'], name='docs_file', response_model=None)
+def docs(filename: str = 'index.html') -> Response:
     """
     Serve the Sphinx html documentation.
 
@@ -406,7 +394,7 @@ def docs(filename) -> send_from_directory:
 
     Returns
     -------
-    flask.send_from_directory
+    FileResponse
         The requested documentation page, or a 404 response when the file is absent.
 
     Notes
@@ -421,16 +409,12 @@ def docs(filename) -> send_from_directory:
     >>> docs(filename='index.html')
     """
 
-    return send_from_directory(directory=os.path.join(Paths.DOCS_DIR), path=filename)
+    return file_response(Paths.DOCS_DIR, filename or 'index.html')
 
 
-@app.route(
-    '/favicon.ico',
-    defaults={'img': 'favicon.ico'},
-    methods=['GET'],
-)
-@app.route("/images/<path:img>", methods=["GET"])
-def image(img: str) -> send_from_directory:
+@router.api_route('/favicon.ico', methods=['GET', 'HEAD'], name='favicon', response_model=None)
+@router.api_route('/images/{img:path}', methods=['GET', 'HEAD'], name='image', response_model=None)
+def image(img: str = 'favicon.ico') -> Response:
     """
     Get image from static/images directory.
 
@@ -443,7 +427,7 @@ def image(img: str) -> send_from_directory:
 
     Returns
     -------
-    flask.send_from_directory
+    FileResponse
         The image.
 
     Notes
@@ -463,14 +447,14 @@ def image(img: str) -> send_from_directory:
     if os.path.isfile(os.path.join(directory, filename)):
         file_extension = filename.rsplit('.', 1)[-1]
         if file_extension in mime_type_map:
-            return send_from_directory(directory=directory, path=filename, mimetype=mime_type_map[file_extension])
+            return file_response(directory, filename, mime_type_map[file_extension])
         else:
-            return Response(response='Invalid file type', status=400, mimetype=MIMETYPE_TEXT_PLAIN)
+            return Response(content='Invalid file type', status_code=400, media_type=MIMETYPE_TEXT_PLAIN)
     else:
-        return Response(response='Image not found', status=404, mimetype=MIMETYPE_TEXT_PLAIN)
+        return Response(content='Image not found', status_code=404, media_type=MIMETYPE_TEXT_PLAIN)
 
 
-@app.route('/status', methods=['GET'])
+@router.api_route('/status', methods=['GET', 'HEAD'], name='status', response_model=None)
 def status() -> dict:
     """
     Check the status of Themerr-plex.
@@ -491,8 +475,8 @@ def status() -> dict:
     return web_status
 
 
-@app.route('/test_logger', methods=['POST'])
-def test_logger() -> str:
+@router.api_route('/test_logger', methods=['POST'], name='test_logger', response_model=None)
+def test_logger() -> Response:
     """
     Test logging functions.
 
@@ -500,7 +484,7 @@ def test_logger() -> str:
 
     Returns
     -------
-    str
+    Response
         A message telling the user to check the logs.
 
     Notes
@@ -513,13 +497,13 @@ def test_logger() -> str:
     --------
     >>> test_logger()
     """
-    message = 'testing from app.logger'
-    app.logger.info(message)
-    app.logger.warning(message)
-    app.logger.error(message)
-    app.logger.critical(message)
-    app.logger.debug(message)
-    return f'Testing complete, check "logs/{__name__}.log" for output.'
+    message = 'testing from log'
+    log.info(message)
+    log.warning(message)
+    log.error(message)
+    log.critical(message)
+    log.debug(message)
+    return PlainTextResponse(f'Testing complete, check "logs/{__name__}.log" for output.')
 
 
 def _parse_setting(option: str, value: str) -> tuple[str, str, object]:
@@ -561,7 +545,7 @@ def _parse_setting(option: str, value: str) -> tuple[str, str, object]:
     return key, setting, value
 
 
-def _candidate_settings() -> tuple[dict, list[tuple[str, str]], Response | None]:
+def _candidate_settings(form) -> tuple[dict, list[tuple[str, str]], Response | None]:
     """Build a validated candidate from the submitted settings form.
 
     Returns
@@ -572,14 +556,14 @@ def _candidate_settings() -> tuple[dict, list[tuple[str, str]], Response | None]
     candidate = copy.deepcopy(config.CONFIG)
     decoded = config.decode_config(common.CONFIG)
     changed = []
-    for option, value in request.form.items():
+    for option, value in form.items():
         try:
             key, setting, value = _parse_setting(option, value)
         except KeyError:
-            error = _make_response(jsonify({'status': 'ERROR', 'message': 'Unknown or locked setting.'}), 400)
+            error = JSONResponse({'status': 'ERROR', 'message': 'Unknown or locked setting.'}, status_code=400)
             return candidate, changed, error
         except ValueError:
-            error = _make_response(jsonify({'status': 'ERROR', 'message': 'Invalid setting value.'}), 400)
+            error = JSONResponse({'status': 'ERROR', 'message': 'Invalid setting value.'}, status_code=400)
             return candidate, changed, error
 
         if decoded[key][setting] != value:
@@ -611,7 +595,7 @@ def _save_settings(candidate: dict, changed: list[tuple[str, str]]) -> Response:
     if not config.save_config(config=config.CONFIG):
         for (key, setting), value in originals.items():
             config.CONFIG[key][setting] = value
-        return _make_response(jsonify({'status': 'ERROR', 'message': 'Unable to save settings.'}), 500)
+        return JSONResponse({'status': 'ERROR', 'message': 'Unable to save settings.'}, status_code=500)
     for key, setting in changed:
         on_change = config._CONFIG_SPEC_DICT[key][setting].get('on_change')
         if on_change:
@@ -621,39 +605,46 @@ def _save_settings(candidate: dict, changed: list[tuple[str, str]]) -> Response:
     ) for key, setting in changed):
         from themerr import scheduled_tasks
         scheduled_tasks.configure_jobs()
-    return jsonify({'status': 'OK', 'message': 'Selected settings are valid.'})
+    return JSONResponse({'status': 'OK', 'message': 'Selected settings are valid.'})
 
 
-@app.route('/api/settings', methods=['GET', 'POST'])
-def api_settings() -> Response:
+@router.api_route('/api/settings', methods=['GET', 'POST', 'HEAD'], name='api_settings', response_model=None)
+def api_settings(request: Request, form=Depends(read_form)) -> Response:
     """
     Get current settings or save changes to settings from the web ui.
 
     This endpoint accepts a `GET` or `POST` request. A `GET` request will return the current settings.
     A `POST` request will process the data passed in and return the results of processing.
 
+    Parameters
+    ----------
+    request : Request
+        Incoming browser or API request.
+    form : FormData
+        Submitted settings fields, parsed before the endpoint runs.
+
     Returns
     -------
     Response
-        A response formatted as ``flask.jsonify``.
+        A response formatted as ``JSONResponse``.
 
     Examples
     --------
-    >>> api_settings()
+    >>> api_settings(request)
     <Response ... bytes [200 OK]>
     """
-    if request.method == 'GET':
-        return jsonify(config.CONFIG)
+    if request.method in ('GET', 'HEAD'):
+        return JSONResponse(config.CONFIG)
 
-    candidate, changed, error = _candidate_settings()
+    candidate, changed, error = _candidate_settings(form)
     if error is not None:
         return error
     if not config.validate_config(config=candidate):
-        return _make_response(jsonify({'status': 'ERROR', 'message': 'Selected settings are not valid.'}), 400)
+        return JSONResponse({'status': 'ERROR', 'message': 'Selected settings are not valid.'}, status_code=400)
     return _save_settings(candidate, changed)
 
 
-@app.route('/api/plex/auth', methods=['GET'])
+@router.api_route('/api/plex/auth', methods=['GET', 'HEAD'], name='plex_auth_status', response_model=None)
 def plex_auth_status() -> Response:
     """Report whether this installation has a token from Plex sign-in.
 
@@ -669,14 +660,19 @@ def plex_auth_status() -> Response:
     >>> plex_auth_status()
     <Response ...>
     """
-    return jsonify({'connected': bool(plex_auth.get_token())})
+    return JSONResponse({'connected': bool(plex_auth.get_token())})
 
 
-@app.route('/api/plex/auth/start', methods=['POST'])
-def plex_auth_start() -> Response:
+@router.api_route('/api/plex/auth/start', methods=['POST'], name='plex_auth_start', response_model=None)
+def plex_auth_start(request: Request) -> Response:
     """Start a Plex browser sign-in for this web session.
 
     Store the PIN in the browser session so it can be checked later.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser or API request.
 
     Returns
     -------
@@ -685,24 +681,29 @@ def plex_auth_start() -> Response:
 
     Examples
     --------
-    >>> plex_auth_start()
+    >>> plex_auth_start(request)
     <Response ...>
     """
     try:
         login = plex_auth.start_login()
     except (OSError, KeyError, TypeError, ValueError):
-        app.logger.exception('Unable to start Plex sign-in')
-        return _make_response(jsonify({'message': 'Unable to start Plex sign-in. Please try again.'}), 502)
+        log.exception('Unable to start Plex sign-in')
+        return JSONResponse({'message': 'Unable to start Plex sign-in. Please try again.'}, status_code=502)
 
-    session['plex_login'] = {'pin_id': login['pin_id'], 'code': login['code'], 'started': time.time()}
-    return jsonify({'auth_url': login['auth_url']})
+    request.session['plex_login'] = {'pin_id': login['pin_id'], 'code': login['code'], 'started': time.time()}
+    return JSONResponse({'auth_url': login['auth_url']})
 
 
-@app.route('/api/plex/auth/check', methods=['POST'])
-def plex_auth_check() -> Response:
+@router.api_route('/api/plex/auth/check', methods=['POST'], name='plex_auth_check', response_model=None)
+def plex_auth_check(request: Request) -> Response:
     """Finish a Plex sign-in once its PIN has been claimed.
 
     Keep the previous connection until the new token reaches the selected server.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser or API request.
 
     Returns
     -------
@@ -711,45 +712,50 @@ def plex_auth_check() -> Response:
 
     Examples
     --------
-    >>> plex_auth_check()
+    >>> plex_auth_check(request)
     <Response ...>
     """
-    login = session.get('plex_login')
+    login = request.session.get('plex_login')
     if not login:
-        return _make_response(jsonify({'message': 'Start Plex sign-in first.'}), 400)
+        return JSONResponse({'message': 'Start Plex sign-in first.'}, status_code=400)
     if time.time() - login['started'] > PLEX_LOGIN_LIFETIME:
-        session.pop('plex_login', None)
-        return _make_response(jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410)
+        request.session.pop('plex_login', None)
+        return JSONResponse({'message': 'Plex sign-in expired. Please try again.'}, status_code=410)
 
     try:
         token = plex_auth.check_login(pin_id=login['pin_id'], code=login['code'])
     except requests.HTTPError as error:
         if error.response is not None and error.response.status_code in (404, 410):
-            session.pop('plex_login', None)
-            return _make_response(jsonify({'message': 'Plex sign-in expired. Please try again.'}), 410)
-        app.logger.warning('Unable to check Plex sign-in: %s', error)
-        return _make_response(jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502)
+            request.session.pop('plex_login', None)
+            return JSONResponse({'message': 'Plex sign-in expired. Please try again.'}, status_code=410)
+        log.warning('Unable to check Plex sign-in: %s', error)
+        return JSONResponse({'message': 'Unable to check Plex sign-in. Please try again.'}, status_code=502)
     except (requests.RequestException, KeyError, TypeError, ValueError):
-        app.logger.exception('Unable to check Plex sign-in')
-        return _make_response(jsonify({'message': 'Unable to check Plex sign-in. Please try again.'}), 502)
+        log.exception('Unable to check Plex sign-in')
+        return JSONResponse({'message': 'Unable to check Plex sign-in. Please try again.'}, status_code=502)
 
     if not token:
-        return _make_response(jsonify({'connected': False}), 202)
+        return JSONResponse({'connected': False}, status_code=202)
 
     try:
         plex_auth.set_token(token)
     except OSError:
-        app.logger.exception('Unable to save Plex sign-in')
-        return _make_response(jsonify({'message': 'Unable to save Plex sign-in.'}), 500)
-    session.pop('plex_login', None)
-    return jsonify({'connected': True})
+        log.exception('Unable to save Plex sign-in')
+        return JSONResponse({'message': 'Unable to save Plex sign-in.'}, status_code=500)
+    request.session.pop('plex_login', None)
+    return JSONResponse({'connected': True})
 
 
-@app.route('/api/plex/auth/disconnect', methods=['POST'])
-def plex_auth_disconnect() -> Response:
+@router.api_route('/api/plex/auth/disconnect', methods=['POST'], name='plex_auth_disconnect', response_model=None)
+def plex_auth_disconnect(request: Request) -> Response:
     """Remove the local Plex connection.
 
     Clear the saved token and stop the active event listener.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser or API request.
 
     Returns
     -------
@@ -758,64 +764,24 @@ def plex_auth_disconnect() -> Response:
 
     Examples
     --------
-    >>> plex_auth_disconnect()
+    >>> plex_auth_disconnect(request)
     <Response ...>
     """
     try:
         server_ui.servers.disconnect_account()
     except OSError:
-        app.logger.exception('Unable to disconnect Plex')
-        return _make_response(jsonify({'message': 'Unable to disconnect Plex.'}), 500)
+        log.exception('Unable to disconnect Plex')
+        return JSONResponse({'message': 'Unable to disconnect Plex.'}, status_code=500)
 
     from plex import plexapi
     plexapi.stop_plex_listener()
     server_ui.servers.clear_connections()
     plexapi.plex_server = None
-    session.pop('plex_login', None)
-    return jsonify({'connected': False})
+    request.session.pop('plex_login', None)
+    return JSONResponse({'connected': False})
 
 
-def start_webapp():
-    """
-    Start the webapp.
-
-    Start the flask webapp. This is placed in it's own function to allow the ability to start the webapp within a
-    thread in a simple way.
-
-    Examples
-    --------
-    >>> start_webapp()
-     * Serving Flask app 'common.webapp' (lazy loading)
-    ...
-     * Running on https://.../ (Press CTRL+C to quit)
-
-    >>> from common import webapp, threads
-    >>> threads.run_in_thread(target=webapp.start_webapp, name='Flask', daemon=True).start()
-     * Serving Flask app 'common.webapp' (lazy loading)
-    ...
-     * Running on https://.../ (Press CTRL+C to quit)
-    """
-    global URL, URL_SCHEME
-    URL_SCHEME = 'https' if config.CONFIG['Network']['SSL'] else 'http'
-    URL = f"{URL_SCHEME}://127.0.0.1:{config.CONFIG['Network']['HTTP_PORT']}"
-    app.config['SESSION_COOKIE_SECURE'] = bool(config.CONFIG['Network']['SSL'])
-
-    if config.CONFIG['Network']['SSL']:
-        cert_file, key_file = crypto.initialize_certificate()
-    else:
-        cert_file = key_file = None
-
-    app.run(
-        host=config.CONFIG['Network']['HTTP_HOST'],
-        port=config.CONFIG['Network']['HTTP_PORT'],
-        debug=common.DEV,
-        use_debugger=False,
-        ssl_context=(cert_file, key_file) if config.CONFIG['Network']['SSL'] else None,
-        use_reloader=False  # reloader doesn't work when running in a separate thread
-    )
-
-
-@app.route("/translations", methods=["GET"])
+@router.api_route('/translations', methods=['GET', 'HEAD'], name='translations', response_model=None)
 def translations() -> Response:
     """
     Serve the translations.
@@ -831,58 +797,213 @@ def translations() -> Response:
     --------
     >>> translations()
     """
-    locale = locales.get_locale()
-
-    po_files = [
-        f'{Paths.LOCALE_DIR}/{locale}/LC_MESSAGES/{locales.default_domain}.po',  # selected locale
-        f'{Paths.LOCALE_DIR}/{locales.default_domain}.po',  # fallback to default domain
-    ]
-
-    for po_file in po_files:
-        if os.path.isfile(po_file):
-            po = polib.pofile(po_file)
-
-            # convert the po to json
-            data = {}
-            for entry in po:
-                if entry.msgid:
-                    data[entry.msgid] = entry.msgstr
-                    app.logger.debug(f'Translation: {entry.msgid} -> {entry.msgstr}')
-
-            return Response(response=json.dumps(data),
-                            status=200,
-                            mimetype='application/json')
+    language = locales.get_translation()
+    data = {}
+    while language is not None:
+        for message, translation in getattr(language, '_catalog', {}).items():
+            if isinstance(message, str) and message and translation:
+                data.setdefault(message, translation)
+        language = language._fallback
+    return JSONResponse(data)
 
 
-@app.errorhandler(400)
-@app.errorhandler(403)
-@app.errorhandler(404)
-@app.errorhandler(413)
-@app.errorhandler(500)
-def browser_error(error):
-    """Return useful errors without disclosing exception details.
+@router.get('/api/docs', name='api_documentation', include_in_schema=False, response_model=None)
+def api_documentation(request: Request) -> Response:
+    """Serve authenticated interactive API documentation with bundled Swagger assets.
 
-    API callers receive JSON; browser pages receive the workspace error view.
+    Use the same session, origin policy, and CSRF checks as the browser interface.
 
     Parameters
     ----------
-    error : HTTPException
-        HTTP failure raised by Flask or CSRF protection.
+    request : Request
+        Signed-in browser request.
 
     Returns
     -------
-    Response or tuple
-        JSON for an API caller, or the redesigned error page.
+    Response
+        API documentation using this browser's session and CSRF token.
 
     Examples
     --------
-    >>> browser_error(error)  # Flask invokes this for an HTTP error
-    (..., 404)
+    >>> response = api_documentation(request)
     """
-    code = error.code
-    messages = {400: 'Your session or form expired. Reload the page and try again.',
-                404: 'This page is unavailable.'}
-    message = messages.get(code, 'The request could not be completed.')
-    if request.path.startswith('/api/'):
-        return jsonify({'message': message}), code
-    return render_template('error.html', title=str(code), message=message), code
+    return render_template(request, 'api_docs.html', title='API documentation')
+
+
+@router.get('/api/openapi.json', include_in_schema=False)
+def api_schema(request: Request) -> dict:
+    """Serve the authenticated OpenAPI schema.
+
+    Fill CSRF header defaults for this browser without modifying the cached schema.
+
+    Parameters
+    ----------
+    request : Request
+        Signed-in browser request.
+
+    Returns
+    -------
+    dict
+        API operations, request bodies, and authentication requirements.
+
+    Examples
+    --------
+    >>> document = api_schema(request)
+    """
+    document = copy.deepcopy(request.app.openapi())
+    token = _csrf_token(request)
+    for methods in document['paths'].values():
+        for operation in methods.values():
+            for parameter in operation.get('parameters', []):
+                if parameter['name'] == 'X-CSRFToken':
+                    parameter['schema'] = {**parameter['schema'], 'default': token}
+    return document
+
+
+async def browser_error(request: Request, error: HTTPException) -> Response:
+    """Handle HTTP failures from browser and API routes.
+
+    Render errors in a worker thread while retaining the exception's response headers.
+
+    Parameters
+    ----------
+    request : Request
+        Failed request.
+    error : HTTPException
+        HTTP status, public detail, and optional headers.
+
+    Returns
+    -------
+    Response
+        JSON or HTML error response.
+
+    Examples
+    --------
+    >>> response = await browser_error(request, HTTPException(404, 'Not Found'))
+    """
+    return await run_in_threadpool(error_response, request, error.status_code, str(error.detail), error.headers)
+
+
+async def unexpected_error(request: Request, error: Exception) -> Response:
+    """Handle unexpected failures with a generic error response.
+
+    Log the exception and retain browser security headers without exposing internal details.
+
+    Parameters
+    ----------
+    request : Request
+        Failed request.
+    error : Exception
+        Unexpected exception recorded in the application log.
+
+    Returns
+    -------
+    Response
+        Generic HTTP 500 response.
+
+    Examples
+    --------
+    >>> response = await unexpected_error(request, RuntimeError('unavailable'))
+    """
+    log.error('Unexpected web request failure', exc_info=error)
+    response = await run_in_threadpool(error_response, request, 500, 'Internal Server Error')
+    admin._security_headers(request, response.headers)
+    return response
+
+
+def create_app(*, https_only: bool | None = None) -> FastAPI:
+    """Build an ASGI application with private routes and signed browser sessions.
+
+    Retain the browser interface, bounded requests, and bundled documentation routes.
+
+    Parameters
+    ----------
+    https_only : bool or None
+        Secure-cookie policy, defaulting to the configured TLS setting.
+
+    Returns
+    -------
+    FastAPI
+        Application serving the existing HTML pages and JSON API.
+
+    Examples
+    --------
+    >>> application = create_app(https_only=True)
+    """
+    application = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+    application.state.secret_key = secrets.token_hex(32)
+    application.state.csrf_enabled = True
+    application.state.static_directory = os.path.join(Paths.ROOT_DIR, 'web', 'assets')
+    if https_only is None:
+        https_only = bool(config.CONFIG and config.CONFIG['Network']['SSL'])
+    application.add_middleware(admin.BrowserSecurityMiddleware)
+    application.add_middleware(SessionMiddleware, secret_key=application.state.secret_key,
+                               max_age=12 * 60 * 60, same_site='lax', https_only=https_only)
+    application.include_router(admin.router)
+    application.include_router(server_ui.router)
+    application.include_router(router)
+
+    def openapi():
+        if application.openapi_schema is None:
+            routes = [*admin.router.routes, *server_ui.router.routes, *router.routes]
+            application.openapi_schema = api_docs.schema(routes)
+        return application.openapi_schema
+
+    application.openapi = openapi
+    application.mount('/web/assets', StaticFiles(directory=application.state.static_directory, check_dir=False),
+                      name='static')
+    application.add_exception_handler(HTTPException, browser_error)
+    application.add_exception_handler(Exception, unexpected_error)
+    logging_filter = admin._SetupLinkFilter()
+    access_logger = logger.get_logger('uvicorn.access')
+    if not any(isinstance(value, admin._SetupLinkFilter) for value in access_logger.filters):
+        access_logger.addFilter(logging_filter)
+    return application
+
+
+app = create_app()
+_server = None
+_server_stopped = Event()
+_server_stopped.set()
+
+
+def start_webapp() -> None:
+    """Serve FastAPI in the application's web thread.
+
+    Use the configured host, port, and optional TLS certificate with Uvicorn.
+
+    Examples
+    --------
+    >>> start_webapp()
+    """
+    global URL, URL_SCHEME, _server, app
+    URL_SCHEME = 'https' if config.CONFIG['Network']['SSL'] else 'http'
+    URL = f"{URL_SCHEME}://127.0.0.1:{config.CONFIG['Network']['HTTP_PORT']}"
+    cert_file, key_file = crypto.initialize_certificate() if config.CONFIG['Network']['SSL'] else (None, None)
+    app = create_app()
+    server_config = uvicorn.Config(
+        app, host=config.CONFIG['Network']['HTTP_HOST'], port=config.CONFIG['Network']['HTTP_PORT'],
+        loop='asyncio', http='h11', ws='none', lifespan='off', proxy_headers=False, log_config=None,
+        ssl_certfile=cert_file, ssl_keyfile=key_file, timeout_graceful_shutdown=5,
+    )
+    _server = uvicorn.Server(server_config)
+    _server_stopped.clear()
+    try:
+        _server.run()
+    finally:
+        _server = None
+        _server_stopped.set()
+
+
+def stop_webapp() -> None:
+    """Stop the active Uvicorn server.
+
+    Release the listening socket before shutdown or a replacement process starts.
+
+    Examples
+    --------
+    >>> stop_webapp()
+    """
+    if _server is not None:
+        _server.should_exit = True
+        _server_stopped.wait(timeout=6)

@@ -5,17 +5,20 @@ import re
 from urllib.parse import quote, urlencode
 
 # lib imports
-from flask import Blueprint, abort, jsonify, render_template, request
+from fastapi import APIRouter, Depends, Request
+from starlette.responses import JSONResponse
+from fastapi import HTTPException
 from plexapi.exceptions import Unauthorized
 from requests.exceptions import ConnectionError, RequestException, SSLError, Timeout
 
 # local imports
+from common.http import read_json, render_template
 from common import logger
 from common.validation import ValidationError
 from plex import auth, plexapi, servers, token_store
 from themerr import storage, theme_errors
 
-blueprint = Blueprint('server_ui', __name__)
+router = APIRouter()
 log = logger.get_logger(__name__)
 
 
@@ -33,18 +36,23 @@ def _failure(error: Exception, message: str, status: int = 502):
 
     Returns
     -------
-    tuple
-        JSON response and status code.
+    JSONResponse
+        JSON response with the requested status code.
     """
     log.warning('%s (%s)', message, type(error).__name__)
-    return jsonify({'message': message}), status
+    return JSONResponse({'message': message}, status_code=status)
 
 
-def _payload() -> dict:
+async def _payload(request: Request) -> dict:
     """Reject JSON arrays and scalar values at the API boundary."""
-    payload = request.get_json(silent=True)
+    payload = await read_json(request)
+    return _validated_payload(payload)
+
+
+def _validated_payload(payload) -> dict:
+    """Require an object before passing submitted preferences to the server store."""
     if not isinstance(payload, dict):
-        abort(400)
+        raise HTTPException(400, 'Invalid JSON object.')
     return payload
 
 
@@ -116,8 +124,8 @@ def dashboard() -> tuple[dict, dict, dict]:
                                'libraries': len(libraries)}
 
 
-@blueprint.route('/servers', methods=['GET'])
-def server_page():
+@router.api_route('/servers', methods=['GET', 'HEAD'], name='server_ui.server_page', response_model=None)
+def server_page(request: Request):
     """Render saved connections and discovery options.
 
     Returns
@@ -125,12 +133,17 @@ def server_page():
     str
         Server management page.
     """
-    return render_template('servers.html', title='Servers', servers=servers.list_servers(),
-                           plex_connected=bool(auth.get_token()))
+    return render_template(
+        request,
+        'servers.html',
+        title='Servers',
+        servers=servers.list_servers(),
+        plex_connected=bool(auth.get_token()),
+    )
 
 
-@blueprint.route('/api/servers/discover', methods=['POST'])
-def discover():
+@router.api_route('/api/servers/discover', methods=['POST'], name='server_ui.discover', response_model=None)
+def discover(payload=Depends(_payload)):
     """List account or LAN resources without disclosing access tokens.
 
     Returns
@@ -138,19 +151,18 @@ def discover():
     Response
         Safe discovery results or a connection error.
     """
-    payload = _payload()
     source = payload.get('source')
     if source not in ('account', 'local'):
-        return jsonify({'message': 'Choose account or local discovery.'}), 400
+        return JSONResponse({'message': 'Choose account or local discovery.'}, status_code=400)
     try:
         resources = servers.discover_account() if source == 'account' else servers.discover_local()
     except Exception as exc:
         return _failure(exc, 'Discovery failed. Check the Plex connection, or enter an address manually.')
-    return jsonify({'servers': resources})
+    return JSONResponse({'servers': resources})
 
 
-@blueprint.route('/api/servers', methods=['POST'])
-def add_server():
+@router.api_route('/api/servers', methods=['POST'], name='server_ui.add_server', response_model=None)
+def add_server(payload=Depends(_payload)):
     """Connect to a selected or manually addressed server.
 
     Returns
@@ -158,7 +170,6 @@ def add_server():
     Response
         Saved public settings or a sanitized failure.
     """
-    payload = _payload()
     try:
         record = servers.add_server(payload.get('url', ''), payload.get('resource_id'))
     except token_store.TokenStorageError as exc:
@@ -183,11 +194,16 @@ def add_server():
         return _failure(exc, 'Could not connect to this Plex server. Check the address and account access.')
     plexapi.plex_listener()
     _refresh()
-    return jsonify({'server': record}), 201
+    return JSONResponse({'server': record}, status_code=201)
 
 
-@blueprint.route('/api/servers/<server_id>', methods=['POST', 'DELETE'])
-def edit_server(server_id: str):
+@router.api_route(
+    '/api/servers/{server_id}',
+    methods=['POST', 'DELETE'],
+    name='server_ui.edit_server',
+    response_model=None,
+)
+def edit_server(request: Request, server_id: str, payload=Depends(read_json)):
     """Save processing preferences or remove a server.
 
     Parameters
@@ -201,12 +217,14 @@ def edit_server(server_id: str):
         Updated settings or removal result.
     """
     if not servers.get_server(server_id):
-        return jsonify({'message': 'Server not found.'}), 404
+        return JSONResponse({'message': 'Server not found.'}, status_code=404)
+    if request.method != 'DELETE':
+        payload = _validated_payload(payload)
     try:
         if request.method == 'DELETE':
             servers.remove_server(server_id)
         else:
-            servers.update_server(server_id, _payload())
+            servers.update_server(server_id, payload)
     except ValidationError as exc:
         return _failure(exc, exc.reason.value, 400)
     except token_store.TokenStorageError as exc:
@@ -214,7 +232,7 @@ def edit_server(server_id: str):
     except Exception as exc:
         return _failure(exc, 'Could not update this Plex server. Check its connection and settings.', 500)
     plexapi.plex_listener()
-    return jsonify({'message': 'Server removed.' if request.method == 'DELETE' else 'Server settings saved.'})
+    return JSONResponse({'message': 'Server removed.' if request.method == 'DELETE' else 'Server settings saved.'})
 
 
 def _refresh():
@@ -229,8 +247,8 @@ def _refresh():
     return scheduled_tasks.run_threaded(target=cache.cache_data, task_name='Dashboard refresh')
 
 
-@blueprint.route('/api/tasks/refresh', methods=['POST'])
-def refresh():
+@router.api_route('/api/tasks/refresh', methods=['POST'], name='server_ui.refresh', response_model=None)
+def refresh(payload=Depends(_payload)):
     """Queue a dashboard refresh and optional theme scan.
 
     Returns
@@ -240,15 +258,21 @@ def refresh():
     """
     from common import config
     from themerr import scheduled_tasks
-    if _payload().get('scan'):
+    if payload.get('scan'):
         if not config.CONFIG['Themerr']['BOOL_THEMERR_ENABLED']:
-            return jsonify({'message': 'Enable theme updates in Settings before starting a scan.'}), 400
+            return JSONResponse(
+                {'message': 'Enable theme updates in Settings before starting a scan.'},
+                status_code=400,
+            )
         scheduled_tasks.run_threaded(target=plexapi.scheduled_update, task_name='Theme scan and queue')
     job = _refresh()
-    return jsonify({'message': 'Refreshing libraries. Follow progress in Activity.', 'job_id': job.job_id}), 202
+    return JSONResponse(
+        {'message': 'Refreshing libraries. Follow progress in Activity.', 'job_id': job.job_id},
+        status_code=202,
+    )
 
 
-@blueprint.route('/api/themerrdb', methods=['GET'])
+@router.api_route('/api/themerrdb', methods=['GET', 'HEAD'], name='server_ui.database_status', response_model=None)
 def database_status():
     """Return the latest successful ThemerrDB Pages deployment from the hourly cache.
 
@@ -258,11 +282,11 @@ def database_status():
         Deployment metadata and check timestamps.
     """
     from themerr import github_status
-    return jsonify(github_status.publication_status())
+    return JSONResponse(github_status.publication_status())
 
 
-@blueprint.route('/activity', methods=['GET'])
-def activity():
+@router.api_route('/activity', methods=['GET', 'HEAD'], name='server_ui.activity', response_model=None)
+def activity(request: Request):
     """Show real task state and actionable media failures.
 
     Returns
@@ -280,11 +304,17 @@ def activity():
         ),
     } for section in libraries.values() for item in section['items']
         if item['error'] or item['theme_status'] in ('failed', 'unresolved')]
-    return render_template('activity.html', title='Activity', jobs=scheduled_tasks.job_history(),
-                           failures=failures, queue_size=plexapi.q.qsize())
+    return render_template(
+        request,
+        'activity.html',
+        title='Activity',
+        jobs=scheduled_tasks.job_history(),
+        failures=failures,
+        queue_size=plexapi.q.qsize(),
+    )
 
 
-@blueprint.route('/api/tasks', methods=['GET'])
+@router.api_route('/api/tasks', methods=['GET', 'HEAD'], name='server_ui.task_status', response_model=None)
 def task_status():
     """Return bounded job history for the activity view.
 
@@ -294,4 +324,4 @@ def task_status():
         Recent tasks and current queued item count.
     """
     from themerr import scheduled_tasks
-    return jsonify({'jobs': scheduled_tasks.job_history(), 'queue_size': plexapi.q.qsize()})
+    return JSONResponse({'jobs': scheduled_tasks.job_history(), 'queue_size': plexapi.q.qsize()})

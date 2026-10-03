@@ -17,6 +17,7 @@ from themerr import storage
 log = logger.get_logger(__name__)
 _lock = Lock()
 _CACHE_KEY = 'themerrdb_deployment'
+_CACHE_VERSION = 2
 _INTERVAL = 3600
 _WORKFLOW_URL = 'https://github.com/LizardByte/ThemerrDB/actions/workflows/pages/pages-build-deployment'
 # GitHub's built-in Pages workflow has no YAML filename; use its stable repository workflow ID.
@@ -61,14 +62,15 @@ def publication_status() -> dict:
     with _lock:
         state = _load()
         now = time.time()
-        if now >= state.get('next_check', 0):
-            state.update(checked_at=now, next_check=now + _INTERVAL, stale=True)
+        if state.get('version') != _CACHE_VERSION or now >= state.get('next_check', 0):
+            state.update(version=_CACHE_VERSION, checked_at=now, next_check=now + _INTERVAL, stale=True)
             _save(state)
             try:
                 with requests.get(
                     f'https://api.github.com/repos/LizardByte/ThemerrDB/actions/workflows/{_WORKFLOW_ID}/runs',
                     params={'status': 'success', 'per_page': 1},
-                    headers={'Accept': 'application/vnd.github+json'}, timeout=10, allow_redirects=False,
+                    headers={'Accept': 'application/vnd.github+json', 'Cache-Control': 'no-cache'},
+                    timeout=10, allow_redirects=False,
                 ) as response:
                     response.raise_for_status()
                     if response.status_code != 200:

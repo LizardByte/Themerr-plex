@@ -7,12 +7,20 @@ Themerr-plex uses Python 3.14, uv, npm, Deno, and Dockle. Python dependencies ar
 resolved in uv.lock. The npm lockfile supplies reproducible web assets. esbuild bundles browser dependencies and local
 scripts into ``web/assets``.
 
-From the repository root, install dependencies and compile translations:
+The browser interface and JSON API use FastAPI with Uvicorn. Uvicorn runs in the application's web thread and
+uses the existing host, port, and TLS settings. Blocking Plex and database calls run in worker threads, while
+theme audio streams through ASGI. The ``/docs/`` route serves the bundled project documentation.
+Signed-in administrators can explore the API at ``/api/docs`` or retrieve its OpenAPI schema at
+``/api/openapi.json``. The sidebar links to both kinds of documentation.
+
+Translations are read directly from UTF-8 PO catalogs. No compilation is needed; source catalogs take precedence
+over old MO files. Saving the language setting reloads the interface with the selected language.
+
+From the repository root, install dependencies and build browser assets:
 
 .. code-block:: shell
 
    uv sync --locked --all-extras
-   uv run --locked --all-extras python scripts/_locale.py --compile
    npm ci --ignore-scripts
    npm run build
 

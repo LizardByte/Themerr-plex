@@ -236,9 +236,9 @@ def main():
     if not admin.account():
         print(f'Create your Themerr admin account using this one-time link: {browser_url}', flush=True)
 
-    threads.run_in_thread(target=webapp.start_webapp, name='Flask', daemon=True).start()
+    threads.run_in_thread(target=webapp.start_webapp, name='FastAPI', daemon=True).start()
 
-    # this should be after starting flask app
+    # this should be after starting web server
     if config.CONFIG['General']['LAUNCH_BROWSER'] and not args.nolaunch:
         helpers.open_url_in_browser(url=browser_url)
 

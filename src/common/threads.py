@@ -17,10 +17,8 @@ Examples
 
 >>> from common import config, threads, webapp
 >>> config_object = config.create_config(config_file='config.ini')
->>> threads.run_in_thread(target=webapp.start_webapp, name='Flask', daemon=True).start()
- * Serving Flask app 'common.webapp' (lazy loading)
-...
- * Running on http://.../ (Press CTRL+C to quit)
+>>> threads.run_in_thread(target=webapp.start_webapp, name='FastAPI', daemon=True).start()
+INFO:     Uvicorn running on https://... (Press CTRL+C to quit)
 """
 # standard imports
 import threading

@@ -31,9 +31,6 @@ COPY . .
 # setup locked Python dependencies
 RUN uv sync --locked --extra docs --no-build --no-install-project --no-python-downloads
 
-# compile locales
-RUN python scripts/_locale.py --compile
-
 # setup npm and dependencies
 RUN npm ci --ignore-scripts && npm run build
 
@@ -47,7 +44,6 @@ COPY --from=build /build/src/ /app/src/
 COPY --from=build /build/web/ /app/web/
 COPY --from=build /build/locale/ /app/locale/
 COPY --from=build /build/_site/ /app/_site/
-COPY --from=build /build/scripts/_locale.py /app/scripts/_locale.py
 COPY --from=build /build/LICENSE /app/LICENSE
 
 # copy python venv

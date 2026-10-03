@@ -2,7 +2,6 @@
 
 # standard imports
 from collections import OrderedDict
-from datetime import timedelta
 import hmac
 import json
 import logging
@@ -12,16 +11,20 @@ import time
 from urllib.parse import urlsplit
 
 # lib imports
-from flask import Blueprint, jsonify, redirect, render_template, request, session, url_for
+from fastapi import APIRouter, Depends, Request
+from starlette.responses import JSONResponse, RedirectResponse
+from starlette.concurrency import run_in_threadpool
+from starlette.datastructures import MutableHeaders
+from starlette.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # local imports
-from common import config
+from common.http import error_response, read_form, render_template, validate_csrf
 from common.validation import ValidationError, ValidationMessage
 from themerr import storage
 
-blueprint = Blueprint('admin', __name__)
+router = APIRouter()
 LOGIN_ENDPOINT = 'admin.login'
 SETUP_ENDPOINT = 'admin.setup'
 AUTH_TEMPLATE = 'auth.html'
@@ -115,33 +118,32 @@ def startup_url(base_url: str) -> str:
     return base_url + ('/login' if account() else '/setup?token=' + SETUP_TOKEN)
 
 
-def _signed_in(current: dict | None) -> bool:
+def _signed_in(request: Request, current: dict | None) -> bool:
     """Validate a session against the current password revision."""
-    return bool(current and session.get('admin_revision') == current['revision'])
+    return bool(current and request.session.get('admin_revision') == current['revision'])
 
 
-def _next_url() -> str:
+def _next_url(request: Request) -> str:
     """Keep login redirects on this application's origin."""
-    target = request.args.get('next', '')
+    target = request.query_params.get('next', '')
     if any(ord(character) < 32 or ord(character) == 127 for character in target):
-        return url_for('home')
+        return request.app.url_path_for('home')
     try:
         parts = urlsplit(target)
     except ValueError:
-        return url_for('home')
+        return request.app.url_path_for('home')
     return target if (target.startswith('/') and not target.startswith('//') and
-                      '\\' not in target and not parts.scheme and not parts.netloc) else url_for('home')
+                      '\\' not in target and not parts.scheme and not parts.netloc) else '/'
 
 
-def _login(current: dict) -> None:
+def _login(request: Request, current: dict) -> None:
     """Replace pre-login session state to prevent session fixation."""
-    session.clear()
-    session['admin_revision'] = current['revision']
-    session.permanent = True
+    request.session.clear()
+    request.session['admin_revision'] = current['revision']
 
 
-@blueprint.route('/setup', methods=['GET', 'POST'])
-def setup():
+@router.api_route('/setup', methods=['GET', 'POST', 'HEAD'], name='admin.setup', response_model=None)
+def setup(request: Request, form=Depends(read_form)):
     """Create the only administrator using the installation's setup link.
 
     Returns
@@ -151,33 +153,46 @@ def setup():
     """
     with _lock:
         if account():
-            return redirect(url_for(LOGIN_ENDPOINT))
-        token = request.args.get('token', '')
+            return RedirectResponse(request.app.url_path_for(LOGIN_ENDPOINT), status_code=302)
+        token = request.query_params.get('token', '')
         if token and hmac.compare_digest(token, SETUP_TOKEN):
-            session['setup_authorized'] = True
-            return redirect(url_for(SETUP_ENDPOINT))
-        if not session.get('setup_authorized'):
-            return render_template(AUTH_TEMPLATE, mode='setup-link', title='Secure setup'), 403
+            request.session['setup_authorized'] = True
+            return RedirectResponse(request.app.url_path_for(SETUP_ENDPOINT), status_code=302)
+        if not request.session.get('setup_authorized'):
+            return render_template(request, AUTH_TEMPLATE, mode='setup-link', title='Secure setup', status_code=403)
         error = None
         if request.method == 'POST':
             try:
-                if request.form.get('password') != request.form.get('confirm_password'):
+                if form.get('password') != form.get('confirm_password'):
                     raise ValidationError(ValidationMessage.PASSWORD_MISMATCH)
-                current = _save(request.form.get('username', ''), request.form.get('password', ''))
+                current = _save(form.get('username', ''), form.get('password', ''))
             except ValidationError as exc:
                 error = exc.reason.value
             except Exception as exc:
                 logging.getLogger(__name__).warning(f'Could not create the admin account ({type(exc).__name__})')
-                return render_template(AUTH_TEMPLATE, mode='setup', title='Create your admin account',
-                                       error='Could not create the administrator account. Try again.'), 500
+                return render_template(
+                    request,
+                    AUTH_TEMPLATE,
+                    mode='setup',
+                    title='Create your admin account',
+                    error='Could not create the administrator account. Try again.',
+                    status_code=500,
+                )
             else:
-                _login(current)
-                return redirect(url_for('server_ui.server_page'))
-        return render_template(AUTH_TEMPLATE, mode='setup', error=error, title='Create your admin account')
+                _login(request, current)
+                return RedirectResponse(request.app.url_path_for('server_ui.server_page'), status_code=302)
+        return render_template(
+            request,
+            AUTH_TEMPLATE,
+            mode='setup',
+            error=error,
+            title='Create your admin account',
+            username=form.get('username', 'admin'),
+        )
 
 
-@blueprint.route('/login', methods=['GET', 'POST'])
-def login():
+@router.api_route('/login', methods=['GET', 'POST', 'HEAD'], name='admin.login', response_model=None)
+def login(request: Request, form=Depends(read_form)):
     """Sign in with rate-limited, constant-work credential checks.
 
     Returns
@@ -187,40 +202,60 @@ def login():
     """
     current = account()
     if current is None:
-        return redirect(url_for(SETUP_ENDPOINT))
-    if _signed_in(current):
-        return redirect(_next_url())  # NOSONAR pythonsecurity:S5146: _next_url validates local paths.
+        return RedirectResponse(request.app.url_path_for(SETUP_ENDPOINT), status_code=302)
+    if _signed_in(request, current):
+        return RedirectResponse(
+            _next_url(request),
+            status_code=302,
+        )  # NOSONAR pythonsecurity:S5146: _next_url validates local paths.
     error = None
     if request.method == 'POST':
         # Serialize expensive hashes and bound memory used by failed-login counters.
         with _lock:
             now = time.monotonic()
-            address = request.remote_addr or 'unknown'
+            address = request.client.host if request.client else 'unknown'
             recent = [stamp for stamp in _attempts.get(address, []) if now - stamp < LOGIN_WINDOW]
             total = sum(sum(now - stamp < LOGIN_WINDOW for stamp in stamps) for stamps in _attempts.values())
             if len(recent) >= 5 or total >= 100:
-                return (render_template(AUTH_TEMPLATE, mode='login',
-                                        error='Too many attempts. Try again in 15 minutes.',
-                                        title='Sign in'), 429, {'Retry-After': str(LOGIN_WINDOW)})
-            password = request.form.get('password', '')
+                return render_template(
+                    request,
+                    AUTH_TEMPLATE,
+                    mode='login',
+                    error='Too many attempts. Try again in 15 minutes.',
+                    title='Sign in',
+                    username=form.get('username', ''),
+                    status_code=429,
+                    headers={'Retry-After': str(LOGIN_WINDOW)},
+                )
+            password = form.get('password', '')
             valid_password = check_password_hash(current['password_hash'], password[:256])
-            valid_username = hmac.compare_digest(request.form.get('username', '').encode(),
+            valid_username = hmac.compare_digest(form.get('username', '').encode(),
                                                  current['username'].encode())
             if valid_password and valid_username and len(password) <= 256:
                 _attempts.pop(address, None)
-                _login(current)
+                _login(request, current)
                 # _next_url rejects schemes, authorities, backslashes, and control characters.
-                return redirect(_next_url())  # NOSONAR pythonsecurity:S5146: Validated local redirect.
+                return RedirectResponse(
+                    _next_url(request),
+                    status_code=302,
+                )  # NOSONAR pythonsecurity:S5146: Validated local redirect.
             _attempts[address] = recent + [now]
             _attempts.move_to_end(address)
             if len(_attempts) > 1024:
                 _attempts.popitem(last=False)
             error = 'The username or password is incorrect.'
-    return render_template(AUTH_TEMPLATE, mode='login', error=error, title='Sign in')
+    return render_template(
+        request,
+        AUTH_TEMPLATE,
+        mode='login',
+        error=error,
+        title='Sign in',
+        username=form.get('username', ''),
+    )
 
 
-@blueprint.route('/logout', methods=['POST'])
-def logout():
+@router.api_route('/logout', methods=['POST'], name='admin.logout', response_model=None)
+def logout(request: Request):
     """Clear the current authenticated session.
 
     Returns
@@ -228,12 +263,12 @@ def logout():
     Response
         Login redirect.
     """
-    session.clear()
-    return redirect(url_for(LOGIN_ENDPOINT))
+    request.session.clear()
+    return RedirectResponse(request.app.url_path_for(LOGIN_ENDPOINT), status_code=302)
 
 
-@blueprint.route('/api/admin/password', methods=['POST'])
-def change_password():
+@router.api_route('/api/admin/password', methods=['POST'], name='admin.change_password', response_model=None)
+def change_password(request: Request, form=Depends(read_form)):
     """Change the password and invalidate other signed-in sessions.
 
     Returns
@@ -243,22 +278,22 @@ def change_password():
     """
     with _lock:
         current = account()
-        if not check_password_hash(current['password_hash'], request.form.get('current_password', '')[:256]):
-            return jsonify({'message': 'The current password is incorrect.'}), 400
-        if request.form.get('password') != request.form.get('confirm_password'):
-            return jsonify({'message': ValidationMessage.PASSWORD_MISMATCH.value}), 400
+        if not check_password_hash(current['password_hash'], form.get('current_password', '')[:256]):
+            return JSONResponse({'message': 'The current password is incorrect.'}, status_code=400)
+        if form.get('password') != form.get('confirm_password'):
+            return JSONResponse({'message': ValidationMessage.PASSWORD_MISMATCH.value}, status_code=400)
         try:
-            updated = _save(current['username'], request.form.get('password', ''))
+            updated = _save(current['username'], form.get('password', ''))
         except ValidationError as exc:
-            return jsonify({'message': exc.reason.value}), 400
+            return JSONResponse({'message': exc.reason.value}, status_code=400)
         except Exception as exc:
             logging.getLogger(__name__).warning(f'Could not change the admin password ({type(exc).__name__})')
-            return jsonify({'message': 'Could not change the password. Try again.'}), 500
-        _login(updated)
-    return jsonify({'message': 'Password changed. Other sessions have been signed out.'})
+            return JSONResponse({'message': 'Could not change the password. Try again.'}, status_code=500)
+        _login(request, updated)
+    return JSONResponse({'message': 'Password changed. Other sessions have been signed out.'})
 
 
-def _require_admin():
+def _require_admin(request: Request):
     """Reject private requests without a current admin session.
 
     Returns
@@ -266,43 +301,42 @@ def _require_admin():
     Response or tuple or None
         Login response, or no response when access is permitted.
     """
-    # Flask confines public assets to the compiled assets directory.
-    if request.endpoint == 'static':
+    path = request.url.path
+    if path in ('/login', '/setup', '/favicon.ico', '/status') or path.startswith(('/web/assets/', '/images/')):
         return None
-    if request.endpoint in (LOGIN_ENDPOINT, SETUP_ENDPOINT, 'image', 'status'):
-        return None
-    if not _signed_in(account()):
-        if request.path.startswith('/api/'):
-            return jsonify({'message': 'Sign in to continue.'}), 401
-        return redirect(url_for(LOGIN_ENDPOINT, next=request.full_path.rstrip('?')))
+    current = account()
+    if not _signed_in(request, current):
+        if path.startswith('/api/'):
+            return JSONResponse({'message': 'Sign in to continue.'}, status_code=401)
+        from urllib.parse import urlencode
+        target = path + ('?' + request.url.query if request.url.query else '')
+        return RedirectResponse('/login?' + urlencode({'next': target}), status_code=302)
+    request.state.admin_username = current['username']
     return None
 
 
-def _security_headers(response):
+def _security_headers(request: Request, headers):
     """Apply security and cache headers to a browser response.
 
     Parameters
     ----------
-    response : Response
-        Response produced by the current route.
-
-    Returns
-    -------
-    Response
-        Response with the appropriate security policy.
+    request : Request
+        Request determining the applicable browser policy.
+    headers : MutableHeaders
+        Response headers updated in place.
     """
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['Referrer-Policy'] = (
-        'no-referrer' if request.endpoint == SETUP_ENDPOINT and request.args.get('token') else 'same-origin'
+    headers['X-Frame-Options'] = 'DENY'
+    headers['X-Content-Type-Options'] = 'nosniff'
+    headers['Referrer-Policy'] = (
+        'no-referrer' if request.url.path == '/setup' and request.query_params.get('token') else 'same-origin'
     )
-    response.headers['Content-Security-Policy'] = (
+    headers['Content-Security-Policy'] = (
         "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
         "img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self'; "
         "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
     )
-    if request.endpoint == 'docs':
-        response.headers['Content-Security-Policy'] = (
+    if request.url.path.startswith('/docs/'):
+        headers['Content-Security-Policy'] = (
             "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net "
             "https://website-translator.app.crowdin.net; "
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net "
@@ -312,38 +346,66 @@ def _security_headers(response):
             "connect-src 'self' https://cdn.jsdelivr.net https://distributions.crowdin.net; "
             "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         )
-    if request.endpoint != 'static' and request.endpoint != 'image':
-        response.headers['Cache-Control'] = 'no-store'
-    return response
+    if not request.url.path.startswith(('/web/assets/', '/images/')) and request.url.path != '/favicon.ico':
+        headers['Cache-Control'] = 'no-store'
 
 
-def _admin_context():
-    """Supply the current username to private templates.
+class BrowserSecurityMiddleware:
+    """Protect signed sessions and bounded request bodies without buffering responses."""
 
-    Returns
-    -------
-    dict
-        Username when the current admin session is valid.
-    """
-    current = account()
-    return {'admin_username': current['username'] if _signed_in(current) else None}
+    def __init__(self, app):
+        """Wrap the next ASGI application in the middleware stack."""
+        self.app = app
 
+    async def __call__(self, scope, receive, send):
+        """Apply authentication, CSRF validation, and security headers to HTTP traffic."""
+        if scope['type'] != 'http':
+            await self.app(scope, receive, send)
+            return
+        request = Request(scope, receive)
 
-def init_app(app) -> None:
-    """Protect private routes and apply browser security headers.
+        async def secure_send(message):
+            if message['type'] == 'http.response.start':
+                _security_headers(request, MutableHeaders(scope=message))
+            await send(message)
 
-    Parameters
-    ----------
-    app : Flask
-        Web application to protect.
-    """
-    app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax',
-                      PERMANENT_SESSION_LIFETIME=timedelta(hours=12), MAX_CONTENT_LENGTH=64 * 1024)
-    app.register_blueprint(blueprint)
-    logging.getLogger('werkzeug').addFilter(_SetupLinkFilter())
-    app.before_request(_require_admin)
-    app.after_request(_security_headers)
-    app.context_processor(_admin_context)
+        response = await run_in_threadpool(_require_admin, request)
+        if response is not None:
+            await response(scope, receive, secure_send)
+            return
+        try:
+            body = await self._body(receive)
+            sent = False
 
-    # Set before the server accepts its first request; no mutation of cookie policy per request.
-    app.config['SESSION_COOKIE_SECURE'] = bool(config.CONFIG and config.CONFIG['Network']['SSL'])
+            async def replay_body():
+                nonlocal sent
+                if not sent:
+                    sent = True
+                    return {'type': 'http.request', 'body': body, 'more_body': False}
+                return await receive()
+
+            request = Request(scope, replay_body)
+            await validate_csrf(request)
+        except HTTPException as exc:
+            response = await run_in_threadpool(error_response, request, exc.status_code, str(exc.detail))
+            await response(scope, receive, secure_send)
+            return
+
+        # CSRF form parsing may consume the replay. The endpoint receives its own replay.
+        sent = False
+        await self.app(scope, replay_body, secure_send)
+
+    @staticmethod
+    async def _body(receive) -> bytes:
+        """Enforce the 64 KiB limit even without a trustworthy Content-Length header."""
+        body = bytearray()
+        while True:
+            message = await receive()
+            if message['type'] == 'http.disconnect':
+                raise HTTPException(400, 'The request was interrupted.')
+            chunk = message.get('body', b'')
+            if len(body) + len(chunk) > 64 * 1024:
+                raise HTTPException(413, 'Request body is too large.')
+            body.extend(chunk)
+            if not message.get('more_body', False):
+                return bytes(body)

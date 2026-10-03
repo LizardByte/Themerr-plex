@@ -26,7 +26,7 @@
                 <form method="post" class="auth-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <label for="username">{{ _('Username') }}</label>
-                    <input id="username" name="username" class="form-control" autocomplete="username" required minlength="3" maxlength="64" value="{{ request.form.get('username', 'admin' if mode == 'setup' else '') }}">
+                    <input id="username" name="username" class="form-control" autocomplete="username" required minlength="3" maxlength="64" value="{{ username|default('admin' if mode == 'setup' else '') }}">
                     <label for="password">{{ _('Password') }}</label>
                     <input id="password" name="password" type="password" class="form-control" {% if mode == 'setup' %}autocomplete="new-password"{% else %}autocomplete="current-password"{% endif %} required {% if mode == 'setup' %}minlength="12"{% endif %} maxlength="256">
                     {% if mode == 'setup' %}
