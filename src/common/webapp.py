@@ -35,12 +35,13 @@ from themerr import storage
 # variables
 URL_SCHEME = None
 URL = None
+MIMETYPE_TEXT_PLAIN = 'text/plain'
 
 # localization
 _ = locales.get_text()
 
 responses = {
-    500: Response(response='Internal Server Error', status=500, mimetype='text/plain')
+    500: Response(response='Internal Server Error', status=500, mimetype=MIMETYPE_TEXT_PLAIN)
 }
 
 # mime type map
@@ -464,9 +465,9 @@ def image(img: str) -> send_from_directory:
         if file_extension in mime_type_map:
             return send_from_directory(directory=directory, path=filename, mimetype=mime_type_map[file_extension])
         else:
-            return Response(response='Invalid file type', status=400, mimetype='text/plain')
+            return Response(response='Invalid file type', status=400, mimetype=MIMETYPE_TEXT_PLAIN)
     else:
-        return Response(response='Image not found', status=404, mimetype='text/plain')
+        return Response(response='Image not found', status=404, mimetype=MIMETYPE_TEXT_PLAIN)
 
 
 @app.route('/status', methods=['GET'])
