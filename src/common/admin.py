@@ -21,6 +21,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # local imports
 from common.http import error_response, read_form, render_template, validate_csrf
+from common.helpers import get_logger
 from common.validation import ValidationError, ValidationMessage
 from themerr import storage
 
@@ -169,7 +170,7 @@ def setup(request: Request, form=Depends(read_form)):
             except ValidationError as exc:
                 error = exc.reason.value
             except Exception as exc:
-                logging.getLogger(__name__).warning(f'Could not create the admin account ({type(exc).__name__})')
+                get_logger(__name__).warning(f'Could not create the admin account ({type(exc).__name__})')
                 return render_template(
                     request,
                     AUTH_TEMPLATE,
@@ -287,7 +288,7 @@ def change_password(request: Request, form=Depends(read_form)):
         except ValidationError as exc:
             return JSONResponse({'message': exc.reason.value}, status_code=400)
         except Exception as exc:
-            logging.getLogger(__name__).warning(f'Could not change the admin password ({type(exc).__name__})')
+            get_logger(__name__).warning(f'Could not change the admin password ({type(exc).__name__})')
             return JSONResponse({'message': 'Could not change the password. Try again.'}, status_code=500)
         _login(request, updated)
     return JSONResponse({'message': 'Password changed. Other sessions have been signed out.'})

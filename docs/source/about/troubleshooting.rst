@@ -33,5 +33,11 @@ Application logs
 ----------------
 
 Logs are written under the application's config/logs directory, or under /config/logs in Docker.
-Reproduce the problem, inspect the newest log, and remove tokens or cookies before sharing it. For Plex server
-problems, see https://support.plex.tv/articles/200250417-plex-media-server-log-files/.
+The three active files are ``themerr.log``, ``backend.log``, and ``yt-dlp.log``, with up to five rotated backups
+per file at 5 MB each. Existing files from older versions are retained; the viewer reads the three active channels.
+Open **Logs** in the web UI to search recent messages, filter by source or severity, jump between warnings and
+errors, and download the filtered records. If the log directory is unavailable, restore its permissions or
+select **Since startup** to inspect the temporary current-session history. That history survives file rotation
+and is released when Themerr exits. If temporary storage is unavailable, the viewer reports the unavailable sources;
+inspect the console output. Reproduce the problem and review logs for tokens or cookies before sharing them.
+For Plex server problems, see https://support.plex.tv/articles/200250417-plex-media-server-log-files/.

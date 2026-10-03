@@ -56,6 +56,61 @@ def test_home(client, configured):
     assert client.get('/home').status_code == 200
 
 
+def test_log_viewer_and_api_require_authentication(client, monkeypatch, tmp_path):
+    from common import log_viewer
+    monkeypatch.setattr(log_viewer.Paths, 'LOG_DIR', str(tmp_path))
+    (tmp_path / 'themerr.log').write_text(
+        '2026-10-03 10:00:00 - WARNING :: Worker : example warning\n', encoding='utf-8',
+    )
+    page = client.get('/logs')
+    assert page.status_code == 200
+    assert 'id="log-viewer"' in page.text
+    assert 'value="startup"' in page.text
+    assert 'aria-current="page"' in page.text
+    assert 'href="/logs"' in client.get('/').text
+    result = client.get('/api/logs?source=themerr&limit=1')
+    assert result.status_code == 200
+    assert result.headers['Cache-Control'] == 'no-store'
+    assert result.json()['entries'][0]['message'] == 'example warning'
+    for query in ('source=../config.ini', 'source=common', 'source=themerr.log',
+                  'source=themerr%2f..%2fconfig.ini', 'source=%252e%252e%252fconfig.ini',
+                  'source=C%3a%5cconfig.ini', 'source=themerr.log%3asecret', 'source=themerr%00',
+                  'limit=0', 'limit=2001', 'limit=nope',
+                  'scope=invalid', 'scope=startup&cursor=-1'):
+        assert client.get('/api/logs?' + query).status_code == 422
+    client.cookies.clear()
+    assert client.get('/logs').status_code == 302
+    assert client.get('/api/logs').status_code == 401
+
+
+def test_startup_log_api_batches_and_appends_current_session_records(client, monkeypatch):
+    import logging
+    from common import logger, log_viewer
+    capture = log_viewer._SessionLogHandler()
+    monkeypatch.setattr(logger, '_session_handler', capture)
+    try:
+        for message, name in [('first', 'themerr'), ('backend', 'uvicorn.error'), ('last', 'yt-dlp')]:
+            capture.handle(logging.LogRecord(name, logging.INFO, __file__, 1, message, (), None))
+        first = client.get('/api/logs?scope=startup&limit=2').json()
+        assert len(first['entries']) == 2
+        assert first['has_more']
+        last = client.get(f'/api/logs?scope=startup&limit=2&cursor={first["cursor"]}').json()
+        assert len(last['entries']) == 1
+        assert last['entries'][0]['source'] == 'yt-dlp'
+        assert not last['has_more']
+        capture.handle(logging.LogRecord('themerr', logging.ERROR, __file__, 1, 'new error', (), None))
+        appended = client.get(f'/api/logs?scope=startup&cursor={last["cursor"]}').json()
+        assert len(appended['entries']) == 1
+        assert appended['entries'][0]['level'] == 'ERROR'
+        filtered = client.get('/api/logs?scope=startup&source=backend').json()
+        assert len(filtered['entries']) == 1
+        assert filtered['entries'][0]['source'] == 'backend'
+        client.cookies.clear()
+        assert client.get('/api/logs?scope=startup').status_code == 401
+    finally:
+        capture.close()
+
+
 def test_asset_urls_change_when_compiled_content_changes(client, monkeypatch, tmp_path):
     from common.http import asset_url
     from fastapi import Request

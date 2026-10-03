@@ -4,7 +4,6 @@
 from functools import lru_cache
 import hashlib
 import hmac
-import ntpath
 import os
 import secrets
 from urllib.parse import urlsplit
@@ -16,11 +15,11 @@ from starlette.datastructures import FormData
 from starlette.responses import FileResponse, JSONResponse, Response
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from werkzeug.security import safe_join
 
 # local imports
 from common import locales
 from common.definitions import Paths
+from common.path_policy import resolve_file_path, validate_relative_path
 
 templates = Jinja2Templates(directory=os.path.join(Paths.ROOT_DIR, 'web', 'templates'))
 templates.env.trim_blocks = True
@@ -203,11 +202,11 @@ def render_template(request: Request, template_name: str, *, status_code: int = 
 
 
 def _validate_public_path(filename: str) -> None:
-    """Require a relative URL path without ambiguous Windows or encoded components."""
-    if not filename or len(filename) > 4096 or any(character in filename for character in ('\\', ':', '%', '\x00')):
-        raise HTTPException(404, NOT_FOUND_MESSAGE)
-    if any(part in ('', '.', '..') or ntpath.isreserved(part) for part in filename.split('/')):
-        raise HTTPException(404, NOT_FOUND_MESSAGE)
+    """Translate the shared relative-path policy into a public 404 response."""
+    try:
+        validate_relative_path(filename)
+    except ValueError:
+        raise HTTPException(404, NOT_FOUND_MESSAGE) from None
 
 
 class SafeStaticFiles(StaticFiles):
@@ -269,18 +268,10 @@ def file_response(directory: str, filename: str, media_type: str | None = None) 
     --------
     >>> response = file_response(Paths.DOCS_DIR, 'index.html')
     """
-    _validate_public_path(filename)
     try:
-        root = os.path.realpath(directory, strict=True)
-        joined = safe_join(root, filename)
-        if joined is None:
-            raise HTTPException(404, NOT_FOUND_MESSAGE)
-        path = os.path.realpath(joined, strict=True)
-        # Include the separator so a sibling such as docs-private cannot match docs.
-        if not path.startswith(os.path.join(root, '')) or not os.path.isfile(path):
-            raise HTTPException(404, NOT_FOUND_MESSAGE)
+        path = resolve_file_path(directory, filename)
     except (OSError, ValueError):
-        raise HTTPException(404, NOT_FOUND_MESSAGE)
+        raise HTTPException(404, NOT_FOUND_MESSAGE) from None
     return FileResponse(path, media_type=media_type)
 
 

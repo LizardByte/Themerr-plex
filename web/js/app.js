@@ -13,6 +13,7 @@ import { initServers } from './servers.js';
 import { initActivity } from './activity.js';
 import { initDatabaseStatus } from './database_status.js';
 import { initTranslations } from './i18n.js';
+import { initLogs } from './logs.js';
 
 refreshIcons();
 initNavigation();
@@ -24,3 +25,4 @@ initSettings();
 initServers();
 initActivity();
 initDatabaseStatus();
+initLogs();

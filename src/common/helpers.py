@@ -217,7 +217,7 @@ def file_save(filename: str, data: AnyStr, binary: bool = False) -> bool:
 
 def get_logger(name: str) -> logging.Logger:
     """
-    Get the logger for the given name.
+    Get the shared Themerr logger for application modules, or a named library logger.
 
     This function also exists in `logger.py` to prevent circular imports.
 
@@ -236,6 +236,8 @@ def get_logger(name: str) -> logging.Logger:
     >>> get_logger(name='my_log')
     <Logger my_log (WARNING)>
     """
+    if name.split('.')[0] in ('common', 'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule'):
+        name = 'themerr'
     return logging.getLogger(name=name)
 
 

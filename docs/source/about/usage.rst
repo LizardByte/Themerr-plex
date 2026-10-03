@@ -85,6 +85,20 @@ preserved instead of reloading; the completion message tells you when the new sn
 **Activity** shows scheduled task starts, completion, duration, the upload queue, and per-item failure reasons.
 Its **Scan for themes** button also starts a processing scan when theme updates are enabled.
 
+**Logs** shows recent records from ``themerr`` (application), ``backend`` (Uvicorn), and ``yt-dlp``
+(YouTube extraction). Choose a source, level, and record limit; search messages, thread names, or timestamps.
+The arrow buttons jump between visible warnings, errors, and critical errors, wrapping at either end.
+Navigation turns off **Follow latest** so you can inspect the selected record. **Live refresh** updates every
+three seconds; turn it off to pause, or use **Refresh** for a single update. **Download filtered logs** saves
+all loaded records matching the current filters, including multiline tracebacks. The latest-record options
+contain at most 2,000 records and a bounded amount of rotated history. **Since startup** loads all records from
+the current application session, including records that have rotated out of the regular log files. This history
+is kept in temporary disk storage until Themerr exits and starts fresh after a restart. It covers messages emitted
+after application logging is initialized. Session history loads in batches and displays 500 records per page;
+use **Older records** and **Newer records** to browse. Search, filters, warning navigation, and downloads cover
+all loaded pages. Live refresh appends new session records without reloading earlier batches.
+The timestamps use the clock of the machine running Themerr. Access requires an administrator session.
+
 The Overview's **ThemerrDB > Last deployed** indicator shows the age of its latest successful Pages deployment,
 not the last local library refresh. Hover over the age for the completion time, or follow the link to its workflow run.
 The GitHub check runs at most once per hour across page loads and application restarts, including failed checks.

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">{{ _('BEHIND THE MUSIC') }}</span><h1>{{ _('Logs') }}<span class="heading-dot">.</span></h1><p>{{ _('Explore recent logs, find a message, and jump between warnings and errors.') }}</p></div>
+    <button id="log-download" class="btn btn-outline-light" type="button" disabled><i data-lucide="arrow-down"></i>{{ _('Download filtered logs') }}</button>
+</div>
+<section id="log-viewer" aria-label="{{ _('Log viewer') }}">
+    <div class="filter-toolbar log-filters">
+        <div class="search-field"><i data-lucide="search"></i><input id="log-search" class="form-control" type="search" aria-label="{{ _('Search logs') }}" placeholder="{{ _('Search messages, threads, or timestamps…') }}" autocomplete="off"><button id="log-clear-search" class="search-clear" type="button" aria-label="{{ _('Clear search') }}" hidden><i data-lucide="x"></i></button></div>
+        <div class="log-filter"><label for="log-source">{{ _('Log source') }}</label><select id="log-source" class="form-select"><option value="all">{{ _('All sources') }}</option>{% for source in sources %}<option value="{{ source }}">{{ source }}</option>{% endfor %}</select></div>
+        <div class="log-filter"><label for="log-level">{{ _('Log level') }}</label><select id="log-level" class="form-select"><option value="all">{{ _('All levels') }}</option><option value="attention">{{ _('Warnings and errors') }}</option>{% for level in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'] %}<option value="{{ level }}">{{ level }}</option>{% endfor %}</select></div>
+        <div class="log-filter"><label for="log-limit">{{ _('Log history') }}</label><select id="log-limit" class="form-select"><option value="250">{{ _('Latest 250') }}</option><option value="1000" selected>{{ _('Latest 1,000') }}</option><option value="2000">{{ _('Latest 2,000') }}</option><option value="startup">{{ _('Since startup') }}</option></select></div>
+        <button id="log-clear-filters" class="icon-button" type="button" aria-label="{{ _('Clear filters') }}" title="{{ _('Clear filters') }}"><i data-lucide="list-restart"></i></button>
+    </div>
+    <div class="log-toolbar">
+        <fieldset class="log-navigation">
+            <legend class="visually-hidden">{{ _('Warning and error navigation') }}</legend>
+            <button id="log-previous" class="icon-button" type="button" disabled aria-label="{{ _('Previous warning or error') }}" title="{{ _('Previous warning or error') }}"><i data-lucide="arrow-up"></i></button>
+            <button id="log-next" class="icon-button" type="button" disabled aria-label="{{ _('Next warning or error') }}" title="{{ _('Next warning or error') }}"><i data-lucide="arrow-down"></i></button>
+            <span id="log-attention-count" class="muted"></span>
+        </fieldset>
+        <label class="log-toggle"><input id="log-live" class="form-check-input" type="checkbox" checked> {{ _('Live refresh') }}</label>
+        <label class="log-toggle"><input id="log-follow" class="form-check-input" type="checkbox" checked> {{ _('Follow latest') }}</label>
+        <button id="log-refresh" class="btn btn-outline-light" type="button"><i data-lucide="refresh-cw"></i>{{ _('Refresh') }}</button>
+    </div>
+    <output id="log-status" class="log-status muted">{{ _('Loading logs…') }}</output>
+    <p id="log-error" class="form-error" role="alert" hidden></p>
+    <p id="log-history" class="log-history muted">{{ _('Filters and search apply to the loaded records. Older history remains in the log directory.') }}</p>
+    <fieldset id="log-pages" class="log-toolbar" hidden>
+        <legend class="visually-hidden">{{ _('Log history pages') }}</legend>
+        <button id="log-older" class="btn btn-outline-light" type="button"><i data-lucide="arrow-left"></i>{{ _('Older records') }}</button>
+        <span id="log-page-info" class="muted"></span>
+        <button id="log-newer" class="btn btn-outline-light" type="button">{{ _('Newer records') }}<i data-lucide="arrow-right"></i></button>
+    </fieldset>
+    <div id="log-viewport" class="log-viewport" tabindex="-1" aria-label="{{ _('Log records') }}" aria-describedby="log-history">
+        <div id="log-list"></div>
+        <p id="log-empty" class="log-empty" hidden>{{ _('No log records yet.') }}</p>
+    </div>
+</section>
+{% endblock %}
