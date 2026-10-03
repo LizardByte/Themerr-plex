@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Рестартиране"
 msgid "Quit"
 msgstr "Изход"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Настройки"
@@ -413,6 +413,34 @@ msgstr "Изключете записването в конзолата"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "Отпечатай подробностите за версията и излез"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Сесията Ви изтече. Влезте, за да продължите."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Затвори съобщението"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Незапазени промени"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Всички промени са запазени."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Настройките са запазени. Промените в мрежовите настройки влизат в сила след рестартиране на Themerr."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "Не е възможно да се запазят промените."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "Запазете промените в настройките, преди да промените паролата си."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex ID"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "Остаряла информация от ThemerrDB"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Разгледайте API-то, като използвате сесията си за вход."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "Документация за API"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Потвърдете новата парола"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Промяна на паролата"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Всички промени са запазени."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Много по-голяма атмосфера."
 msgid "Resources"
 msgstr "Ресурси"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Документация"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Добавете тема"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "Подкрепете LizardByte"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Излез от профила си"
 
