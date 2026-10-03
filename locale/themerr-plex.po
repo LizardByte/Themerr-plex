@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Themerr-plex v0\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 00:39+0000\n"
+"POT-Creation-Date: 2026-10-03 03:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,336 +58,284 @@ msgstr ""
 msgid "The localization setting to use."
 msgstr ""
 
-#: src/common/config.py:137
-msgid "German"
-msgstr ""
-
-#: src/common/config.py:138
-msgid "English"
-msgstr ""
-
-#: src/common/config.py:139
-msgid "English (Great Britain)"
-msgstr ""
-
-#: src/common/config.py:140
-msgid "English (United States)"
-msgstr ""
-
-#: src/common/config.py:141
-msgid "Spanish"
-msgstr ""
-
-#: src/common/config.py:142
-msgid "French"
-msgstr ""
-
-#: src/common/config.py:143
-msgid "Italian"
-msgstr ""
-
-#: src/common/config.py:144
-msgid "Japanese"
-msgstr ""
-
-#: src/common/config.py:145
-msgid "Portuguese"
-msgstr ""
-
-#: src/common/config.py:146
-msgid "Russian"
-msgstr ""
-
-#: src/common/config.py:147
-msgid "Swedish"
-msgstr ""
-
-#: src/common/config.py:148
-msgid "Turkish"
-msgstr ""
-
-#: src/common/config.py:149
-msgid "Chinese (Simplified)"
-msgstr ""
-
-#: src/common/config.py:156
+#: src/common/config.py:128
 msgid "Launch Browser on Startup "
 msgstr ""
 
-#: src/common/config.py:162
+#: src/common/config.py:134
 msgid "Enable System Tray Icon"
 msgstr ""
 
-#: src/common/config.py:170
+#: src/common/config.py:142
 msgid "Logging"
 msgstr ""
 
-#: src/common/config.py:171
+#: src/common/config.py:143
 msgid "Logging settings."
 msgstr ""
 
-#: src/common/config.py:175
+#: src/common/config.py:147
 msgid "Log directory"
 msgstr ""
 
-#: src/common/config.py:177
+#: src/common/config.py:149
 msgid "The directory where to store the log files."
 msgstr ""
 
-#: src/common/config.py:184
+#: src/common/config.py:156
 msgid "Debug logging"
 msgstr ""
 
-#: src/common/config.py:186
+#: src/common/config.py:158
 msgid "Enable debug logging."
 msgstr ""
 
-#: src/common/config.py:192
+#: src/common/config.py:164
 msgid "Network"
 msgstr ""
 
-#: src/common/config.py:193
+#: src/common/config.py:165
 msgid "Network settings."
 msgstr ""
 
-#: src/common/config.py:197
+#: src/common/config.py:169
 msgid "HTTP host address"
 msgstr ""
 
-#: src/common/config.py:199
+#: src/common/config.py:171
 msgid "The HTTP address to bind to."
 msgstr ""
 
-#: src/common/config.py:208
+#: src/common/config.py:180
 msgid "HTTP port"
 msgstr ""
 
-#: src/common/config.py:210
+#: src/common/config.py:182
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr ""
 
-#: src/common/config.py:218
+#: src/common/config.py:190
 msgid "HTTP root"
 msgstr ""
 
-#: src/common/config.py:220
+#: src/common/config.py:192
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr ""
 
-#: src/common/config.py:225
+#: src/common/config.py:197
 msgid "SSL"
 msgstr ""
 
-#: src/common/config.py:227
+#: src/common/config.py:199
 msgid ""
 "Run the web server with HTTPS. Disabling this can be a security risk, do "
 "so at your own risk."
 msgstr ""
 
-#: src/common/config.py:233
+#: src/common/config.py:205
 msgid "Updater"
 msgstr ""
 
-#: src/common/config.py:234
+#: src/common/config.py:206
 msgid "Updater settings."
 msgstr ""
 
-#: src/common/config.py:238
+#: src/common/config.py:210
 msgid "Auto update"
 msgstr ""
 
-#: src/common/config.py:246
+#: src/common/config.py:218
 msgid "Plex"
 msgstr ""
 
-#: src/common/config.py:247
+#: src/common/config.py:219
 msgid "Plex settings."
 msgstr ""
 
-#: src/common/config.py:251
+#: src/common/config.py:223
 msgid "Plex URL"
 msgstr ""
 
-#: src/common/config.py:252
+#: src/common/config.py:224
 msgid "The URL to the Plex server."
 msgstr ""
 
-#: src/common/config.py:261 web/templates/servers.html:20
+#: src/common/config.py:233 web/templates/servers.html:20
 msgid "Plex data directory"
 msgstr ""
 
-#: src/common/config.py:262
+#: src/common/config.py:234
 msgid ""
 "https://support.plex.tv/articles/202915258-where-is-the-plex-media-"
 "server-data-directory-located/"
 msgstr ""
 
-#: src/common/config.py:272
+#: src/common/config.py:244
 msgid "Themerr"
 msgstr ""
 
-#: src/common/config.py:273
+#: src/common/config.py:245
 msgid "Themerr settings."
 msgstr ""
 
-#: src/common/config.py:277
+#: src/common/config.py:249
 msgid "Themerr Enabled"
 msgstr ""
 
-#: src/common/config.py:278
+#: src/common/config.py:250
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr ""
 
-#: src/common/config.py:283 web/templates/home.html:30
+#: src/common/config.py:255 web/templates/home.html:30
 msgid "Collections"
 msgstr ""
 
-#: src/common/config.py:284
+#: src/common/config.py:256
 msgid "Add themes to collections."
 msgstr ""
 
-#: src/common/config.py:289
+#: src/common/config.py:261
 msgid "Movie support"
 msgstr ""
 
-#: src/common/config.py:290
+#: src/common/config.py:262
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr ""
 
-#: src/common/config.py:295
+#: src/common/config.py:267
 msgid "Series support"
 msgstr ""
 
-#: src/common/config.py:296
+#: src/common/config.py:268
 msgid "Add themes to series using the Plex Series agent."
 msgstr ""
 
-#: src/common/config.py:301
+#: src/common/config.py:273
 msgid "Overwrite Plex themes"
 msgstr ""
 
-#: src/common/config.py:302
+#: src/common/config.py:274
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr ""
 
-#: src/common/config.py:307
+#: src/common/config.py:279
 msgid "Prefer MP4A AAC Codec"
 msgstr ""
 
-#: src/common/config.py:308
+#: src/common/config.py:280
 msgid "This can improve theme compatibility with Apple devices."
 msgstr ""
 
-#: src/common/config.py:313
+#: src/common/config.py:285
 msgid "Remove unused themes"
 msgstr ""
 
-#: src/common/config.py:314
+#: src/common/config.py:286
 msgid ""
 "Frees up space in your Plex metadata directory. This option requires that"
 " the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:320
+#: src/common/config.py:292
 msgid "Remove unused art"
 msgstr ""
 
-#: src/common/config.py:321 src/common/config.py:329
+#: src/common/config.py:293 src/common/config.py:301
 msgid ""
 "Applies to collection. Frees up space in your Plex metadata directory. "
 "This option requires that the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:328
+#: src/common/config.py:300
 msgid "Remove unused posters"
 msgstr ""
 
-#: src/common/config.py:336
+#: src/common/config.py:308
 msgid "Collection metadata"
 msgstr ""
 
-#: src/common/config.py:337
+#: src/common/config.py:309
 msgid ""
 "Update collection metadata (poster, art, and summary) during scheduled "
 "update."
 msgstr ""
 
-#: src/common/config.py:342
+#: src/common/config.py:314
 msgid "Ignore locked fields."
 msgstr ""
 
-#: src/common/config.py:343
+#: src/common/config.py:315
 msgid ""
 "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable"
 " this to update items."
 msgstr ""
 
-#: src/common/config.py:349 web/templates/servers.html:23
+#: src/common/config.py:321 web/templates/servers.html:23
 msgid "Ignored library IDs"
 msgstr ""
 
-#: src/common/config.py:350
+#: src/common/config.py:322
 msgid ""
 "Comma-separated library IDs to exclude from scheduled updates. IDs appear"
 " on Home."
 msgstr ""
 
-#: src/common/config.py:356
+#: src/common/config.py:328
 msgid "Update themes interval"
 msgstr ""
 
-#: src/common/config.py:357
+#: src/common/config.py:329
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:364
+#: src/common/config.py:336
 msgid "Update database cache interval"
 msgstr ""
 
-#: src/common/config.py:365
+#: src/common/config.py:337
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:372
+#: src/common/config.py:344
 msgid "PlexAPI timeout"
 msgstr ""
 
-#: src/common/config.py:373
+#: src/common/config.py:345
 msgid ""
 "Increase this slightly if you experience timeouts when adding themes. "
 "(min: 1)"
 msgstr ""
 
-#: src/common/config.py:380
+#: src/common/config.py:352
 msgid "Theme upload retries"
 msgstr ""
 
-#: src/common/config.py:381
+#: src/common/config.py:353
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr ""
 
-#: src/common/config.py:388
+#: src/common/config.py:360
 msgid "Multiprocessing thread count"
 msgstr ""
 
-#: src/common/config.py:389
+#: src/common/config.py:361
 msgid ""
 "The number of threads to use when adding themes. Restart required. (min: "
 "1)"
 msgstr ""
 
-#: src/common/config.py:396
+#: src/common/config.py:368
 msgid "YouTube Cookies"
 msgstr ""
 
-#: src/common/config.py:398
+#: src/common/config.py:370
 msgid ""
 "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using "
 "its JSON format, then paste the entire JSON array here and save. Cookies "
 "contain your browser session; keep them private."
 msgstr ""
 
-#: src/common/config.py:403
+#: src/common/config.py:375
 msgid "Cookie export instructions"
 msgstr ""
 
