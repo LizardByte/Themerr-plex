@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Themerr-plex v0\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-02 21:20+0000\n"
+"POT-Creation-Date: 2026-10-03 00:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -436,7 +436,7 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: src/common/webapp.py:350 web/templates/config.html:22
+#: src/common/webapp.py:351 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr ""
