@@ -12,9 +12,11 @@ import { initSettings } from './config.js';
 import { initServers } from './servers.js';
 import { initActivity } from './activity.js';
 import { initDatabaseStatus } from './database_status.js';
+import { initTranslations } from './i18n.js';
 
 refreshIcons();
 initNavigation();
+await initTranslations();
 initThemePlayer();
 initDashboard();
 initDirectoryPicker();

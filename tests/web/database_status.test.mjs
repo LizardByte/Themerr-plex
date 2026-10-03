@@ -79,3 +79,11 @@ test('no publication displays an unknown age and pages without an indicator perf
     assert.equal(time.textContent, 'Unknown');
     assert.equal(warning.hidden, false);
 });
+
+test('the indicator uses the page language for relative time', async t => {
+    const { root, time } = fixture(t);
+    root.documentElement = { lang: 'fr' };
+    initDatabaseStatus(root, async () => ({ updated_at: '2026-10-02T10:00:00Z', stale: false }));
+    await Promise.resolve();
+    assert.equal(time.textContent, 'il y a 2 heures');
+});

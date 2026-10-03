@@ -2,7 +2,7 @@
 {% macro setting_field(section, key, spec) %}
 {% set value = config_settings[section][key] %}
 <div class="setting-row {{ 'setting-row-switch' if spec.type == 'boolean' }}">
-    <div class="setting-description"><label for="{{ key }}">{{ spec.name }}</label><p id="{{ key }}-help">{{ spec.description }}{% if spec.help_url %} <a href="{{ spec.help_url }}" target="_blank" rel="noopener noreferrer">{{ spec.help_label }}<i data-lucide="arrow-up-right"></i></a>{% endif %}</p></div>
+    <div class="setting-description"><label for="{{ key }}">{{ _(spec.name) }}</label><p id="{{ key }}-help">{{ _(spec.description) }}{% if spec.help_url %} <a href="{{ spec.help_url }}" target="_blank" rel="noopener noreferrer">{{ _(spec.help_label) }}<i data-lucide="arrow-up-right"></i></a>{% endif %}</p></div>
     <div class="setting-control">
         {% if spec.type == 'boolean' %}<input id="{{ key }}" type="checkbox" class="form-check-input" category="{{ section }}" aria-describedby="{{ key }}-help" {% if value %}checked{% endif %}>
         {% elif spec.type == 'option' %}<select id="{{ key }}" class="form-select" category="{{ section }}" aria-describedby="{{ key }}-help">{% for option in spec.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ spec.option_names[loop.index0] }}</option>{% endfor %}</select>
@@ -12,7 +12,7 @@
                 type="{{ 'number' if spec.type in ['integer','float'] else 'password' if spec.mask else 'text' }}"
                 {% if spec.type in ['integer','float'] %}step="{{ '1' if spec.type == 'integer' else 'any' }}"{% if spec.min is number %} min="{{ spec.min }}"{% endif %}{% if spec.max is number %} max="{{ spec.max }}"{% endif %}{% endif %}
                 {% if spec.pattern %}pattern="{{ spec.pattern }}"{% endif %}>
-            {% if spec.button_directory %}<button type="button" class="btn btn-outline-light" data-directory-target="{{ key }}" aria-label="{{ _('Browse directories for') }} {{ spec.name }}"><i data-lucide="folder-open" aria-hidden="true"></i></button>{% endif %}
+            {% if spec.button_directory %}<button type="button" class="btn btn-outline-light" data-directory-target="{{ key }}" aria-label="{{ _('Browse directories for') }} {{ _(spec.name) }}"><i data-lucide="folder-open" aria-hidden="true"></i></button>{% endif %}
         </div>
         {% endif %}
     </div>
@@ -21,11 +21,11 @@
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">{{ _('TUNE YOUR WORKSPACE') }}</span><h1>{{ _('Settings') }}<span class="heading-dot">.</span></h1><p>{{ _('Make Themerr work the way your library does.') }}</p></div></div>
 <div class="settings-layout">
-    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for key in ['Themerr','General','Logging','Network'] %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ config_spec[key].name }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
+    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for key in ['Themerr','General','Logging','Network'] %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ _(config_spec[key].name) }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
     <div class="settings-content">
         <form id="configForm" data-csrf-token="{{ csrf_token() }}" method="post">
         {% for section in ['Themerr','General','Logging','Network'] %}
-            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ config_spec[section].name }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else config_spec[section].description }}</p></div></div>
+            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ _(config_spec[section].name) }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else _(config_spec[section].description) }}</p></div></div>
                 {% for key, spec in config_spec[section].items() %}{% if spec is mapping and not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' %}{{ setting_field(section, key, spec) }}{% endif %}{% endfor %}
             </section>
         {% endfor %}

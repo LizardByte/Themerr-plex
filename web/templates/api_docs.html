@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel="stylesheet" href="{{ asset_url('api_docs.css') }}">
+<script type="module" src="{{ asset_url('api_docs.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>{{ _('API documentation') }}<span class="heading-dot">.</span></h1><p>{{ _('Explore the API using your signed-in session.') }}</p></div></div>
+<section class="api-docs-panel" aria-label="{{ _('API documentation') }}"><div id="swagger-ui"></div></section>
+{% endblock %}

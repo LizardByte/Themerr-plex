@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="{{ locale_id }}" data-bs-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,6 +32,6 @@
     </main>
     <output id="toast-region" class="toast-region" aria-live="polite"></output>
     {% block modals %}{% endblock %}
-    <script defer src="{{ asset_url('app.js') }}"></script>
+    <script type="module" src="{{ asset_url('app.js') }}"></script>
 </body>
 </html>

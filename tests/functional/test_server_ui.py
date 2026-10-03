@@ -6,6 +6,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 # lib imports
+from fastapi.testclient import TestClient
 import pytest
 from plexapi.exceptions import Unauthorized
 from requests.exceptions import (ConnectionError, ConnectTimeout, JSONDecodeError, ReadTimeout, RequestException,
@@ -13,6 +14,7 @@ from requests.exceptions import (ConnectionError, ConnectTimeout, JSONDecodeErro
 from sqlalchemy.orm import Session
 
 # local imports
+from tests.http_helpers import set_session
 from common import admin, server_ui, webapp
 from common.validation import ValidationError, ValidationMessage
 from plex import auth, plexapi, servers, token_store
@@ -23,18 +25,20 @@ from themerr import storage
 def client(configured, monkeypatch):
     monkeypatch.setattr(admin, 'HASH_METHOD', 'scrypt:16384:8:1')
     current = admin._save('admin', 'a long unique passphrase')
-    webapp.app.config.update(TESTING=True, WTF_CSRF_ENABLED=True, SESSION_COOKIE_SECURE=False)
     monkeypatch.setattr(plexapi, 'plex_listener', Mock())
     monkeypatch.setattr(server_ui, '_refresh', Mock())
-    with webapp.app.test_client() as browser:
-        with browser.session_transaction() as session:
-            session['admin_revision'] = current['revision']
+    with TestClient(
+        webapp.create_app(https_only=False),
+        base_url='http://localhost',
+        follow_redirects=False,
+    ) as browser:
+        set_session(browser, {'admin_revision': current['revision']})
         yield browser
 
 
 def headers(client):
     page = client.get('/servers')
-    token = re.search(rb'name="csrf-token" content="([^"]+)"', page.data).group(1).decode()
+    token = re.search(rb'name="csrf-token" content="([^"]+)"', page.content).group(1).decode()
     return {'X-CSRFToken': token}
 
 
@@ -68,7 +72,7 @@ def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(clie
     assert stats['attention'] == 1
     assert libraries['a:1']['items'][0]['error'] is None
     assert libraries['b:1']['items'][0]['error'] == 'B cannot update its theme'
-    page = client.get('/').data
+    page = client.get('/').content
     for identifier in ('a', 'b'):
         assert ('/api/servers/' + identifier + '/themes/42').encode() in page
         assert ('Title ' + identifier).encode() in page
@@ -77,7 +81,7 @@ def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(clie
         assert f'href="{server_url}?source=1" target="_blank" rel="noopener noreferrer"'.encode() in page
     assert page.count(b'B cannot update its theme') == 1
     assert b'Outdated from ThemerrDB' in page
-    assert b'B cannot update its theme' in client.get('/activity').data
+    assert b'B cannot update its theme' in client.get('/activity').content
 
 
 def test_publication_api_requires_login_and_returns_cached_status(client, monkeypatch):
@@ -85,12 +89,12 @@ def test_publication_api_requires_login_and_returns_cached_status(client, monkey
     status = {'updated_at': '2026-10-02T12:00:00+00:00', 'next_check': 12345, 'stale': False}
     lookup = Mock(return_value=status)
     monkeypatch.setattr(github_status, 'publication_status', lookup)
-    with webapp.app.test_client() as anonymous:
+    with TestClient(client.app, follow_redirects=False) as anonymous:
         assert anonymous.get('/api/themerrdb').status_code == 401
     lookup.assert_not_called()
     result = client.get('/api/themerrdb')
     assert result.status_code == 200
-    assert result.json == status
+    assert result.json() == status
     assert result.headers['Cache-Control'] == 'no-store'
     lookup.assert_called_once()
 
@@ -110,7 +114,7 @@ def test_playback_selects_the_requested_server(client, monkeypatch):
 
     monkeypatch.setattr(plexapi, 'setup_plexapi', setup)
     response = client.get('/api/servers/b/themes/42')
-    assert response.data == b'audio'
+    assert response.content == b'audio'
     assert response.status_code == 200
     assert seen == ['b']
     assert storage.current_server_id() == 'default'
@@ -123,12 +127,12 @@ def test_discovery_and_server_settings_require_csrf(client, monkeypatch):
     assert client.post('/api/servers/discover', json={'source': 'account'}).status_code == 400
     response = client.post('/api/servers/discover', json={'source': 'account'}, headers=headers(client))
     assert response.status_code == 200
-    assert response.json['servers'][0]['name'] == 'Living room'
+    assert response.json()['servers'][0]['name'] == 'Living room'
     discover.assert_called_once()
     monkeypatch.setattr(servers, 'discover_local', Mock(side_effect=OSError('private token')))
     response = client.post('/api/servers/discover', json={'source': 'local'}, headers=headers(client))
     assert response.status_code == 502
-    assert 'private token' not in str(response.json)
+    assert 'private token' not in str(response.json())
     assert client.post('/api/servers/discover', json={'source': 'invalid'}, headers=headers(client)).status_code == 400
     save_server('one')
     for path, payload in [('/api/servers', {'url': 'http://plex.example'}), ('/api/servers/one', {'enabled': False}),
@@ -175,11 +179,11 @@ def test_connect_failures_distinguish_network_from_credential_store(client, monk
     monkeypatch.setattr(server_ui, 'log', log)
     response = client.post('/api/servers', json={'url': 'https://plex.example'}, headers=headers(client))
     assert response.status_code == status
-    assert reason in response.json['message']
-    assert 'private' not in str(response.json)
+    assert reason in response.json()['message']
+    assert 'private' not in str(response.json())
     assert 'private' not in str(log.warning.call_args)
     if not isinstance(error, token_store.TokenStorageError):
-        assert 'credential store' not in response.json['message']
+        assert 'credential store' not in response.json()['message']
     server_ui._refresh.assert_not_called()
     plexapi.plex_listener.assert_not_called()
 
@@ -191,9 +195,9 @@ def test_server_edit_unexpected_failure_is_not_exposed(client, monkeypatch, meth
     monkeypatch.setattr(servers, operation, Mock(side_effect=failure('private token and database details')))
     log = Mock()
     monkeypatch.setattr(server_ui, 'log', log)
-    response = client.open('/api/servers/one', method=method, json={'enabled': False}, headers=headers(client))
+    response = client.request(method, '/api/servers/one', json={'enabled': False}, headers=headers(client))
     assert response.status_code == 500
-    assert response.json == {'message': 'Could not update this Plex server. Check its connection and settings.'}
+    assert response.json() == {'message': 'Could not update this Plex server. Check its connection and settings.'}
     assert 'private' not in str(log.warning.call_args)
     assert servers.get_server('one') is not None
     plexapi.plex_listener.assert_not_called()
@@ -207,7 +211,7 @@ def test_server_edit_unexpected_failure_is_not_exposed(client, monkeypatch, meth
 def test_malformed_server_address_returns_public_validation(client, address, message):
     response = client.post('/api/servers', json={'url': address}, headers=headers(client))
     assert response.status_code == 400
-    assert response.json == {'message': message}
+    assert response.json() == {'message': message}
     server_ui._refresh.assert_not_called()
     plexapi.plex_listener.assert_not_called()
 
@@ -217,15 +221,25 @@ def test_removing_server_reports_credential_store_failure_and_retains_connection
     monkeypatch.setattr(token_store, 'delete_token', Mock(side_effect=token_store.TokenStorageError('private key')))
     response = client.delete('/api/servers/one', headers=headers(client))
     assert response.status_code == 500
-    assert response.json['message'] == 'Could not update the secure credential store.'
+    assert response.json()['message'] == 'Could not update the secure credential store.'
     assert servers.get_server('one') is not None
 
 
 @pytest.mark.parametrize('payload', ['not an object', ['list'], 123, None])
 def test_server_apis_reject_scalar_json(client, payload):
-    response = client.post('/api/servers/discover', json=payload, headers=headers(client))
-    assert response.status_code == 400
-    assert response.is_json
+    save_server('one')
+    for path in ('/api/servers/discover', '/api/servers', '/api/servers/one', '/api/tasks/refresh'):
+        response = client.post(path, json=payload, headers=headers(client))
+        assert response.status_code == 400
+        assert response.headers['content-type'] == 'application/json'
+
+
+def test_server_apis_accept_json_media_type_suffixes(client):
+    save_server('one')
+    response = client.post('/api/servers/one', content='{"enabled": false}',
+                           headers={**headers(client), 'Content-Type': 'application/vnd.themerr+json'})
+    assert response.status_code == 200
+    assert servers.get_server('one')['enabled'] is False
 
 
 def test_disconnecting_account_pauses_servers_and_keeps_tracking(client):
@@ -250,23 +264,23 @@ def test_refresh_dispatch_and_task_status(client, configured, monkeypatch):
     monkeypatch.setattr(server_ui, '_refresh', Mock(return_value=SimpleNamespace(job_id='dashboard-job')))
     response = client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client))
     assert response.status_code == 202
-    assert response.json['job_id'] == 'dashboard-job'
+    assert response.json()['job_id'] == 'dashboard-job'
     run.assert_called_once_with(target=plexapi.scheduled_update, task_name='Theme scan and queue')
     server_ui._refresh.assert_called_once()
     configured['Themerr']['BOOL_THEMERR_ENABLED'] = False
     assert client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client)).status_code == 400
-    assert client.get('/api/tasks').json.keys() == {'jobs', 'queue_size'}
+    assert client.get('/api/tasks').json().keys() == {'jobs', 'queue_size'}
 
 
 def test_new_pages_are_usable_without_any_server_and_have_no_background_video(client):
     for path in ('/', '/servers', '/settings/', '/activity'):
         response = client.get(path)
         assert response.status_code == 200
-        assert b'<video' not in response.data
-        assert b'backgroundVideo' not in response.data
-        assert b'Your workspace' not in response.data or b'Themerr' in response.data
-    assert b'Connect a server' in client.get('/').data
-    assert b'password-form' in client.get('/settings/').data
+        assert b'<video' not in response.content
+        assert b'backgroundVideo' not in response.content
+        assert b'Your workspace' not in response.content or b'Themerr' in response.content
+    assert b'Connect a server' in client.get('/').content
+    assert b'password-form' in client.get('/settings/').content
 
 
 def test_activity_includes_unresolved_ids_counted_on_overview(client):
@@ -276,7 +290,7 @@ def test_activity_includes_unresolved_ids_counted_on_overview(client):
     with storage.server_scope('one'):
         storage.replace_dashboard(data)
     assert server_ui.dashboard()[2]['attention'] == 1
-    activity = client.get('/activity').data
+    activity = client.get('/activity').content
     assert b'Unresolved metadata' in activity
     assert b'TMDB ID unavailable. Review the item metadata in Plex.' in activity
     assert b'Outdated from ThemerrDB' not in activity
@@ -298,7 +312,7 @@ def test_provider_links_and_scoped_plex_links(client, kind, database_id, source_
     )
     with storage.server_scope('a'):
         storage.replace_dashboard(data)
-    rendered = client.get('/').data
+    rendered = client.get('/').content
     assert b'https://app.plex.tv/desktop/#!/server/a/details?key=%2Flibrary%2Fmetadata%2F42' in rendered
     link = re.search(rb'<a class="plex-item-link"[^>]*>.*?</a>', rendered).group()
     assert b'target="_blank" rel="noopener noreferrer" title="Open in Plex: Linked title"' in link
@@ -321,7 +335,7 @@ def test_contribution_actions_reflect_video_issues(client, reason, action, visib
     with storage.server_scope('a'):
         storage.replace_dashboard(data)
         storage.set_error(42, reason)
-    rendered = client.get('/').data
+    rendered = client.get('/').content
     assert (b'class="contribute-link"' in rendered) is visible
     assert b'class="media-controls"' in rendered
     assert b'title="Movie" aria-hidden="true"' in rendered

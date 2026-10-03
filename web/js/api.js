@@ -1,10 +1,12 @@
+import { _ } from './i18n.js';
+
 export async function api(path, { method = 'POST', body, form } = {}) {
     const headers = { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content };
     if (body !== undefined) headers['Content-Type'] = 'application/json';
     const response = await fetch(path, { method, headers, body: form || (body === undefined ? undefined : JSON.stringify(body)) });
     if (response.status === 401) {
         window.location.assign(`/login?next=${encodeURIComponent(window.location.pathname)}`);
-        throw new Error('Your session expired. Sign in to continue.');
+        throw new Error(_('Your session expired. Sign in to continue.'));
     }
     const result = await response.json();
     if (!response.ok) throw new Error(result.message || `The request failed (HTTP ${response.status}).`);
@@ -16,11 +18,11 @@ export function toast(message, error = false) {
     const notice = document.createElement('span');
     notice.className = `app-toast${error ? ' error' : ''}`;
     const text = document.createElement('span');
-    text.textContent = message;
+    text.textContent = _(message);
     const close = document.createElement('button');
     close.type = 'button';
     close.textContent = '×';
-    close.setAttribute('aria-label', 'Dismiss message');
+    close.setAttribute('aria-label', _('Dismiss message'));
     close.addEventListener('click', () => notice.remove());
     notice.append(text, close);
     region.append(notice);

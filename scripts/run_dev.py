@@ -37,7 +37,7 @@ def _assets_need_build() -> bool:
     bool
         True when ``npm run build`` is needed.
     """
-    outputs = [ROOT / 'web' / 'assets' / name for name in ('app.js', 'app.css')]
+    outputs = [ROOT / 'web' / 'assets' / name for name in ('app.js', 'app.css', 'api_docs.js', 'api_docs.css')]
     if any(not output.is_file() for output in outputs):
         return True
     oldest_output = min(output.stat().st_mtime_ns for output in outputs)

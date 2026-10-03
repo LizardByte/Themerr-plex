@@ -22,11 +22,15 @@ numpydoc_validation_exclude = {
     # Sphinx 9 exposes imported library objects through automodule; their
     # upstream docstrings are outside this project's NumPy style contract.
     r'^(?:common(?:\.[^.]+)?|themerr_plex)\.(?:Union|ConfigObj|ValidateError|Validator|datetime|timedelta|'
-    r'quote|quote_plus|unquote|unquote_plus|QueueHandler|QueueListener|Icon|Menu|MenuItem|Babel|'
-    r'CSRFProtect|Flask|Response|flask_render_template|jsonify|secure_filename|send_from_directory|lru_cache|url_for)$',
+    r'quote|quote_plus|unquote|unquote_plus|QueueHandler|QueueListener|Icon|Menu|MenuItem|'
+    r'APIRouter|Depends|FastAPI|Request|HTTPException|'
+    r'Response|JSONResponse|PlainTextResponse|StreamingResponse|FileResponse|ClientDisconnect|FormData|'
+    r'SessionMiddleware|StaticFiles|run_in_threadpool|MutableHeaders|Jinja2Templates|URLSafeTimedSerializer|'
+    r'BadSignature|Event|Path|secure_filename|lru_cache)$',
 }
 numpydoc_show_class_members = True
 numpydoc_show_inherited_class_members = False
+numpydoc_class_members_toctree = False
 numpydoc_xref_param_type = True
 suppress_warnings = ['epub.unknown_project_files']
 

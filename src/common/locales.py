@@ -17,14 +17,16 @@ target market, no matter their language, cultural preferences, or location.
 """
 # standard imports
 import gettext
-import os
+import builtins
+import copy
+from functools import lru_cache
+from io import BytesIO as _BytesIO
 import pathlib
-import subprocess
-import sys
 
 # lib imports
 import babel
 from babel import localedata
+import polib
 
 # local imports
 from common import config
@@ -145,7 +147,7 @@ def get_locale() -> str:
     """
     try:
         config_locale = config.CONFIG['General']['LOCALE']
-    except TypeError:
+    except (AttributeError, KeyError, TypeError):
         config_locale = None
 
     if config_locale in supported_locales:
@@ -154,46 +156,72 @@ def get_locale() -> str:
         return default_locale
 
 
-def get_text() -> gettext.gettext:
-    """
-    Install the language defined in the conifg.
+@lru_cache(maxsize=32)
+def _catalog(path: str, modified: int, size: int) -> gettext.GNUTranslations:
+    """Read source catalogs in memory, retaining gettext plural and fuzzy-entry handling."""
+    if path.endswith('.po'):
+        return gettext.GNUTranslations(_BytesIO(polib.pofile(path).to_binary()))
+    with open(path, 'rb') as stream:
+        return gettext.GNUTranslations(stream)
 
-    This function installs the language defined in the config and allows translations in python code.
+
+def get_translation(locale_id: str | None = None) -> gettext.NullTranslations:
+    """Load the selected source catalog without creating compiled files.
+
+    Prefer PO over any older MO file. Cache parsing until the source changes and
+    fall back to the base language for regional locales. MO-only installations
+    remain supported.
+
+    Parameters
+    ----------
+    locale_id : str or None, optional
+        Locale to load, defaulting to the current setting.
+
+    Returns
+    -------
+    gettext.NullTranslations
+        Request-local gettext translations, or English message identifiers.
+
+    Examples
+    --------
+    >>> get_translation('fr').gettext('Settings')
+    'Paramètres'
+    """
+    locale_id = locale_id or get_locale()
+    language = gettext.NullTranslations()
+    for code in dict.fromkeys((locale_id, locale_id.split('_')[0], default_locale)):
+        for extension in ('po', 'mo'):
+            root = pathlib.Path(Paths.LOCALE_DIR)
+            path = (root / f'{default_domain}.{extension}' if code == default_locale else
+                    root / code / 'LC_MESSAGES' / f'{default_domain}.{extension}')
+            if path.is_file():
+                stat = path.stat()
+                # Fallbacks belong to this call, never to the shared cached catalog.
+                language.add_fallback(copy.copy(_catalog(str(path), stat.st_mtime_ns, stat.st_size)))
+                break
+    return language
+
+
+def _gettext(message: str) -> str:
+    """Resolve the setting when translating, including after a settings save."""
+    return get_translation().gettext(message)
+
+
+def get_text():
+    """Install a translator that follows the current locale setting.
+
+    Load source catalogs on demand so settings changes and catalog edits do not
+    require compilation or an application restart.
 
     Returns
     -------
     gettext.gettext
-        The `gettext.gettext` method.
+        Callable translating through the current catalog on each invocation.
 
     Examples
     --------
     >>> get_text()
-    <bound method GNUTranslations.gettext of <gettext.GNUTranslations object at 0x...>>
+    <function _gettext at 0x...>
     """
-    translation_fallback = False
-    if not os.path.isfile(os.path.join(Paths.LOCALE_DIR, get_locale(), 'LC_MESSAGES', f'{default_domain}.mo')):
-        log.warning(msg='No locale mo translation file found.')
-
-        locale_script = os.path.join(Paths.ROOT_DIR, 'scripts', '_locale.py')
-
-        if os.path.isfile(locale_script):
-            log.info(msg='Running locale compile script.')
-            # run python script in a subprocess
-            subprocess.run(
-                args=[sys.executable, locale_script, '--compile'],
-                cwd=Paths.ROOT_DIR,
-            )
-        else:
-            log.warning(msg='Locale compile script not found. Defaulting to English.')
-            translation_fallback = True
-
-    language = gettext.translation(
-        domain=default_domain,
-        localedir=Paths.LOCALE_DIR,
-        languages=[get_locale()],
-        fallback=translation_fallback,
-    )
-
-    language.install()
-
-    return language.gettext
+    builtins._ = _gettext
+    return _gettext

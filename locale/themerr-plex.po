@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Themerr-plex v0\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -384,7 +384,7 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr ""
@@ -433,6 +433,34 @@ msgstr ""
 
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
+msgstr ""
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr ""
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr ""
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr ""
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr ""
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr ""
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr ""
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
 msgstr ""
 
 #: web/templates/activity.html:3
@@ -488,6 +516,15 @@ msgstr ""
 
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
+msgstr ""
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr ""
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
 msgstr ""
 
 #: web/templates/auth.html:7
@@ -638,10 +675,6 @@ msgstr ""
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr ""
-
-#: web/templates/config.html:36
-msgid "All changes saved."
 msgstr ""
 
 #: web/templates/config.html:36
@@ -976,19 +1009,19 @@ msgstr ""
 msgid "Resources"
 msgstr ""
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr ""
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr ""
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr ""
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr ""
 

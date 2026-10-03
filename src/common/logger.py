@@ -566,7 +566,8 @@ def setup_loggers():
     --------
     >>> setup_loggers()
     """
-    loggers_list = [app_name, 'werkzeug', 'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule']
+    loggers_list = [app_name, 'uvicorn', 'uvicorn.error', 'uvicorn.access', 'plex', 'themerr',
+                    'youtube', 'themerr_plex', 'schedule']
 
     submodules = pkgutil.iter_modules(common.__path__)
 

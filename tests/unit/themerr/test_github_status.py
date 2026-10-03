@@ -2,6 +2,7 @@
 
 # standard imports
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 from threading import Event
 from unittest.mock import Mock
 
@@ -45,7 +46,8 @@ def test_hourly_limit_survives_restart_and_server_scopes(configured, monkeypatch
     get.assert_called_once_with(
         'https://api.github.com/repos/LizardByte/ThemerrDB/actions/workflows/34813093/runs',
         params={'status': 'success', 'per_page': 1},
-        headers={'Accept': 'application/vnd.github+json'}, timeout=10, allow_redirects=False,
+        headers={'Accept': 'application/vnd.github+json', 'Cache-Control': 'no-cache'},
+        timeout=10, allow_redirects=False,
     )
     storage.close()
     clock.return_value = 13599
@@ -143,3 +145,28 @@ def test_interrupted_attempt_still_reserves_the_hour(configured, monkeypatch):
     storage.close()
     assert github_status.publication_status()['stale'] is True
     get.assert_called_once()
+
+
+@pytest.mark.parametrize('failure', [False, True])
+def test_legacy_cache_refreshes_once_without_losing_the_last_result(configured, monkeypatch, failure):
+    old_date = '2026-09-13T16:24:23+00:00'
+    github_status._save({'updated_at': old_date, 'run_id': 999, 'next_check': 999999, 'stale': False})
+    clock = Mock(return_value=10000)
+    get = Mock(side_effect=requests.Timeout()) if failure else Mock(return_value=response())
+    monkeypatch.setattr(github_status.time, 'time', clock)
+    monkeypatch.setattr(github_status.requests, 'get', get)
+    result = github_status.publication_status()
+    assert result['updated_at'] == (old_date if failure else '2026-10-02T12:00:00+00:00')
+    assert result['stale'] is failure
+    assert result['next_check'] == 13600
+    storage.close()
+    clock.return_value = 13599
+    assert github_status.publication_status() == result
+    get.assert_called_once()
+
+
+def test_deployment_cache_uses_the_test_installation_database(configured, tmp_path, monkeypatch):
+    monkeypatch.setattr(github_status.requests, 'get', Mock(return_value=response()))
+    assert Path(storage.database_path()).parent == tmp_path
+    github_status.publication_status()
+    assert github_status._load()['run_id'] == RUN_ID

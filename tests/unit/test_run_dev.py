@@ -18,7 +18,7 @@ def test_assets_rebuild_only_when_sources_change(tmp_path, monkeypatch):
     (tmp_path / 'scripts').mkdir()
     for source in ('scripts/build-assets.mjs', 'package.json', 'package-lock.json'):
         (tmp_path / source).touch()
-    outputs = [tmp_path / 'web' / 'assets' / name for name in ('app.js', 'app.css')]
+    outputs = [tmp_path / 'web' / 'assets' / name for name in ('app.js', 'app.css', 'api_docs.js', 'api_docs.css')]
     for output in outputs:
         output.touch()
     assert not run_dev._assets_need_build()

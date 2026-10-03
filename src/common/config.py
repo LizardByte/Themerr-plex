@@ -27,8 +27,8 @@ FILENAME = definitions.Files.CONFIG
 # access the config dictionary here
 CONFIG = None
 
-# localization
-_ = locales.get_text()
+# Keep schema labels as source messages; templates translate them at render time.
+_ = str
 
 # increase CONFIG_VERSION default and max when changing default values
 # then do `if CONFIG_VERSION == x:` something to change the old default value to the new default value

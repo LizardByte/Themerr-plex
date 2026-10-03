@@ -122,6 +122,10 @@ def stop(exit_code: int = 0, restart: bool = False) -> None:
     except AttributeError:
         pass
 
+    webapp = sys.modules.get('common.webapp')
+    if webapp is not None:
+        webapp.stop_webapp()
+
     if restart:
         if definitions.Modes.FROZEN:
             args = [definitions.Paths.BINARY_PATH]
@@ -137,7 +141,7 @@ def stop(exit_code: int = 0, restart: bool = False) -> None:
 
         subprocess.Popen(args=args, cwd=os.getcwd())
 
-    # Flask and tray backends can leave non-daemon threads alive after sys.exit().
+    # FastAPI and tray backends can leave non-daemon threads alive after sys.exit().
     # Finish logging, then terminate this process so a restart cannot leave a
     # second server running behind the newly launched process.
     logger.shutdown()
