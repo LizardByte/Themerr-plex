@@ -18,6 +18,7 @@ target market, no matter their language, cultural preferences, or location.
 # standard imports
 import gettext
 import os
+import pathlib
 import subprocess
 import sys
 
@@ -33,9 +34,55 @@ from common import logger
 default_domain = Names.name.lower()
 default_locale = 'en'
 default_timezone = 'UTC'
-supported_locales = ['en', 'es']
 
 log = logger.get_logger(__name__)
+
+
+def get_supported_locales() -> list[str]:
+    """Return sorted locale codes with a PO or compiled MO catalog for this application.
+
+    Include English as the default even when no catalogs are installed. Source templates,
+    other gettext domains, and directories without catalogs do not add settings options.
+
+    Returns
+    -------
+    list of str
+        Available locale codes in alphabetical order, including the English default.
+
+    Examples
+    --------
+    >>> get_supported_locales()
+    ['aa', 'bg', ... 'en', ... 'zh_TW']
+    """
+    locale_dir = pathlib.Path(Paths.LOCALE_DIR)
+    catalogs = set(locale_dir.glob(f'*/LC_MESSAGES/{default_domain}.po'))
+    catalogs.update(locale_dir.glob(f'*/LC_MESSAGES/{default_domain}.mo'))
+    return sorted({default_locale} | {catalog.parent.parent.name for catalog in catalogs if catalog.is_file()})
+
+
+supported_locales = get_supported_locales()
+
+
+def get_locale_names() -> list[str]:
+    """Return English and native display names for supported locales.
+
+    Names follow the order of ``supported_locales`` so each settings label matches its locale code.
+
+    Returns
+    -------
+    list of str
+        Settings labels containing each language's English and native display names.
+
+    Examples
+    --------
+    >>> get_locale_names()
+    [... 'English (English)', ... 'Korean (한국어)', ...]
+    """
+    names = []
+    for locale_id in supported_locales:
+        locale = babel.Locale.parse(locale_id)
+        names.append(f'{locale.get_display_name("en")} ({locale.get_display_name()})')
+    return names
 
 
 def get_all_locales() -> dict:
