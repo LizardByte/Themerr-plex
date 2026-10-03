@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Khởi động lại"
 msgid "Quit"
 msgstr "Thoát"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Cài đặt"
@@ -413,6 +413,34 @@ msgstr "Tắt tính năng ghi nhật ký trên bảng điều khiển"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "In thông tin phiên bản và thoát"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập để tiếp tục."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Bỏ qua tin nhắn"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Các thay đổi chưa được lưu"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Tất cả các thay đổi đã được lưu."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Cài đặt đã được lưu. Các thay đổi về mạng sẽ có hiệu lực sau khi khởi động lại Themerr."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "Không thể lưu các thay đổi."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "Hãy lưu các thay đổi về cài đặt trước khi thay đổi mật khẩu."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "ID Plex"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "Đã lỗi thời từ ThemerrDB"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Khám phá API bằng phiên đăng nhập của bạn."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "Tài liệu API"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Xác nhận mật khẩu mới"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Thay đổi mật khẩu"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Tất cả các thay đổi đã được lưu."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Không khí sôi động hơn rất nhiều."
 msgid "Resources"
 msgstr "Tài nguyên"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Tài liệu hướng dẫn"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Góp phần tạo ra một chủ đề"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "Hãy ủng hộ LizardByte"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Đăng xuất"
 
