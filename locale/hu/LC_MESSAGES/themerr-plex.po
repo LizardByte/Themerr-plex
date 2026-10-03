@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Újraindítás"
 msgid "Quit"
 msgstr "Kilépés"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Beállítások"
@@ -413,6 +413,34 @@ msgstr "Kapcsolja ki a konzolnaplózást"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "A verzió adatait kinyomtatja, majd kilép"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "A munkamenet lejárt. Jelentkezzen be a folytatáshoz."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Üzenet elrejtése"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Még nem mentett módosítások"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Minden módosítás elmentve."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "A beállítások elmentve. A hálózati módosítások a Themerr újraindítása után lépnek életbe."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "A módosítások nem menthetők el."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "A jelszó megváltoztatása előtt mentse el a beállítások módosításait."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex-azonosító"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "A ThemerrDB-ből elavult"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Fedezze fel az API-t a bejelentkezett munkamenet segítségével."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "API-dokumentáció"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Az új jelszó megerősítése"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Jelszó módosítása"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Minden módosítás elmentve."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Sokkal hangulatosabb."
 msgid "Resources"
 msgstr "Források"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Dokumentáció"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Témát beküldeni"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "Támogasd a LizardByte-ot"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Kijelentkezés"
 
