@@ -72,7 +72,10 @@ def test_log_viewer_and_api_require_authentication(client, monkeypatch, tmp_path
     assert result.status_code == 200
     assert result.headers['Cache-Control'] == 'no-store'
     assert result.json()['entries'][0]['message'] == 'example warning'
-    for query in ('source=../config.ini', 'source=common', 'limit=0', 'limit=2001', 'limit=nope',
+    for query in ('source=../config.ini', 'source=common', 'source=themerr.log',
+                  'source=themerr%2f..%2fconfig.ini', 'source=%252e%252e%252fconfig.ini',
+                  'source=C%3a%5cconfig.ini', 'source=themerr.log%3asecret', 'source=themerr%00',
+                  'limit=0', 'limit=2001', 'limit=nope',
                   'scope=invalid', 'scope=startup&cursor=-1'):
         assert client.get('/api/logs?' + query).status_code == 422
     client.cookies.clear()

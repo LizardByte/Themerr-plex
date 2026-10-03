@@ -11,9 +11,12 @@ import time
 # local imports
 from common import logger
 from common.definitions import Paths
+from common.path_policy import resolve_file_path
 
 MAX_READ_BYTES = 1024 * 1024  # Per session batch or recent source, including rotated files.
 MAX_ENTRIES = 2000
+# Request values select these entries; they never become part of a filesystem path.
+_LOG_FILES = {'themerr': 'themerr.log', 'backend': 'backend.log', 'yt-dlp': 'yt-dlp.log'}
 _HEADER = re.compile(
     r'^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:[.,]\d{3})?)'
     r' - (?P<level>DEBUG|INFO|WARNING|ERROR|CRITICAL)\s+:: (?P<thread>.*?) : (?P<message>.*)$',
@@ -123,8 +126,9 @@ def session_snapshot(source: str = 'all', limit: int = 1000, cursor: int = 0) ->
                 'unavailable': list(logger.LOG_NAMES), 'truncated': False}
 
 
-def _read_file(path: str, source: str, budget: int) -> tuple[list[dict], int, bool]:
-    """Read complete records from a file tail, keeping continuation lines together."""
+def _read_file(filename: str, source: str, budget: int) -> tuple[list[dict], int, bool]:
+    """Read a contained file tail, keeping complete records and continuation lines together."""
+    path = resolve_file_path(Paths.LOG_DIR, filename)
     with open(path, 'rb') as stream:
         stat = os.fstat(stream.fileno())
         start = max(0, stat.st_size - budget)
@@ -155,6 +159,28 @@ def _read_file(path: str, source: str, budget: int) -> tuple[list[dict], int, bo
     return entries, len(data), start > 0
 
 
+def _recent_source(name: str, filename: str, limit: int) -> tuple[list[dict], bool, bool]:
+    """Read bounded rotated history for one fixed log file inside the log directory."""
+    recent = []
+    budget = MAX_READ_BYTES
+    truncated = False
+    for index in range(logger.MAX_FILES + 1):
+        relative = filename + (f'.{index}' if index else '')
+        try:
+            records, size, partial = _read_file(relative, name, budget)
+        except FileNotFoundError:
+            continue  # Empty installations and rotation races are normal.
+        except (OSError, ValueError):
+            return recent[-limit:], True, truncated
+        recent = records + recent
+        budget -= size
+        truncated = truncated or partial
+        if len(recent) > limit or budget <= 0:
+            truncated = True
+            break
+    return recent[-limit:], False, truncated
+
+
 def snapshot(source: str = 'all', limit: int = 1000) -> dict:
     """Return recent records in chronological order with bounded disk reads.
 
@@ -175,25 +201,14 @@ def snapshot(source: str = 'all', limit: int = 1000) -> dict:
         raise ValueError('Invalid log selection')
     entries, unavailable = [], []
     truncated = False
-    for name in logger.LOG_NAMES if source == 'all' else (source,):
-        recent = []
-        budget = MAX_READ_BYTES
-        for index in range(logger.MAX_FILES + 1):
-            path = os.path.join(Paths.LOG_DIR, f'{name}.log' + (f'.{index}' if index else ''))
-            try:
-                records, size, partial = _read_file(path, name, budget)
-            except FileNotFoundError:
-                continue  # Empty installations and rotation races are normal.
-            except OSError:
-                unavailable.append(name)
-                break
-            recent = records + recent
-            budget -= size
-            truncated = truncated or partial
-            if len(recent) > limit or budget <= 0:
-                truncated = True
-                break
-        entries.extend(recent[-limit:])
+    for name, filename in _LOG_FILES.items():
+        if source not in ('all', name):
+            continue
+        recent, failed, partial = _recent_source(name, filename, limit)
+        entries.extend(recent)
+        truncated = truncated or partial
+        if failed:
+            unavailable.append(name)
     entries.sort(key=lambda entry: entry['timestamp'])
     truncated = truncated or len(entries) > limit
     entries = entries[-limit:]

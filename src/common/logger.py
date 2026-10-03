@@ -417,7 +417,7 @@ class PlexTokenFilter(RegexFilter):
     def __init__(self):
         super(PlexTokenFilter, self).__init__()
 
-        self.regex = re.compile(pattern=r'X-Plex-Token(?:=|%3D|:\s*)([a-zA-Z0-9_-]+)', flags=re.IGNORECASE)
+        self.regex = re.compile(pattern=r'X-Plex-Token(?:=|%3D|:\s*)([a-z0-9_-]+)', flags=re.IGNORECASE)
 
     def replace(self, text: str, token: str) -> str:
         """

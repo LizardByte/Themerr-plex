@@ -195,6 +195,7 @@ def test_exact_tail_boundary_keeps_full_headers_and_ignores_incomplete_writes(lo
 
 def test_empty_and_unreadable_sources(logs_dir, monkeypatch):
     assert log_viewer.snapshot() == {'entries': [], 'unavailable': [], 'truncated': False}
+    (logs_dir / 'backend.log').write_text(line('backend record'), encoding='utf-8')
     read = log_viewer._read_file
 
     def denied(path, source, budget):
@@ -204,6 +205,48 @@ def test_empty_and_unreadable_sources(logs_dir, monkeypatch):
 
     monkeypatch.setattr(log_viewer, '_read_file', denied)
     assert log_viewer.snapshot()['unavailable'] == ['backend']
+
+
+@pytest.mark.parametrize('source', [
+    '../config.ini', '/config.ini', r'C:\config.ini', r'\\server\share\config.ini',
+    'themerr/../config.ini', 'themerr.log', 'themerr.log.1', 'themerr%2flog', 'themerr\x00',
+])
+def test_request_source_never_becomes_a_filesystem_path(source, monkeypatch):
+    def unexpected_lookup(*args):
+        pytest.fail('A request-provided path reached the filesystem')
+
+    monkeypatch.setattr(log_viewer, 'resolve_file_path', unexpected_lookup)
+    with pytest.raises(ValueError):
+        log_viewer.snapshot(source)
+
+
+def test_log_reader_uses_only_fixed_names_and_reports_blocked_files(logs_dir, monkeypatch):
+    calls = []
+
+    def guarded_path(directory, filename):
+        assert directory == str(logs_dir)
+        calls.append(filename)
+        if filename == 'backend.log':
+            raise PermissionError('Symlink target is outside the log directory')
+        raise FileNotFoundError
+
+    monkeypatch.setattr(log_viewer, 'resolve_file_path', guarded_path)
+    result = log_viewer.snapshot('backend')
+    assert calls == ['backend.log']
+    assert result['entries'] == []
+    assert result['unavailable'] == ['backend']
+    calls.clear()
+    log_viewer.snapshot('themerr')
+    assert calls == ['themerr.log', *(f'themerr.log.{index}' for index in range(1, logger.MAX_FILES + 1))]
+
+
+def test_file_reader_enforces_path_policy_for_direct_callers(logs_dir):
+    private = logs_dir.parent / 'private.log'
+    private.write_text(line('private server data'), encoding='utf-8')
+    with pytest.raises(ValueError):
+        log_viewer._read_file('../private.log', 'themerr', 1000)
+    with pytest.raises(ValueError):
+        log_viewer._read_file(str(private), 'themerr', 1000)
 
 
 @pytest.mark.parametrize('source, limit', [('../private', 10), ('common', 10), ('all', 0), ('all', 2001)])
@@ -261,8 +304,10 @@ def test_three_channels_route_application_uvicorn_scheduler_and_ytdlp_once(confi
         assert application.count('application ') == 5
         assert application.count('scheduled task') == 1
         extractor_log = (logs_dir / 'yt-dlp.log').read_text(encoding='utf-8')
-        assert 'INFO' in extractor_log and 'extractor progress' in extractor_log
-        assert 'WARNING' in extractor_log and 'ERROR' in extractor_log
+        assert 'INFO' in extractor_log
+        assert 'extractor progress' in extractor_log
+        assert 'WARNING' in extractor_log
+        assert 'ERROR' in extractor_log
         assert 'hidden debug' not in extractor_log
     finally:
         for name in touched:

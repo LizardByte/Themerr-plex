@@ -132,6 +132,35 @@ export function initLogs(root = document, request = api, host = window) {
         if (active && live.checked) timer = host.setTimeout(update, 3000);
     }
 
+    function updateHistory(result, session, fresh, requestedCursor) {
+        if (!session) {
+            const next = JSON.stringify(result.entries);
+            const changed = fresh || next !== snapshot;
+            snapshot = next;
+            entries = result.entries;
+            cursor = 0;
+            return changed;
+        }
+        if (result.has_more && result.cursor <= requestedCursor) throw new Error(_('Session log loading stalled.'));
+        if (fresh) { entries = []; page = 0; }
+        entries.push(...result.entries);
+        cursor = result.cursor;
+        if (result.has_more) reload = true;
+        return fresh || result.entries.length > 0;
+    }
+
+    function showResult(result, session, changed) {
+        metadata = live.checked ? _('Live') : _('Paused');
+        if (session) metadata += ` · ${_('Since startup')}`;
+        if (session && result.has_more) metadata += ` · ${_('Loading history…')}`;
+        if (result.truncated) metadata += ` · ${_('Showing recent history')}`;
+        field('error').hidden = !result.unavailable.length;
+        field('error').textContent = result.unavailable.length
+            ? `${_('Unable to read log sources:')} ${result.unavailable.join(', ')}` : '';
+        if (changed) render();
+        else field('status').textContent = `${visible.length} / ${entries.length} ${_('records')} · ${metadata}`;
+    }
+
     async function update() {
         if (loading) { reload = true; return; }
         loading = true;
@@ -146,31 +175,9 @@ export function initLogs(root = document, request = api, host = window) {
             const query = session ? `scope=startup&limit=1000&cursor=${requestedCursor}` : `limit=${limit.value}`;
             const result = await request(`/api/logs?source=${encodeURIComponent(source.value)}&${query}`, { method: 'GET' });
             if (!active || requested !== `${source.value}:${limit.value}`) return;
-            let changed;
-            if (session) {
-                if (result.has_more && result.cursor <= requestedCursor) throw new Error(_('Session log loading stalled.'));
-                if (fresh) { entries = []; page = 0; }
-                entries.push(...result.entries);
-                cursor = result.cursor;
-                changed = fresh || result.entries.length > 0;
-                if (result.has_more) reload = true;
-            } else {
-                const next = JSON.stringify(result.entries);
-                changed = fresh || next !== snapshot;
-                snapshot = next;
-                entries = result.entries;
-                cursor = 0;
-            }
+            const changed = updateHistory(result, session, fresh, requestedCursor);
             loadedSelection = requested;
-            metadata = live.checked ? _('Live') : _('Paused');
-            if (session) metadata += ` · ${_('Since startup')}`;
-            if (session && result.has_more) metadata += ` · ${_('Loading history…')}`;
-            if (result.truncated) metadata += ` · ${_('Showing recent history')}`;
-            field('error').hidden = !result.unavailable.length;
-            field('error').textContent = result.unavailable.length
-                ? `${_('Unable to read log sources:')} ${result.unavailable.join(', ')}` : '';
-            if (changed) render();
-            else field('status').textContent = `${visible.length} / ${entries.length} ${_('records')} · ${metadata}`;
+            showResult(result, session, changed);
         } catch (error) {
             if (active) {
                 field('error').hidden = false;

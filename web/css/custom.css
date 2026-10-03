@@ -412,11 +412,13 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .api-docs-panel { background: #fff; color: #3b4151; color-scheme: light; border-radius: 1rem; padding: 1rem; }
 
 .log-filters { margin-bottom: 14px; }
+.log-filters .search-field, .log-filters > .icon-button { align-self: end; }
+.log-filter label { display: block; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
 .log-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; font-size: 11px; }
 .log-navigation { display: flex; align-items: center; gap: 7px; margin-right: auto; }
 .log-toggle { display: flex; align-items: center; gap: 7px; cursor: pointer; }
 .log-toggle input { margin: 0; }
-.log-status, .log-history { font-size: 11px; line-height: 1.8; margin-bottom: 10px; }
+.log-status, .log-history { display: block; font-size: 11px; line-height: 1.8; margin-bottom: 10px; }
 .log-viewport { height: 60vh; min-height: 280px; overflow: auto; background: #11151c; border: 1px solid var(--line); border-radius: 12px; overflow-anchor: none; }
 .log-entry { padding: 12px 18px; border-bottom: 1px solid #252d39; border-left: 3px solid transparent; }
 .log-entry-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font: 10px/1.6 ui-monospace, monospace; color: #a5b3c7; }
