@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "Yeniden başlat"
 msgid "Quit"
 msgstr "Çık"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Ayarlar"
@@ -413,6 +413,34 @@ msgstr "Konsol günlüğünü kapatın"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "Sürüm ayrıntılarını yazdır ve çık"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Oturumunuzun süresi doldu. Devam etmek için oturum açın."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Mesajı kapat"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "Kaydedilmemiş değişiklikler"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Tüm değişiklikler kaydedildi."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Ayarlar kaydedildi. Ağ değişiklikleri, Themerr yeniden başlatıldıktan sonra yürürlüğe girer."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "Değişiklikler kaydedilemedi."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "Şifrenizi değiştirmeden önce ayar değişikliklerinizi kaydedin."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex Kimliği"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "ThemerrDB'den kaldırıldı"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "Oturum açtığınız hesapla API’yi keşfedin."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "API belgeleri"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "Yeni şifreyi onaylayın"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "Şifreyi değiştir"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "Tüm değişiklikler kaydedildi."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "Çok daha fazla atmosfer."
 msgid "Resources"
 msgstr "Kaynaklar"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "Belgeler"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "Bir tema ekleyin"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "LizardByte'ı Destekleyin"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "Çıkış yap"
 
