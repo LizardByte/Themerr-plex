@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
 "Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 03:01+0000\n"
-"PO-Revision-Date: 2026-10-03 05:12\n"
+"POT-Creation-Date: 2026-10-03 15:06-0400\n"
+"PO-Revision-Date: 2026-10-03 22:09\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "다시 시작"
 msgid "Quit"
 msgstr "종료"
 
-#: src/common/webapp.py:351 web/templates/config.html:22
+#: src/common/webapp.py:333 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "설정"
@@ -413,6 +413,34 @@ msgstr "콘솔 로깅을 끕니다"
 #: src/themerr_plex.py:190
 msgid "Print the version details and exit"
 msgstr "버전 정보를 출력하고 종료합니다"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "세션이 만료되었습니다. 계속하려면 로그인하세요."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "메시지 닫기"
+
+#: web/js/config.js:17 web/js/config.js:40
+msgid "Unsaved changes"
+msgstr "저장되지 않은 변경 사항"
+
+#: web/js/config.js:40 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "모든 변경 사항이 저장되었습니다."
+
+#: web/js/config.js:42
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "설정이 저장되었습니다. 네트워크 변경 사항은 Themerr를 다시 시작한 후에 적용됩니다."
+
+#: web/js/config.js:46
+msgid "Unable to save changes."
+msgstr "변경 사항을 저장할 수 없습니다."
+
+#: web/js/config.js:54
+msgid "Save your settings changes before changing your password."
+msgstr "비밀번호를 변경하기 전에 설정 변경 사항을 저장하세요."
 
 #: web/templates/activity.html:3
 msgid "BEHIND THE MUSIC"
@@ -466,6 +494,15 @@ msgstr "Plex ID"
 #: web/templates/activity.html:8 web/templates/home.html:76
 msgid "Outdated from ThemerrDB"
 msgstr "ThemerrDB에서 더 이상 사용되지 않음"
+
+#: web/templates/api_docs.html:7
+msgid "Explore the API using your signed-in session."
+msgstr "로그인된 세션을 사용하여 API를 살펴보세요."
+
+#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
+#: web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "API 문서"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -606,10 +643,6 @@ msgstr "새 비밀번호 확인"
 #: web/templates/config.html:34
 msgid "Change password"
 msgstr "비밀번호 변경"
-
-#: web/templates/config.html:36
-msgid "All changes saved."
-msgstr "모든 변경 사항이 저장되었습니다."
 
 #: web/templates/config.html:36
 msgid "Save changes"
@@ -931,19 +964,19 @@ msgstr "분위기가 훨씬 더 살아나네요."
 msgid "Resources"
 msgstr "자료"
 
-#: web/templates/navbar.html:13
+#: web/templates/navbar.html:14
 msgid "Documentation"
 msgstr "문서"
 
-#: web/templates/navbar.html:14
+#: web/templates/navbar.html:15
 msgid "Contribute a theme"
 msgstr "테마 기여하기"
 
-#: web/templates/navbar.html:15
+#: web/templates/navbar.html:16
 msgid "Support LizardByte"
 msgstr "LizardByte를 후원해 주세요"
 
-#: web/templates/navbar.html:19
+#: web/templates/navbar.html:20
 msgid "Sign out"
 msgstr "로그아웃"
 
