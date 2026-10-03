@@ -15,20 +15,18 @@ from fastapi import APIRouter, Depends, FastAPI, Request
 from starlette.responses import JSONResponse, PlainTextResponse, Response, StreamingResponse
 from starlette.requests import ClientDisconnect
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
 from starlette.exceptions import HTTPException
 import uvicorn
 import anyio
 from plexapi import exceptions as plex_exceptions
 import requests
-from werkzeug.utils import secure_filename
 
 # local imports
 import common
 from common import admin, api_docs, server_ui
 from common.http import csrf_token as _csrf_token
-from common.http import error_response, file_response, read_form, read_json, render_template
+from common.http import SafeStaticFiles, error_response, file_response, read_form, read_json, render_template
 from common import config
 from common import crypto
 from common.definitions import Paths
@@ -442,16 +440,14 @@ def image(img: str = 'favicon.ico') -> Response:
     >>> image('favicon.ico')
     """
     directory = os.path.join(Paths.ROOT_DIR, 'web', 'images')
-    filename = os.path.basename(secure_filename(filename=img))  # sanitize the input
-
-    if os.path.isfile(os.path.join(directory, filename)):
-        file_extension = filename.rsplit('.', 1)[-1]
-        if file_extension in mime_type_map:
-            return file_response(directory, filename, mime_type_map[file_extension])
-        else:
-            return Response(content='Invalid file type', status_code=400, media_type=MIMETYPE_TEXT_PLAIN)
-    else:
+    file_extension = img.rsplit('.', 1)[-1]
+    try:
+        response = file_response(directory, img, mime_type_map.get(file_extension))
+    except HTTPException:
         return Response(content='Image not found', status_code=404, media_type=MIMETYPE_TEXT_PLAIN)
+    if file_extension not in mime_type_map:
+        return Response(content='Invalid file type', status_code=400, media_type=MIMETYPE_TEXT_PLAIN)
+    return response
 
 
 @router.api_route('/status', methods=['GET', 'HEAD'], name='status', response_model=None)
@@ -950,7 +946,7 @@ def create_app(*, https_only: bool | None = None) -> FastAPI:
         return application.openapi_schema
 
     application.openapi = openapi
-    application.mount('/web/assets', StaticFiles(directory=application.state.static_directory, check_dir=False),
+    application.mount('/web/assets', SafeStaticFiles(directory=application.state.static_directory, check_dir=False),
                       name='static')
     application.add_exception_handler(HTTPException, browser_error)
     application.add_exception_handler(Exception, unexpected_error)

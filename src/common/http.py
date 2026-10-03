@@ -4,8 +4,8 @@
 from functools import lru_cache
 import hashlib
 import hmac
+import ntpath
 import os
-from pathlib import Path
 import secrets
 from urllib.parse import urlsplit
 
@@ -14,7 +14,9 @@ from fastapi import HTTPException, Request
 from itsdangerous import BadSignature, URLSafeTimedSerializer
 from starlette.datastructures import FormData
 from starlette.responses import FileResponse, JSONResponse, Response
+from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+from werkzeug.security import safe_join
 
 # local imports
 from common import locales
@@ -26,6 +28,7 @@ templates.env.lstrip_blocks = True
 templates.env.globals.update(int=int, str=str)
 templates.env.add_extension('jinja2.ext.i18n')
 CSRF_LIFETIME = 3600
+NOT_FOUND_MESSAGE = 'Not Found'
 
 
 @lru_cache(maxsize=8)
@@ -199,10 +202,49 @@ def render_template(request: Request, template_name: str, *, status_code: int = 
                                       status_code=status_code, headers=headers)
 
 
+def _validate_public_path(filename: str) -> None:
+    """Require a relative URL path without ambiguous Windows or encoded components."""
+    if not filename or len(filename) > 4096 or any(character in filename for character in ('\\', ':', '%', '\x00')):
+        raise HTTPException(404, NOT_FOUND_MESSAGE)
+    if any(part in ('', '.', '..') or ntpath.isreserved(part) for part in filename.split('/')):
+        raise HTTPException(404, NOT_FOUND_MESSAGE)
+
+
+class SafeStaticFiles(StaticFiles):
+    """Apply the public-file path policy to compiled browser assets.
+
+    Validate decoded URL components before Starlette normalizes the path and checks
+    that its canonical filesystem location remains inside the serving directory.
+
+    Parameters
+    ----------
+    directory : str or path-like or None, optional
+        Directory containing static files.
+    packages : list of str or tuple or None, optional
+        Packages containing static files, optionally paired with subdirectory names.
+    html : bool, optional
+        Serve index pages and HTML error pages when True.
+    check_dir : bool, optional
+        Check that the serving directory exists during initialization.
+    follow_symlink : bool, optional
+        Allow symlink targets outside the directory when True. Keep the default False
+        to enforce canonical directory containment.
+
+    Examples
+    --------
+    >>> assets = SafeStaticFiles(directory='web/assets', check_dir=False)
+    """
+
+    def get_path(self, scope) -> str:
+        """Validate the decoded URL before Starlette normalizes its dot segments."""
+        _validate_public_path(scope['path'].removeprefix('/'))
+        return super().get_path(scope)
+
+
 def file_response(directory: str, filename: str, media_type: str | None = None) -> FileResponse:
     """Serve a file inside the requested directory.
 
-    Resolve the path before serving it, rejecting missing files and directory traversal.
+    Reject ambiguous URL paths and resolve symlinks before checking directory containment.
 
     Parameters
     ----------
@@ -227,10 +269,18 @@ def file_response(directory: str, filename: str, media_type: str | None = None) 
     --------
     >>> response = file_response(Paths.DOCS_DIR, 'index.html')
     """
-    root = Path(directory).resolve()
-    path = (root / filename).resolve()
-    if not path.is_relative_to(root) or not path.is_file():
-        raise HTTPException(404, 'Not Found')
+    _validate_public_path(filename)
+    try:
+        root = os.path.realpath(directory, strict=True)
+        joined = safe_join(root, filename)
+        if joined is None:
+            raise HTTPException(404, NOT_FOUND_MESSAGE)
+        path = os.path.realpath(joined, strict=True)
+        # Include the separator so a sibling such as docs-private cannot match docs.
+        if not path.startswith(os.path.join(root, '')) or not os.path.isfile(path):
+            raise HTTPException(404, NOT_FOUND_MESSAGE)
+    except (OSError, ValueError):
+        raise HTTPException(404, NOT_FOUND_MESSAGE)
     return FileResponse(path, media_type=media_type)
 
 
