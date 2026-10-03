@@ -5,136 +5,136 @@ msgstr ""
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
 "PO-Revision-Date: 2026-10-03 01:18\n"
 "Last-Translator: \n"
-"Language-Team: French\n"
+"Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: fr\n"
+"X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: fr_FR\n"
+"Language: uk_UA\n"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr "Jeux"
+msgstr "Ігри"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr "Films"
+msgstr "Фільми"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "Séries"
+msgstr "Шоу"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr "Artistes"
+msgstr "Виконавці"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr "Photos"
+msgstr "Фотографії"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr "Éléments"
+msgstr "Елементи"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "Collections"
+msgstr "Колекції"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr "Titre"
+msgstr "Заголовок"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr "Année"
+msgstr "Рік"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr "Contribuer"
+msgstr "Зробити внесок"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr "Statut"
+msgstr "Статус"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Додати"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Редагувати"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "Aucun ID connu"
+msgstr "Невідомий ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex fourni"
+msgstr "Надано Plex"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr "Fourni par l'utilisateur"
+msgstr "Надано користувачем"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Fourni par Themerr"
+msgstr "Надано Themerr"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr "prévu"
+msgstr "надано"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "Fournisseur inconnu"
+msgstr "Невідомий постачальник"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "Absent de ThemerrDB"
+msgstr "Відсутній у ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr "Téléchargement échoué"
+msgstr "Не вдалося завантажити"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr "État inconnu"
+msgstr "Невідомий статус"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "La base de données est en cours de mise en cache, veuillez réessayer ultérieurement."
+msgstr "База даних кешується, будь ласка, повторіть спробу пізніше."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Faire un don"
+msgstr "Підтримати проєкт"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "Спонсори GitHub"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Aide"
+msgstr "Підтримка"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Documentation"
+msgstr "Документація"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Centre d'aide"
+msgstr "Служба Підтримки"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Accueil"
+msgstr "Головна"
 

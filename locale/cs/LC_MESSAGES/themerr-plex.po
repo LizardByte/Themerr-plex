@@ -5,136 +5,136 @@ msgstr ""
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
 "PO-Revision-Date: 2026-10-03 01:18\n"
 "Last-Translator: \n"
-"Language-Team: French\n"
+"Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: fr\n"
+"X-Crowdin-Language: cs\n"
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: fr_FR\n"
+"Language: cs_CZ\n"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr "Jeux"
+msgstr "Hry"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr "Films"
+msgstr "Filmy"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "Séries"
+msgstr "Seriály"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr "Artistes"
+msgstr "Umělci"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr "Photos"
+msgstr "Fotky"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr "Éléments"
+msgstr "Položky"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "Collections"
+msgstr "Sbírky"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr "Titre"
+msgstr "Název"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr "Type"
+msgstr "Typ"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr "Année"
+msgstr "Rok"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr "Contribuer"
+msgstr "Přispějte"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr "Statut"
+msgstr "Stav"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Přidat"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Upravit"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "Aucun ID connu"
+msgstr "Žádné známé ID"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex fourni"
+msgstr "Poskytnutý Plex"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr "Fourni par l'utilisateur"
+msgstr "Uživatel zadán"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Fourni par Themerr"
+msgstr "Themerr poskytl"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr "prévu"
+msgstr "poskytnuté"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "Fournisseur inconnu"
+msgstr "Neznámý poskytovatel"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "Absent de ThemerrDB"
+msgstr "Chybí v ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr "Téléchargement échoué"
+msgstr "Stahování se nezdařilo"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr "État inconnu"
+msgstr "Neznámý stav"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "La base de données est en cours de mise en cache, veuillez réessayer ultérieurement."
+msgstr "Databáze se ukládá do mezipaměti, zkuste to prosím brzy znovu."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Faire un don"
+msgstr "Přispět"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "Sponzoři z GitHubu"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Aide"
+msgstr "Podpora"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Documentation"
+msgstr "Dokumenty"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Centre d'aide"
+msgstr "Centrum podpory"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Accueil"
+msgstr "Domů"
 

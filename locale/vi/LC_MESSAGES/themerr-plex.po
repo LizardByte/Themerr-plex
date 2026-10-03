@@ -5,136 +5,136 @@ msgstr ""
 "POT-Creation-Date: 2024-03-15 14:05+0000\n"
 "PO-Revision-Date: 2026-10-03 01:18\n"
 "Last-Translator: \n"
-"Language-Team: French\n"
+"Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: fr\n"
+"X-Crowdin-Language: vi\n"
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: fr_FR\n"
+"Language: vi_VN\n"
 
 #: Contents/Resources/web/templates/home.html:35
 msgid "Games"
-msgstr "Jeux"
+msgstr "Trò chơi"
 
 #: Contents/Resources/web/templates/home.html:37
 msgid "Movies"
-msgstr "Films"
+msgstr "Phim"
 
 #: Contents/Resources/web/templates/home.html:39
 msgid "Shows"
-msgstr "Séries"
+msgstr "Chương trình"
 
 #: Contents/Resources/web/templates/home.html:41
 msgid "Artists"
-msgstr "Artistes"
+msgstr "Nghệ sĩ"
 
 #: Contents/Resources/web/templates/home.html:43
 msgid "Photos"
-msgstr "Photos"
+msgstr "Hình ảnh"
 
 #: Contents/Resources/web/templates/home.html:45
 msgid "Items"
-msgstr "Éléments"
+msgstr "Mặt hàng"
 
 #: Contents/Resources/web/templates/home.html:88
 msgid "Collections"
-msgstr "Collections"
+msgstr "Bộ sưu tập"
 
 #: Contents/Resources/web/templates/home.html:108
 msgid "Title"
-msgstr "Titre"
+msgstr "Tiêu đề"
 
 #: Contents/Resources/web/templates/home.html:109
 msgid "Type"
-msgstr "Type"
+msgstr "Loại"
 
 #: Contents/Resources/web/templates/home.html:110
 msgid "Year"
-msgstr "Année"
+msgstr "Năm"
 
 #: Contents/Resources/web/templates/home.html:111
 msgid "Contribute"
-msgstr "Contribuer"
+msgstr "Đóng góp"
 
 #: Contents/Resources/web/templates/home.html:112
 msgid "Status"
-msgstr "Statut"
+msgstr "Trạng thái"
 
 #: Contents/Resources/web/templates/home.html:128
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Thêm"
 
 #: Contents/Resources/web/templates/home.html:131
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Chỉnh sửa"
 
 #: Contents/Resources/web/templates/home.html:147
 msgid "No known ID"
-msgstr "Aucun ID connu"
+msgstr "Không có ID đã biết"
 
 #: Contents/Resources/web/templates/home.html:152
 msgid "Plex provided"
-msgstr "Plex fourni"
+msgstr "Plex cung cấp"
 
 #: Contents/Resources/web/templates/home.html:154
 msgid "User provided"
-msgstr "Fourni par l'utilisateur"
+msgstr "Do người dùng cung cấp"
 
 #: Contents/Resources/web/templates/home.html:156
 msgid "Themerr provided"
-msgstr "Fourni par Themerr"
+msgstr "Themerr cung cấp"
 
 #: Contents/Resources/web/templates/home.html:158
 msgid "provided"
-msgstr "prévu"
+msgstr "được cung cấp"
 
 #: Contents/Resources/web/templates/home.html:160
 msgid "Unknown provider"
-msgstr "Fournisseur inconnu"
+msgstr "Nhà cung cấp không xác định"
 
 #: Contents/Resources/web/templates/home.html:162
 msgid "Missing from ThemerrDB"
-msgstr "Absent de ThemerrDB"
+msgstr "Thiếu trong ThemerrDB"
 
 #: Contents/Resources/web/templates/home.html:164
 msgid "Failed to download"
-msgstr "Téléchargement échoué"
+msgstr "Không thể tải xuống"
 
 #: Contents/Resources/web/templates/home.html:166
 msgid "Unknown status"
-msgstr "État inconnu"
+msgstr "Trạng thái không xác định"
 
 #: Contents/Resources/web/templates/home_db_not_cached.html:9
 msgid "Database is being cached, please try again soon."
-msgstr "La base de données est en cours de mise en cache, veuillez réessayer ultérieurement."
+msgstr "Cơ sở dữ liệu đang được lưu vào bộ nhớ đệm, vui lòng thử lại sau."
 
 #: Contents/Resources/web/templates/navbar.html:23
 msgid "Donate"
-msgstr "Faire un don"
+msgstr "Ủng hộ"
 
 #: Contents/Resources/web/templates/navbar.html:28
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "Nhà tài trợ GitHub"
 
 #: Contents/Resources/web/templates/navbar.html:44
 msgid "Support"
-msgstr "Aide"
+msgstr "Hỗ trợ"
 
 #: Contents/Resources/web/templates/navbar.html:49
 msgid "Docs"
-msgstr "Documentation"
+msgstr "Tài liệu"
 
 #: Contents/Resources/web/templates/navbar.html:53
 msgid "Support Center"
-msgstr "Centre d'aide"
+msgstr "Trung tâm Hỗ trợ"
 
 #: Contents/Resources/web/templates/navbar.html:59
 msgid "Home"
-msgstr "Accueil"
+msgstr "Trang chủ"
 
