@@ -1,3 +1,5 @@
+import { initMediaSession } from './media_session.js';
+
 function setPlaying(button, playing) {
     if (!button) return;
     button.querySelector('.theme-play-icon').classList.toggle('d-none', playing);
@@ -48,6 +50,10 @@ export function initThemePlayer(root = document, { load = fetch, random = Math.r
     let repeat = false;
     const history = [];
     const visited = new Set();
+    const media = initMediaSession(audio, {
+        play: () => { void play(); }, pause,
+        previous: () => { void previous(); }, next: () => { void next(); },
+    }, root.defaultView || globalThis);
 
     function updateProgress() {
         const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
@@ -82,6 +88,7 @@ export function initThemePlayer(root = document, { load = fetch, random = Math.r
             field('next').disabled = !active || queue.length < 2;
             field('previous').disabled = !active || (queue.length < 2 && !history.length);
         }
+        media?.setNavigation(!!active && (queue.length > 1 || history.length > 0), !!active && queue.length > 1);
         updateProgress();
     }
 
@@ -112,6 +119,7 @@ export function initThemePlayer(root = document, { load = fetch, random = Math.r
     }
 
     function showMetadata() {
+        media?.setTrack(active);
         if (!widget) return;
         field('title').textContent = active.title;
         field('title').title = active.title;

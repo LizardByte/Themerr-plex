@@ -124,6 +124,10 @@ loops the current selection. Otherwise playback advances in library order and st
 Playback and player controls stay active when moving between workspace pages, including browser Back and
 Forward and library refreshes. A full browser reload, signing out, or leaving the application stops playback.
 
+On supported browsers, system media controls and keyboard media keys can play, pause, and move between themes.
+Themerr also supplies the item's title, poster, and playback position to those controls. The browser and operating
+system determine which controls and metadata are displayed.
+
 To exclude a library from updates, enter its ID in **Ignored library IDs** in its server's processing settings.
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 

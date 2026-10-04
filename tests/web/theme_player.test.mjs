@@ -45,6 +45,7 @@ function playerFixture(t, options = {}) {
         ended = false;
         duration = 100;
         currentTime = 0;
+        playbackRate = 1;
         loads = 0;
 
         load() { this.currentTime = 0; this.ended = false; this.error = null; this.loads++; }
@@ -76,7 +77,7 @@ function playerFixture(t, options = {}) {
     const widget = { dataset: { errorLabel: 'Unable to play this theme.', libraryUrl: '/home',
         queueErrorLabel: 'Unable to load themes.', noThemesLabel: 'No installed themes.' },
         querySelector: selector => fields[selector.slice(13, -1)] };
-    const root = { dashboard: true, querySelector: selector => ({ '#theme-player': audio,
+    const root = { defaultView: options.mediaHost, dashboard: true, querySelector: selector => ({ '#theme-player': audio,
         '#theme-widget': widget, '#library-search': root.dashboard ? {} : null })[selector],
         querySelectorAll: () => buttons };
     const controller = initThemePlayer(root, { random: () => 0, ...options });
@@ -85,6 +86,16 @@ function playerFixture(t, options = {}) {
 
 function progress(button) {
     return Number(button.parts['.theme-playback-progress'].style.strokeDashoffset);
+}
+
+function mediaHost(t) {
+    const actions = new Map();
+    const session = { metadata: null, playbackState: 'none',
+        setActionHandler: t.mock.fn((action, handler) => actions.set(action, handler)),
+        setPositionState: t.mock.fn(),
+    };
+    return { actions, session, host: { navigator: { mediaSession: session },
+        MediaMetadata: class { constructor(metadata) { Object.assign(this, metadata); } } } };
 }
 
 test('play, pause and resume keep icons, labels and elapsed progress in sync', async t => {
@@ -396,4 +407,127 @@ test('a stale successful queue load cannot replace a newly refreshed library', a
     await pending;
     await controller.next();
     assert.equal(audio.src, '/api/themes/4');
+});
+
+test('system controls publish the current title and poster and follow play, pause, next and previous', async t => {
+    const { host, session, actions } = mediaHost(t);
+    const { audio, buttons } = playerFixture(t, { mediaHost: host });
+    assert.equal(session.metadata, null);
+    assert.equal(actions.get('nexttrack'), null);
+    await buttons[1].click();
+    assert.equal(session.metadata.title, 'Theme 2');
+    assert.equal(session.metadata.artist, '2020 · Movie · Plex');
+    assert.deepEqual(session.metadata.artwork, [{ src: '/api/themes/2/poster' }]);
+    assert.equal(session.playbackState, 'playing');
+    audio.currentTime = 37;
+    actions.get('pause')({ action: 'pause' });
+    assert.equal(audio.paused, true);
+    assert.equal(session.playbackState, 'paused');
+    actions.get('play')({ action: 'play' });
+    await Promise.resolve();
+    assert.equal(audio.currentTime, 37);
+    assert.equal(session.playbackState, 'playing');
+    actions.get('nexttrack')({ action: 'nexttrack' });
+    await Promise.resolve();
+    assert.equal(audio.src, '/api/themes/1'); // A manual Next wraps at the end of the queue.
+    assert.equal(session.metadata.title, 'Theme 1');
+    actions.get('previoustrack')({ action: 'previoustrack' });
+    await Promise.resolve();
+    assert.equal(audio.src, '/api/themes/2');
+    assert.equal(session.metadata.title, 'Theme 2');
+    actions.get('stop')({ action: 'stop' });
+    assert.equal(audio.paused, true);
+    assert.equal(audio.currentTime, 0);
+    assert.equal(session.playbackState, 'paused');
+});
+
+test('system controls retain metadata and the queue across workspace page changes', async t => {
+    const { host, session, actions } = mediaHost(t);
+    const { audio, buttons, root, controller } = playerFixture(t, { mediaHost: host });
+    await buttons[0].click();
+    const metadata = session.metadata;
+    const registrations = session.setActionHandler.mock.callCount();
+    audio.currentTime = 37;
+    root.dashboard = false;
+    buttons.splice(0);
+    controller.sync();
+    assert.equal(initThemePlayer(root), controller);
+    assert.equal(session.setActionHandler.mock.callCount(), registrations);
+    assert.equal(session.metadata, metadata);
+    assert.equal(audio.currentTime, 37);
+    actions.get('nexttrack')({ action: 'nexttrack' });
+    await Promise.resolve();
+    assert.equal(audio.src, '/api/themes/2');
+    assert.equal(session.metadata.title, 'Theme 2');
+    assert.equal(session.playbackState, 'playing');
+});
+
+test('system seeking is bounded and playback position updates on media events without animation-frame polling', async t => {
+    const { host, session, actions } = mediaHost(t);
+    const { audio, buttons, frames } = playerFixture(t, { mediaHost: host });
+    await buttons[0].click();
+    audio.currentTime = 30;
+    audio.dispatchEvent(new Event('timeupdate'));
+    assert.deepEqual(session.setPositionState.mock.calls.at(-1).arguments,
+        [{ duration: 100, position: 30, playbackRate: 1 }]);
+    const reports = session.setPositionState.mock.callCount();
+    frames.values().next().value();
+    assert.equal(session.setPositionState.mock.callCount(), reports);
+    actions.get('seekbackward')({ seekOffset: 5 });
+    assert.equal(audio.currentTime, 25);
+    actions.get('seekforward')({ seekOffset: 200 });
+    assert.equal(audio.currentTime, 100);
+    actions.get('seekbackward')({});
+    assert.equal(audio.currentTime, 90);
+    actions.get('seekto')({ seekTime: -3 });
+    assert.equal(audio.currentTime, 0);
+    actions.get('seekto')({ seekTime: 42, fastSeek: true });
+    assert.equal(audio.currentTime, 42); // Exact seeking also works when fastSeek is unavailable.
+    audio.fastSeek = t.mock.fn(time => { audio.currentTime = time; });
+    actions.get('seekto')({ seekTime: 60, fastSeek: true });
+    assert.deepEqual(audio.fastSeek.mock.calls[0].arguments, [60]);
+    audio.playbackRate = 1.5;
+    audio.dispatchEvent(new Event('ratechange'));
+    assert.equal(session.setPositionState.mock.calls.at(-1).arguments[0].playbackRate, 1.5);
+    audio.duration = Number.NaN;
+    audio.dispatchEvent(new Event('durationchange'));
+    assert.deepEqual(session.setPositionState.mock.calls.at(-1).arguments, []);
+    actions.get('seekto')({ seekTime: 20 });
+    assert.equal(audio.currentTime, 60);
+});
+
+test('system navigation availability follows the queue and history, and missing posters clear old artwork', async t => {
+    const { host, session, actions } = mediaHost(t);
+    const { audio, buttons, controller } = playerFixture(t, { mediaHost: host });
+    await buttons[0].click();
+    buttons[1].dataset.themePoster = '';
+    await buttons[1].click();
+    assert.deepEqual(session.metadata.artwork, []);
+    buttons.splice(0, 1);
+    controller.sync();
+    assert.equal(actions.get('nexttrack'), null);
+    actions.get('previoustrack')({ action: 'previoustrack' });
+    await Promise.resolve();
+    assert.equal(audio.src, '/api/themes/1');
+    assert.equal(actions.get('previoustrack'), null);
+    assert.deepEqual(session.metadata.artwork, [{ src: '/api/themes/1/poster' }]);
+});
+
+test('partially supported media session APIs do not interfere with normal player controls', async t => {
+    const { host, session, actions } = mediaHost(t);
+    delete host.MediaMetadata;
+    session.setActionHandler = (action, handler) => {
+        if (action === 'seekto') throw new Error('Unsupported media action');
+        actions.set(action, handler);
+    };
+    session.setPositionState = () => { throw new Error('Unsupported position reporting'); };
+    const { audio, buttons, fields } = playerFixture(t, { mediaHost: host });
+    await buttons[0].click();
+    assert.equal(audio.paused, false);
+    assert.equal(fields.title.textContent, 'Theme 1');
+    actions.get('pause')({ action: 'pause' });
+    assert.equal(audio.paused, true);
+    await fields.play.click();
+    assert.equal(audio.paused, false);
+    assert.equal(session.metadata, null);
 });
