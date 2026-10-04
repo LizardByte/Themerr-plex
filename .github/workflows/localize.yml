@@ -1,5 +1,6 @@
 ---
 name: localize
+permissions: {}
 
 env:
   PYTHON_VERSION: '3.14'
@@ -21,6 +22,8 @@ on:
 jobs:
   localize:
     name: Update Localization
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
