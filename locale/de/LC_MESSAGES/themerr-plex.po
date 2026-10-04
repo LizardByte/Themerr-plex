@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2026-10-04 13:57\n"
+"PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
@@ -352,16 +352,17 @@ msgstr "Cookie-Exportanweisungen"
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr ""
+msgstr "%(app)s %(version)s ist verfügbar.\n"
+"%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr ""
+msgstr "Aktualisierung abgeschlossen"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr ""
+msgstr "Themenabdeckung um %(increase)s Prozentpunkte erhöht: %(before)s%% → %(after)s%%. %(installed)s von %(total)s Elementen haben Themes."
 
 #. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
 #. translate "%(app_name)s".
@@ -372,16 +373,16 @@ msgstr "%(app_name)s öffnen"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr ""
+msgstr "Über"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr ""
+msgstr "Version %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr ""
+msgstr "Repository"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
@@ -433,7 +434,7 @@ msgstr "Beenden"
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr ""
+msgstr "Logs"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
@@ -500,7 +501,7 @@ msgstr "Ungespeicherte Änderungen"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr ""
+msgstr "Nicht gespeicherte Einstellungen verwerfen?"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
@@ -520,23 +521,23 @@ msgstr "Speichern Sie Ihre Einstellungen vor dem Ändern Ihres Passworts."
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr ""
+msgstr "Keine Datensätze entsprechen Ihren Filtern."
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr ""
+msgstr "Noch keine Logeinträge."
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr ""
+msgstr "Suchen, Filter, Warn-Navigation und Download decken alle geladenen Datensätze seit dem Start ab."
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr ""
+msgstr "Filter und Suche gelten für die geladenen Datensätze. Ältere Historie bleibt im Logverzeichnis."
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr ""
+msgstr "Sitzungsprotokoll wird heruntergeladen."
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
@@ -549,27 +550,27 @@ msgstr "Pausiert"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr ""
+msgstr "Aktualisierung fehlgeschlagen. Zeige die zuletzt geladenen Datensätze."
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr ""
+msgstr "Zu ignorierende Bibliotheken auswählen"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr ""
+msgstr "Lade Bibliotheken…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr ""
+msgstr "Zeige zwischengespeicherte Bibliotheken. Aktiviere oder verbinde diesen Server, um seine aktuellen Bibliotheken zu laden."
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr ""
+msgstr "Dieser Server hat keine Bibliotheken."
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr ""
+msgstr "Bibliotheken können nicht geladen werden. Ihre Auswahl bleibt erhalten. Schließen und öffnen Sie die Liste erneut, um es erneut zu versuchen."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
@@ -718,15 +719,15 @@ msgstr "Arbeitsbereich"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr ""
+msgstr "Theme: Automatisch. Zum Lichtmodus wechseln."
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr ""
+msgstr "Theme: Licht. Zum dunklen Modus wechseln."
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr ""
+msgstr "Theme: Dunkel. Wechseln Sie in den automatischen Modus."
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
@@ -1062,111 +1063,111 @@ msgstr "Die erste Aktualisierung baut deine Bibliotheksansicht auf. Du kannst de
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr ""
+msgstr "Erkunde aktuelle Protokolle, finde eine Nachricht und springe zwischen Warnungen und Fehlern."
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr ""
+msgstr "Gefilterte Logs herunterladen"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr ""
+msgstr "Log-Viewer"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr ""
+msgstr "Logs suchen"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr ""
+msgstr "Nachrichten, Threads oder Zeitstempel durchsuchen…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr ""
+msgstr "Log-Quelle"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr ""
+msgstr "Alle Quellen"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr ""
+msgstr "Log-Level"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr ""
+msgstr "Alle Ebenen"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr ""
+msgstr "Warnungen und Fehler"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr ""
+msgstr "Protokollverlauf"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr ""
+msgstr "Neueste 250"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr ""
+msgstr "Neueste 1000"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr ""
+msgstr "Letzte 2.000"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr ""
+msgstr "Seit Start"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr ""
+msgstr "Filter löschen"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr ""
+msgstr "Warnung und Fehlernavigation"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr ""
+msgstr "Vorherige Warnung oder Fehler"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr ""
+msgstr "Nächste Warnung oder Fehler"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr ""
+msgstr "Live-Aktualisierung"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr ""
+msgstr "Neueste folgen"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualisieren"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr ""
+msgstr "Lade Logs…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr ""
+msgstr "Log-Verlaufseiten"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr ""
+msgstr "Ältere Datensätze"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr ""
+msgstr "Neuere Datensätze"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr ""
+msgstr "Einträge protokollieren"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
@@ -1294,19 +1295,19 @@ msgstr "Ein lokales oder eingehängtes Plex-Datenverzeichnis wird nur benötigt,
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr ""
+msgstr "Ignorierte Bibliotheken"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr ""
+msgstr "Bibliothek"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr ""
+msgstr "Öffne die Liste um die Bibliotheken dieses Servers zu laden."
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr ""
+msgstr "Wählen Sie die Bibliotheken aus, die von den Theme-Aktualisierungen ausgeschlossen werden. Lassen Sie alle deaktiviert, um jede Bibliothek zu verarbeiten."
 
 #: web/templates/servers.html:36
 msgid "Save settings"
@@ -1366,63 +1367,63 @@ msgstr "Verwenden Sie eine LAN-Adresse oder eine gültige HTTPS-Plex-Adresse. Ih
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr ""
+msgstr "Theme-Player"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr ""
+msgstr "Wählen Sie ein Theme aus Ihrer Bibliothek"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr ""
+msgstr "Themes kann nicht geladen werden. Versuchen Sie es erneut."
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr ""
+msgstr "Es sind noch keine installierten Themes verfügbar."
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr ""
+msgstr "DIESER SPIELER"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr ""
+msgstr "Ein Soundtrack für jede Geschichte."
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr ""
+msgstr "Mischen"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr ""
+msgstr "Vorheriges Theme"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr ""
+msgstr "Thema abspielen"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr ""
+msgstr "Theme pausieren"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr ""
+msgstr "Nächstes Theme"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr ""
+msgstr "Dieses Theme wiederholen"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr ""
+msgstr "Wiedergabeposition"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr ""
+msgstr "Überraschung"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr ""
+msgstr "Lautstärke"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
