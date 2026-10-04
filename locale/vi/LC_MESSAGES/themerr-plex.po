@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: vi_VN\n"
-"PO-Revision-Date: 2026-10-04 13:58\n"
+"PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
@@ -1387,43 +1387,43 @@ msgstr "TRÌNH PHÁT THEO CHỦ ĐỀ"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr ""
+msgstr "Một bản nhạc nền cho mỗi câu chuyện."
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr ""
+msgstr "Xáo trộn"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr ""
+msgstr "Chủ đề trước"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr ""
+msgstr "Phát nhạc nền"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr ""
+msgstr "Tạm dừng chủ đề"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr ""
+msgstr "Chủ đề tiếp theo"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr ""
+msgstr "Lặp lại chủ đề này"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr ""
+msgstr "Vị trí phát lại"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr ""
+msgstr "Hãy làm tôi ngạc nhiên"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr ""
+msgstr "Khối lượng"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
