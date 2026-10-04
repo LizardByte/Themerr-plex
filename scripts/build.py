@@ -5,6 +5,7 @@ Creates spec and builds binaries for Themerr-plex.
 """
 # standard imports
 import os
+from pathlib import Path
 import shutil
 import sys
 
@@ -14,6 +15,13 @@ import PyInstaller.__main__
 
 def build():
     """Sets arguments for pyinstaller, creates spec, and builds binaries."""
+    release_version = os.environ.get('THEMERR_VERSION')
+    if release_version:
+        version_file = Path(__file__).resolve().parents[1] / 'src' / 'common' / 'version.py'
+        version_file.write_text(
+            f'"""Release identity stamped by the release setup action."""\n\nVERSION = {release_version!r}\n',
+            encoding='utf-8',
+        )
     deno = shutil.which('deno')
     if deno is None:
         executable = 'deno.exe' if sys.platform == 'win32' else 'deno'
@@ -24,7 +32,7 @@ def build():
 
     pyinstaller_args = [
         './src/themerr_plex.py',
-        '--onefile',
+        '--onedir' if sys.platform == 'darwin' else '--onefile',
         '--noconfirm',
         '--paths=./src',
         '--collect-all=av',
@@ -44,7 +52,7 @@ def build():
         pyinstaller_args.append('--splash=./web/images/icon-default.png')
 
     elif sys.platform.lower() == 'darwin':  # macOS
-        pyinstaller_args.append('--console')
+        pyinstaller_args.append('--windowed')
         pyinstaller_args.append('--osx-bundle-identifier=dev.lizardbyte.app.themerr-plex')
         codesign_identity = os.environ.get('APPLE_CODESIGN_IDENTITY')
         if codesign_identity:

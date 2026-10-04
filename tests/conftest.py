@@ -11,7 +11,7 @@ import pytest
 @pytest.fixture
 def configured(tmp_path, monkeypatch):
     import common
-    from common import config, definitions
+    from common import config, definitions, notifications
     from plex import token_store
     from themerr import storage
 
@@ -25,6 +25,7 @@ def configured(tmp_path, monkeypatch):
     monkeypatch.setattr(token_store.keyring, 'delete_password',
                         lambda service, client: passwords.pop((service, client), None))
     monkeypatch.setattr(definitions.Paths, 'CONFIG_DIR', str(tmp_path))
+    monkeypatch.setattr(notifications, '_desktop_available', lambda: False)
     cfg = config.create_config(str(tmp_path / 'config.ini'))
     common.CONFIG = cfg
     try:

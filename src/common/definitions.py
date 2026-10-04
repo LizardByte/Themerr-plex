@@ -155,6 +155,8 @@ class Paths:
     if Modes.FROZEN:  # pyinstaller build
         ROOT_DIR = sys._MEIPASS
         DATA_DIR = os.path.dirname(sys.executable)
+        if Platform.os_platform == 'darwin':
+            DATA_DIR = os.path.expanduser(os.path.join('~', 'Library', 'Application Support', Names.name))
         BINARY_PATH = os.path.abspath(sys.executable)
     if Modes.DOCKER:  # docker install
         DATA_DIR = '/config'  # overwrite the value that was already set

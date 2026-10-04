@@ -137,6 +137,32 @@ _CONFIG_SPEC_DICT = {
             'on_change': on_change_tray_toggle,
         },
     },
+    'Notifications': {
+        'type': 'section',
+        'name': _('Notifications'),
+        'description': _('Desktop notifications appear on the computer running Themerr. '
+                         'Docker and headless installations do not display them.'),
+        'icon': 'bell',
+        'NEW_RELEASE': {
+            'type': 'boolean',
+            'name': _('New release available'),
+            'description': _('Notify when a newer Themerr release is available. Checks run once per hour.'),
+            'default': True,
+        },
+        'FOLLOW_PRERELEASES': {
+            'type': 'boolean',
+            'name': _('Follow pre-releases'),
+            'description': _('Include pre-releases in new release notifications.'),
+            'default': False,
+        },
+        'COVERAGE_INCREASE': {
+            'type': 'boolean',
+            'name': _('Theme coverage increased'),
+            'description': _('Notify after a successful refresh when total theme coverage increases. '
+                             'Refreshes with no increase stay quiet.'),
+            'default': True,
+        },
+    },
     'Logging': {
         'type': 'section',
         'name': _('Logging'),

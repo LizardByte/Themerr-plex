@@ -183,6 +183,7 @@ jobs:
 
       - name: Build pyinstaller package
         env:
+          THEMERR_VERSION: ${{ needs.setup_release.outputs.release_version }}
           APPLE_CODESIGN_IDENTITY: >-
             ${{ runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
             && secrets.APPLE_CODESIGN_IDENTITY || '' }}
@@ -190,13 +191,15 @@ jobs:
 
       - name: Verify macOS signature
         if: runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
-        run: codesign --verify --strict --verbose=2 ./dist/themerr_plex
+        run: codesign --verify --deep --strict --verbose=2 ./dist/themerr_plex.app
 
       - name: Smoke test executable
         shell: bash
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
             ./dist/themerr_plex.exe --help
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            ./dist/themerr_plex.app/Contents/MacOS/themerr_plex --help
           else
             ./dist/themerr_plex --help
           fi

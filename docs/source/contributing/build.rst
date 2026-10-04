@@ -42,7 +42,13 @@ Build the documentation and standalone executable:
    uv run --locked --all-extras python scripts/build.py
 
 Dockle writes the site to _site. PyInstaller includes that site, the web assets, and translations in the
-executable under dist, including Deno for yt-dlp. Docker uses the same lockfile and Dockle build:
+executable under dist, including Deno for yt-dlp. macOS also produces ``dist/themerr_plex.app``, a directory
+bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release version before running
+``scripts/build.py`` to stamp ``src/common/version.py`` with the version used by release notifications and
+``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
+is included through normal imports. Unversioned builds skip release checks.
+
+Docker uses the same lockfile and Dockle build:
 
 .. code-block:: shell
 

@@ -170,13 +170,18 @@ def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
     }
 
 
-def _cache_server() -> None:
+def _cache_server() -> bool:
     """
     Cache data for use in the Web UI dashboard.
 
     Because there are many http requests that must be made to gather the data for the dashboard, it can be
     time-consuming to populate; therefore, this is performed within this caching function, which runs on a schedule.
     This function atomically publishes a snapshot in SQLite.
+
+    Returns
+    -------
+    bool
+        Whether Plex was available and a complete snapshot was published.
     """
     revision = storage.dashboard_revision()
 
@@ -184,7 +189,7 @@ def _cache_server() -> None:
     plex_server = setup_plexapi()
     if not plex_server:
         log.error(PLEX_SETUP_ERROR)
-        return
+        return False
 
     plex_library = plex_server.library
 
@@ -206,6 +211,7 @@ def _cache_server() -> None:
             items[section.key] = section_data
 
     storage.replace_dashboard(items, since_revision=revision)
+    return True
 
 
 def cache_data() -> None:
@@ -213,12 +219,20 @@ def cache_data() -> None:
     registered = servers.list_servers(enabled_only=True)
     if not registered:
         return
+    successful = True
     for record in registered:
         try:
             with storage.server_scope(record['id']):
                 log.info('Refreshing dashboard for server %r (%s)', record['name'], record['id'])
-                _cache_server()
+                if not _cache_server():
+                    successful = False
+                    servers.record_refresh(record['id'], 'Dashboard refresh could not reach Plex.')
+                    continue
             servers.record_refresh(record['id'])
         except Exception:
+            successful = False
             log.exception('Dashboard refresh failed for server %s', record['id'])
             servers.record_refresh(record['id'], 'Dashboard refresh failed. Check the Plex address and access.')
+    if successful:
+        from common.notifications import refresh_completed
+        refresh_completed()

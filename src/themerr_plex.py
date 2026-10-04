@@ -19,6 +19,7 @@ from common import helpers
 from common import locales
 from common import logger
 from common import threads
+from common import version
 
 app_name = definitions.Names.name.lower()
 
@@ -197,7 +198,7 @@ def main():
         sys.exit(exit_code)
 
     if args.version:
-        print('version arg is not yet implemented')
+        print(f'{definitions.Names.name} {version.VERSION}')
         sys.exit()
 
     _apply_cli_options(args)

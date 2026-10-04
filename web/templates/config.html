@@ -21,10 +21,10 @@
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">{{ _('TUNE YOUR WORKSPACE') }}</span><h1>{{ _('Settings') }}<span class="heading-dot">.</span></h1><p>{{ _('Make Themerr work the way your library does.') }}</p></div></div>
 <div class="settings-layout">
-    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for key in ['Themerr','General','Logging','Network'] %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ _(config_spec[key].name) }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
+    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for key in ['Themerr','General','Notifications','Logging','Network'] %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ _(config_spec[key].name) }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
     <div class="settings-content">
         <form id="configForm" data-csrf-token="{{ csrf_token() }}" method="post">
-        {% for section in ['Themerr','General','Logging','Network'] %}
+        {% for section in ['Themerr','General','Notifications','Logging','Network'] %}
             <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ _(config_spec[section].name) }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else _(config_spec[section].description) }}</p></div></div>
                 {% for key, spec in config_spec[section].items() %}{% if spec is mapping and not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' %}{{ setting_field(section, key, spec) }}{% endif %}{% endfor %}
             </section>

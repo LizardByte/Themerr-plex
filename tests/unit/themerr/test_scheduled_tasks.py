@@ -66,14 +66,14 @@ def test_setup_scheduling(configured, monkeypatch):
     scheduled_tasks.schedule.clear()
     configured['Themerr']['BOOL_THEMERR_ENABLED'] = True
     scheduled_tasks.setup_scheduling()
-    assert len(scheduled_tasks.schedule.jobs) == 2
+    assert len(scheduled_tasks.schedule.jobs) == 3
     assert all(job.job_func.keywords['daemon'] for job in scheduled_tasks.schedule.jobs)
     started.assert_called_once_with(target=scheduled_tasks.schedule_loop, daemon=True)
     scheduled_tasks.schedule.clear()
 
     configured['Themerr']['BOOL_THEMERR_ENABLED'] = False
     scheduled_tasks.setup_scheduling()
-    assert len(scheduled_tasks.schedule.jobs) == 1
+    assert len(scheduled_tasks.schedule.jobs) == 2
     scheduled_tasks.schedule.clear()
 
 
@@ -113,13 +113,17 @@ def test_reconfigure_changes_intervals_without_duplicating_or_removing_other_job
         configured['Themerr']['INT_UPDATE_THEMES_INTERVAL'] = 30
         scheduled_tasks.configure_jobs()
         scheduled_tasks.configure_jobs()
-        assert len(scheduler.jobs) == 3
+        assert len(scheduler.jobs) == 4
         assert scheduler.get_jobs('themerr')[0].interval == 30
         configured['Themerr']['BOOL_THEMERR_ENABLED'] = False
         configured['Themerr']['INT_UPDATE_DATABASE_CACHE_INTERVAL'] = 45
         scheduled_tasks.configure_jobs()
         assert scheduler.get_jobs('other') == [unrelated]
-        assert len(scheduler.get_jobs('themerr')) == 1
+        assert len(scheduler.get_jobs('themerr')) == 2
         assert scheduler.get_jobs('themerr')[0].interval == 45
+        configured['Notifications']['NEW_RELEASE'] = False
+        scheduled_tasks.configure_jobs()
+        assert len(scheduler.get_jobs('themerr')) == 1
+        assert scheduler.get_jobs('other') == [unrelated]
     finally:
         scheduler.clear()
