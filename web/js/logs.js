@@ -46,7 +46,7 @@ export function highlightMessage(element, message, search) {
     element.append(element.ownerDocument.createTextNode(message.slice(start)));
 }
 
-export function initLogs(root = document, request = api, host = window, signal) {
+export function initLogs(root = document, request = api, host = window, signal = undefined) {
     const viewer = root.querySelector('#log-viewer');
     if (!viewer) return;
     const field = name => root.querySelector(`#log-${name}`);

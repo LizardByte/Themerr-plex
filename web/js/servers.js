@@ -71,7 +71,10 @@ export function initServers(signal) {
         authStart.setAttribute('aria-busy', 'true');
         try {
             const result = await api('/api/plex/auth/start');
-            if (!active) { if (popup) popup.close(); return; }
+            if (!active) {
+                if (popup) popup.close();
+                return;
+            }
             link.href = result.auth_url;
             link.classList.remove('d-none');
             if (popup) { popup.opener = null; popup.location.assign(result.auth_url); }

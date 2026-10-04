@@ -9,7 +9,7 @@ export function publicationAge(date, now = Date.now(), locale = undefined) {
     return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(Math.round(seconds / divisor), unit);
 }
 
-export function initDatabaseStatus(root = document, query = () => api('/api/themerrdb', { method: 'GET' }), signal) {
+export function initDatabaseStatus(root = document, query = () => api('/api/themerrdb', { method: 'GET' }), signal = undefined) {
     const status = root.querySelector('[data-database-status]');
     if (!status) return;
     const time = status.querySelector('[data-database-time]');

@@ -20,6 +20,10 @@ function trackFromButton(button) {
         playLabel: button.dataset.playLabel, pauseLabel: button.dataset.pauseLabel, errorLabel: button.dataset.errorLabel };
 }
 
+function rowError(button) {
+    return button.closest('td')?.querySelector('.theme-playback-error');
+}
+
 const players = new WeakMap();
 
 export function initThemePlayer(root = document, { load = fetch, random = Math.random } = {}) {
@@ -89,10 +93,6 @@ export function initThemePlayer(root = document, { load = fetch, random = Math.r
     function stopAnimation() {
         cancelAnimationFrame(animation);
         animation = undefined;
-    }
-
-    function rowError(button) {
-        return button.closest('td')?.querySelector('.theme-playback-error');
     }
 
     function showError() {

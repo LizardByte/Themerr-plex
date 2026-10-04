@@ -38,6 +38,50 @@ export function initWorkspaceNavigation({ enter, leave, reportError = () => {} }
         }
     }
 
+    async function fetchPage(url, signal, state) {
+        const response = await load(url, { headers: { Accept: 'text/html' }, signal });
+        if (signal.aborted) return;
+        if (response.status === 401) {
+            const requested = new URL(url, currentUrl);
+            host.location.assign(`/login?next=${encodeURIComponent(requested.pathname + requested.search)}`);
+            return;
+        }
+        const destination = new URL(response.url || url, currentUrl);
+        if (destination.origin === host.location.origin && ['/login', '/setup'].includes(destination.pathname)) {
+            host.location.assign(destination.href);
+            return;
+        }
+        if (!response.ok || destination.origin !== host.location.origin || !paths.has(destination.pathname)) {
+            failedNavigation(state);
+            return;
+        }
+        const page = parse(await response.text());
+        if (signal.aborted) return;
+        const content = page.querySelector('#page-content');
+        const modals = page.querySelector('#page-modals');
+        const breadcrumb = page.querySelector('.workspace-breadcrumb strong');
+        const csrf = page.querySelector('meta[name="csrf-token"]');
+        if (!page.querySelector('#theme-widget') || !content || !modals || !breadcrumb || !csrf) {
+            failedNavigation(state);
+            return;
+        }
+        if (page.documentElement.lang !== root.documentElement.lang) {
+            host.location.assign(destination.href);
+            return;
+        }
+        return { page, destination, content, modals, breadcrumb, csrf };
+    }
+
+    function recordNavigation(destination, state, replace) {
+        if (state) position = state.workspacePosition;
+        else {
+            host.history.replaceState({ ...host.history.state, scroll: [host.scrollX, host.scrollY] }, '', currentUrl);
+            if (!replace) ++position;
+            host.history[replace ? 'replaceState' : 'pushState']({ workspacePosition: position }, '', destination.href);
+        }
+        currentUrl = host.location.href;
+    }
+
     async function navigate(url, { replace = false, state, approved = false } = {}) {
         if (!approved && !canLeave()) return;
         request?.abort();
@@ -46,36 +90,9 @@ export function initWorkspaceNavigation({ enter, leave, reportError = () => {} }
         const main = root.querySelector('#main-content');
         main.setAttribute('aria-busy', 'true');
         try {
-            const response = await load(url, { headers: { Accept: 'text/html' }, signal: controller.signal });
-            if (controller.signal.aborted) return;
-            if (response.status === 401) {
-                const requested = new URL(url, currentUrl);
-                host.location.assign(`/login?next=${encodeURIComponent(requested.pathname + requested.search)}`);
-                return;
-            }
-            const destination = new URL(response.url || url, currentUrl);
-            if (destination.origin === host.location.origin && ['/login', '/setup'].includes(destination.pathname)) {
-                host.location.assign(destination.href);
-                return;
-            }
-            if (!response.ok || destination.origin !== host.location.origin || !paths.has(destination.pathname)) {
-                failedNavigation(state);
-                return;
-            }
-            const page = parse(await response.text());
-            if (controller.signal.aborted) return;
-            const content = page.querySelector('#page-content');
-            const modals = page.querySelector('#page-modals');
-            const breadcrumb = page.querySelector('.workspace-breadcrumb strong');
-            const csrf = page.querySelector('meta[name="csrf-token"]');
-            if (!page.querySelector('#theme-widget') || !content || !modals || !breadcrumb || !csrf) {
-                failedNavigation(state);
-                return;
-            }
-            if (page.documentElement.lang !== root.documentElement.lang) {
-                host.location.assign(destination.href);
-                return;
-            }
+            const result = await fetchPage(url, controller.signal, state);
+            if (!result || controller.signal.aborted) return;
+            const { page, destination, content, modals, breadcrumb, csrf } = result;
             // Reuse the running JavaScript even if a rebuild changes its asset fingerprint.
             // Reloading to fetch a new bundle would discard the mounted audio element.
             page.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
@@ -110,13 +127,7 @@ export function initWorkspaceNavigation({ enter, leave, reportError = () => {} }
             root.body.classList.remove('sidebar-open');
             root.querySelector('.mobile-menu').setAttribute('aria-expanded', 'false');
             root.dispatchEvent(new Event('themerr:navigation'));
-            if (state) position = state.workspacePosition;
-            else {
-                host.history.replaceState({ ...host.history.state, scroll: [host.scrollX, host.scrollY] }, '', currentUrl);
-                if (!replace) ++position;
-                host.history[replace ? 'replaceState' : 'pushState']({ workspacePosition: position }, '', destination.href);
-            }
-            currentUrl = host.location.href;
+            recordNavigation(destination, state, replace);
             await enter();
             if (controller.signal.aborted) return;
             host.scrollTo(...(state?.scroll || [0, 0]));

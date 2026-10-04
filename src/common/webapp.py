@@ -40,6 +40,7 @@ from themerr import storage
 URL_SCHEME = None
 URL = None
 MIMETYPE_TEXT_PLAIN = 'text/plain'
+MIMETYPE_IMAGE_JPEG = 'image/jpeg'
 
 # localization
 _ = locales.get_text()
@@ -48,8 +49,8 @@ _ = locales.get_text()
 mime_type_map = {
     'gif': 'image/gif',
     'ico': 'image/vnd.microsoft.icon',
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
+    'jpg': MIMETYPE_IMAGE_JPEG,
+    'jpeg': MIMETYPE_IMAGE_JPEG,
     'png': 'image/png',
     'svg': 'image/svg+xml',
 }
@@ -218,7 +219,9 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
         )
         try:
             media_type = upstream.headers.get('Content-Type', '').split(';', 1)[0].lower()
-            if upstream.status_code != 200 or media_type not in ('image/jpeg', 'image/png', 'image/webp', 'image/gif'):
+            if upstream.status_code != 200 or media_type not in (
+                MIMETYPE_IMAGE_JPEG, 'image/png', 'image/webp', 'image/gif',
+            ):
                 return Response(status_code=404)
             if request.method == 'HEAD':
                 return Response(media_type=media_type, headers={'Cache-Control': 'no-store'})
@@ -233,7 +236,7 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
             upstream.close()
     except plex_exceptions.NotFound:
         return Response(status_code=404)
-    except (plex_exceptions.PlexApiException, requests.RequestException, OSError, ValueError) as error:
+    except (plex_exceptions.PlexApiException, OSError, ValueError) as error:
         log.warning('Unable to load poster for rating_key=%s (%s)', rating_key, type(error).__name__)
         return Response(status_code=502)
 
