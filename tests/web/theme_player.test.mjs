@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { initThemePlayer } from '../../web/js/theme_player.js';
+import { initThemePlayer, formatTime } from '../../web/js/theme_player.js';
 
-function playerFixture(t) {
+function playerFixture(t, options = {}) {
     const frames = new Map();
     let frameId = 0;
     globalThis.requestAnimationFrame = callback => {
@@ -26,7 +26,9 @@ function playerFixture(t) {
         };
         const error = { textContent: '', hidden: true };
         return {
-            dataset: { themeUrl: `/api/themes/${id}`, playLabel: `Play ${id}`, pauseLabel: `Pause ${id}`,
+            dataset: { themeUrl: `/api/themes/${id}`, themeTitle: `Theme ${id}`, themeYear: '2020',
+                themeType: 'Movie', themeServer: 'Plex', themePoster: `/api/themes/${id}/poster`,
+                themeItemUrl: `https://app.plex.tv/item/${id}`, playLabel: `Play ${id}`, pauseLabel: `Pause ${id}`,
                 errorLabel: 'Unable to play this theme.' },
             parts, error, attributes,
             querySelector: selector => parts[selector],
@@ -60,8 +62,25 @@ function playerFixture(t) {
     }
     const audio = new Audio();
     const buttons = [button(1), button(2)];
-    initThemePlayer({ querySelector: () => audio, querySelectorAll: () => buttons });
-    return { audio, buttons, frames };
+    class Control extends EventTarget {
+        attributes = new Map();
+        value = '0';
+        setAttribute(name, value) { this.attributes.set(name, value); }
+        removeAttribute(name) { this.attributes.delete(name); }
+        getAttribute(name) { return this.attributes.get(name); }
+    }
+    const fields = Object.fromEntries(['title', 'link', 'details', 'poster', 'error', 'seek', 'elapsed', 'duration',
+        'next', 'previous', 'random', 'shuffle', 'repeat', 'volume'].map(name => [name, new Control()]));
+    fields.play = button('widget');
+    fields.error.hidden = true;
+    const widget = { dataset: { errorLabel: 'Unable to play this theme.', libraryUrl: '/home',
+        queueErrorLabel: 'Unable to load themes.', noThemesLabel: 'No installed themes.' },
+        querySelector: selector => fields[selector.slice(13, -1)] };
+    const root = { dashboard: true, querySelector: selector => ({ '#theme-player': audio,
+        '#theme-widget': widget, '#library-search': root.dashboard ? {} : null })[selector],
+        querySelectorAll: () => buttons };
+    const controller = initThemePlayer(root, { random: () => 0, ...options });
+    return { audio, buttons, frames, fields, root, controller, button };
 }
 
 function progress(button) {
@@ -103,8 +122,8 @@ test('switching items stops the previous theme and resets its control', async t 
     assert.equal(audio.currentTime, 0);
 });
 
-test('finishing a theme returns to play and replay starts at the beginning', async t => {
-    const { audio, buttons: [button] } = playerFixture(t);
+test('finishing the last theme returns to play and replay starts at the beginning', async t => {
+    const { audio, buttons: [, button] } = playerFixture(t);
     await button.click();
     audio.currentTime = audio.duration;
     audio.ended = true;
@@ -180,4 +199,201 @@ test('unknown duration and overshooting time never produce invalid progress', as
 
 test('pages without a theme player need no controls', () => {
     assert.doesNotThrow(() => initThemePlayer({ querySelector: () => null }));
+});
+
+test('widget shows item metadata, seek position, volume, and poster fallback', async t => {
+    const { audio, buttons: [button], fields } = playerFixture(t);
+    await button.click();
+    assert.equal(fields.title.textContent, 'Theme 1');
+    assert.equal(fields.link.href, 'https://app.plex.tv/item/1');
+    assert.equal(fields.details.textContent, '2020 · Movie · Plex');
+    assert.equal(fields.poster.src, '/api/themes/1/poster');
+    fields.poster.dispatchEvent(new Event('load'));
+    assert.equal(fields.poster.hidden, false);
+    fields.poster.dispatchEvent(new Event('error'));
+    assert.equal(fields.poster.hidden, true);
+    fields.seek.value = '45';
+    fields.seek.dispatchEvent(new Event('input'));
+    assert.equal(audio.currentTime, 45);
+    assert.equal(fields.elapsed.textContent, '0:45');
+    assert.equal(fields.duration.textContent, '1:40');
+    fields.volume.value = '0.35';
+    fields.volume.dispatchEvent(new Event('input'));
+    assert.equal(audio.volume, 0.35);
+    await fields.play.click();
+    assert.equal(audio.paused, true);
+    await fields.play.click();
+    assert.equal(audio.currentTime, 45);
+});
+
+test('changing workspace pages keeps playing and returning synchronizes new row buttons', async t => {
+    const { audio, buttons, root, controller, fields, button } = playerFixture(t);
+    await buttons[0].click();
+    audio.currentTime = 37;
+    root.dashboard = false;
+    buttons.splice(0);
+    controller.sync();
+    assert.equal(audio.paused, false);
+    assert.equal(audio.currentTime, 37);
+    assert.equal(audio.loads, 1);
+    assert.equal(fields.title.textContent, 'Theme 1');
+    assert.equal(initThemePlayer(root), controller);
+    root.dashboard = true;
+    buttons.push(button(1), button(2));
+    controller.sync();
+    assert.equal(buttons[0].getAttribute('aria-pressed'), 'true');
+    assert.equal(progress(buttons[0]), 63);
+    await buttons[0].click();
+    assert.equal(audio.paused, true);
+    assert.equal(audio.loads, 1);
+});
+
+test('next and previous retain actual playback history and ended advances the queue', async t => {
+    const { audio, buttons, controller } = playerFixture(t);
+    await buttons[0].click();
+    audio.ended = true;
+    audio.paused = true;
+    audio.dispatchEvent(new Event('ended'));
+    await Promise.resolve();
+    assert.equal(audio.src, '/api/themes/2');
+    assert.equal(audio.paused, false);
+    await controller.previous();
+    assert.equal(audio.src, '/api/themes/1');
+    await controller.next();
+    assert.equal(audio.src, '/api/themes/2');
+});
+
+test('shuffle and randomizer avoid repeating items until the queue has been played', async t => {
+    const { audio, buttons, button, controller, fields } = playerFixture(t);
+    buttons.push(button(3), button(4));
+    controller.sync();
+    await buttons[0].click();
+    fields.shuffle.dispatchEvent(new Event('click'));
+    assert.equal(fields.shuffle.getAttribute('aria-pressed'), 'true');
+    const heard = new Set([audio.src]);
+    for (let index = 0; index < 3; ++index) {
+        await controller.next();
+        assert.equal(heard.has(audio.src), false);
+        heard.add(audio.src);
+    }
+    assert.equal(heard.size, 4);
+    const last = audio.src;
+    await controller.surprise();
+    assert.notEqual(audio.src, last);
+    fields.repeat.dispatchEvent(new Event('click'));
+    assert.equal(fields.repeat.getAttribute('aria-pressed'), 'true');
+    const repeating = audio.src;
+    audio.currentTime = 100;
+    audio.ended = true;
+    audio.paused = true;
+    audio.dispatchEvent(new Event('ended'));
+    await Promise.resolve();
+    assert.equal(audio.src, repeating);
+    assert.equal(audio.currentTime, 0);
+    assert.equal(audio.paused, false);
+});
+
+test('identical rating keys on different servers remain separate tracks', async t => {
+    const { audio, buttons, controller } = playerFixture(t);
+    buttons[1].dataset.themeUrl = '/api/servers/other/themes/1';
+    controller.sync();
+    await buttons[0].click();
+    await controller.next();
+    assert.equal(audio.src, '/api/servers/other/themes/1');
+    assert.equal(buttons[0].getAttribute('aria-pressed'), 'false');
+    assert.equal(buttons[1].getAttribute('aria-pressed'), 'true');
+});
+
+test('randomizer can load a queue from another page, handle an empty library and retry a failure', async t => {
+    let response;
+    const load = t.mock.fn(async () => response);
+    const { audio, buttons, button, root, fields, controller } = playerFixture(t, { load });
+    const savedParser = globalThis.DOMParser;
+    t.after(() => { globalThis.DOMParser = savedParser; });
+    let remote = [];
+    globalThis.DOMParser = class {
+        parseFromString() { return { querySelector: () => ({}), querySelectorAll: () => remote }; }
+    };
+    buttons.splice(0);
+    controller.sync();
+    root.dashboard = false;
+    response = { ok: false };
+    await controller.surprise();
+    assert.equal(audio.src, undefined);
+    assert.equal(fields.error.textContent, 'Unable to load themes.');
+    assert.equal(fields.random.disabled, false);
+    response = { ok: true, text: async () => 'library' };
+    await controller.surprise();
+    assert.equal(fields.error.textContent, 'No installed themes.');
+    remote = [button(3)];
+    await controller.surprise();
+    assert.equal(audio.src, '/api/themes/3');
+    assert.equal(fields.error.hidden, true);
+    assert.equal(load.mock.calls[0].arguments[0], '/home');
+});
+
+test('a failed randomizer request cannot overwrite a newer row selection', async t => {
+    let reject;
+    const { audio, buttons, button, root, fields, controller } = playerFixture(t,
+        { load: () => new Promise((resolve, fail) => { reject = fail; }) });
+    buttons.splice(0);
+    controller.sync();
+    root.dashboard = false;
+    const pending = controller.surprise();
+    buttons.push(button(2));
+    root.dashboard = true;
+    controller.sync();
+    await buttons[0].click();
+    reject(new Error('private endpoint'));
+    await pending;
+    assert.equal(audio.src, '/api/themes/2');
+    assert.equal(audio.paused, false);
+    assert.equal(fields.error.hidden, true);
+});
+
+test('playback errors stay visible after leaving the library and can be retried from the widget', async t => {
+    const { audio, buttons, root, fields, controller } = playerFixture(t);
+    await buttons[0].click();
+    buttons.splice(0);
+    root.dashboard = false;
+    controller.sync();
+    audio.error = { code: 2 };
+    audio.dispatchEvent(new Event('error'));
+    assert.equal(audio.paused, true);
+    assert.equal(fields.error.hidden, false);
+    assert.equal(fields.error.textContent, 'Unable to play this theme.');
+    await fields.play.click();
+    assert.equal(audio.loads, 2);
+    assert.equal(fields.error.hidden, true);
+    assert.equal(audio.paused, false);
+});
+
+test('unknown and invalid durations have safe time labels', () => {
+    assert.equal(formatTime(Number.NaN), '0:00');
+    assert.equal(formatTime(Number.POSITIVE_INFINITY), '0:00');
+    assert.equal(formatTime(-1), '0:00');
+    assert.equal(formatTime(61.9), '1:01');
+});
+
+test('a stale successful queue load cannot replace a newly refreshed library', async t => {
+    let resolve;
+    const { audio, buttons, button, root, controller } = playerFixture(t,
+        { load: () => new Promise(done => { resolve = done; }) });
+    const savedParser = globalThis.DOMParser;
+    t.after(() => { globalThis.DOMParser = savedParser; });
+    globalThis.DOMParser = class {
+        parseFromString() { return { querySelector: () => ({}), querySelectorAll: () => [button(99)] }; }
+    };
+    buttons.splice(0);
+    controller.sync();
+    root.dashboard = false;
+    const pending = controller.surprise();
+    root.dashboard = true;
+    buttons.push(button(3), button(4));
+    controller.sync();
+    await buttons[0].click();
+    resolve({ ok: true, text: async () => 'old library' });
+    await pending;
+    await controller.next();
+    assert.equal(audio.src, '/api/themes/4');
 });

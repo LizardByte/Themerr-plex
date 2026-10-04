@@ -211,6 +211,40 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .theme-playback-track { stroke: var(--success-line); }
 .theme-playback-progress { stroke: var(--mint); stroke-linecap: round; }
 .theme-playback-error { display: block; color: var(--danger); font-size: 10px; margin-top: 8px; max-width: 300px; }
+.theme-widget { position: fixed; bottom: 0; left: 236px; right: 0; z-index: 35; display: grid; grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.3fr) minmax(140px, .7fr); align-items: center; gap: 24px; padding: 14px 32px; border-top: 1px solid var(--line); background: var(--surface); box-shadow: 0 -4px 24px #0001; }
+.app-body:has(.theme-widget) { --player-height: 112px; padding-bottom: var(--player-height); }
+.player-item { display: flex; align-items: center; gap: 13px; min-width: 0; }
+.player-cover { width: 48px; height: 68px; flex-shrink: 0; position: relative; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 7px; color: var(--violet); background: var(--surface-raised); overflow: hidden; }
+.player-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.player-metadata { min-width: 0; }
+.player-metadata .eyebrow { font-size: 8px; margin-bottom: 5px; }
+.player-metadata a { display: block; color: var(--ink); font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-metadata a[href]:hover { color: var(--accent); }
+.player-metadata a .lucide { width: 11px; height: 11px; margin-left: 4px; }
+.player-metadata a:not([href]) .lucide { display: none; }
+.player-metadata small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-buttons { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.player-buttons [aria-pressed="true"] { color: var(--accent); }
+.player-play { display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 0; border-radius: 50%; background: var(--button-bg); color: var(--button-ink); }
+.player-play:hover { background: var(--button-hover); }
+.player-play .lucide { width: 17px; height: 17px; }
+.player-buttons .player-play[aria-pressed="true"] { color: var(--button-ink); }
+.theme-widget button:disabled { opacity: .4; cursor: default; }
+.player-timeline { display: flex; align-items: center; gap: 10px; margin-top: 7px; font-size: 9px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.player-timeline span { min-width: 30px; }
+.theme-widget input[type="range"] { accent-color: var(--accent); cursor: pointer; min-width: 0; height: 16px; }
+.player-timeline input { width: 100%; }
+.player-options { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.player-volume { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.player-volume .lucide { width: 15px; height: 15px; }
+.player-volume input { width: 86px; }
+.player-error { grid-column: 1 / -1; color: var(--danger); font-size: 11px; }
+.app-body:has(.theme-widget) .settings-save-bar { bottom: calc(var(--player-height) + 18px); }
+.app-body:has(.theme-widget) .toast-region { bottom: calc(var(--player-height) + 80px); }
+@media (max-width: 1200px) { .theme-widget { left: 212px; padding: 14px 24px; gap: 16px; grid-template-columns: minmax(150px, 1fr) minmax(200px, 1.2fr) 130px; } }
+@media (max-width: 900px) { .theme-widget { grid-template-columns: 1fr 1fr; gap: 10px 16px; } .player-options { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; } .app-body:has(.theme-widget) { --player-height: 154px; } }
+@media (max-width: 700px) { .theme-widget { left: 0; padding: 10px 15px; } .player-cover { width: 36px; height: 50px; } .player-item { gap: 9px; } .player-buttons { gap: 4px; } .player-buttons .icon-button { width: 30px; height: 30px; padding: 0; } .player-play { width: 34px; height: 34px; } .player-metadata .eyebrow { display: none; } .app-body:has(.theme-widget) { --player-height: 138px; } }
+@media (max-width: 380px) { .theme-widget { grid-template-columns: 1fr; } .player-options { grid-column: auto; } .app-body:has(.theme-widget) { --player-height: 212px; } }
 .empty-state { text-align: center; padding: 65px 24px; display: flex; align-items: center; flex-direction: column; gap: 16px; }
 .empty-state h2 { font-size: 26px; letter-spacing: -.8px; }
 .empty-state p { color: var(--muted); max-width: 490px; font-size: 12px; line-height: 1.8; }

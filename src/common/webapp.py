@@ -6,6 +6,7 @@ Responsible for serving the webapp.
 # standard imports
 import copy
 import os
+import re
 import secrets
 import time
 from threading import Event
@@ -169,6 +170,72 @@ def home(request: Request) -> Response:
         stats=stats,
         servers=server_ui.servers.list_servers(),
     )
+
+
+@router.api_route('/api/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
+                  name='theme_poster_default', response_model=None)
+@router.api_route('/api/servers/{server_id}/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
+                  name='theme_poster', response_model=None)
+def theme_poster(request: Request, rating_key: int, server_id: str = 'default') -> Response:
+    """Serve a bounded Plex poster without exposing server credentials.
+
+    Resolve artwork from the saved server's current item metadata. Only raster images
+    are returned, with redirects disabled and a five-megabyte response limit.
+
+    Parameters
+    ----------
+    request : Request
+        Authenticated browser request.
+    rating_key : int
+        Plex item identifier.
+    server_id : str, optional
+        Saved Plex server identifier.
+
+    Returns
+    -------
+    Response
+        Raster poster, or a fixed error when artwork is unavailable.
+
+    Examples
+    --------
+    >>> theme_poster(request, 42)
+    <Response ...>
+    """
+    from plex import plexapi
+
+    try:
+        with storage.server_scope(server_id):
+            server = plexapi.setup_plexapi()
+        if server is None:
+            return Response(status_code=404)
+        item = server.fetchItem(rating_key)
+        thumbnail = getattr(item, 'thumb', None)
+        if not isinstance(thumbnail, str) or not re.fullmatch(r'/library/metadata/\d+/thumb(?:/\d+)?', thumbnail):
+            return Response(status_code=404)
+        upstream = server._session.get(
+            server.url(thumbnail, includeToken=False), headers=server._headers(),
+            stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
+        )
+        try:
+            media_type = upstream.headers.get('Content-Type', '').split(';', 1)[0].lower()
+            if upstream.status_code != 200 or media_type not in ('image/jpeg', 'image/png', 'image/webp', 'image/gif'):
+                return Response(status_code=404)
+            if request.method == 'HEAD':
+                return Response(media_type=media_type, headers={'Cache-Control': 'no-store'})
+            chunks, size = [], 0
+            for chunk in upstream.iter_content(chunk_size=65536):
+                size += len(chunk)
+                if size > 5 * 1024 * 1024:
+                    return Response(status_code=502)
+                chunks.append(chunk)
+            return Response(b''.join(chunks), media_type=media_type, headers={'Cache-Control': 'no-store'})
+        finally:
+            upstream.close()
+    except plex_exceptions.NotFound:
+        return Response(status_code=404)
+    except (plex_exceptions.PlexApiException, requests.RequestException, OSError, ValueError) as error:
+        log.warning('Unable to load poster for rating_key=%s (%s)', rating_key, type(error).__name__)
+        return Response(status_code=502)
 
 
 async def _stream_theme_audio(upstream: requests.Response, rating_key: int):

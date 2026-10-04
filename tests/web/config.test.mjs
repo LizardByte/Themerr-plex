@@ -4,6 +4,7 @@ import { initSettings } from '../../web/js/config.js';
 import { initTranslations, _ } from '../../web/js/i18n.js';
 
 class Element {
+    isConnected = true;
     listeners = {};
     value = '';
     disabled = false;
@@ -27,17 +28,20 @@ function settings(t, request) {
     const previous = { document: globalThis.document, window: globalThis.window,
         IntersectionObserver: globalThis.IntersectionObserver };
     t.after(() => Object.assign(globalThis, previous));
+    const events = new EventTarget();
     globalThis.document = { getElementById: id => elements[id], createElement: () => new Element(),
+        addEventListener: events.addEventListener.bind(events), dispatchEvent: events.dispatchEvent.bind(events),
         querySelector: () => ({ content: 'token' }), querySelectorAll: () => [] };
     const reload = t.mock.fn();
-    globalThis.window = { addEventListener() {}, location: { reload } };
-    globalThis.IntersectionObserver = class { observe() {} };
+    globalThis.window = { addEventListener() {}, confirm: t.mock.fn(() => false), location: { reload } };
+    globalThis.IntersectionObserver = class { observe() {} disconnect() {} };
     t.mock.method(globalThis, 'setTimeout', () => 0);
     t.mock.method(globalThis, 'fetch', request);
-    initSettings();
+    const controller = new AbortController();
+    initSettings(controller.signal);
     const change = value => { locale.value = value; form.listeners.change(); };
     const save = () => form.listeners.submit({ preventDefault() {} });
-    return { change, save, reload, elements };
+    return { change, save, reload, elements, events, controller };
 }
 
 test('a saved locale change reloads immediately', async t => {
@@ -85,4 +89,15 @@ test('browser translations use the catalog and fall back for missing or empty me
     assert.equal(_('All changes saved.'), 'Modifications enregistrées.');
     assert.equal(_('Empty'), 'Empty');
     assert.equal(_('Missing'), 'Missing');
+});
+
+test('unsaved settings can block navigation and their guard is removed on page disposal', async t => {
+    const page = settings(t, async () => ({ ok: true, status: 200, json: async () => ({}) }));
+    page.change('fr');
+    assert.equal(page.events.dispatchEvent(new Event('themerr:before-navigate', { cancelable: true })), false);
+    window.confirm = () => true;
+    assert.equal(page.events.dispatchEvent(new Event('themerr:before-navigate', { cancelable: true })), true);
+    window.confirm = () => false;
+    page.controller.abort();
+    assert.equal(page.events.dispatchEvent(new Event('themerr:before-navigate', { cancelable: true })), true);
 });

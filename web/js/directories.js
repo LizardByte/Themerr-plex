@@ -1,7 +1,7 @@
 import { api } from './api.js';
 import { refreshIcons } from './icons.js';
 
-export function initDirectoryPicker() {
+export function initDirectoryPicker(signal) {
     const picker = document.getElementById('directory-picker');
     if (!picker) return;
     const current = document.getElementById('directory-current');
@@ -12,6 +12,10 @@ export function initDirectoryPicker() {
     let field;
     let path;
     let requestNumber = 0;
+    signal?.addEventListener('abort', () => {
+        ++requestNumber;
+        if (picker.open) picker.close();
+    }, { once: true });
     async function loadDirectory(requested) {
         const ticket = ++requestNumber;
         error.textContent = '';

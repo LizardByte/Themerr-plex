@@ -9,7 +9,7 @@ export function publicationAge(date, now = Date.now(), locale = undefined) {
     return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(Math.round(seconds / divisor), unit);
 }
 
-export function initDatabaseStatus(root = document, query = () => api('/api/themerrdb', { method: 'GET' })) {
+export function initDatabaseStatus(root = document, query = () => api('/api/themerrdb', { method: 'GET' }), signal) {
     const status = root.querySelector('[data-database-status]');
     if (!status) return;
     const time = status.querySelector('[data-database-time]');
@@ -46,10 +46,12 @@ export function initDatabaseStatus(root = document, query = () => api('/api/them
         }
     }
     const ageTimer = setInterval(() => { if (snapshot) render(); }, 60000);
-    window.addEventListener('pagehide', () => {
+    const stop = () => {
         active = false;
         clearTimeout(pollTimer);
         clearInterval(ageTimer);
-    }, { once: true });
+    };
+    window.addEventListener('pagehide', stop, { once: true, signal });
+    signal?.addEventListener('abort', stop, { once: true });
     void update();
 }

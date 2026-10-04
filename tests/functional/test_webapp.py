@@ -153,9 +153,15 @@ def test_theme_controls_only_for_installed_themes(client):
     for index in range(1, 6):
         assert f'data-theme-url="/api/themes/{index}"'.encode() in page
     assert b'data-theme-url="/api/themes/99"' not in page
-    assert page.count(b'data-lucide="play"') == len(providers)
+    assert page.count(b'data-lucide="play"') == len(providers) + 1
     assert page.count(b'id="theme-player"') == 1
     assert b'preload="none"' in page
+    assert b'data-theme-title="Theme 1"' in page
+    assert b'data-theme-year="2020"' in page
+    assert b'data-theme-poster="/api/themes/1/poster"' in page
+    assert page.index(b'id="theme-widget"') > page.index(b'</main>')
+    for path in ('/servers', '/settings/', '/activity', '/logs', '/api/docs'):
+        assert client.get(path).content.count(b'id="theme-player"') == 1
 
 
 @pytest.fixture
@@ -595,3 +601,100 @@ def test_save_failure_restores_config(client, configured, monkeypatch):
 def test_translations_and_logging(client):
     assert client.get('/translations').status_code == 200
     assert client.post('/test_logger').status_code == 200
+
+
+@pytest.mark.parametrize('method', ['get', 'head'])
+def test_theme_poster_is_bounded_and_hides_credentials(client, theme_server, method):
+    server, upstream = theme_server
+    server.fetchItem.return_value.thumb = '/library/metadata/42/thumb/123'
+    upstream.headers['Content-Type'] = 'image/jpeg'
+    response = getattr(client, method)('/api/themes/42/poster')
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'image/jpeg'
+    assert response.headers['Cache-Control'] == 'no-store'
+    assert response.content == (b'abcdef' if method == 'get' else b'')
+    assert 'X-Plex-Token' not in response.headers
+    assert 'Location' not in response.headers
+    assert 'private-token' not in str(response.headers)
+    server.url.assert_called_once_with('/library/metadata/42/thumb/123', includeToken=False)
+    assert server._session.get.call_args.kwargs['allow_redirects'] is False
+    upstream.close.assert_called_once()
+    if method == 'head':
+        upstream.iter_content.assert_not_called()
+
+
+@pytest.mark.parametrize('thumbnail', [
+    None, 'https://other.example/image', '//other.example/image', '/library/metadata/42/theme/123',
+    '/library/metadata/42/thumb/../config', '/library/metadata/42/thumb/%2e%2e',
+    '/library/metadata/42/thumb%2f123', '/library/metadata/42/thumb?X-Plex-Token=private-token',
+    r'C:\config.ini', r'\\server\share', '/library/metadata/42/thumb\\123',
+])
+def test_theme_poster_rejects_unexpected_upstream_paths(client, theme_server, thumbnail):
+    server, upstream = theme_server
+    server.fetchItem.return_value.thumb = thumbnail
+    assert client.get('/api/themes/42/poster').status_code == 404
+    server._session.get.assert_not_called()
+    upstream.close.assert_not_called()
+
+
+@pytest.mark.parametrize('status, media_type', [
+    (302, 'image/png'), (404, 'image/png'), (500, 'image/png'),
+    (200, 'text/html'), (200, 'image/svg+xml'), (200, 'application/octet-stream'),
+])
+def test_theme_poster_rejects_redirects_and_active_content(client, theme_server, status, media_type):
+    server, upstream = theme_server
+    server.fetchItem.return_value.thumb = '/library/metadata/42/thumb'
+    upstream.status_code = status
+    upstream.headers['Content-Type'] = media_type
+    assert client.get('/api/themes/42/poster').status_code == 404
+    upstream.iter_content.assert_not_called()
+    upstream.close.assert_called_once()
+
+
+def test_theme_poster_stops_oversized_stream(client, theme_server):
+    server, upstream = theme_server
+    server.fetchItem.return_value.thumb = '/library/metadata/42/thumb'
+    upstream.headers['Content-Type'] = 'image/png'
+    upstream.iter_content.return_value = iter([b'x' * (5 * 1024 * 1024), b'!', b'must not be read'])
+    assert client.get('/api/themes/42/poster').status_code == 502
+    assert next(upstream.iter_content.return_value) == b'must not be read'
+    upstream.close.assert_called_once()
+
+
+def test_theme_poster_read_errors_are_sanitized_and_closed(client, theme_server, caplog):
+    server, upstream = theme_server
+    server.fetchItem.return_value.thumb = '/library/metadata/42/thumb'
+    upstream.headers['Content-Type'] = 'image/png'
+    upstream.iter_content.side_effect = requests.exceptions.ConnectionError('private-token')
+    response = client.get('/api/themes/42/poster')
+    assert response.status_code == 502
+    assert 'private-token' not in response.text
+    assert 'private-token' not in caplog.text
+    upstream.close.assert_called_once()
+
+
+def test_theme_poster_server_scope_and_authentication(client, theme_server, monkeypatch):
+    server, upstream = theme_server
+    server.fetchItem.return_value.thumb = '/library/metadata/42/thumb'
+    upstream.headers['Content-Type'] = 'image/png'
+    observed = []
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: (observed.append(storage.current_server_id()), server)[1])
+    assert client.get('/api/servers/other/themes/42/poster').status_code == 200
+    assert observed == ['other']
+    assert client.get('/api/themes/not-a-key/poster').status_code == 404
+    client.cookies.clear()
+    assert client.get('/api/themes/42/poster').status_code == 401
+    assert client.get('/api/servers/other/themes/42/poster').status_code == 401
+
+
+def test_theme_poster_without_plex_uses_placeholder(client, monkeypatch):
+    monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: None)
+    assert client.get('/api/themes/42/poster').status_code == 404
+
+
+def test_theme_poster_deleted_item_is_unavailable(client, theme_server):
+    server, upstream = theme_server
+    server.fetchItem.side_effect = NotFound('private-token')
+    assert client.get('/api/themes/42/poster').status_code == 404
+    server._session.get.assert_not_called()
+    upstream.close.assert_not_called()

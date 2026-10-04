@@ -324,6 +324,10 @@ def test_openapi_describes_request_bodies_authentication_and_unique_operations(b
     for status in ('200', '206'):
         assert audio['responses'][status]['content']['audio/mpeg']['schema']['format'] == 'binary'
     assert '416' in audio['responses']
+    poster = paths['/api/themes/{rating_key}/poster']['get']
+    assert poster['responses']['200']['content']['image/jpeg']['schema']['format'] == 'binary'
+    assert '404' in poster['responses']
+    assert '502' in poster['responses']
     assert 'security' not in paths['/status']['get']
 
 

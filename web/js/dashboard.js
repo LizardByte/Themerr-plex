@@ -1,4 +1,5 @@
 import { api, busy, toast } from './api.js';
+import { refreshPage } from './workspace_navigation.js';
 
 export function matchesFilters(item, filters) {
     return (!filters.search || item.title.toLocaleLowerCase().includes(filters.search.toLocaleLowerCase().trim())) &&
@@ -77,11 +78,7 @@ async function refreshLibraries(button) {
         toast('The refresh is still running. Follow its progress in Activity.');
         return;
     }
-    const audio = document.getElementById('theme-player');
-    if (audio && !audio.paused) {
-        toast('Refresh finished. Reload the page when you finish listening to see updated libraries.');
-        return;
-    }
+    if (!button.isConnected) return;
     const search = document.getElementById('library-search');
     if (search) {
         try {
@@ -91,7 +88,7 @@ async function refreshLibraries(button) {
             // Reloading does not require browser storage.
         }
     }
-    window.location.reload();
+    await refreshPage();
 }
 
 export function initNavigation() {
@@ -102,6 +99,7 @@ export function initNavigation() {
         if (sidebar) sidebar.inert = mobile.matches && !document.body.classList.contains('sidebar-open');
     }
     syncNavigation();
+    document.addEventListener('themerr:navigation', syncNavigation);
     mobile.addEventListener('change', () => {
         document.body.classList.remove('sidebar-open');
         if (menu) menu.setAttribute('aria-expanded', 'false');
@@ -122,6 +120,9 @@ export function initNavigation() {
             document.querySelector('.mobile-menu').focus();
         }
     });
+}
+
+export function initPageControls() {
     document.querySelectorAll('[data-refresh]').forEach(button => button.addEventListener('click',
         () => busy(button, () => refreshLibraries(button))));
     document.querySelectorAll('time').forEach(element => {
