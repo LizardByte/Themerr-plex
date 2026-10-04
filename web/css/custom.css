@@ -283,6 +283,17 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .server-settings > summary .lucide:last-child, .manual-server > summary .lucide:last-child { margin-left: auto; width: 13px; height: 13px; }
 .server-settings form { margin-top: 17px; }
 .server-settings label, .manual-server label { font-size: 11px; display: block; margin-bottom: 7px; color: var(--ink-soft); }
+.library-picker-label { display: block; margin-bottom: 7px; color: var(--ink-soft); font-size: 11px; }
+.library-picker { position: relative; }
+.library-picker > summary { list-style: none; cursor: pointer; }
+.library-picker > summary::-webkit-details-marker { display: none; }
+.library-picker > summary span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-picker-menu { position: absolute; inset: calc(100% + 4px) 0 auto; z-index: 10; max-height: 260px; overflow-y: auto; padding: 8px; border: 1px solid var(--control-border); border-radius: 8px; background: var(--control-bg); box-shadow: 0 8px 24px #0003; }
+.server-settings .library-choice { display: flex; align-items: center; gap: 10px; margin: 0; padding: 9px; border-radius: 5px; cursor: pointer; font-size: 13px; overflow-wrap: anywhere; }
+.library-choice:hover { background: var(--hover); }
+.library-choice input { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
+.library-picker-menu .form-text { display: block; margin: 5px 9px; }
+.library-picker-menu .form-text:empty { display: none; }
 .setting-switch { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
 .setting-switch label { margin: 0; }
 .server-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; gap: 12px; }

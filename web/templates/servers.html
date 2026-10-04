@@ -20,8 +20,19 @@
             <label for="directory-{{ loop.index }}">{{ _('Plex data directory') }} <span class="muted">{{ _('optional') }}</span></label>
             <div class="input-group"><input id="directory-{{ loop.index }}" class="form-control" name="data_directory" value="{{ server.data_directory }}"><button type="button" class="btn btn-outline-light" data-directory-target="directory-{{ loop.index }}" aria-label="{{ _('Browse Plex data directory') }}"><i data-lucide="folder-open"></i></button></div>
             <p class="form-text">{{ _('A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers.') }}</p>
-            <label for="ignored-{{ loop.index }}">{{ _('Ignored library IDs') }}</label><input id="ignored-{{ loop.index }}" class="form-control" name="ignored_libraries" value="{{ server.ignored_libraries }}" placeholder="2, 5">
-            <p class="form-text">{{ _('Comma-separated library IDs to exclude from theme updates.') }}</p>
+            <span id="ignored-label-{{ loop.index }}" class="library-picker-label">{{ _('Ignored libraries') }}</span>
+            <details class="library-picker" data-library-picker>
+                <summary class="form-select" aria-labelledby="ignored-label-{{ loop.index }} ignored-summary-{{ loop.index }}" aria-describedby="ignored-help-{{ loop.index }}"><span id="ignored-summary-{{ loop.index }}" data-library-summary>{{ _('Select libraries to ignore') }}</span></summary>
+                <div class="library-picker-menu">
+                    <div data-library-options>
+                        {% for library_id in server.ignored_libraries.split(',') if library_id.strip() %}
+                        <label class="library-choice"><input type="checkbox" name="ignored_libraries" value="{{ library_id.strip() }}" checked><span>{{ _('Library') }} {{ library_id.strip() }}</span></label>
+                        {% endfor %}
+                    </div>
+                    <output class="form-text" data-library-status>{{ _('Open the list to load this server’s libraries.') }}</output>
+                </div>
+            </details>
+            <p id="ignored-help-{{ loop.index }}" class="form-text">{{ _('Select the libraries to exclude from theme updates. Leave all unchecked to process every library.') }}</p>
             <div class="server-actions"><button type="submit" class="btn btn-primary btn-sm">{{ _('Save settings') }}</button><button type="button" class="btn btn-quiet-danger btn-sm" data-remove-server="{{ server.id }}">{{ _('Remove server') }}</button></div>
         </form>
     </details>
