@@ -13,7 +13,7 @@ build:
     build:
       html:
         - |
-          uv run --no-sync python scripts/_locale.py --compile
+          uv run --no-sync python scripts/localize.py --compile
           uv run --no-sync dockle check
           uv run --no-sync dockle build
           mkdir -p "${READTHEDOCS_OUTPUT}html/"

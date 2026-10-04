@@ -1,0 +1,14 @@
+---
+minimum_pre_commit_version: '4.4.0'
+
+repos:
+  - repo: local
+    hooks:
+      - id: extract-locales
+        name: Extract PO locale template
+        entry: uv run --locked --no-sync python scripts/localize.py --extract
+        language: unsupported
+        stages: [pre-commit]
+        always_run: true
+        pass_filenames: false
+        require_serial: true
