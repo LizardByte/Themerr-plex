@@ -1,10 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 15:06-0400\n"
-"PO-Revision-Date: 2026-10-03 22:09\n"
-"Last-Translator: \n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,6 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: hu_HU\n"
+"PO-Revision-Date: 2026-10-04 13:57\n"
 
 #: src/common/config.py:90
 msgid "Info"
@@ -67,350 +65,424 @@ msgid "Enable System Tray Icon"
 msgstr "A tálcán megjelenő ikon engedélyezése"
 
 #: src/common/config.py:142
+msgid "Notifications"
+msgstr "Értesítések"
+
+#: src/common/config.py:143
+msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
+msgstr "Az asztali értesítések azon a számítógépen jelennek meg, amelyen a Themerr fut. A Docker- és a headless telepítések esetén ezek nem jelennek meg."
+
+#: src/common/config.py:148 src/common/notifications.py:138
+msgid "New release available"
+msgstr "Új kiadás elérhető"
+
+#: src/common/config.py:149
+msgid "Notify when a newer Themerr release is available. Checks run once per hour."
+msgstr "Értesíts, ha elérhető egy újabb Themerr-kiadás. Az ellenőrzés óránként egyszer történik."
+
+#: src/common/config.py:154
+msgid "Follow pre-releases"
+msgstr "Kövesse az előzetes kiadásokat"
+
+#: src/common/config.py:155
+msgid "Include pre-releases in new release notifications."
+msgstr "Az új kiadásokról szóló értesítésekbe vegyék fel az előzetes kiadásokat is."
+
+#: src/common/config.py:160
+msgid "Theme coverage increased"
+msgstr "A témák lefedettsége nőtt"
+
+#: src/common/config.py:161
+msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
+msgstr "A sikeres frissítés után értesítsen, ha a téma teljes lefedettsége növekszik. Ha a frissítés során nem történik növekedés, ne küldjön értesítést."
+
+#: src/common/config.py:168
 msgid "Logging"
 msgstr "Fakitermelés"
 
-#: src/common/config.py:143
+#: src/common/config.py:169
 msgid "Logging settings."
 msgstr "Naplózási beállítások."
 
-#: src/common/config.py:147
+#: src/common/config.py:173
 msgid "Log directory"
 msgstr "Naplókönyvtár"
 
-#: src/common/config.py:149
+#: src/common/config.py:175
 msgid "The directory where to store the log files."
 msgstr "Az a könyvtár, amelybe a naplófájlokat kell menteni."
 
-#: src/common/config.py:156
+#: src/common/config.py:182
 msgid "Debug logging"
 msgstr "Hibakeresési naplózás"
 
-#: src/common/config.py:158
+#: src/common/config.py:184
 msgid "Enable debug logging."
 msgstr "Engedélyezze a hibakeresési naplózást."
 
-#: src/common/config.py:164
+#: src/common/config.py:190
 msgid "Network"
 msgstr "Hálózat"
 
-#: src/common/config.py:165
+#: src/common/config.py:191
 msgid "Network settings."
 msgstr "Hálózati beállítások."
 
-#: src/common/config.py:169
+#: src/common/config.py:195
 msgid "HTTP host address"
 msgstr "HTTP-gazdagép-cím"
 
-#: src/common/config.py:171
+#: src/common/config.py:197
 msgid "The HTTP address to bind to."
 msgstr "A kapcsolni kívánt HTTP-cím."
 
-#: src/common/config.py:180
+#: src/common/config.py:206
 msgid "HTTP port"
 msgstr "HTTP-port"
 
-#: src/common/config.py:182
+#: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "A webszerverhez rendelendő port. Figyelem: az 1024 alatti portok használatához root jogosultságra lehet szükség."
 
-#: src/common/config.py:190
+#: src/common/config.py:216
 msgid "HTTP root"
 msgstr "HTTP gyökérkönyvtár"
 
-#: src/common/config.py:192
+#: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Todo: A webszerver alap-URL-je. Fordított proxy-k esetén használatos."
 
-#: src/common/config.py:197
+#: src/common/config.py:223
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:199
+#: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Indítsa el a webszervert HTTPS-en keresztül. Ennek letiltása biztonsági kockázatot jelenthet, ezért ezt saját felelősségére tegye."
 
-#: src/common/config.py:205
+#: src/common/config.py:231
 msgid "Updater"
 msgstr "Frissítő"
 
-#: src/common/config.py:206
+#: src/common/config.py:232
 msgid "Updater settings."
 msgstr "A frissítő beállításai."
 
-#: src/common/config.py:210
+#: src/common/config.py:236
 msgid "Auto update"
 msgstr "Automatikus frissítés"
 
-#: src/common/config.py:218
+#: src/common/config.py:244
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:219
+#: src/common/config.py:245
 msgid "Plex settings."
 msgstr "A Plex beállításai."
 
-#: src/common/config.py:223
+#: src/common/config.py:249
 msgid "Plex URL"
 msgstr "Plex URL"
 
-#: src/common/config.py:224
+#: src/common/config.py:250
 msgid "The URL to the Plex server."
 msgstr "A Plex-kiszolgáló URL-címe."
 
-#: src/common/config.py:233 web/templates/servers.html:20
+#: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
 msgstr "A Plex adatkönyvtára"
 
-#: src/common/config.py:234
+#: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
-#: src/common/config.py:244
+#: src/common/config.py:270
 msgid "Themerr"
 msgstr "Themerr"
 
-#: src/common/config.py:245
+#: src/common/config.py:271
 msgid "Themerr settings."
 msgstr "Themerr beállítások."
 
-#: src/common/config.py:249
+#: src/common/config.py:275
 msgid "Themerr Enabled"
 msgstr "Themerr engedélyezve"
 
-#: src/common/config.py:250
+#: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "Ha engedélyezve van, a Themerr megpróbálja frissíteni a témákat."
 
-#: src/common/config.py:255 web/templates/home.html:30
+#: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
 msgstr "Gyűjtemények"
 
-#: src/common/config.py:256
+#: src/common/config.py:282
 msgid "Add themes to collections."
 msgstr "Témák hozzáadása gyűjteményekhez."
 
-#: src/common/config.py:261
+#: src/common/config.py:287
 msgid "Movie support"
 msgstr "Filmek támogatása"
 
-#: src/common/config.py:262
+#: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "A Plex Movie ügynök segítségével témákat adhat hozzá a filmekhez."
 
-#: src/common/config.py:267
+#: src/common/config.py:293
 msgid "Series support"
 msgstr "Sorozat-támogatás"
 
-#: src/common/config.py:268
+#: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
 msgstr "A Plex Series ügynök segítségével témákat adhat hozzá sorozatokhoz."
 
-#: src/common/config.py:273
+#: src/common/config.py:299
 msgid "Overwrite Plex themes"
 msgstr "A Plex-témák felülírása"
 
-#: src/common/config.py:274
+#: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Ha engedélyezve van, a Themerr felülírja a Plex által biztosított témákat."
 
-#: src/common/config.py:279
+#: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
 msgstr "Az MP4A AAC kodeket részesítsd előnyben"
 
-#: src/common/config.py:280
+#: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Ez javíthatja a téma kompatibilitását az Apple-eszközökkel."
 
-#: src/common/config.py:285
+#: src/common/config.py:311
 msgid "Remove unused themes"
 msgstr "A fel nem használt témák eltávolítása"
 
-#: src/common/config.py:286
+#: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Helyet szabadít fel a Plex metaadat-könyvtárában. Ehhez az opcióhoz be kell állítani a „Plex adatkönyvtár” elérési útját"
 
-#: src/common/config.py:292
+#: src/common/config.py:318
 msgid "Remove unused art"
 msgstr "A fel nem használt illusztrációk eltávolítása"
 
-#: src/common/config.py:293 src/common/config.py:301
+#: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "A gyűjteményre vonatkozik. Helyet szabadít fel a Plex metaadat-könyvtárában. Ehhez az opcióhoz be kell állítani a „Plex adatkönyvtár” elérési útját"
 
-#: src/common/config.py:300
+#: src/common/config.py:326
 msgid "Remove unused posters"
 msgstr "A felesleges plakátok eltávolítása"
 
-#: src/common/config.py:308
+#: src/common/config.py:334
 msgid "Collection metadata"
 msgstr "A gyűjtemény metaadatai"
 
-#: src/common/config.py:309
+#: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "A tervezett frissítés során frissítse a gyűjtemény metaadatait (plakát, illusztráció és összefoglaló)."
 
-#: src/common/config.py:314
+#: src/common/config.py:340
 msgid "Ignore locked fields."
 msgstr "A lezárt mezőket hagyja figyelmen kívül."
 
-#: src/common/config.py:315
+#: src/common/config.py:341
 msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Ha a Themerr-plex v2024.813.13709 vagy annál korábbi verziót használtad, előfordulhat, hogy ezt engedélyezned kell az elemek frissítéséhez."
 
-#: src/common/config.py:321 web/templates/servers.html:23
+#: src/common/config.py:347
 msgid "Ignored library IDs"
 msgstr "Figyelmen kívül hagyott könyvtár-azonosítók"
 
-#: src/common/config.py:322
+#: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "Vesszővel elválasztott könyvtár-azonosítók, amelyeket ki kell zárni a tervezett frissítésekből. Az azonosítók a Főoldalon jelennek meg."
 
-#: src/common/config.py:328
+#: src/common/config.py:354
 msgid "Update themes interval"
 msgstr "A témák frissítésének gyakorisága"
 
-#: src/common/config.py:329
+#: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Az automatikus frissítési feladat időköz, percben kifejezve (min.: 15)."
 
-#: src/common/config.py:336
+#: src/common/config.py:362
 msgid "Update database cache interval"
 msgstr "Az adatbázis-gyorsítótár frissítési időközének módosítása"
 
-#: src/common/config.py:337
+#: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Az adatbázis-gyorsítótár frissítési feladatának időköz, percben kifejezve (min.: 15)."
 
-#: src/common/config.py:344
+#: src/common/config.py:370
 msgid "PlexAPI timeout"
 msgstr "PlexAPI időtúllépés"
 
-#: src/common/config.py:345
+#: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Ha a témák hozzáadása során időtúllépés lép fel, növelje ezt az értéket kissé. (min.: 1)"
 
-#: src/common/config.py:352
+#: src/common/config.py:378
 msgid "Theme upload retries"
 msgstr "A téma feltöltésének újrapróbálkozásai"
 
-#: src/common/config.py:353
+#: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Ha a témák feltöltése sikertelen, ennyiszer próbálja meg újra. (min.: 0)"
 
-#: src/common/config.py:360
+#: src/common/config.py:386
 msgid "Multiprocessing thread count"
 msgstr "Többfolyamatú feldolgozás: szálak száma"
 
-#: src/common/config.py:361
+#: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "A témák hozzáadásakor használandó szálak száma. Újraindítás szükséges. (min.: 1)"
 
-#: src/common/config.py:368
+#: src/common/config.py:394
 msgid "YouTube Cookies"
 msgstr "YouTube-sütik"
 
-#: src/common/config.py:370
+#: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
 msgstr "Opcionális: exportáld a youtube.com cookie-jait a „Get cookies.txt” paranccsal HELYILEG JSON formátumban, majd illeszd be ide a teljes JSON-tömböt, és mentsd el. A cookie-k a böngésződ munkamenetét tartalmazzák; gondoskodj azok titkosságáról."
 
-#: src/common/config.py:375
+#: src/common/config.py:401
 msgid "Cookie export instructions"
 msgstr "A cookie-k exportálására vonatkozó utasítások"
 
+#: src/common/notifications.py:138
+#, python-format
+msgid "%(app)s %(version)s is available.\n"
+"%(url)s"
+msgstr ""
+
+#: src/common/notifications.py:176
+msgid "Refresh completed"
+msgstr ""
+
+#: src/common/notifications.py:177
+#, python-format
+msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
+msgstr ""
+
 #. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
 #. translate "%(app_name)s".
-#: src/common/tray_icon.py:101
+#: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
 msgstr "Nyitás %(app_name)s"
 
+#: src/common/tray_icon.py:110
+msgid "About"
+msgstr ""
+
+#: src/common/tray_icon.py:111 web/templates/navbar.html:22
+#, python-format
+msgid "Version %(version)s"
+msgstr ""
+
+#: src/common/tray_icon.py:113
+msgid "Repository"
+msgstr ""
+
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
-#: src/common/tray_icon.py:109
+#: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
 msgstr "%(github)s Kiadványok"
 
+#: src/common/tray_icon.py:119 web/templates/navbar.html:14
+msgid "Documentation"
+msgstr "Dokumentáció"
+
+#: src/common/tray_icon.py:120 web/templates/api_docs.html:6
+#: web/templates/api_docs.html:7 web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "API-dokumentáció"
+
 #. NOTE: Donate to LizardByte.
-#: src/common/tray_icon.py:112
+#: src/common/tray_icon.py:126
 msgid "Donate"
 msgstr "Adományozni"
 
-#: src/common/tray_icon.py:113
+#: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
 msgstr "GitHub szponzorok"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
-#: src/common/tray_icon.py:120
+#: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
 msgstr "A %(app_name)s elindulásakor nyissa meg a böngészőt"
 
 #. NOTE: Disable or turn off icon.
-#: src/common/tray_icon.py:123
+#: src/common/tray_icon.py:139
 msgid "Disable icon"
 msgstr "Ikon letiltása"
 
 #. NOTE: Restart the program.
-#: src/common/tray_icon.py:126
+#: src/common/tray_icon.py:142
 msgid "Restart"
 msgstr "Újraindítás"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
-#: src/common/tray_icon.py:128
+#: src/common/tray_icon.py:144
 msgid "Quit"
 msgstr "Kilépés"
 
-#: src/common/webapp.py:333 web/templates/config.html:22
+#: src/common/webapp.py:84 web/templates/logs.html:4
+#: web/templates/navbar.html:6
+msgid "Logs"
+msgstr ""
+
+#: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Beállítások"
 
-#: src/themerr_plex.py:170
+#: src/themerr_plex.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
 msgstr "%(app_name)s a Plex témazenéit kezeli.\n"
 "Az itt megadott argumentumok ideiglenes jellegűek."
 
-#: src/themerr_plex.py:174
+#: src/themerr_plex.py:175
 msgid "Show this help message and exit"
 msgstr "A súgóüzenet megjelenítése és kilépés"
 
-#: src/themerr_plex.py:176
+#: src/themerr_plex.py:177
 msgid "Specify a config file to use"
 msgstr "Adja meg a használni kívánt konfigurációs fájlt"
 
-#: src/themerr_plex.py:177
+#: src/themerr_plex.py:178
 msgid "Use debug logging level"
 msgstr "Hibakeresési naplózási szint használata"
 
-#: src/themerr_plex.py:178
+#: src/themerr_plex.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
 msgstr "Indítsa el a %(app_name)s oldalt a fejlesztői környezetben"
 
-#: src/themerr_plex.py:180
+#: src/themerr_plex.py:181
 msgid "Health check the container and exit"
 msgstr "Ellenőrizze a konténer állapotát, majd lépjen ki"
 
-#: src/themerr_plex.py:183
+#: src/themerr_plex.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
 msgstr "Ne nyissa meg a %(app_name)s címet a böngészőben"
 
-#: src/themerr_plex.py:186
+#: src/themerr_plex.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
 msgstr "A ` %(app_name)s ` futtatását egy megadott porthoz kötjük, alapértelmezett érték: 9494"
 
-#: src/themerr_plex.py:189
+#: src/themerr_plex.py:190
 msgid "Turn off console logging"
 msgstr "Kapcsolja ki a konzolnaplózást"
 
-#: src/themerr_plex.py:190
+#: src/themerr_plex.py:191
 msgid "Print the version details and exit"
 msgstr "A verzió adatait kinyomtatja, majd kilép"
 
@@ -422,29 +494,82 @@ msgstr "A munkamenet lejárt. Jelentkezzen be a folytatáshoz."
 msgid "Dismiss message"
 msgstr "Üzenet elrejtése"
 
-#: web/js/config.js:17 web/js/config.js:40
+#: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
 msgstr "Még nem mentett módosítások"
 
-#: web/js/config.js:40 web/templates/config.html:36
+#: web/js/config.js:26
+msgid "Discard unsaved settings changes?"
+msgstr ""
+
+#: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
 msgstr "Minden módosítás elmentve."
 
-#: web/js/config.js:42
+#: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "A beállítások elmentve. A hálózati módosítások a Themerr újraindítása után lépnek életbe."
 
-#: web/js/config.js:46
+#: web/js/config.js:50
 msgid "Unable to save changes."
 msgstr "A módosítások nem menthetők el."
 
-#: web/js/config.js:54
+#: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
 msgstr "A jelszó megváltoztatása előtt mentse el a beállítások módosításait."
 
-#: web/templates/activity.html:3
-msgid "BEHIND THE MUSIC"
-msgstr "A ZENE MÖGÖTT"
+#: web/js/logs.js:117
+msgid "No records match your filters."
+msgstr ""
+
+#: web/js/logs.js:117 web/templates/logs.html:37
+msgid "No log records yet."
+msgstr ""
+
+#: web/js/logs.js:125
+msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
+msgstr ""
+
+#: web/js/logs.js:126 web/templates/logs.html:28
+msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
+msgstr ""
+
+#: web/js/logs.js:144
+msgid "Session log loading stalled."
+msgstr ""
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
+msgid "Live"
+msgstr "Élőben"
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
+#: web/templates/servers.html:13
+msgid "Paused"
+msgstr "Szüneteltetve"
+
+#: web/js/logs.js:185
+msgid "Refresh failed. Showing the last loaded records."
+msgstr ""
+
+#: web/js/servers.js:13 web/templates/servers.html:25
+msgid "Select libraries to ignore"
+msgstr ""
+
+#: web/js/servers.js:22
+msgid "Loading libraries…"
+msgstr ""
+
+#: web/js/servers.js:46
+msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
+msgstr ""
+
+#: web/js/servers.js:48
+msgid "This server has no libraries."
+msgstr ""
+
+#: web/js/servers.js:54
+msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
+msgstr ""
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
@@ -453,6 +578,10 @@ msgstr "Nézd meg, min dolgozik jelenleg a Themerr, és miért lehet, hogy egy e
 #: web/templates/activity.html:3
 msgid "Scan for themes"
 msgstr "Témák keresése"
+
+#: web/templates/activity.html:3 web/templates/logs.html:4
+msgid "BEHIND THE MUSIC"
+msgstr "A ZENE MÖGÖTT"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
@@ -470,10 +599,6 @@ msgstr "A feladatok előzményei az aktuális alkalmazás-munkamenetet fedik le.
 msgid "Recent tasks"
 msgstr "Legutóbbi feladatok"
 
-#: web/templates/activity.html:5
-msgid "Live"
-msgstr "Élőben"
-
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
 msgstr "Még nem futott le egyetlen feladat sem. Kérjen lefutást, vagy várja meg a következő ütemezett frissítést."
@@ -487,22 +612,17 @@ msgstr "Figyelmet igényel"
 msgid "No processing failures recorded. All quiet here."
 msgstr "Feldolgozási hiba nem történt. Itt minden rendben."
 
-#: web/templates/activity.html:8 web/templates/home.html:62
+#: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
 msgstr "Plex-azonosító"
 
-#: web/templates/activity.html:8 web/templates/home.html:76
+#: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
 msgstr "A ThemerrDB-ből elavult"
 
-#: web/templates/api_docs.html:7
+#: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
 msgstr "Fedezze fel az API-t a bejelentkezett munkamenet segítségével."
-
-#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
-#: web/templates/navbar.html:13
-msgid "API documentation"
-msgstr "API-dokumentáció"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -584,17 +704,29 @@ msgstr "Bejelentkezés"
 msgid "Plex account linking happens inside your workspace."
 msgstr "A Plex-fiók összekapcsolása a munkaterületeden belül történik."
 
-#: web/templates/base.html:19
+#: web/templates/base.html:21
 msgid "Skip to content"
 msgstr "Tartalomra ugrás"
 
-#: web/templates/base.html:25
+#: web/templates/base.html:27
 msgid "Toggle navigation"
 msgstr "Navigáció váltása"
 
-#: web/templates/base.html:26
+#: web/templates/base.html:28
 msgid "Workspace"
 msgstr "Munkaterület"
+
+#: web/templates/color_theme.html:2 web/templates/color_theme.html:5
+msgid "Theme: Automatic. Switch to light mode."
+msgstr ""
+
+#: web/templates/color_theme.html:3
+msgid "Theme: Light. Switch to dark mode."
+msgstr ""
+
+#: web/templates/color_theme.html:4
+msgid "Theme: Dark. Switch to automatic mode."
+msgstr ""
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
@@ -784,7 +916,7 @@ msgstr "Könyvtári dokumentumok keresése"
 msgid "Search titles…"
 msgstr "Címek keresése…"
 
-#: web/templates/home.html:28
+#: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
 msgstr "Keresés törlése"
 
@@ -836,10 +968,6 @@ msgstr "Szűrők visszaállítása"
 msgid "Library ID"
 msgstr "Könyvtári azonosító"
 
-#: web/templates/home.html:38 web/templates/servers.html:13
-msgid "Paused"
-msgstr "Szüneteltetve"
-
 #: web/templates/home.html:43
 msgid "Title"
 msgstr "Cím"
@@ -856,71 +984,71 @@ msgstr "Téma"
 msgid "ThemerrDB"
 msgstr "ThemerrDB"
 
-#: web/templates/home.html:54
+#: web/templates/home.html:56
 msgid "Pause theme for"
 msgstr "Szünet zene a"
 
-#: web/templates/home.html:54 web/templates/home.html:56
+#: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
 msgstr "A „Play” című dal témája"
 
-#: web/templates/home.html:55
+#: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
 msgstr "A zene nem játszható le. Ellenőrizze a Plex-kapcsolatot és a böngésző hangtámogatását."
 
-#: web/templates/home.html:62
+#: web/templates/home.html:64
 msgid "Open in Plex"
 msgstr "Megnyitás a Plexben"
 
-#: web/templates/home.html:66 web/templates/home.html:74
+#: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
 msgstr "Külső azonosító nem elérhető"
 
-#: web/templates/home.html:68
+#: web/templates/home.html:70
 msgid "Failed to add theme"
 msgstr "A téma hozzáadása nem sikerült"
 
-#: web/templates/home.html:69
+#: web/templates/home.html:71
 msgid "Plex provided"
 msgstr "Plex biztosított"
 
-#: web/templates/home.html:70
+#: web/templates/home.html:72
 msgid "User provided"
 msgstr "Felhasználó által biztosított"
 
-#: web/templates/home.html:71
+#: web/templates/home.html:73
 msgid "Themerr provided"
 msgstr "Themerr feltéve, hogy"
 
-#: web/templates/home.html:72
+#: web/templates/home.html:74
 msgid "Unknown provider"
 msgstr "Ismeretlen szolgáltató"
 
-#: web/templates/home.html:73
+#: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
 msgstr "Hiányzik a ThemerrDB-ből"
 
-#: web/templates/home.html:74
+#: web/templates/home.html:76
 msgid "TMDB ID unavailable"
 msgstr "A TMDB-azonosító nem elérhető"
 
-#: web/templates/home.html:75
+#: web/templates/home.html:77
 msgid "Theme not installed yet"
 msgstr "A téma még nincs telepítve"
 
-#: web/templates/home.html:78
+#: web/templates/home.html:80
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: web/templates/home.html:78
+#: web/templates/home.html:80
 msgid "Add"
 msgstr "Add"
 
-#: web/templates/home.html:85
+#: web/templates/home.html:87
 msgid "No titles match."
 msgstr "Nincs egyező cím."
 
-#: web/templates/home.html:85
+#: web/templates/home.html:87
 msgid "Try another search or reset your filters."
 msgstr "Próbáljon meg egy másik keresést, vagy állítsa vissza a szűrőket."
 
@@ -931,6 +1059,114 @@ msgstr "A könyvtárad már úton van."
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
 msgstr "Az első frissítés során a könyvtár nézet megjelenik. A folyamatot az Activity alkalmazásban követheted nyomon."
+
+#: web/templates/logs.html:4
+msgid "Explore recent logs, find a message, and jump between warnings and errors."
+msgstr ""
+
+#: web/templates/logs.html:5
+msgid "Download filtered logs"
+msgstr ""
+
+#: web/templates/logs.html:7
+msgid "Log viewer"
+msgstr ""
+
+#: web/templates/logs.html:9
+msgid "Search logs"
+msgstr ""
+
+#: web/templates/logs.html:9
+msgid "Search messages, threads, or timestamps…"
+msgstr ""
+
+#: web/templates/logs.html:10
+msgid "Log source"
+msgstr ""
+
+#: web/templates/logs.html:10
+msgid "All sources"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "Log level"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "All levels"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "Warnings and errors"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Log history"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 250"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 1,000"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 2,000"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Since startup"
+msgstr ""
+
+#: web/templates/logs.html:13
+msgid "Clear filters"
+msgstr ""
+
+#: web/templates/logs.html:17
+msgid "Warning and error navigation"
+msgstr ""
+
+#: web/templates/logs.html:18
+msgid "Previous warning or error"
+msgstr ""
+
+#: web/templates/logs.html:19
+msgid "Next warning or error"
+msgstr ""
+
+#: web/templates/logs.html:22
+msgid "Live refresh"
+msgstr ""
+
+#: web/templates/logs.html:23
+msgid "Follow latest"
+msgstr ""
+
+#: web/templates/logs.html:24
+msgid "Refresh"
+msgstr ""
+
+#: web/templates/logs.html:26
+msgid "Loading logs…"
+msgstr ""
+
+#: web/templates/logs.html:30
+msgid "Log history pages"
+msgstr ""
+
+#: web/templates/logs.html:31
+msgid "Older records"
+msgstr ""
+
+#: web/templates/logs.html:33
+msgid "Newer records"
+msgstr ""
+
+#: web/templates/logs.html:35
+msgid "Log records"
+msgstr ""
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
@@ -963,10 +1199,6 @@ msgstr "Sokkal hangulatosabb."
 #: web/templates/navbar.html:12
 msgid "Resources"
 msgstr "Források"
-
-#: web/templates/navbar.html:14
-msgid "Documentation"
-msgstr "Dokumentáció"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
@@ -1060,65 +1292,137 @@ msgstr "A Plex adatkönyvtárának böngészése"
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
 msgstr "A helyi vagy csatlakoztatott Plex-adatkatalógus kizárólag a régebben feltöltött fájlok eltávolításához szükséges. Távoli szerverek esetén hagyja üresen ezt a mezőt."
 
-#: web/templates/servers.html:24
-msgid "Comma-separated library IDs to exclude from theme updates."
-msgstr "A témakorszerűsítésekből kizárandó, vesszővel elválasztott könyvtár-azonosítók."
+#: web/templates/servers.html:23
+msgid "Ignored libraries"
+msgstr ""
 
-#: web/templates/servers.html:25
+#: web/templates/servers.html:29
+msgid "Library"
+msgstr ""
+
+#: web/templates/servers.html:32
+msgid "Open the list to load this server’s libraries."
+msgstr ""
+
+#: web/templates/servers.html:35
+msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
+msgstr ""
+
+#: web/templates/servers.html:36
 msgid "Save settings"
 msgstr "Beállítások mentése"
 
-#: web/templates/servers.html:25
+#: web/templates/servers.html:36
 msgid "Remove server"
 msgstr "A szerver eltávolítása"
 
-#: web/templates/servers.html:29
+#: web/templates/servers.html:40
 msgid "Your first server starts here."
 msgstr "Az első szervered itt kezdődik."
 
-#: web/templates/servers.html:29
+#: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
 msgstr "Kattints a fenti Plex linkre, majd az alábbiak közül válassz ki vagy add hozzá egy címet."
 
-#: web/templates/servers.html:32
+#: web/templates/servers.html:43
 msgid "Add a server"
 msgstr "Szerver hozzáadása"
 
-#: web/templates/servers.html:32
+#: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Válasszon ki egy szervert a Plex-fiókjából, keressen egyet a közelben, vagy adjon meg egy ismert címet."
 
-#: web/templates/servers.html:33
+#: web/templates/servers.html:44
 msgid "Find account servers"
 msgstr "Fiókszerverek keresése"
 
-#: web/templates/servers.html:33
+#: web/templates/servers.html:44
 msgid "Discover on LAN"
 msgstr "Fedezd fel a LAN-on"
 
-#: web/templates/servers.html:33
+#: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "A LAN-felismerés az alkalmazás hálózatán a Plex GDM-et használja."
 
-#: web/templates/servers.html:34
+#: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "A fiókcímeket a Plex teszi közzé, és előfordulhat, hogy azok nem érhetők el. A plex.direct HTTPS-címek a Plex tanúsítványát használják. Válasszon egy olyan címet, amely a Themerr programot futtató gépről elérhető, vagy írjon be kézzel egy ismert címet."
 
-#: web/templates/servers.html:36
+#: web/templates/servers.html:47
 msgid "Enter an address manually"
 msgstr "Cím kézi megadása"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:48
 msgid "Plex server address"
 msgstr "A Plex-kiszolgáló címe"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:48
 msgid "Connect server"
 msgstr "Csatlakozás a szerverhez"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Használjon LAN-címet vagy érvényes HTTPS-Plex-címet. A kapcsolt Plex-fiókjának hozzáférési jogosultsággal kell rendelkeznie. Egy meglévő szerver hozzáadásával frissül a szerver címe."
+
+#: web/templates/theme_player.html:1
+msgid "Theme player"
+msgstr ""
+
+#: web/templates/theme_player.html:2 web/templates/theme_player.html:7
+msgid "Choose a theme from your library"
+msgstr ""
+
+#: web/templates/theme_player.html:3
+msgid "Unable to load themes. Try again."
+msgstr ""
+
+#: web/templates/theme_player.html:3
+msgid "No installed themes are available yet."
+msgstr ""
+
+#: web/templates/theme_player.html:7
+msgid "THEME PLAYER"
+msgstr ""
+
+#: web/templates/theme_player.html:7
+msgid "A soundtrack for every story."
+msgstr ""
+
+#: web/templates/theme_player.html:11
+msgid "Shuffle"
+msgstr ""
+
+#: web/templates/theme_player.html:12
+msgid "Previous theme"
+msgstr ""
+
+#: web/templates/theme_player.html:13
+msgid "Play theme"
+msgstr ""
+
+#: web/templates/theme_player.html:13
+msgid "Pause theme"
+msgstr ""
+
+#: web/templates/theme_player.html:14
+msgid "Next theme"
+msgstr ""
+
+#: web/templates/theme_player.html:15
+msgid "Repeat this theme"
+msgstr ""
+
+#: web/templates/theme_player.html:17
+msgid "Playback position"
+msgstr ""
+
+#: web/templates/theme_player.html:19
+msgid "Surprise me"
+msgstr ""
+
+#: web/templates/theme_player.html:19
+msgid "Volume"
+msgstr ""
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
