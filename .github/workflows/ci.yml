@@ -193,6 +193,32 @@ jobs:
         if: runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
         run: codesign --verify --deep --strict --verbose=2 ./dist/themerr_plex.app
 
+      - name: Sign Windows executable
+        # The signing action does not support ARM64 Windows runners.
+        if: >-
+          runner.os == 'Windows' && matrix.arch == 'AMD64' &&
+          needs.setup_release.outputs.publish_release == 'true' && vars.AZURE_SIGNING_ACCOUNT != ''
+        uses: azure/trusted-signing-action@c7ab2a863ab5f9a846ddb8265964877ef296ee82  # v2.0.0
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          certificate-profile-name: ${{ vars.AZURE_SIGNING_CERT_PROFILE }}
+          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          files: ${{ github.workspace }}/dist/themerr_plex.exe
+          signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+
+      - name: Verify Windows signature
+        if: >-
+          runner.os == 'Windows' && matrix.arch == 'AMD64' &&
+          needs.setup_release.outputs.publish_release == 'true' && vars.AZURE_SIGNING_ACCOUNT != ''
+        shell: pwsh
+        run: |
+          $signature = Get-AuthenticodeSignature -LiteralPath ./dist/themerr_plex.exe
+          if ($signature.Status -ne 'Valid') {
+            throw "Windows executable signature is invalid: $($signature.Status)"
+          }
+
       - name: Smoke test executable
         shell: bash
         run: |
