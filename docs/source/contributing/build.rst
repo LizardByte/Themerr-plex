@@ -24,6 +24,25 @@ From the repository root, install dependencies and build browser assets:
    npm ci --ignore-scripts
    npm run build
 
+Install the commit hook once per checkout:
+
+.. code-block:: shell
+
+   uv run --locked --no-sync pre-commit install
+
+Before each commit, the hook extracts Python, JavaScript, and template messages into ``locale/themerr-plex.po``.
+If that file changes, the commit stops so you can review it, stage it with ``git add locale/themerr-plex.po``,
+and retry the commit. Unstaged edits are temporarily set aside while the hook checks the staged source.
+The generated template omits creation and revision date headers and Babel's author placeholders. Its bug-report
+URL points to the repository's GitHub issues page. Crowdin creates and updates the per-language catalogs under
+``locale/<locale>/LC_MESSAGES/``. The application's language options are discovered from the available catalogs.
+
+To extract the template manually:
+
+.. code-block:: shell
+
+   uv run --locked --no-sync python scripts/localize.py --extract
+
 For local development, run ``scripts/run_dev.py`` with the project's Python interpreter. The wrapper installs locked
 npm dependencies when needed, rebuilds changed browser assets and documentation when Dockle is available,
 and starts the Python source in the same process. Point an IDE debugger at this script to use normal breakpoints in

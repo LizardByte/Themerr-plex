@@ -10,8 +10,11 @@ on:
       - master
     paths:  # prevents workflow from running unless these files change
       - '.github/workflows/localize.yml'
+      - 'scripts/localize.py'
+      - 'scripts/babel.cfg'
       - 'locale/themerr-plex.po'
       - 'src/**.py'
+      - 'web/js/**.js'
       - 'web/templates/**'
   workflow_dispatch:
 
@@ -36,7 +39,7 @@ jobs:
         run: uv sync --locked --no-build --no-install-project --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
       - name: Update Strings
-        run: uv run --locked --no-build --no-sync python ./scripts/_locale.py --extract
+        run: uv run --locked --no-build --no-sync python ./scripts/localize.py --extract
 
       - name: git diff
         run: |
@@ -45,14 +48,6 @@ jobs:
 
           # print the git diff
           git diff locale/themerr-plex.po
-
-          # set the variable with minimal output, replacing `\t` with ` `
-          OUTPUT=$(git diff --numstat locale/themerr-plex.po | sed -e "s#\t# #g")
-          echo "git_diff=${OUTPUT}" >> "$GITHUB_ENV"
-
-      - name: git reset
-        if: ${{ env.git_diff == '1 1 locale/themerr-plex.po' }}  # only run if more than 1 line changed
-        run: git reset --hard
 
       - name: Get current date
         id: date
