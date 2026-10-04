@@ -46,7 +46,7 @@ executable under dist, including Deno for yt-dlp. macOS also produces ``dist/the
 bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release version before running
 ``scripts/build.py`` to stamp ``src/common/version.py`` with the version used by release notifications and
 ``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
-is included through normal imports. Unversioned builds skip release checks.
+is included through normal imports. Unversioned builds compare releases against ``0.0.0``.
 
 Docker uses the same lockfile and Dockle build:
 

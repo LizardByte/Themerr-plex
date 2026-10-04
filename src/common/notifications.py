@@ -107,15 +107,13 @@ def _fetch_release(prereleases: bool) -> tuple[Version, str] | None:
 def check_for_releases() -> None:
     """Check hourly for a newer release and remember alerts across restarts.
 
-    Pre-releases require the installation's explicit opt-in. Unversioned source
-    checkouts and installations without a desktop skip the check.
+    Pre-releases require the installation's explicit opt-in. Source checkouts
+    compare against 0.0.0; installations without a desktop skip the check.
     """
     if not config.CONFIG['Notifications']['NEW_RELEASE'] or not _desktop_available():
         return
     try:
         installed = Version(version.VERSION)
-        if installed == Version('0.0.0'):
-            return
         with _lock:
             prereleases = config.CONFIG['Notifications']['FOLLOW_PRERELEASES']
             state = _load(_RELEASE_KEY)

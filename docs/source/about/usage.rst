@@ -5,14 +5,18 @@ Usage
 
 Start Themerr-plex, then open its web UI at https://localhost:9494 (or the host and port you configured).
 
+The web sidebar footer shows the installed version. In the system tray, open **About** to see the version and
+links to the repository, releases, bundled documentation, API documentation, and ThemerrDB. The API documentation
+requires signing in to the web UI.
+
 Notifications
 -------------
 
 Under **Settings > Notifications**, choose alerts for new Themerr releases and increased theme coverage.
 Both are enabled by default. **Follow pre-releases** is off by default; enable it to include preview releases.
 Release checks run at startup and once per hour. An alert for the same or an older version is not repeated,
-including after restarting Themerr. Release builds embed their version; an unversioned source checkout skips
-release checks.
+including after restarting Themerr. Release builds embed their version; source checkouts without a stamped
+version compare against ``0.0.0`` and can notify when an eligible release is available.
 
 After a successful dashboard refresh, Themerr compares total theme coverage with the last successful refresh.
 It counts media and collections across saved servers and reports the increase in percentage points, the new

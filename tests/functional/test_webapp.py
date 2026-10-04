@@ -48,10 +48,13 @@ def _dashboard(items):
     }}
 
 
-def test_home(client, configured):
+def test_home(client, configured, monkeypatch):
+    from common import version
+    monkeypatch.setattr(version, 'VERSION', '2026.1003.120000')
     response = client.get('/')
     assert response.status_code == 200
     assert b'Getting to know your library.' in response.content
+    assert b'Version 2026.1003.120000' in response.content
     storage.replace_dashboard(_dashboard([]))
     assert client.get('/home').status_code == 200
 

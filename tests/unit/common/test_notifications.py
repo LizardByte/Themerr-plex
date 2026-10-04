@@ -120,9 +120,36 @@ def test_failed_desktop_delivery_can_be_retried_next_hour(desktop, monkeypatch):
     assert desktop.call_count == 2
 
 
-@pytest.mark.parametrize('installed', ['0.0.0', 'unknown'])
-def test_unknown_installed_version_skips_release_check(desktop, monkeypatch, installed):
-    monkeypatch.setattr(version, 'VERSION', installed)
+def test_source_version_checks_at_startup_and_respects_the_saved_deadline(desktop, monkeypatch):
+    from themerr import scheduled_tasks
+    monkeypatch.setattr(version, 'VERSION', '0.0.0')
+    fetch = response(monkeypatch, release())
+    monkeypatch.setattr(scheduled_tasks, 'run_threaded', lambda target, **kwargs: target())
+    monkeypatch.setattr(scheduled_tasks, 'cache_data', Mock())
+    monkeypatch.setattr(scheduled_tasks, 'scheduled_update', Mock())
+
+    def stop_loop(seconds):
+        if seconds:
+            raise RuntimeError('stop scheduler')
+
+    monkeypatch.setattr(scheduled_tasks.time, 'sleep', stop_loop)
+    scheduled_tasks.schedule.clear()
+    try:
+        scheduled_tasks.configure_jobs()
+        with pytest.raises(RuntimeError, match='stop scheduler'):
+            scheduled_tasks.schedule_loop()
+    finally:
+        scheduled_tasks.schedule.clear()
+    fetch.assert_called_once()
+    desktop.assert_called_once()
+    storage.close()
+    notifications.check_for_releases()
+    fetch.assert_called_once()
+    desktop.assert_called_once()
+
+
+def test_invalid_installed_version_skips_release_check(desktop, monkeypatch):
+    monkeypatch.setattr(version, 'VERSION', 'unknown')
     fetch = response(monkeypatch, release())
     notifications.check_for_releases()
     fetch.assert_not_called()
