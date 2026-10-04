@@ -87,3 +87,17 @@ test('the indicator uses the page language for relative time', async t => {
     await Promise.resolve();
     assert.equal(time.textContent, 'il y a 2 heures');
 });
+
+test('workspace navigation cancels publication polls and a late response cannot restart them', async t => {
+    const { root, time } = fixture(t);
+    const controller = new AbortController();
+    let resolve;
+    const query = t.mock.fn(() => new Promise(done => { resolve = done; }));
+    initDatabaseStatus(root, query, controller.signal);
+    controller.abort();
+    resolve({ updated_at: '2026-10-02T10:00:00Z', stale: false });
+    await Promise.resolve();
+    t.mock.timers.tick(7200 * 1000);
+    assert.equal(query.mock.callCount(), 1);
+    assert.equal(time.textContent, undefined);
+});

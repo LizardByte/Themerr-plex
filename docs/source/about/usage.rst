@@ -114,6 +114,20 @@ Select the play button beside an item's title to listen to its currently selecte
 The button changes to pause during playback, and the ring around it shows playback progress. Pausing retains your
 position; selecting another item stops the previous theme. Items without an installed theme have no play button.
 
+The player at the bottom of the workspace shows the item's poster, title, year, media type, and server.
+Select the title to open the item in Plex. If its poster is unavailable, a music icon appears instead.
+Use the playback slider to seek, the volume slider to adjust sound, and the previous and next buttons to
+browse installed themes. **Surprise me** picks a random installed theme across your servers.
+**Shuffle** plays themes in random order without repeats until the library has played; **Repeat this theme**
+loops the current selection. Otherwise playback advances in library order and stops after the last theme.
+
+Playback and player controls stay active when moving between workspace pages, including browser Back and
+Forward and library refreshes. A full browser reload, signing out, or leaving the application stops playback.
+
+On supported browsers, system media controls and keyboard media keys can play, pause, and move between themes.
+Themerr also supplies the item's title, poster, and playback position to those controls. The browser and operating
+system determine which controls and metadata are displayed.
+
 To exclude a library from updates, enter its ID in **Ignored library IDs** in its server's processing settings.
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 

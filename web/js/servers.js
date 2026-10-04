@@ -1,4 +1,5 @@
 import { api, busy, toast } from './api.js';
+import { refreshPage } from './workspace_navigation.js';
 
 function connectionOption(connection) {
     const option = document.createElement('option');
@@ -32,24 +33,28 @@ function discoveredServer(resource, source) {
     connect.addEventListener('click', () => busy(connect, async () => {
         await api('/api/servers', { body: { url: addresses.value,
             resource_id: source === 'account' ? resource.id : undefined } });
-        window.location.reload();
+        if (connect.isConnected) await refreshPage();
     }));
     row.append(name, addresses, connect);
     return row;
 }
 
-export function initServers() {
+export function initServers(signal) {
     const authStart = document.getElementById('plex-auth-start');
     if (!authStart) return;
     const status = document.getElementById('plex-auth-status');
     const link = document.getElementById('plex-auth-link');
     let pollTimer;
-    window.addEventListener('pagehide', () => clearTimeout(pollTimer));
+    let active = true;
+    const stop = () => { active = false; clearTimeout(pollTimer); };
+    window.addEventListener('pagehide', stop, { once: true, signal });
+    signal?.addEventListener('abort', stop, { once: true });
     async function pollLogin() {
         try {
             const result = await api('/api/plex/auth/check');
+            if (!active) return;
             if (result.connected) {
-                window.location.reload();
+                await refreshPage();
                 return;
             }
             pollTimer = setTimeout(pollLogin, 2000);
@@ -66,6 +71,10 @@ export function initServers() {
         authStart.setAttribute('aria-busy', 'true');
         try {
             const result = await api('/api/plex/auth/start');
+            if (!active) {
+                if (popup) popup.close();
+                return;
+            }
             link.href = result.auth_url;
             link.classList.remove('d-none');
             if (popup) { popup.opener = null; popup.location.assign(result.auth_url); }
@@ -81,7 +90,10 @@ export function initServers() {
     const disconnect = document.getElementById('plex-auth-disconnect');
     disconnect.addEventListener('click', () => {
         if (!window.confirm('Disconnect Plex and pause all saved servers? Your local theme history will be kept.')) return;
-        void busy(disconnect, async () => { await api('/api/plex/auth/disconnect'); window.location.reload(); });
+        void busy(disconnect, async () => {
+            await api('/api/plex/auth/disconnect');
+            if (active) await refreshPage();
+        });
     });
     const results = document.getElementById('discovery-results');
     document.querySelectorAll('[data-discover]').forEach(button => button.addEventListener('click', () => busy(button, async () => {
@@ -107,7 +119,7 @@ export function initServers() {
         event.preventDefault();
         void busy(event.target.querySelector('button[type="submit"]'), async () => {
             await api('/api/servers', { body: { url: new FormData(event.target).get('url') } });
-            window.location.reload();
+            if (active) await refreshPage();
         });
     });
     document.querySelectorAll('[data-server-form]').forEach(form => form.addEventListener('submit', event => {
@@ -119,14 +131,14 @@ export function initServers() {
                 ignored_libraries: data.get('ignored_libraries'),
             } });
             toast(result.message);
-            window.location.reload();
+            if (active) await refreshPage();
         });
     }));
     document.querySelectorAll('[data-remove-server]').forEach(button => button.addEventListener('click', () => {
         if (!window.confirm('Remove this server and its local theme history? Plex media will stay on the server.')) return;
         void busy(button, async () => {
             await api(`/api/servers/${encodeURIComponent(button.dataset.removeServer)}`, { method: 'DELETE' });
-            window.location.reload();
+            if (active) await refreshPage();
         });
     }));
 }

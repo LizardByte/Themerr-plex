@@ -1,0 +1,21 @@
+<section id="theme-widget" class="theme-widget" aria-label="{{ _('Theme player') }}" data-library-url="{{ url_for('home') }}"
+    data-empty-label="{{ _('Choose a theme from your library') }}" data-error-label="{{ _('Unable to play this theme. Check the Plex connection and browser audio support.') }}"
+    data-queue-error-label="{{ _('Unable to load themes. Try again.') }}" data-no-themes-label="{{ _('No installed themes are available yet.') }}">
+    <audio id="theme-player" preload="none" hidden></audio>
+    <div class="player-item">
+        <div class="player-cover"><i data-lucide="music" aria-hidden="true"></i><img data-player-poster alt="" hidden></div>
+        <div class="player-metadata"><span class="eyebrow">{{ _('THEME PLAYER') }}</span><a data-player-link target="_blank" rel="noopener noreferrer"><span data-player-title>{{ _('Choose a theme from your library') }}</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></a><small data-player-details>{{ _('A soundtrack for every story.') }}</small></div>
+    </div>
+    <div class="player-transport">
+        <div class="player-buttons">
+            <button class="icon-button" data-player-shuffle type="button" aria-label="{{ _('Shuffle') }}" title="{{ _('Shuffle') }}" aria-pressed="false"><i data-lucide="shuffle"></i></button>
+            <button class="icon-button" data-player-previous type="button" aria-label="{{ _('Previous theme') }}" title="{{ _('Previous theme') }}" disabled><i data-lucide="skip-back"></i></button>
+            <button class="player-play" data-player-play type="button" data-play-label="{{ _('Play theme') }}" data-pause-label="{{ _('Pause theme') }}" aria-label="{{ _('Play theme') }}" aria-pressed="false" disabled><span class="theme-play-icon"><i data-lucide="play"></i></span><span class="theme-pause-icon d-none"><i data-lucide="pause"></i></span></button>
+            <button class="icon-button" data-player-next type="button" aria-label="{{ _('Next theme') }}" title="{{ _('Next theme') }}" disabled><i data-lucide="skip-forward"></i></button>
+            <button class="icon-button" data-player-repeat type="button" aria-label="{{ _('Repeat this theme') }}" title="{{ _('Repeat this theme') }}" aria-pressed="false"><i data-lucide="repeat-1"></i></button>
+        </div>
+        <div class="player-timeline"><span data-player-elapsed>0:00</span><input data-player-seek type="range" min="0" max="100" step="0.1" value="0" aria-label="{{ _('Playback position') }}" disabled><span data-player-duration>0:00</span></div>
+    </div>
+    <div class="player-options"><button class="btn btn-outline-light btn-sm" data-player-random type="button"><i data-lucide="dices"></i>{{ _('Surprise me') }}</button><label class="player-volume"><i data-lucide="volume-2" aria-hidden="true"></i><span class="visually-hidden">{{ _('Volume') }}</span><input data-player-volume type="range" min="0" max="1" step="0.01" value="1"></label></div>
+    <output class="player-error" data-player-error aria-live="polite" hidden></output>
+</section>

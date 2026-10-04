@@ -34,10 +34,11 @@
         </header>
         {% endif %}
         {% if not admin_username %}<div class="auth-theme-switcher">{% include 'color_theme.html' %}</div>{% endif %}
-        <div class="{{ 'page-content' if admin_username else '' }}">{% block content %}{% endblock %}</div>
+        <div id="page-content" class="{{ 'page-content' if admin_username else '' }}">{% block content %}{% endblock %}</div>
     </main>
+    {% if admin_username %}{% include 'theme_player.html' %}{% endif %}
     <output id="toast-region" class="toast-region" aria-live="polite"></output>
-    {% block modals %}{% endblock %}
+    <div id="page-modals">{% block modals %}{% endblock %}</div>
     <script type="module" src="{{ asset_url('app.js') }}"></script>
 </body>
 </html>

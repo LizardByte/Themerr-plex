@@ -1,15 +1,18 @@
 import { api } from './api.js';
 import { refreshIcons } from './icons.js';
 
-export function initActivity() {
+export function initActivity(signal) {
     const list = document.getElementById('job-list');
     if (!list) return;
     let timer;
     let active = true;
-    window.addEventListener('pagehide', () => { active = false; clearTimeout(timer); });
+    const stop = () => { active = false; clearTimeout(timer); };
+    window.addEventListener('pagehide', stop, { once: true, signal });
+    signal?.addEventListener('abort', stop, { once: true });
     async function update() {
         try {
             const result = await api('/api/tasks', { method: 'GET' });
+            if (!active) return;
             document.getElementById('queue-size').textContent = result.queue_size;
             if (result.jobs.length) {
                 list.replaceChildren();

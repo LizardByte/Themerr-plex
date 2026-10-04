@@ -46,7 +46,7 @@ export function highlightMessage(element, message, search) {
     element.append(element.ownerDocument.createTextNode(message.slice(start)));
 }
 
-export function initLogs(root = document, request = api, host = window) {
+export function initLogs(root = document, request = api, host = window, signal = undefined) {
     const viewer = root.querySelector('#log-viewer');
     if (!viewer) return;
     const field = name => root.querySelector(`#log-${name}`);
@@ -240,7 +240,9 @@ export function initLogs(root = document, request = api, host = window) {
         link.remove();
         host.setTimeout(() => host.URL.revokeObjectURL(url), 1000);
     });
-    host.addEventListener('pagehide', () => { active = false; host.clearTimeout(timer); });
-    host.addEventListener('pageshow', () => { if (!active) { active = true; void update(); } });
+    const stop = () => { active = false; host.clearTimeout(timer); };
+    host.addEventListener('pagehide', stop, { signal });
+    host.addEventListener('pageshow', () => { if (!active) { active = true; void update(); } }, { signal });
+    signal?.addEventListener('abort', stop, { once: true });
     void update();
 }

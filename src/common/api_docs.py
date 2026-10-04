@@ -91,6 +91,14 @@ def _describe_operation(route: APIRoute, operation: dict) -> None:
                 'content': {'audio/mpeg': {'schema': {'type': 'string', 'format': 'binary'}}},
             }
         operation['responses']['416'] = {'description': 'Requested audio range is unavailable.'}
+    if route.name.startswith('theme_poster'):
+        operation['responses']['200'] = {
+            'description': 'Plex item poster.',
+            'content': {kind: {'schema': {'type': 'string', 'format': 'binary'}}
+                        for kind in ('image/jpeg', 'image/png', 'image/webp', 'image/gif')},
+        }
+        operation['responses']['404'] = {'description': 'Poster is unavailable.'}
+        operation['responses']['502'] = {'description': 'Unable to load a bounded poster from Plex.'}
 
 
 def schema(routes: list) -> dict:

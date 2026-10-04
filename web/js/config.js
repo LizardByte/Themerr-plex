@@ -1,7 +1,8 @@
 import { api, toast } from './api.js';
 import { _ } from './i18n.js';
+import { refreshPage } from './workspace_navigation.js';
 
-export function initSettings() {
+export function initSettings(signal) {
     const form = document.getElementById('configForm');
     if (!form) return;
     const save = document.getElementById('save-button');
@@ -20,7 +21,10 @@ export function initSettings() {
     form.addEventListener('change', markDirty);
     window.addEventListener('beforeunload', event => {
         if (dirty) event.preventDefault();
-    });
+    }, { signal });
+    document.addEventListener('themerr:before-navigate', event => {
+        if (dirty && !window.confirm(_('Discard unsaved settings changes?'))) event.preventDefault();
+    }, { signal });
     form.addEventListener('submit', async event => {
         event.preventDefault();
         if (!form.reportValidity()) return;
@@ -38,7 +42,7 @@ export function initSettings() {
             dirty = revision !== submittedRevision;
             save.disabled = !dirty;
             status.textContent = dirty ? _('Unsaved changes') : _('All changes saved.');
-            if (!dirty && submittedLocale !== pageLocale) window.location.reload();
+            if (!dirty && submittedLocale !== pageLocale && form.isConnected) void refreshPage();
             toast(_('Settings saved. Network changes take effect after restarting Themerr.'));
         } catch (error) {
             toast(error.message, true);
@@ -61,7 +65,7 @@ export function initSettings() {
             dirty = false;
             toast(result.message);
             // Refresh the CSRF token after rotating the authenticated session.
-            setTimeout(() => window.location.reload(), 1000);
+            setTimeout(() => { if (form.isConnected) void refreshPage(); }, 1000);
         } catch (error) { toast(error.message, true); } finally { button.disabled = false; }
     });
     const observer = new IntersectionObserver(entries => {
@@ -72,4 +76,5 @@ export function initSettings() {
         });
     }, { rootMargin: '-10% 0px -65% 0px' });
     document.querySelectorAll('.settings-panel').forEach(panel => observer.observe(panel));
+    signal?.addEventListener('abort', () => observer.disconnect(), { once: true });
 }
