@@ -292,7 +292,7 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .server-settings .library-choice { display: flex; align-items: center; gap: 10px; margin: 0; padding: 9px; border-radius: 5px; cursor: pointer; font-size: 13px; overflow-wrap: anywhere; }
 .library-choice:hover { background: var(--hover); }
 .library-choice input { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
-.library-picker-menu .form-text { margin: 5px 9px; }
+.library-picker-menu .form-text { display: block; margin: 5px 9px; }
 .library-picker-menu .form-text:empty { display: none; }
 .setting-switch { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
 .setting-switch label { margin: 0; }

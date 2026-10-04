@@ -161,6 +161,13 @@ test('multiple checked libraries save as IDs and clearing all choices saves an e
     assert.equal(JSON.parse(fetch.mock.calls[2].arguments[1].body).ignored_libraries, '');
 });
 
+test('only string FormData entries are saved as ignored library IDs', async context => {
+    const { forms, fetch } = page(context, [{ body: { message: 'Saved' } }], [{ id: 'a' }]);
+    context.mock.method(globalThis.FormData.prototype, 'getAll', () => ['1', new File(['data'], 'upload.txt'), '2']);
+    await forms[0].form.listeners.submit({ preventDefault() {} });
+    assert.equal(JSON.parse(fetch.mock.calls[0].arguments[1].body).ignored_libraries, '1,2');
+});
+
 test('failed and cached library loads retain selections and can be retried', async context => {
     const { forms } = page(context, [{ error: true, body: { message: 'Unavailable' } },
         libraries([['1', 'Cached movies']], true), libraries([['1', 'Movies'], ['2', 'Shows']])],

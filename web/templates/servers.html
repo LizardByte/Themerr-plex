@@ -29,7 +29,7 @@
                         <label class="library-choice"><input type="checkbox" name="ignored_libraries" value="{{ library_id.strip() }}" checked><span>{{ _('Library') }} {{ library_id.strip() }}</span></label>
                         {% endfor %}
                     </div>
-                    <p class="form-text" data-library-status role="status">{{ _('Open the list to load this server’s libraries.') }}</p>
+                    <output class="form-text" data-library-status>{{ _('Open the list to load this server’s libraries.') }}</output>
                 </div>
             </details>
             <p id="ignored-help-{{ loop.index }}" class="form-text">{{ _('Select the libraries to exclude from theme updates. Leave all unchecked to process every library.') }}</p>

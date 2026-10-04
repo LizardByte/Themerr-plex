@@ -42,9 +42,11 @@ function initLibraryPicker(form, signal) {
                 label.append(input, text);
                 options.append(label);
             });
-            status.textContent = result.cached
-                ? _('Showing cached libraries. Enable or reconnect this server to load its current libraries.')
-                : libraries.size ? '' : _('This server has no libraries.');
+            if (result.cached) {
+                status.textContent = _('Showing cached libraries. Enable or reconnect this server to load its current libraries.');
+            } else {
+                status.textContent = libraries.size ? '' : _('This server has no libraries.');
+            }
             updateSummary();
             loaded = !result.cached;
         } catch {
@@ -193,9 +195,10 @@ export function initServers(signal) {
             event.preventDefault();
             return busy(form.querySelector('button[type="submit"]'), async () => {
                 const data = new FormData(form);
+                const ignoredLibraries = data.getAll('ignored_libraries').filter(value => typeof value === 'string');
                 const result = await api(`/api/servers/${encodeURIComponent(form.dataset.serverId)}`, { body: {
                     enabled: form.elements.enabled.checked, data_directory: data.get('data_directory'),
-                    ignored_libraries: data.getAll('ignored_libraries').join(','),
+                    ignored_libraries: ignoredLibraries.join(','),
                 } });
                 toast(result.message);
                 if (active) await refreshPage();
