@@ -28,3 +28,15 @@ await build({
         '.woff2': 'file',
     },
 });
+
+// A small classic script applies the theme synchronously in the document head.
+await build({
+    entryPoints: [resolve(webDir, 'js/color_theme.js')],
+    absWorkingDir: process.cwd(),
+    outdir,
+    bundle: true,
+    minify: true,
+    target: ['es2022'],
+    format: 'iife',
+    platform: 'browser',
+});

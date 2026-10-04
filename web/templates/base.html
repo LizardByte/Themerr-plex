@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ locale_id }}" data-bs-theme="dark">
+<html lang="{{ locale_id }}" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="color-scheme" content="dark">
+    <meta name="color-scheme" content="light dark">
+    <script src="{{ asset_url('color_theme.js') }}"></script>
     <title>{{ title or 'Overview' }} · Themerr</title>
     <link rel="icon" href="{{ url_for('image', img='favicon.ico') }}">
     <style>
-        html { background: #101217; color-scheme: dark; }
+        html { background: #f5f6fa; color-scheme: light; }
+        html[data-bs-theme="dark"] { background: #101217; color-scheme: dark; }
         body { visibility: hidden; animation: stylesheet-fallback 0s 3s forwards; }
         @keyframes stylesheet-fallback { to { visibility: visible; } }
     </style>
@@ -25,9 +27,13 @@
                 <button class="icon-button mobile-menu" type="button" data-sidebar-toggle aria-label="{{ _('Toggle navigation') }}" aria-expanded="false"><i data-lucide="menu"></i></button>
                 <span class="workspace-breadcrumb">{{ _('Workspace') }} <span>/</span> <strong>{{ title }}</strong></span>
             </div>
-            <span class="workspace-account"><span class="presence-dot"></span>{{ admin_username }}</span>
+            <div class="workspace-tools">
+                {% include 'color_theme.html' %}
+                <span class="workspace-account"><span class="presence-dot"></span>{{ admin_username }}</span>
+            </div>
         </header>
         {% endif %}
+        {% if not admin_username %}<div class="auth-theme-switcher">{% include 'color_theme.html' %}</div>{% endif %}
         <div class="{{ 'page-content' if admin_username else '' }}">{% block content %}{% endblock %}</div>
     </main>
     <output id="toast-region" class="toast-region" aria-live="polite"></output>

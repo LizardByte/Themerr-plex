@@ -1,0 +1,4 @@
+/* Swagger's native palette is controlled by the shared theme script. */
+html.dark-mode[data-bs-theme="dark"] { background: var(--canvas); }
+.api-docs-panel .swagger-ui { font-family: var(--bs-body-font-family); }
+.api-docs-panel .swagger-ui .renderedMarkdown :is(h1, h2, h3, h4, h5, h6) { color: var(--ink); }
