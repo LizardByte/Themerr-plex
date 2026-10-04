@@ -101,17 +101,54 @@ def test_start_stop_toggle_and_signals(configured, monkeypatch):
     assert common.SIGNAL == 'restart'
 
 
-def test_browser_destinations(monkeypatch):
-    opened = []
-    monkeypatch.setattr(tray_icon.helpers, 'open_url_in_browser', lambda url: opened.append(url) or True)
-    monkeypatch.setattr(tray_icon.webapp, 'URL', 'https://localhost:9494')
-    for action in (
-        tray_icon.open_webapp, tray_icon.github_releases, tray_icon.donate_github,
-        tray_icon.donate_patreon, tray_icon.donate_paypal,
-    ):
-        assert action()
-    assert opened[0] == 'https://localhost:9494'
-    assert len(set(opened)) == 5
+def test_about_and_donation_links_use_the_native_callback_contract(configured, monkeypatch):
+    # The dummy backend lets Linux runners import pystray without a desktop.
+    monkeypatch.setenv('PYSTRAY_BACKEND', 'dummy')
+    from pystray import Menu, MenuItem
+    monkeypatch.setattr(tray_icon, 'icon_supported', True)
+    monkeypatch.setattr(tray_icon, 'icon_class', FakeIcon)
+    monkeypatch.setattr(tray_icon, 'MenuItem', MenuItem)
+    monkeypatch.setattr(tray_icon, 'Menu', Menu)
+    monkeypatch.setattr(tray_icon.Image, 'open', lambda _: object())
+    monkeypatch.setattr(tray_icon.version, 'VERSION', '2026.1003.120000')
+    monkeypatch.setattr(tray_icon.webapp, 'URL', None)
+    opened = Mock(return_value=True)
+    monkeypatch.setattr(tray_icon.helpers, 'open_url_in_browser', opened)
+    icon = tray_icon.tray_initialize()
+    about = next(item.submenu for item in icon.menu.items if item.text == 'About')
+    details = about.items[0]
+    assert details.text == 'Version 2026.1003.120000'
+    assert not details.enabled
+    assert icon.title == 'Themerr-plex'
+    assert not icon.menu.items[0](icon)
+    opened.assert_not_called()
+
+    destinations = {
+        'Repository': 'https://github.com/LizardByte/Themerr-plex',
+        'GitHub Releases': 'https://github.com/LizardByte/Themerr-plex/releases/latest',
+        'Documentation': '/docs/',
+        'API documentation': '/api/docs',
+        'ThemerrDB': 'https://github.com/LizardByte/ThemerrDB',
+        'GitHub Sponsors': 'https://github.com/sponsors/LizardByte',
+        'Patreon': 'https://www.patreon.com/LizardByte',
+        'PayPal': 'https://www.paypal.com/paypalme/ReenigneArcher',
+    }
+    donations = next(item.submenu for item in icon.menu.items if item.text == 'Donate')
+    for base in ('http://127.0.0.1:9495', 'https://127.0.0.1:9496/'):
+        monkeypatch.setattr(tray_icon.webapp, 'URL', base)
+        assert icon.menu.items[0](icon)
+        opened.assert_called_with(url=base.rstrip('/') + '/')
+        for item in (*about.items, *donations.items):
+            if item.text not in destinations:
+                continue
+            assert item(icon)
+            target = destinations[item.text]
+            opened.assert_called_with(url=base.rstrip('/') + target if target.startswith('/') else target)
+
+
+def test_link_callback_returns_browser_failure(monkeypatch):
+    monkeypatch.setattr(tray_icon.helpers, 'open_url_in_browser', lambda url: False)
+    assert tray_icon.open_link('https://github.com/LizardByte/Themerr-plex') is False
 
 
 @pytest.mark.skipif(not hasattr(tray_icon, 'MenuOnLeftClickIcon'), reason='Windows tray backend only')

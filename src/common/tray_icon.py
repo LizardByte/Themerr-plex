@@ -4,6 +4,7 @@ src/common/tray_icon.py
 Responsible for system tray icon and related functions.
 """
 # standard imports
+import functools
 import os
 import sys
 
@@ -19,6 +20,7 @@ from common import locales
 from common import logger
 from common import threads
 from common import webapp
+from common import version
 
 # setup
 _ = locales.get_text()
@@ -99,20 +101,34 @@ def tray_initialize() -> Icon | bool:
 
     # NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not translate "%(app_name)s".
     first_menu_entry = MenuItem(text=_('Open %(app_name)s') % {'app_name': definitions.Names.name},
-                                action=open_webapp)
+                                action=functools.partial(open_link, '/'))
 
     if tray_icon.HAS_MENU:
         menu = (
             first_menu_entry,
             Menu.SEPARATOR,
-            # NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate "%(github)s".
-            MenuItem(text=_('%(github)s Releases') % {'github': 'GitHub'}, action=github_releases),
+            MenuItem(text=_('About'), action=Menu(
+                MenuItem(text=_('Version %(version)s') % {'version': version.VERSION}, action=None, enabled=False),
+                Menu.SEPARATOR,
+                MenuItem(text=_('Repository'),
+                         action=functools.partial(open_link, 'https://github.com/LizardByte/Themerr-plex')),
+                # NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate "%(github)s".
+                MenuItem(text=_('%(github)s Releases') % {'github': 'GitHub'},
+                         action=functools.partial(
+                             open_link, 'https://github.com/LizardByte/Themerr-plex/releases/latest')),
+                MenuItem(text=_('Documentation'), action=functools.partial(open_link, '/docs/')),
+                MenuItem(text=_('API documentation'), action=functools.partial(open_link, '/api/docs')),
+                MenuItem(text='ThemerrDB',
+                         action=functools.partial(open_link, 'https://github.com/LizardByte/ThemerrDB')),
+            )),
             MenuItem(
                 # NOTE: Donate to LizardByte.
                 text=_('Donate'), action=Menu(
-                    MenuItem(text=_('GitHub Sponsors'), action=donate_github),
-                    MenuItem(text='Patreon', action=donate_patreon),
-                    MenuItem(text='PayPal', action=donate_paypal),
+                    MenuItem(text=_('GitHub Sponsors'),
+                             action=functools.partial(open_link, 'https://github.com/sponsors/LizardByte')),
+                    MenuItem(text='Patreon', action=functools.partial(open_link, 'https://www.patreon.com/LizardByte')),
+                    MenuItem(text='PayPal',
+                             action=functools.partial(open_link, 'https://www.paypal.com/paypalme/ReenigneArcher')),
                 )
             ),
             Menu.SEPARATOR,
@@ -312,11 +328,19 @@ def tray_run():
                 icon_running = True
 
 
-def open_webapp() -> bool:
+def open_link(url: str, *args) -> bool:
     """
-    Open the webapp.
+    Open a tray link in the default web browser.
 
-    Open Themerr-plex in the default web browser.
+    Relative links use the running web server's address at click time. Bound
+    callbacks accept pystray's icon and menu item arguments.
+
+    Parameters
+    ----------
+    url : str
+        Fixed external URL or application path supplied by the tray menu.
+    *args : tuple
+        Icon and menu item supplied by pystray; ignored.
 
     Returns
     -------
@@ -325,87 +349,11 @@ def open_webapp() -> bool:
 
     Examples
     --------
-    >>> open_webapp()
+    >>> open_link('https://github.com/LizardByte/Themerr-plex')
     True
     """
-    return helpers.open_url_in_browser(url=webapp.URL)
-
-
-def github_releases():
-    """
-    Open GitHub Releases.
-
-    Open GitHub Releases in the default web browser.
-
-    Returns
-    -------
-    bool
-        True if opening page was successful, otherwise False.
-
-    Examples
-    --------
-    >>> github_releases()
-    True
-    """
-    url = 'https://github.com/LizardByte/Themerr-plex/releases/latest'
-    return helpers.open_url_in_browser(url=url)
-
-
-def donate_github():
-    """
-    Open GitHub Sponsors.
-
-    Open GitHub Sponsors in the default web browser.
-
-    Returns
-    -------
-    bool
-        True if opening page was successful, otherwise False.
-
-    Examples
-    --------
-    >>> donate_github()
-    True
-    """
-    url = 'https://github.com/sponsors/LizardByte'
-    return helpers.open_url_in_browser(url=url)
-
-
-def donate_patreon():
-    """
-    Open Patreon.
-
-    Open Patreon in the default web browser.
-
-    Returns
-    -------
-    bool
-        True if opening page was successful, otherwise False.
-
-    Examples
-    --------
-    >>> donate_patreon()
-    True
-    """
-    url = 'https://www.patreon.com/LizardByte'
-    return helpers.open_url_in_browser(url=url)
-
-
-def donate_paypal():
-    """
-    Open PayPal.
-
-    Open PayPal in the default web browser.
-
-    Returns
-    -------
-    bool
-        True if opening page was successful, otherwise False.
-
-    Examples
-    --------
-    >>> donate_paypal()
-    True
-    """
-    url = 'https://www.paypal.com/paypalme/ReenigneArcher'
+    if url.startswith('/'):
+        if webapp.URL is None:
+            return False
+        url = webapp.URL.rstrip('/') + url
     return helpers.open_url_in_browser(url=url)

@@ -728,7 +728,7 @@ def _save_settings(candidate: dict, changed: list[tuple[str, str]]) -> Response:
         on_change = config._CONFIG_SPEC_DICT[key][setting].get('on_change')
         if on_change:
             on_change()
-    if any(key == 'Themerr' and setting in (
+    if any(key == 'Notifications' or key == 'Themerr' and setting in (
             'BOOL_THEMERR_ENABLED', 'INT_UPDATE_THEMES_INTERVAL', 'INT_UPDATE_DATABASE_CACHE_INTERVAL',
     ) for key, setting in changed):
         from themerr import scheduled_tasks

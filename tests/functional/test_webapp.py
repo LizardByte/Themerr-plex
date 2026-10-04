@@ -48,10 +48,13 @@ def _dashboard(items):
     }}
 
 
-def test_home(client, configured):
+def test_home(client, configured, monkeypatch):
+    from common import version
+    monkeypatch.setattr(version, 'VERSION', '2026.1003.120000')
     response = client.get('/')
     assert response.status_code == 200
     assert b'Getting to know your library.' in response.content
+    assert b'Version 2026.1003.120000' in response.content
     storage.replace_dashboard(_dashboard([]))
     assert client.get('/home').status_code == 200
 
@@ -425,6 +428,30 @@ def test_settings(client):
     assert b'data-directory-target="LOG_DIR"' in client.get('/settings/').content
     assert b'Plex data directory' in client.get('/servers').content
     assert b'PLEX_TOKEN' not in client.get('/settings/').content
+
+
+def test_notification_preferences_render_validate_and_persist(client, configured):
+    from configobj import ConfigObj
+    page = client.get('/settings/').text
+    assert 'id="notifications"' in page
+    assert 'href="#notifications"' in page
+    assert 'id="NEW_RELEASE"' in page
+    assert 'id="COVERAGE_INCREASE"' in page
+    assert configured['Notifications']['FOLLOW_PRERELEASES'] is False
+    assert configured['Notifications']['NEW_RELEASE'] is True
+    assert configured['Notifications']['COVERAGE_INCREASE'] is True
+    assert client.post('/api/settings', data={'Notifications|FOLLOW_PRERELEASES': 'invalid'}).status_code == 400
+    assert configured['Notifications']['FOLLOW_PRERELEASES'] is False
+    response = client.post('/api/settings', data={
+        'Notifications|NEW_RELEASE': 'false', 'Notifications|FOLLOW_PRERELEASES': 'true',
+        'Notifications|COVERAGE_INCREASE': 'false',
+    })
+    assert response.status_code == 200
+    assert configured['Notifications']['FOLLOW_PRERELEASES'] is True
+    assert configured['Notifications']['NEW_RELEASE'] is False
+    saved = ConfigObj(configured.filename)
+    assert saved['Notifications']['FOLLOW_PRERELEASES'] == 'True'
+    assert saved['Notifications']['COVERAGE_INCREASE'] == 'False'
 
 
 def test_directory_browser_lists_server_folders(client, tmp_path):

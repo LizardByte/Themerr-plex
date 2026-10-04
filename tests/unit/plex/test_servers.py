@@ -234,6 +234,7 @@ def test_cache_and_scan_keep_other_servers_running_when_one_is_offline(configure
         if identifier == 'a':
             raise OSError('offline')
         storage.replace_dashboard(snapshot(identifier))
+        return True
 
     monkeypatch.setattr(cache, '_cache_server', refresh)
     cache.cache_data()

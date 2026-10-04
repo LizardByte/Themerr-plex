@@ -12,6 +12,7 @@ import schedule
 # local imports
 from common import config
 from common import logger
+from common.notifications import check_for_releases
 from plex.plexapi import scheduled_update
 from themerr.cache import cache_data
 
@@ -131,6 +132,14 @@ def configure_jobs() -> None:
         daemon=True,
         task_name='Dashboard refresh',
     ).tag('themerr')
+
+    if config.CONFIG['Notifications']['NEW_RELEASE']:
+        schedule.every().hour.do(
+            job_func=run_threaded,
+            target=check_for_releases,
+            daemon=True,
+            task_name='Release notification check',
+        ).tag('themerr')
 
 
 def setup_scheduling() -> None:

@@ -17,7 +17,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 # local imports
-from common import locales
+from common import locales, version
 from common.definitions import Paths
 from common.path_policy import resolve_file_path, validate_relative_path
 
@@ -189,6 +189,7 @@ def render_template(request: Request, template_name: str, *, status_code: int = 
         'locale_id': locale_id.replace('_', '-'),
         'admin_username': getattr(request.state, 'admin_username', None),
         'current_endpoint': getattr(request.scope.get('route'), 'name', None),
+        'app_version': version.VERSION,
         'url_for': lambda name, **values: str(request.app.url_path_for(name, **values)),
         'asset_url': lambda filename: asset_url(request, filename),
         'csrf_token': lambda: csrf_token(request),
