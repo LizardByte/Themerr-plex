@@ -273,6 +273,24 @@ def test_api_documentation_requires_session_and_uses_local_assets(browser):
     assert browser.get('/api/openapi.json').status_code == 401
 
 
+def test_theme_switcher_is_shared_by_workspace_swagger_and_sign_in(browser):
+    for path in ('/settings/', '/api/docs'):
+        page = browser.get(path)
+        assert page.status_code == 200
+        assert 'data-color-theme' in page.text
+        assert all(f'data-theme-icon="{mode}"' in page.text for mode in ('light', 'dark', 'auto'))
+        assert all(f'data-lucide="{icon}"' in page.text for icon in ('sun', 'moon', 'sun-moon'))
+        script = page.text.index('<script src="/web/assets/color_theme.js')
+        assert script < page.text.index('rel="stylesheet"')
+        assert "script-src 'self';" in page.headers['Content-Security-Policy']
+    assert browser.get('/web/assets/color_theme.js').status_code == 200
+    browser.cookies.clear()
+    login = browser.get('/login')
+    assert login.status_code == 200
+    assert 'data-color-theme' in login.text
+    assert '/web/assets/color_theme.js' in login.text
+
+
 def test_openapi_describes_request_bodies_authentication_and_unique_operations(browser):
     response = browser.get('/api/openapi.json')
     assert response.status_code == 200
