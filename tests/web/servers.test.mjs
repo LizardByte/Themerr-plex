@@ -10,27 +10,70 @@ class Element {
     disabled = false;
     textContent = '';
     value = '';
+    isConnected = true;
     addEventListener(name, listener) { this.listeners[name] = listener; }
     setAttribute() {}
     removeAttribute() {}
     replaceChildren() { this.children = []; this.textContent = ''; }
     append(...elements) {
+        elements.forEach((element, index) => { element.nextElementSibling = elements[index + 1]; });
         this.children.push(...elements);
         if (this.tag === 'select' && !this.value) this.value = elements[0].value;
     }
+    querySelectorAll(selector) {
+        return this.children.flatMap(child => [
+            ...(child.tag === 'input' && (selector !== 'input:checked' || child.checked) ? [child] : []),
+            ...child.querySelectorAll(selector),
+        ]);
+    }
+    contains(element) { return this === element || this.children.some(child => child.contains(element)); }
+    focus() { this.focused = true; }
     click() { return this.listeners.click(); }
 }
 
-function page(context, responses) {
-    const previous = { document: globalThis.document, window: globalThis.window };
+function serverForm(id, selected) {
+    const form = new Element('form');
+    form.dataset.serverId = id;
+    form.elements = { enabled: { checked: true } };
+    const picker = new Element('details');
+    const options = new Element();
+    selected.forEach(id => {
+        const label = new Element('label');
+        const input = Object.assign(new Element('input'), { value: id, checked: true });
+        const text = Object.assign(new Element('span'), { textContent: `Library ${id}` });
+        label.append(input, text);
+        options.append(label);
+    });
+    const summary = new Element('summary');
+    const status = new Element('p');
+    picker.append(options, summary, status);
+    picker.querySelector = selector => ({ '[data-library-options]': options,
+        '[data-library-summary]': summary, '[data-library-status]': status, summary })[selector];
+    const save = new Element('button');
+    form.querySelector = selector => selector === '[data-library-picker]' ? picker : save;
+    form.append(picker, save);
+    return { form, picker, options, summary, status };
+}
+
+function page(context, responses, savedServers = []) {
+    const previous = { document: globalThis.document, window: globalThis.window, FormData: globalThis.FormData };
     context.after(() => Object.assign(globalThis, previous));
     const elements = Object.fromEntries(['plex-auth-start', 'plex-auth-status', 'plex-auth-link', 'plex-auth-disconnect',
         'discovery-results', 'manual-server-form', 'toast-region'].map(id => [id, new Element()]));
     const buttons = ['account', 'local'].map(source => Object.assign(new Element('button'), { dataset: { discover: source } }));
+    const forms = savedServers.map(({ id, selected = [] }) => serverForm(id, selected));
+    const events = new EventTarget();
     globalThis.document = {
         getElementById: id => elements[id], createElement: tag => new Element(tag),
-        querySelectorAll: selector => selector === '[data-discover]' ? buttons : [],
+        querySelectorAll: selector => ({ '[data-discover]': buttons,
+            '[data-server-form]': forms.map(({ form }) => form) })[selector] || [],
         querySelector: () => ({ content: 'csrf-token' }),
+        addEventListener: events.addEventListener.bind(events), dispatchEvent: events.dispatchEvent.bind(events),
+    };
+    globalThis.FormData = class {
+        constructor(form) { this.form = form; }
+        get() { return ''; }
+        getAll() { return this.form.querySelectorAll('input:checked').map(input => input.value); }
     };
     const reload = context.mock.fn();
     globalThis.window = { addEventListener() {}, location: { reload } };
@@ -39,8 +82,9 @@ function page(context, responses) {
         return { ok: !response.error, status: response.error ? 502 : 200, json: async () => response.body };
     });
     context.mock.method(globalThis, 'setTimeout', () => 0);
-    initServers();
-    return { elements, buttons, fetch, reload };
+    const controller = new AbortController();
+    initServers(controller.signal);
+    return { elements, buttons, fetch, reload, forms, controller };
 }
 
 test('empty LAN discovery explains GDM and offers account or manual connections', async context => {
@@ -74,4 +118,104 @@ test('connection labels show HTTPS and scope, preserve the advertised URI, and a
     assert.equal(elements['toast-region'].children[0].children[0].textContent, 'The Plex connection timed out.');
     assert.equal(connect.disabled, false);
     assert.equal(reload.mock.callCount(), 0);
+});
+
+const libraries = (entries, cached = false) => ({ body: { libraries: entries.map(([id, title]) => ({ id, title })), cached } });
+const open = async picker => { picker.open = true; await picker.listeners.toggle(); };
+
+test('library dropdowns load lazily for each server and preserve saved and unavailable IDs', async context => {
+    const { forms, fetch } = page(context, [libraries([['1', 'Movies'], ['2', '<b>Shows</b>']]),
+        libraries([['1', 'Other movies']])], [{ id: 'a/b', selected: ['2', '9'] }, { id: 'b', selected: ['1'] }]);
+    assert.equal(fetch.mock.callCount(), 0);
+    const [first, second] = forms;
+    await open(first.picker);
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/servers/a%2Fb/libraries');
+    assert.equal(fetch.mock.calls[0].arguments[1].method, 'GET');
+    assert.deepEqual(first.options.querySelectorAll('input:checked').map(input => input.value), ['2', '9']);
+    assert.equal(first.options.children[1].children[1].textContent, '<b>Shows</b>');
+    assert.equal(first.options.children[2].children[1].textContent, 'Unavailable library (9)');
+    assert.equal(first.summary.textContent, '<b>Shows</b>, Unavailable library (9)');
+    await open(first.picker);
+    assert.equal(fetch.mock.callCount(), 1);
+    await open(second.picker);
+    assert.equal(fetch.mock.calls[1].arguments[0], '/api/servers/b/libraries');
+    assert.equal(second.summary.textContent, 'Other movies');
+});
+
+test('multiple checked libraries save as IDs and clearing all choices saves an empty string', async context => {
+    const { forms, fetch } = page(context, [libraries([['1', 'Movies'], ['2', 'Shows']]),
+        { body: { message: 'Saved' } }, { body: { message: 'Saved' } }], [{ id: 'a' }]);
+    const { form, picker, options, summary } = forms[0];
+    await open(picker);
+    options.querySelectorAll('input').forEach(input => { input.checked = true; });
+    options.listeners.change();
+    assert.equal(summary.textContent, 'Movies, Shows');
+    await form.listeners.submit({ preventDefault() {} });
+    assert.deepEqual(JSON.parse(fetch.mock.calls[1].arguments[1].body), {
+        enabled: true, data_directory: '', ignored_libraries: '1,2',
+    });
+    options.querySelectorAll('input').forEach(input => { input.checked = false; });
+    options.listeners.change();
+    assert.equal(summary.textContent, 'Select libraries to ignore');
+    await form.listeners.submit({ preventDefault() {} });
+    assert.equal(JSON.parse(fetch.mock.calls[2].arguments[1].body).ignored_libraries, '');
+});
+
+test('failed and cached library loads retain selections and can be retried', async context => {
+    const { forms } = page(context, [{ error: true, body: { message: 'Unavailable' } },
+        libraries([['1', 'Cached movies']], true), libraries([['1', 'Movies'], ['2', 'Shows']])],
+    [{ id: 'a', selected: ['1'] }]);
+    const { picker, options, status } = forms[0];
+    await open(picker);
+    assert.match(status.textContent, /Unable to load libraries/);
+    assert.equal(options.querySelectorAll('input:checked')[0].value, '1');
+    await open(picker);
+    assert.match(status.textContent, /Showing cached libraries/);
+    await open(picker);
+    assert.equal(status.textContent, '');
+    assert.equal(options.children.length, 2);
+    assert.equal(options.querySelectorAll('input:checked')[0].value, '1');
+});
+
+test('empty library lists explain the state and the dropdown closes with Escape or an outside click', async context => {
+    const { forms, controller } = page(context, [libraries([])], [{ id: 'a' }]);
+    const { picker, summary, status } = forms[0];
+    await open(picker);
+    assert.equal(status.textContent, 'This server has no libraries.');
+    picker.listeners.keydown({ key: 'Escape' });
+    assert.equal(picker.open, false);
+    assert.equal(summary.focused, true);
+    picker.open = true;
+    document.dispatchEvent(new Event('click'));
+    assert.equal(picker.open, false);
+    controller.abort();
+    picker.open = true;
+    document.dispatchEvent(new Event('click'));
+    assert.equal(picker.open, true);
+});
+
+test('a pending library response preserves edits made while loading', async context => {
+    const { forms } = page(context, [], [{ id: 'a', selected: ['1'] }]);
+    let release;
+    context.mock.method(globalThis, 'fetch', () => new Promise(resolve => { release = resolve; }));
+    const { picker, options, summary } = forms[0];
+    const pending = open(picker);
+    options.querySelectorAll('input:checked')[0].checked = false;
+    release({ ok: true, status: 200, json: async () => libraries([['1', 'Movies']]).body });
+    await pending;
+    assert.equal(options.querySelectorAll('input:checked').length, 0);
+    assert.equal(summary.textContent, 'Select libraries to ignore');
+});
+
+test('library loading does not replace controls after page navigation', async context => {
+    const { forms, controller } = page(context, [], [{ id: 'a', selected: ['1'] }]);
+    let release;
+    context.mock.method(globalThis, 'fetch', () => new Promise(resolve => { release = resolve; }));
+    const { picker, summary, options } = forms[0];
+    const pending = open(picker);
+    controller.abort();
+    release({ ok: true, status: 200, json: async () => libraries([['1', 'Movies']]).body });
+    await pending;
+    assert.equal(summary.textContent, 'Library 1');
+    assert.equal(options.children[0].children[1].textContent, 'Library 1');
 });

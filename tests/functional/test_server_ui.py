@@ -59,6 +59,80 @@ def snapshot(title, provider=None):
                   'total_count': 1, 'items': [item]}}
 
 
+def test_library_choices_require_login_and_a_saved_server(client, monkeypatch):
+    connect = Mock()
+    monkeypatch.setattr(servers, 'connect', connect)
+    with TestClient(client.app, follow_redirects=False) as anonymous:
+        assert anonymous.get('/api/servers/a/libraries').status_code == 401
+    assert client.get('/api/servers/missing/libraries').status_code == 404
+    connect.assert_not_called()
+
+
+def test_library_choices_load_only_the_requested_server_and_return_public_metadata(client, monkeypatch):
+    save_server('a')
+    save_server('b')
+    connection = Mock()
+    connection.library.sections.return_value = [
+        SimpleNamespace(key=1, title='Movies', accessToken='private-token'),
+        SimpleNamespace(key=2, title='<b>Shows</b>'),
+    ]
+    connect = Mock(return_value=connection)
+    monkeypatch.setattr(servers, 'connect', connect)
+    response = client.get('/api/servers/b/libraries')
+    assert response.status_code == 200
+    assert response.json() == {'libraries': [{'id': '1', 'title': 'Movies'}, {'id': '2', 'title': '<b>Shows</b>'}],
+                               'cached': False}
+    assert response.headers['Cache-Control'] == 'no-store'
+    connect.assert_called_once_with('b')
+    assert storage.current_server_id() == 'default'
+
+
+@pytest.mark.parametrize('paused', [True, False])
+def test_library_choices_fall_back_to_only_this_servers_cache(client, monkeypatch, paused):
+    for identifier in ('a', 'b'):
+        save_server(identifier)
+        data = snapshot('Title ' + identifier)
+        data['1']['title'] = 'Movies ' + identifier
+        with storage.server_scope(identifier):
+            storage.replace_dashboard(data)
+    servers.update_server('b', {'enabled': not paused})
+    connect = Mock(side_effect=ReadTimeout('private-token'))
+    monkeypatch.setattr(servers, 'connect', connect)
+    log = Mock()
+    monkeypatch.setattr(server_ui, 'log', log)
+    response = client.get('/api/servers/b/libraries')
+    assert response.json() == {'libraries': [{'id': '1', 'title': 'Movies b'}], 'cached': True}
+    assert 'private-token' not in str(log.warning.call_args)
+    if paused:
+        connect.assert_not_called()
+    else:
+        connect.assert_called_once_with('b')
+
+
+def test_library_choices_allow_an_empty_server_and_report_no_cache(client, monkeypatch):
+    save_server('a')
+    connection = Mock()
+    connection.library.sections.return_value = []
+    monkeypatch.setattr(servers, 'connect', Mock(return_value=connection))
+    assert client.get('/api/servers/a/libraries').json() == {'libraries': [], 'cached': False}
+    monkeypatch.setattr(servers, 'connect', Mock(return_value=None))
+    assert client.get('/api/servers/a/libraries').json() == {'libraries': [], 'cached': True}
+
+
+def test_server_page_preselects_saved_ids_in_separate_dropdowns(client):
+    for identifier, ignored in [('a', '1, 2'), ('b', '1,9')]:
+        save_server(identifier)
+        servers.update_server(identifier, {'ignored_libraries': ignored})
+    page = client.get('/servers').text
+    forms = re.findall(r'<form data-server-form.*?</form>', page, re.DOTALL)
+    assert len(forms) == 2
+    for form, (identifier, ids) in zip(forms, [('a', ['1', '2']), ('b', ['1', '9'])]):
+        assert f'data-server-id="{identifier}"' in form
+        assert 'data-library-picker' in form
+        assert re.findall(r'name="ignored_libraries" value="([^"]+)" checked', form) == ids
+    assert 'Comma-separated library IDs' not in page
+
+
 def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(client):
     for identifier, provider in [('a', 'themerr'), ('b', 'plex')]:
         save_server(identifier)

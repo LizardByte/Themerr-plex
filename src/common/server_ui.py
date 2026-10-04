@@ -10,6 +10,8 @@ from starlette.responses import JSONResponse
 from fastapi import HTTPException
 from plexapi.exceptions import Unauthorized
 from requests.exceptions import ConnectionError, RequestException, SSLError, Timeout
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 # local imports
 from common.http import read_json, render_template
@@ -140,6 +142,40 @@ def server_page(request: Request):
         servers=servers.list_servers(),
         plex_connected=bool(auth.get_token()),
     )
+
+
+@router.api_route('/api/servers/{server_id}/libraries', methods=['GET', 'HEAD'],
+                  name='server_ui.server_libraries', response_model=None)
+def server_libraries(server_id: str):
+    """List library names and IDs for one saved server.
+
+    Parameters
+    ----------
+    server_id : str
+        Saved Plex machine identifier.
+
+    Returns
+    -------
+    Response
+        Library choices, using cached metadata when the server is paused or offline.
+    """
+    record = servers.get_server(server_id)
+    if record is None:
+        return JSONResponse({'message': 'Server not found.'}, status_code=404)
+    with Session(storage.engine()) as session:
+        cached = [{'id': str(key), 'title': title} for key, title in session.execute(
+            select(storage.LibrarySection.key, storage.LibrarySection.title).where(
+                storage.LibrarySection.server_id == server_id).order_by(storage.LibrarySection.title))]
+    if record['enabled']:
+        try:
+            connection = servers.connect(server_id)
+            if connection is not None:
+                libraries = [{'id': str(section.key), 'title': section.title}
+                             for section in connection.library.sections()]
+                return JSONResponse({'libraries': libraries, 'cached': False})
+        except Exception as exc:
+            log.warning('Could not load Plex libraries (%s)', type(exc).__name__)
+    return JSONResponse({'libraries': cached, 'cached': True})
 
 
 @router.api_route('/api/servers/discover', methods=['POST'], name='server_ui.discover', response_model=None)

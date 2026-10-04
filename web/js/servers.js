@@ -1,5 +1,70 @@
 import { api, busy, toast } from './api.js';
 import { refreshPage } from './workspace_navigation.js';
+import { _ } from './i18n.js';
+
+function initLibraryPicker(form, signal) {
+    const picker = form.querySelector('[data-library-picker]');
+    const options = picker.querySelector('[data-library-options]');
+    const summary = picker.querySelector('[data-library-summary]');
+    const status = picker.querySelector('[data-library-status]');
+    const selected = () => Array.from(options.querySelectorAll('input:checked'));
+    const updateSummary = () => {
+        summary.textContent = selected().map(input => input.nextElementSibling.textContent).join(', ') ||
+            _('Select libraries to ignore');
+    };
+    updateSummary();
+    options.addEventListener('change', updateSummary, { signal });
+    let loaded = false;
+    let loading = false;
+    picker.addEventListener('toggle', async () => {
+        if (!picker.open || loaded || loading) return;
+        loading = true;
+        status.textContent = _('Loading libraries…');
+        try {
+            const result = await api(`/api/servers/${encodeURIComponent(form.dataset.serverId)}/libraries`, { method: 'GET' });
+            if (signal?.aborted || !picker.isConnected) return;
+            const checked = new Set(selected().map(input => input.value));
+            const libraries = new Map(result.libraries.map(library => [library.id, library.title]));
+            checked.forEach(id => {
+                if (!libraries.has(id)) libraries.set(id, `${_('Unavailable library')} (${id})`);
+            });
+            options.replaceChildren();
+            libraries.forEach((title, id) => {
+                const label = document.createElement('label');
+                label.className = 'library-choice';
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.name = 'ignored_libraries';
+                input.value = id;
+                input.checked = checked.has(id);
+                const text = document.createElement('span');
+                text.textContent = title;
+                label.append(input, text);
+                options.append(label);
+            });
+            status.textContent = result.cached
+                ? _('Showing cached libraries. Enable or reconnect this server to load its current libraries.')
+                : libraries.size ? '' : _('This server has no libraries.');
+            updateSummary();
+            loaded = !result.cached;
+        } catch {
+            if (!signal?.aborted && picker.isConnected) {
+                status.textContent = _('Unable to load libraries. Your selections are kept. Close and reopen the list to retry.');
+            }
+        } finally {
+            loading = false;
+        }
+    }, { signal });
+    picker.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+            picker.open = false;
+            picker.querySelector('summary').focus();
+        }
+    }, { signal });
+    document.addEventListener('click', event => {
+        if (!picker.contains(event.target)) picker.open = false;
+    }, { signal });
+}
 
 function connectionOption(connection) {
     const option = document.createElement('option');
@@ -122,18 +187,21 @@ export function initServers(signal) {
             if (active) await refreshPage();
         });
     });
-    document.querySelectorAll('[data-server-form]').forEach(form => form.addEventListener('submit', event => {
-        event.preventDefault();
-        void busy(form.querySelector('button[type="submit"]'), async () => {
-            const data = new FormData(form);
-            const result = await api(`/api/servers/${encodeURIComponent(form.dataset.serverId)}`, { body: {
-                enabled: form.elements.enabled.checked, data_directory: data.get('data_directory'),
-                ignored_libraries: data.get('ignored_libraries'),
-            } });
-            toast(result.message);
-            if (active) await refreshPage();
+    document.querySelectorAll('[data-server-form]').forEach(form => {
+        initLibraryPicker(form, signal);
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            return busy(form.querySelector('button[type="submit"]'), async () => {
+                const data = new FormData(form);
+                const result = await api(`/api/servers/${encodeURIComponent(form.dataset.serverId)}`, { body: {
+                    enabled: form.elements.enabled.checked, data_directory: data.get('data_directory'),
+                    ignored_libraries: data.getAll('ignored_libraries').join(','),
+                } });
+                toast(result.message);
+                if (active) await refreshPage();
+            });
         });
-    }));
+    });
     document.querySelectorAll('[data-remove-server]').forEach(button => button.addEventListener('click', () => {
         if (!window.confirm('Remove this server and its local theme history? Plex media will stay on the server.')) return;
         void busy(button, async () => {
