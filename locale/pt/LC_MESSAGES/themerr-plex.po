@@ -1,10 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: github.com/themerr-plex\n"
-"POT-Creation-Date: 2026-10-03 15:06-0400\n"
-"PO-Revision-Date: 2026-10-03 22:09\n"
-"Last-Translator: \n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,6 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: pt_PT\n"
+"PO-Revision-Date: 2026-10-04 13:57\n"
 
 #: src/common/config.py:90
 msgid "Info"
@@ -67,350 +65,424 @@ msgid "Enable System Tray Icon"
 msgstr "Habilitar ícone de bandeja do sistema"
 
 #: src/common/config.py:142
+msgid "Notifications"
+msgstr "notificações"
+
+#: src/common/config.py:143
+msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
+msgstr "As notificações na área de trabalho aparecem no computador executando o Themerr. Instalações Docker e headless não as exibem."
+
+#: src/common/config.py:148 src/common/notifications.py:138
+msgid "New release available"
+msgstr "Nova versão disponível"
+
+#: src/common/config.py:149
+msgid "Notify when a newer Themerr release is available. Checks run once per hour."
+msgstr "Notificar quando uma versão mais recente do Themerr estiver disponível. Verificações executam uma vez por hora."
+
+#: src/common/config.py:154
+msgid "Follow pre-releases"
+msgstr "Seguir pré-lançamentos"
+
+#: src/common/config.py:155
+msgid "Include pre-releases in new release notifications."
+msgstr "Incluir pré-lançamentos em novas notificações de lançamento."
+
+#: src/common/config.py:160
+msgid "Theme coverage increased"
+msgstr "Cobertura de tema aumentada"
+
+#: src/common/config.py:161
+msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
+msgstr "Notificar após uma atualização bem-sucedida quando a cobertura total do tema aumentar. Atualiza sem aumentar o número em silêncio."
+
+#: src/common/config.py:168
 msgid "Logging"
 msgstr "Registro"
 
-#: src/common/config.py:143
+#: src/common/config.py:169
 msgid "Logging settings."
 msgstr "Configurações de registro."
 
-#: src/common/config.py:147
+#: src/common/config.py:173
 msgid "Log directory"
 msgstr "Diretório de log"
 
-#: src/common/config.py:149
+#: src/common/config.py:175
 msgid "The directory where to store the log files."
 msgstr "O diretório onde armazenar os arquivos de log."
 
-#: src/common/config.py:156
+#: src/common/config.py:182
 msgid "Debug logging"
 msgstr "Debug log"
 
-#: src/common/config.py:158
+#: src/common/config.py:184
 msgid "Enable debug logging."
 msgstr "Ativar log de depuração."
 
-#: src/common/config.py:164
+#: src/common/config.py:190
 msgid "Network"
 msgstr "Rede"
 
-#: src/common/config.py:165
+#: src/common/config.py:191
 msgid "Network settings."
 msgstr "Configurações de rede."
 
-#: src/common/config.py:169
+#: src/common/config.py:195
 msgid "HTTP host address"
 msgstr "Endereço do host HTTP"
 
-#: src/common/config.py:171
+#: src/common/config.py:197
 msgid "The HTTP address to bind to."
 msgstr "O endereço HTTP a ser vinculado."
 
-#: src/common/config.py:180
+#: src/common/config.py:206
 msgid "HTTP port"
 msgstr "Porta HTTP"
 
-#: src/common/config.py:182
+#: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "Porta para vincular o servidor web. Observe que portas abaixo de 1024 podem exigir root."
 
-#: src/common/config.py:190
+#: src/common/config.py:216
 msgid "HTTP root"
 msgstr "Raiz HTTP"
 
-#: src/common/config.py:192
+#: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Todo: O URL base do servidor web. Usado para proxy reverso."
 
-#: src/common/config.py:197
+#: src/common/config.py:223
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:199
+#: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Execute o servidor web com HTTPS. Desabilitar isto pode ser um risco de segurança, fazer isso por sua conta e risco."
 
-#: src/common/config.py:205
+#: src/common/config.py:231
 msgid "Updater"
 msgstr "Atualizações"
 
-#: src/common/config.py:206
+#: src/common/config.py:232
 msgid "Updater settings."
 msgstr "Configurações de atualização."
 
-#: src/common/config.py:210
+#: src/common/config.py:236
 msgid "Auto update"
 msgstr "Atualização automática"
 
-#: src/common/config.py:218
+#: src/common/config.py:244
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:219
+#: src/common/config.py:245
 msgid "Plex settings."
 msgstr "Configurações de Plex."
 
-#: src/common/config.py:223
+#: src/common/config.py:249
 msgid "Plex URL"
 msgstr "URL Plex"
 
-#: src/common/config.py:224
+#: src/common/config.py:250
 msgid "The URL to the Plex server."
 msgstr "A URL para o servidor Plex."
 
-#: src/common/config.py:233 web/templates/servers.html:20
+#: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
 msgstr "Diretório de dados Plex"
 
-#: src/common/config.py:234
+#: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directora-localizado/"
 
-#: src/common/config.py:244
+#: src/common/config.py:270
 msgid "Themerr"
 msgstr "Tematizador"
 
-#: src/common/config.py:245
+#: src/common/config.py:271
 msgid "Themerr settings."
 msgstr "Configurações de Themerr."
 
-#: src/common/config.py:249
+#: src/common/config.py:275
 msgid "Themerr Enabled"
 msgstr "Themerr habilitado"
 
-#: src/common/config.py:250
+#: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "Quando ativado, o Themerr tentará atualizar os temas."
 
-#: src/common/config.py:255 web/templates/home.html:30
+#: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
 msgstr "Coleções"
 
-#: src/common/config.py:256
+#: src/common/config.py:282
 msgid "Add themes to collections."
 msgstr "Adicionar temas a coleções."
 
-#: src/common/config.py:261
+#: src/common/config.py:287
 msgid "Movie support"
 msgstr "Suporte para filmes"
 
-#: src/common/config.py:262
+#: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "Adicione temas a filmes usando o agente de filmes Plex."
 
-#: src/common/config.py:267
+#: src/common/config.py:293
 msgid "Series support"
 msgstr "Suporte de Séries"
 
-#: src/common/config.py:268
+#: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
 msgstr "Adicionar temas a séries usando o agente Série Plex."
 
-#: src/common/config.py:273
+#: src/common/config.py:299
 msgid "Overwrite Plex themes"
 msgstr "Sobrescrever temas Plex"
 
-#: src/common/config.py:274
+#: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Quando ativado, o Themerr substituirá os temas fornecidos por Plex."
 
-#: src/common/config.py:279
+#: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
 msgstr "Prefirir MP4A AAC Codec"
 
-#: src/common/config.py:280
+#: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Isto pode melhorar a compatibilidade de temas com dispositivos Apple."
 
-#: src/common/config.py:285
+#: src/common/config.py:311
 msgid "Remove unused themes"
 msgstr "Remover temas não utilizados"
 
-#: src/common/config.py:286
+#: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Libera espaço em seu diretório de metadados Plex. Esta opção requer que o caminho \"Plex data directory\" esteja definido"
 
-#: src/common/config.py:292
+#: src/common/config.py:318
 msgid "Remove unused art"
 msgstr "Remover arte não utilizada"
 
-#: src/common/config.py:293 src/common/config.py:301
+#: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Aplica-se à coleção. Libera espaço em seu diretório de metadados Plex. Esta opção requer que o caminho do \"Diretório de dados Plex\" esteja definido"
 
-#: src/common/config.py:300
+#: src/common/config.py:326
 msgid "Remove unused posters"
 msgstr "Remover pôsteres não utilizados"
 
-#: src/common/config.py:308
+#: src/common/config.py:334
 msgid "Collection metadata"
 msgstr "Metadados da coleção"
 
-#: src/common/config.py:309
+#: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "Atualizar metadados da coleção (poster, arte e resumo) durante atualização programada."
 
-#: src/common/config.py:314
+#: src/common/config.py:340
 msgid "Ignore locked fields."
 msgstr "Ignorar campos trancados."
 
-#: src/common/config.py:315
+#: src/common/config.py:341
 msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Se você usou o Themerr-plex v2024.813.13709 ou inferior, você pode precisar habilitar isso para atualizar itens."
 
-#: src/common/config.py:321 web/templates/servers.html:23
+#: src/common/config.py:347
 msgid "Ignored library IDs"
 msgstr "IDs de bibliotecas ignorados"
 
-#: src/common/config.py:322
+#: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "IDs de bibliotecas separadas por vírgulas para excluir das atualizações agendadas. IDs aparecem em Página Inicial."
 
-#: src/common/config.py:328
+#: src/common/config.py:354
 msgid "Update themes interval"
 msgstr "Intervalo de atualização dos temas"
 
-#: src/common/config.py:329
+#: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Intervalo para atualização automática da tarefa, em minutos (min: 15)."
 
-#: src/common/config.py:336
+#: src/common/config.py:362
 msgid "Update database cache interval"
 msgstr "Atualizar intervalo de cache do banco de dados"
 
-#: src/common/config.py:337
+#: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Intervalo para a tarefa de atualização do cache da base de dados em minutos (min: 15)."
 
-#: src/common/config.py:344
+#: src/common/config.py:370
 msgid "PlexAPI timeout"
 msgstr "Tempo limite PlexAPI"
 
-#: src/common/config.py:345
+#: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Aumente um pouco se você tiver o tempo limite de experiência ao adicionar temas. (min: 1)"
 
-#: src/common/config.py:352
+#: src/common/config.py:378
 msgid "Theme upload retries"
 msgstr "Upload de temas"
 
-#: src/common/config.py:353
+#: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Se o carregamento de temas falhar, tente novamente muitas vezes. (min: 0)"
 
-#: src/common/config.py:360
+#: src/common/config.py:386
 msgid "Multiprocessing thread count"
 msgstr "Contagem de thread multi-processamento"
 
-#: src/common/config.py:361
+#: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "O número de tópicos a serem usados ao adicionar temas. Reinicie os itens necessários. (min: 1)"
 
-#: src/common/config.py:368
+#: src/common/config.py:394
 msgid "YouTube Cookies"
 msgstr "Cookies do YouTube"
 
-#: src/common/config.py:370
+#: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
 msgstr "Opcional: exporte cookies do youtube.com com Obter cookies.txt LOCALLY usando seu formato JSON, e cole aqui todo o array JSON e salve. Os cookies contêm sua sessão no navegador, mantenha-os privados."
 
-#: src/common/config.py:375
+#: src/common/config.py:401
 msgid "Cookie export instructions"
 msgstr "Instruções de exportação de cookies"
 
+#: src/common/notifications.py:138
+#, python-format
+msgid "%(app)s %(version)s is available.\n"
+"%(url)s"
+msgstr ""
+
+#: src/common/notifications.py:176
+msgid "Refresh completed"
+msgstr ""
+
+#: src/common/notifications.py:177
+#, python-format
+msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
+msgstr ""
+
 #. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
 #. translate "%(app_name)s".
-#: src/common/tray_icon.py:101
+#: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
 msgstr "Abrir %(app_name)s"
 
+#: src/common/tray_icon.py:110
+msgid "About"
+msgstr ""
+
+#: src/common/tray_icon.py:111 web/templates/navbar.html:22
+#, python-format
+msgid "Version %(version)s"
+msgstr ""
+
+#: src/common/tray_icon.py:113
+msgid "Repository"
+msgstr ""
+
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
-#: src/common/tray_icon.py:109
+#: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
 msgstr "Lançamentos %(github)s"
 
+#: src/common/tray_icon.py:119 web/templates/navbar.html:14
+msgid "Documentation"
+msgstr "Documentação"
+
+#: src/common/tray_icon.py:120 web/templates/api_docs.html:6
+#: web/templates/api_docs.html:7 web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "Documentação da API"
+
 #. NOTE: Donate to LizardByte.
-#: src/common/tray_icon.py:112
+#: src/common/tray_icon.py:126
 msgid "Donate"
 msgstr "Doe"
 
-#: src/common/tray_icon.py:113
+#: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
 msgstr "GitHub Sponsors"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
-#: src/common/tray_icon.py:120
+#: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
 msgstr "Abrir o navegador quando %(app_name)s iniciar"
 
 #. NOTE: Disable or turn off icon.
-#: src/common/tray_icon.py:123
+#: src/common/tray_icon.py:139
 msgid "Disable icon"
 msgstr "Desativar ícone"
 
 #. NOTE: Restart the program.
-#: src/common/tray_icon.py:126
+#: src/common/tray_icon.py:142
 msgid "Restart"
 msgstr "Reiniciar"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
-#: src/common/tray_icon.py:128
+#: src/common/tray_icon.py:144
 msgid "Quit"
 msgstr "Encerrar"
 
-#: src/common/webapp.py:333 web/templates/config.html:22
+#: src/common/webapp.py:84 web/templates/logs.html:4
+#: web/templates/navbar.html:6
+msgid "Logs"
+msgstr ""
+
+#: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Confirgurações"
 
-#: src/themerr_plex.py:170
+#: src/themerr_plex.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
 msgstr "%(app_name)s gerencia músicas do tema para Plex.\n"
 "Os argumentos fornecidos aqui são destinados a serem temporários."
 
-#: src/themerr_plex.py:174
+#: src/themerr_plex.py:175
 msgid "Show this help message and exit"
 msgstr "Mostrar esta mensagem de ajuda e saída"
 
-#: src/themerr_plex.py:176
+#: src/themerr_plex.py:177
 msgid "Specify a config file to use"
 msgstr "Especifique um arquivo de configuração para usar"
 
-#: src/themerr_plex.py:177
+#: src/themerr_plex.py:178
 msgid "Use debug logging level"
 msgstr "Usar nível de log de depuração"
 
-#: src/themerr_plex.py:178
+#: src/themerr_plex.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
 msgstr "Iniciar %(app_name)s no ambiente de desenvolvimento"
 
-#: src/themerr_plex.py:180
+#: src/themerr_plex.py:181
 msgid "Health check the container and exit"
 msgstr "O exame de saúde do recipiente e a saída"
 
-#: src/themerr_plex.py:183
+#: src/themerr_plex.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
 msgstr "Não abrir %(app_name)s no navegador"
 
-#: src/themerr_plex.py:186
+#: src/themerr_plex.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
 msgstr "Força %(app_name)s a ser executado em uma porta especificada, default=9494"
 
-#: src/themerr_plex.py:189
+#: src/themerr_plex.py:190
 msgid "Turn off console logging"
 msgstr "Desativar registro do console"
 
-#: src/themerr_plex.py:190
+#: src/themerr_plex.py:191
 msgid "Print the version details and exit"
 msgstr "Imprima os detalhes da versão e saia"
 
@@ -422,29 +494,82 @@ msgstr "Sua sessão expirou. Entre para continuar."
 msgid "Dismiss message"
 msgstr "Rejeitar mensagem"
 
-#: web/js/config.js:17 web/js/config.js:40
+#: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
 msgstr "Alterações não salvas"
 
-#: web/js/config.js:40 web/templates/config.html:36
+#: web/js/config.js:26
+msgid "Discard unsaved settings changes?"
+msgstr ""
+
+#: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
 msgstr "Todas as alterações salvas."
 
-#: web/js/config.js:42
+#: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "Configurações salvas. As alterações de rede terão efeito após reiniciar o Themerr."
 
-#: web/js/config.js:46
+#: web/js/config.js:50
 msgid "Unable to save changes."
 msgstr "Não é possível salvar as alterações."
 
-#: web/js/config.js:54
+#: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
 msgstr "Salve suas alterações de configurações antes de alterar sua senha."
 
-#: web/templates/activity.html:3
-msgid "BEHIND THE MUSIC"
-msgstr "APROVEITE O MÚSICA"
+#: web/js/logs.js:117
+msgid "No records match your filters."
+msgstr ""
+
+#: web/js/logs.js:117 web/templates/logs.html:37
+msgid "No log records yet."
+msgstr ""
+
+#: web/js/logs.js:125
+msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
+msgstr ""
+
+#: web/js/logs.js:126 web/templates/logs.html:28
+msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
+msgstr ""
+
+#: web/js/logs.js:144
+msgid "Session log loading stalled."
+msgstr ""
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
+msgid "Live"
+msgstr "Publicado"
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
+#: web/templates/servers.html:13
+msgid "Paused"
+msgstr "Pausado"
+
+#: web/js/logs.js:185
+msgid "Refresh failed. Showing the last loaded records."
+msgstr ""
+
+#: web/js/servers.js:13 web/templates/servers.html:25
+msgid "Select libraries to ignore"
+msgstr ""
+
+#: web/js/servers.js:22
+msgid "Loading libraries…"
+msgstr ""
+
+#: web/js/servers.js:46
+msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
+msgstr ""
+
+#: web/js/servers.js:48
+msgid "This server has no libraries."
+msgstr ""
+
+#: web/js/servers.js:54
+msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
+msgstr ""
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
@@ -453,6 +578,10 @@ msgstr "Veja no que o Themerr está trabalhando e por que um item pode precisar 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
 msgstr "Procurar por temas"
+
+#: web/templates/activity.html:3 web/templates/logs.html:4
+msgid "BEHIND THE MUSIC"
+msgstr "APROVEITE O MÚSICA"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
@@ -470,10 +599,6 @@ msgstr "O histórico de tarefas cobre a sessão atual do aplicativo."
 msgid "Recent tasks"
 msgstr "Tarefas recentes"
 
-#: web/templates/activity.html:5
-msgid "Live"
-msgstr "Publicado"
-
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
 msgstr "Nenhuma tarefa foi executada ainda. Solicite uma verificação ou aguarde a próxima atualização programada."
@@ -487,22 +612,17 @@ msgstr "Precisa de atenção"
 msgid "No processing failures recorded. All quiet here."
 msgstr "Nenhuma falha de processamento gravado. Silêncio aqui."
 
-#: web/templates/activity.html:8 web/templates/home.html:62
+#: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
 msgstr "Plex ID"
 
-#: web/templates/activity.html:8 web/templates/home.html:76
+#: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
 msgstr "Desatualizado do ThemerrDB"
 
-#: web/templates/api_docs.html:7
+#: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
 msgstr "Explore a API usando sua sessão conectada."
-
-#: web/templates/api_docs.html:7 web/templates/api_docs.html:8
-#: web/templates/navbar.html:13
-msgid "API documentation"
-msgstr "Documentação da API"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -584,17 +704,29 @@ msgstr "Iniciar sessão"
 msgid "Plex account linking happens inside your workspace."
 msgstr "O vínculo de contas Plex acontece dentro do seu espaço de trabalho."
 
-#: web/templates/base.html:19
+#: web/templates/base.html:21
 msgid "Skip to content"
 msgstr "Pular para o conteúdo"
 
-#: web/templates/base.html:25
+#: web/templates/base.html:27
 msgid "Toggle navigation"
 msgstr "Menu de navegação"
 
-#: web/templates/base.html:26
+#: web/templates/base.html:28
 msgid "Workspace"
 msgstr "Workspace"
+
+#: web/templates/color_theme.html:2 web/templates/color_theme.html:5
+msgid "Theme: Automatic. Switch to light mode."
+msgstr ""
+
+#: web/templates/color_theme.html:3
+msgid "Theme: Light. Switch to dark mode."
+msgstr ""
+
+#: web/templates/color_theme.html:4
+msgid "Theme: Dark. Switch to automatic mode."
+msgstr ""
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
@@ -784,7 +916,7 @@ msgstr "Pesquisar itens da biblioteca"
 msgid "Search titles…"
 msgstr "Pesquisar títulos…"
 
-#: web/templates/home.html:28
+#: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
 msgstr "Limpar pesquisa"
 
@@ -836,10 +968,6 @@ msgstr "Redefinir filtros"
 msgid "Library ID"
 msgstr "ID da Biblioteca"
 
-#: web/templates/home.html:38 web/templates/servers.html:13
-msgid "Paused"
-msgstr "Pausado"
-
 #: web/templates/home.html:43
 msgid "Title"
 msgstr "Título"
@@ -856,71 +984,71 @@ msgstr "Tema"
 msgid "ThemerrDB"
 msgstr "ThemerrDB"
 
-#: web/templates/home.html:54
+#: web/templates/home.html:56
 msgid "Pause theme for"
 msgstr "Pausar tema para"
 
-#: web/templates/home.html:54 web/templates/home.html:56
+#: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
 msgstr "Reproduzir tema para"
 
-#: web/templates/home.html:55
+#: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
 msgstr "Não é possível reproduzir este tema. Verifique a conexão Plex e o suporte por áudio do navegador."
 
-#: web/templates/home.html:62
+#: web/templates/home.html:64
 msgid "Open in Plex"
 msgstr "Abrir no Plex"
 
-#: web/templates/home.html:66 web/templates/home.html:74
+#: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
 msgstr "ID Externo indisponível"
 
-#: web/templates/home.html:68
+#: web/templates/home.html:70
 msgid "Failed to add theme"
 msgstr "Falha ao adicionar tema"
 
-#: web/templates/home.html:69
+#: web/templates/home.html:71
 msgid "Plex provided"
 msgstr "Plex fornecido"
 
-#: web/templates/home.html:70
+#: web/templates/home.html:72
 msgid "User provided"
 msgstr "Usuário fornecido"
 
-#: web/templates/home.html:71
+#: web/templates/home.html:73
 msgid "Themerr provided"
 msgstr "Themerr fornecido"
 
-#: web/templates/home.html:72
+#: web/templates/home.html:74
 msgid "Unknown provider"
 msgstr "Provedor desconhecido"
 
-#: web/templates/home.html:73
+#: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
 msgstr "Faltando do ThemerrDB"
 
-#: web/templates/home.html:74
+#: web/templates/home.html:76
 msgid "TMDB ID unavailable"
 msgstr "TMDB ID unavailable"
 
-#: web/templates/home.html:75
+#: web/templates/home.html:77
 msgid "Theme not installed yet"
 msgstr "Tema ainda não instalado"
 
-#: web/templates/home.html:78
+#: web/templates/home.html:80
 msgid "Edit"
 msgstr "Alterar"
 
-#: web/templates/home.html:78
+#: web/templates/home.html:80
 msgid "Add"
 msgstr "Adicionar"
 
-#: web/templates/home.html:85
+#: web/templates/home.html:87
 msgid "No titles match."
 msgstr "Nenhum título corresponde."
 
-#: web/templates/home.html:85
+#: web/templates/home.html:87
 msgid "Try another search or reset your filters."
 msgstr "Tente outra pesquisa ou redefina seus filtros."
 
@@ -931,6 +1059,114 @@ msgstr "A sua biblioteca está a caminho."
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
 msgstr "A primeira atualização constrói a visualização da biblioteca. Você pode acompanhar o progresso na Atividade."
+
+#: web/templates/logs.html:4
+msgid "Explore recent logs, find a message, and jump between warnings and errors."
+msgstr ""
+
+#: web/templates/logs.html:5
+msgid "Download filtered logs"
+msgstr ""
+
+#: web/templates/logs.html:7
+msgid "Log viewer"
+msgstr ""
+
+#: web/templates/logs.html:9
+msgid "Search logs"
+msgstr ""
+
+#: web/templates/logs.html:9
+msgid "Search messages, threads, or timestamps…"
+msgstr ""
+
+#: web/templates/logs.html:10
+msgid "Log source"
+msgstr ""
+
+#: web/templates/logs.html:10
+msgid "All sources"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "Log level"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "All levels"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "Warnings and errors"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Log history"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 250"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 1,000"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 2,000"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Since startup"
+msgstr ""
+
+#: web/templates/logs.html:13
+msgid "Clear filters"
+msgstr ""
+
+#: web/templates/logs.html:17
+msgid "Warning and error navigation"
+msgstr ""
+
+#: web/templates/logs.html:18
+msgid "Previous warning or error"
+msgstr ""
+
+#: web/templates/logs.html:19
+msgid "Next warning or error"
+msgstr ""
+
+#: web/templates/logs.html:22
+msgid "Live refresh"
+msgstr ""
+
+#: web/templates/logs.html:23
+msgid "Follow latest"
+msgstr ""
+
+#: web/templates/logs.html:24
+msgid "Refresh"
+msgstr ""
+
+#: web/templates/logs.html:26
+msgid "Loading logs…"
+msgstr ""
+
+#: web/templates/logs.html:30
+msgid "Log history pages"
+msgstr ""
+
+#: web/templates/logs.html:31
+msgid "Older records"
+msgstr ""
+
+#: web/templates/logs.html:33
+msgid "Newer records"
+msgstr ""
+
+#: web/templates/logs.html:35
+msgid "Log records"
+msgstr ""
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
@@ -963,10 +1199,6 @@ msgstr "Muito mais atmosfera."
 #: web/templates/navbar.html:12
 msgid "Resources"
 msgstr "Recursos"
-
-#: web/templates/navbar.html:14
-msgid "Documentation"
-msgstr "Documentação"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
@@ -1060,65 +1292,137 @@ msgstr "Procurar diretório de dados Plex"
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
 msgstr "Um diretório de dados Plex local ou montado só é necessário para remover arquivos enviados mais antigos. Deixe em branco para servidores remotos."
 
-#: web/templates/servers.html:24
-msgid "Comma-separated library IDs to exclude from theme updates."
-msgstr "IDs de bibliotecas separadas por vírgulas para excluir das atualizações do tema."
+#: web/templates/servers.html:23
+msgid "Ignored libraries"
+msgstr ""
 
-#: web/templates/servers.html:25
+#: web/templates/servers.html:29
+msgid "Library"
+msgstr ""
+
+#: web/templates/servers.html:32
+msgid "Open the list to load this server’s libraries."
+msgstr ""
+
+#: web/templates/servers.html:35
+msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
+msgstr ""
+
+#: web/templates/servers.html:36
 msgid "Save settings"
 msgstr "Salvar Configurações"
 
-#: web/templates/servers.html:25
+#: web/templates/servers.html:36
 msgid "Remove server"
 msgstr "Remover servidor"
 
-#: web/templates/servers.html:29
+#: web/templates/servers.html:40
 msgid "Your first server starts here."
 msgstr "Seu primeiro servidor começa aqui."
 
-#: web/templates/servers.html:29
+#: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
 msgstr "Vincule Plex acima, em seguida, descubra ou adicione um endereço abaixo."
 
-#: web/templates/servers.html:32
+#: web/templates/servers.html:43
 msgid "Add a server"
 msgstr "Adicionar um servidor"
 
-#: web/templates/servers.html:32
+#: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Escolha um servidor de sua conta Plex, descubra um por perto ou use um endereço que você conhece."
 
-#: web/templates/servers.html:33
+#: web/templates/servers.html:44
 msgid "Find account servers"
 msgstr "Encontrar servidores de conta"
 
-#: web/templates/servers.html:33
+#: web/templates/servers.html:44
 msgid "Discover on LAN"
 msgstr "Descubra na LAN"
 
-#: web/templates/servers.html:33
+#: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "A descoberta em LAN usa o Plex GDM na rede do seu aplicativo."
 
-#: web/templates/servers.html:34
+#: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "Os endereços da conta são anunciados por Plex e podem ser inacessíveis. Os endereços HTTPS plex.direct usam o certificado Plex. Escolha um endereço acessível a partir da máquina que roda o tema, ou insira um endereço conhecido manualmente."
 
-#: web/templates/servers.html:36
+#: web/templates/servers.html:47
 msgid "Enter an address manually"
 msgstr "Insira um endereço manualmente"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:48
 msgid "Plex server address"
 msgstr "Endereço do servidor Plex"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:48
 msgid "Connect server"
 msgstr "Conectar servidor"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Use um endereço LAN ou um endereço Plex HTTPS válido. Sua conta Plex vinculada deve ter acesso. Adicionar um servidor existente atualiza seu endereço."
+
+#: web/templates/theme_player.html:1
+msgid "Theme player"
+msgstr ""
+
+#: web/templates/theme_player.html:2 web/templates/theme_player.html:7
+msgid "Choose a theme from your library"
+msgstr ""
+
+#: web/templates/theme_player.html:3
+msgid "Unable to load themes. Try again."
+msgstr ""
+
+#: web/templates/theme_player.html:3
+msgid "No installed themes are available yet."
+msgstr ""
+
+#: web/templates/theme_player.html:7
+msgid "THEME PLAYER"
+msgstr ""
+
+#: web/templates/theme_player.html:7
+msgid "A soundtrack for every story."
+msgstr ""
+
+#: web/templates/theme_player.html:11
+msgid "Shuffle"
+msgstr ""
+
+#: web/templates/theme_player.html:12
+msgid "Previous theme"
+msgstr ""
+
+#: web/templates/theme_player.html:13
+msgid "Play theme"
+msgstr ""
+
+#: web/templates/theme_player.html:13
+msgid "Pause theme"
+msgstr ""
+
+#: web/templates/theme_player.html:14
+msgid "Next theme"
+msgstr ""
+
+#: web/templates/theme_player.html:15
+msgid "Repeat this theme"
+msgstr ""
+
+#: web/templates/theme_player.html:17
+msgid "Playback position"
+msgstr ""
+
+#: web/templates/theme_player.html:19
+msgid "Surprise me"
+msgstr ""
+
+#: web/templates/theme_player.html:19
+msgid "Volume"
+msgstr ""
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
