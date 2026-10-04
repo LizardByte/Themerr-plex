@@ -13,7 +13,6 @@ Release archive
 Download the archive for your operating system and architecture from https://github.com/LizardByte/Themerr-plex/releases/latest.
 Extract it and run the themerr_plex executable, or the themerr_plex.app bundle on macOS.
 The macOS bundle stores configuration under ``~/Library/Application Support/Themerr-plex/config``.
-When upgrading from the former macOS executable, move its configuration directory there before starting the bundle.
 Deno is bundled for yt-dlp's YouTube challenge solver. Open the web UI
 at https://localhost:9494 to configure the Plex URL and sign in through Plex. Set the Plex data directory only if you want
 to remove old uploaded media. The default web server uses a locally generated certificate, so your browser may ask you to trust it.

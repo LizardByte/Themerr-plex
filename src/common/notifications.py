@@ -71,6 +71,21 @@ def _send(title: str, message: str) -> bool:
     return True
 
 
+def _release_candidate(release: object, prereleases: bool) -> tuple[Version, str] | None:
+    if not isinstance(release, dict) or type(release.get('draft')) is not bool or (
+            type(release.get('prerelease')) is not bool or not isinstance(release.get('tag_name'), str)):
+        raise ValueError('Invalid release metadata')
+    if release['draft'] or (release['prerelease'] and not prereleases):
+        return None
+    try:
+        available = Version(release['tag_name'])
+    except InvalidVersion:
+        return None
+    if not prereleases and (available.is_prerelease or available.is_devrelease):
+        return None
+    return available, release['tag_name']
+
+
 def _fetch_release(prereleases: bool) -> tuple[Version, str] | None:
     with requests.get(
         _RELEASE_API if prereleases else _RELEASE_API + '/latest',
@@ -89,18 +104,9 @@ def _fetch_release(prereleases: bool) -> tuple[Version, str] | None:
         raise ValueError('Invalid release list')
     candidates = []
     for release in releases:
-        if not isinstance(release, dict) or type(release.get('draft')) is not bool or (
-                type(release.get('prerelease')) is not bool or not isinstance(release.get('tag_name'), str)):
-            raise ValueError('Invalid release metadata')
-        if release['draft'] or (release['prerelease'] and not prereleases):
-            continue
-        try:
-            available = Version(release['tag_name'])
-        except InvalidVersion:
-            continue
-        if not prereleases and (available.is_prerelease or available.is_devrelease):
-            continue
-        candidates.append((available, release['tag_name']))
+        candidate = _release_candidate(release, prereleases)
+        if candidate is not None:
+            candidates.append(candidate)
     return max(candidates, key=lambda candidate: candidate[0]) if candidates else None
 
 
