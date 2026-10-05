@@ -84,7 +84,10 @@ def install_connector(server_id: str, payload: Annotated[object, Depends(read_js
 def discover():
     """Discover nearby addresses; an administrator must still provide each server's API key."""
     try:
-        return JSONResponse({'servers': discovery.discover()})
+        connected = {server['id'] for server in servers.list_servers()}
+        resources = [{**resource, 'connected': 'jellyfin:' + resource['id'] in connected}
+                     for resource in discovery.discover()]
+        return JSONResponse({'servers': resources})
     except Exception as exc:
         return _failure(exc)
 

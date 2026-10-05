@@ -675,7 +675,7 @@ msgstr ""
 msgid "Live"
 msgstr ""
 
-#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:40
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
 #: web/templates/servers.html:14
 msgid "Paused"
 msgstr ""
@@ -684,41 +684,50 @@ msgstr ""
 msgid "Refresh failed. Showing the last loaded records."
 msgstr ""
 
-#: web/js/servers.js:13 web/templates/servers.html:38
+#: web/js/servers.js:45 web/templates/servers.html:38
 msgid "Select libraries to ignore"
 msgstr ""
 
-#: web/js/servers.js:22
+#: web/js/servers.js:54
 msgid "Loading libraries…"
 msgstr ""
 
-#: web/js/servers.js:46
+#: web/js/servers.js:78
 msgid ""
 "Showing cached libraries. Enable or reconnect this server to load its "
 "current libraries."
 msgstr ""
 
-#: web/js/servers.js:48
+#: web/js/servers.js:80
 msgid "This server has no libraries."
 msgstr ""
 
-#: web/js/servers.js:54
+#: web/js/servers.js:86
 msgid ""
 "Unable to load libraries. Your selections are kept. Close and reopen the "
 "list to retry."
 msgstr ""
 
-#: web/js/servers.js:232
+#: web/js/servers.js:130 web/js/servers.js:286
+msgid "Connected"
+msgstr ""
+
+#: web/js/servers.js:130 web/templates/servers.html:67
+#: web/templates/servers.html:79
+msgid "Connect"
+msgstr ""
+
+#: web/js/servers.js:268
 msgid "Looking for Jellyfin servers…"
 msgstr ""
 
-#: web/js/servers.js:238
+#: web/js/servers.js:274
 msgid ""
 "No Jellyfin servers responded. Check UDP port 7359 and local network "
 "discovery, or enter an address manually."
 msgstr ""
 
-#: web/js/servers.js:250
+#: web/js/servers.js:286
 msgid "Use this address"
 msgstr ""
 
@@ -765,11 +774,11 @@ msgstr ""
 msgid "No processing failures recorded. All quiet here."
 msgstr ""
 
-#: web/templates/activity.html:8 web/templates/home.html:66
+#: web/templates/activity.html:8 web/templates/home.html:65
 msgid "ID"
 msgstr ""
 
-#: web/templates/activity.html:8 web/templates/home.html:80
+#: web/templates/activity.html:8 web/templates/home.html:79
 msgid "Outdated from ThemerrDB"
 msgstr ""
 
@@ -1139,94 +1148,94 @@ msgstr ""
 msgid "Reset filters"
 msgstr ""
 
-#: web/templates/home.html:40
+#: web/templates/home.html:39
 msgid "Library ID"
 msgstr ""
 
-#: web/templates/home.html:45
+#: web/templates/home.html:44
 msgid "Title"
 msgstr ""
 
-#: web/templates/home.html:45
+#: web/templates/home.html:44
 msgid "Metadata ID"
 msgstr ""
 
-#: web/templates/home.html:45
+#: web/templates/home.html:44
 msgid "Theme"
 msgstr ""
 
-#: web/templates/home.html:45
+#: web/templates/home.html:44
 msgid "ThemerrDB"
 msgstr ""
 
-#: web/templates/home.html:58
+#: web/templates/home.html:57
 msgid "Pause theme for"
 msgstr ""
 
-#: web/templates/home.html:58 web/templates/home.html:60
+#: web/templates/home.html:57 web/templates/home.html:59
 msgid "Play theme for"
 msgstr ""
 
-#: web/templates/home.html:59 web/templates/theme_player.html:2
+#: web/templates/home.html:58 web/templates/theme_player.html:2
 msgid ""
 "Unable to play this theme. Check the server connection and browser audio "
 "support."
 msgstr ""
 
-#: web/templates/home.html:66
+#: web/templates/home.html:65
 #, python-format
 msgid "Open in %(server)s"
 msgstr ""
 
-#: web/templates/home.html:70 web/templates/home.html:78
+#: web/templates/home.html:69 web/templates/home.html:77
 msgid "External ID unavailable"
 msgstr ""
 
-#: web/templates/home.html:72
+#: web/templates/home.html:71
 msgid "Failed to add theme"
 msgstr ""
 
-#: web/templates/home.html:73
+#: web/templates/home.html:72
 msgid "Plex provided"
 msgstr ""
 
-#: web/templates/home.html:74
+#: web/templates/home.html:73
 msgid "User provided"
 msgstr ""
 
-#: web/templates/home.html:75
+#: web/templates/home.html:74
 msgid "Themerr provided"
 msgstr ""
 
-#: web/templates/home.html:76
+#: web/templates/home.html:75
 msgid "Unknown provider"
 msgstr ""
 
-#: web/templates/home.html:77
+#: web/templates/home.html:76
 msgid "Missing from ThemerrDB"
 msgstr ""
 
-#: web/templates/home.html:78
+#: web/templates/home.html:77
 msgid "TMDB ID unavailable"
 msgstr ""
 
-#: web/templates/home.html:79
+#: web/templates/home.html:78
 msgid "Theme not installed yet"
 msgstr ""
 
-#: web/templates/home.html:82
+#: web/templates/home.html:81
 msgid "Edit"
 msgstr ""
 
-#: web/templates/home.html:82
+#: web/templates/home.html:81
 msgid "Add"
 msgstr ""
 
-#: web/templates/home.html:89
+#: web/templates/home.html:88
 msgid "No titles match."
 msgstr ""
 
-#: web/templates/home.html:89
+#: web/templates/home.html:88
 msgid "Try another search or reset your filters."
 msgstr ""
 
@@ -1559,82 +1568,74 @@ msgstr ""
 msgid "Add a server"
 msgstr ""
 
-#: web/templates/servers.html:56
+#: web/templates/servers.html:57
+msgid "Server type"
+msgstr ""
+
+#: web/templates/servers.html:62
 msgid ""
 "Choose a server from your Plex account, discover one nearby, or use an "
 "address you know."
 msgstr ""
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:63
 msgid "Find account servers"
 msgstr ""
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:63
 msgid "Discover on LAN"
 msgstr ""
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:63
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr ""
 
-#: web/templates/servers.html:58
+#: web/templates/servers.html:64
 msgid ""
 "Account addresses are advertised by Plex and may be unreachable. HTTPS "
 "plex.direct addresses use Plex’s certificate. Choose an address reachable"
 " from the machine running Themerr, or enter a known address manually."
 msgstr ""
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:66
 msgid "Enter an address manually"
 msgstr ""
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:67
 msgid "Plex server address"
 msgstr ""
 
-#: web/templates/servers.html:61
-msgid "Connect server"
-msgstr ""
-
-#: web/templates/servers.html:61
+#: web/templates/servers.html:67
 msgid ""
 "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account"
 " must have access. Adding an existing server updates its address."
 msgstr ""
 
-#: web/templates/servers.html:65
-msgid "Add Jellyfin"
-msgstr ""
-
-#: web/templates/servers.html:65
+#: web/templates/servers.html:71
 msgid ""
 "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in"
 " Jellyfin Dashboard - API Keys."
 msgstr ""
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:73
 msgid "Jellyfin server address"
 msgstr ""
 
-#: web/templates/servers.html:69
+#: web/templates/servers.html:75
 msgid "Jellyfin API key"
 msgstr ""
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:77
 msgid ""
 "Keys stay in the secure credential store. After connecting, install the "
 "matching connector on the server card above."
 msgstr ""
 
-#: web/templates/servers.html:72
-msgid "Connect Jellyfin"
-msgstr ""
-
-#: web/templates/servers.html:74
+#: web/templates/servers.html:80
 msgid "Discover Jellyfin on LAN"
 msgstr ""
 
-#: web/templates/servers.html:74
+#: web/templates/servers.html:82
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr ""
 

@@ -169,6 +169,8 @@ def discover(payload=Depends(_payload)):
         return JSONResponse({'message': 'Choose account or local discovery.'}, status_code=400)
     try:
         resources = servers.discover_account() if source == 'account' else servers.discover_local()
+        connected = {server['id'] for server in servers.list_servers()}
+        resources = [{**resource, 'connected': resource['id'] in connected} for resource in resources]
     except Exception as exc:
         return _failure(exc, 'Discovery failed. Check the Plex connection, or enter an address manually.')
     return JSONResponse({'servers': resources})

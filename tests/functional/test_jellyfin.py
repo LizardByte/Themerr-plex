@@ -5,11 +5,13 @@ from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
 import pytest
+from sqlalchemy.orm import Session
 
 from common import admin, webapp
-from jellyfin import connector, maintenance, servers
+from jellyfin import connector, discovery, maintenance, servers
 from media_servers.base import MediaServerError
 from tests.http_helpers import set_session
+from themerr import storage
 
 
 @pytest.fixture
@@ -76,6 +78,35 @@ def test_api_key_is_not_echoed_in_setup_response(browser, monkeypatch):
     assert result.status_code == 201
     assert b'secret' not in result.content
     add.assert_called_once_with('http://jellyfin.example', 'secret')
+
+
+@pytest.mark.parametrize('enabled', [True, False])
+def test_discovery_marks_all_addresses_of_saved_servers_connected(browser, monkeypatch, enabled):
+    resources = [
+        {'id': '3' * 32, 'name': 'Same name', 'url': 'http://127.0.0.1:8096'},
+        {'id': '3' * 32, 'name': 'Same name', 'url': 'http://192.168.1.205:8096'},
+        {'id': '5' * 32, 'name': 'Same name', 'url': 'http://jellyfin.example:8096'},
+    ]
+    discover = Mock(return_value=resources)
+    monkeypatch.setattr(discovery, 'discover', discover)
+    with Session(storage.engine()) as session:
+        session.add(servers.ServerRecord(id='jellyfin:' + '3' * 32, name='Saved name',
+                                         url='http://localhost:8096', version='10.11.11', enabled=enabled))
+        session.commit()
+    assert browser.post('/api/jellyfin/discover').status_code == 401
+    headers = sign_in(browser)
+    assert browser.post('/api/jellyfin/discover').status_code == 400
+    discover.assert_not_called()
+    response = browser.post('/api/jellyfin/discover', headers=headers)
+    assert response.status_code == 200
+    assert response.json()['servers'] == [
+        {**resource, 'connected': index < 2} for index, resource in enumerate(resources)
+    ]
+    with Session(storage.engine()) as session:
+        session.delete(session.get(servers.ServerRecord, 'jellyfin:' + '3' * 32))
+        session.commit()
+    assert all(not resource['connected'] for resource in
+               browser.post('/api/jellyfin/discover', headers=headers).json()['servers'])
 
 
 @pytest.mark.parametrize('online', [True, False])

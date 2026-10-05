@@ -216,6 +216,27 @@ def test_discovery_and_server_settings_require_csrf(client, monkeypatch):
     assert client.delete('/api/servers/one').status_code == 400
 
 
+@pytest.mark.parametrize('source', ['account', 'local'])
+@pytest.mark.parametrize('enabled', [True, False])
+def test_discovery_marks_saved_plex_servers_connected_by_identity(client, monkeypatch, source, enabled):
+    save_server('one')
+    servers.update_server('one', {'enabled': enabled})
+    connections = [{'url': 'http://192.168.1.205:32400', 'local': True, 'relay': False},
+                   {'url': 'https://alternate.plex.direct:32400', 'local': False, 'relay': False}]
+    resources = [{'id': 'one', 'name': 'Same name', 'connections': connections},
+                 {'id': 'two', 'name': 'Same name', 'connections': connections}]
+    monkeypatch.setattr(servers, 'discover_' + source, Mock(return_value=resources))
+    request_headers = headers(client)
+    response = client.post('/api/servers/discover', json={'source': source}, headers=request_headers)
+    assert response.status_code == 200
+    assert response.json()['servers'] == [{**resources[0], 'connected': True}, {**resources[1], 'connected': False}]
+    with Session(storage.engine()) as session:
+        session.delete(session.get(servers.ServerRecord, 'one'))
+        session.commit()
+    assert all(not resource['connected'] for resource in
+               client.post('/api/servers/discover', json={'source': source}, headers=request_headers).json()['servers'])
+
+
 def test_add_update_and_remove_server(client, monkeypatch):
     add = Mock(return_value={'id': 'one', 'name': 'Plex'})
     monkeypatch.setattr(servers, 'add_server', add)

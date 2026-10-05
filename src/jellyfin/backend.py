@@ -134,7 +134,10 @@ class JellyfinMediaServer(MediaServer):
         """Resolve a theme and upload verified audio only when native ownership permits it."""
         connection = servers.client(self.server_id)
         descriptor = connector.verify(connection)
-        item = connection.json('GET', '/Items/' + item_id, params={'Fields': 'ProviderIds,LockData'})
+        # The single-item endpoint requires a user context, which API keys do not carry.
+        item = next(_items(connection, Ids=item_id, Limit=1), None)
+        if item is None:
+            raise MediaServerError('This Jellyfin item is unavailable.', 404)
         if not _eligible(item):
             return False
         ignored = set(servers.get_server(self.server_id)['ignored_libraries'].split(',')) - {''}

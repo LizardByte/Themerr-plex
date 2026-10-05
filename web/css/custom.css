@@ -57,7 +57,7 @@ small, .muted { color: var(--muted); }
 .skip-link:focus { top: 12px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 600; min-height: 40px; border-radius: 9px; padding: 9px 16px; transition: background .18s, border-color .18s, transform .18s; }
 .btn-primary { --bs-btn-bg: var(--button-bg); --bs-btn-border-color: var(--button-bg); --bs-btn-color: var(--button-ink); --bs-btn-hover-bg: var(--button-hover); --bs-btn-hover-border-color: var(--button-hover); --bs-btn-hover-color: var(--button-ink); --bs-btn-active-bg: var(--button-active); --bs-btn-active-border-color: var(--button-active); --bs-btn-active-color: var(--button-ink); --bs-btn-disabled-bg: var(--button-disabled); --bs-btn-disabled-border-color: var(--button-disabled); --bs-btn-disabled-color: var(--button-ink); }
-.btn-outline-light { --bs-btn-color: var(--ink); --bs-btn-border-color: var(--control-border); --bs-btn-hover-bg: var(--surface-raised); --bs-btn-hover-color: var(--ink); --bs-btn-hover-border-color: var(--muted); --bs-btn-active-bg: var(--surface-raised); --bs-btn-active-color: var(--ink); }
+.btn-outline-light { --bs-btn-color: var(--ink); --bs-btn-border-color: var(--control-border); --bs-btn-hover-bg: var(--surface-raised); --bs-btn-hover-color: var(--ink); --bs-btn-hover-border-color: var(--muted); --bs-btn-active-bg: var(--surface-raised); --bs-btn-active-color: var(--ink); --bs-btn-disabled-color: var(--ink); --bs-btn-disabled-border-color: var(--control-border); }
 .btn-quiet-danger { color: var(--danger); border: 1px solid transparent; }
 .btn-quiet-danger:hover { color: var(--danger); background: var(--danger-surface); border-color: var(--danger-line); }
 .btn-sm { min-height: 34px; padding: 6px 12px; font-size: 12px; }
@@ -157,7 +157,8 @@ small, .muted { color: var(--muted); }
 .library-header::-webkit-details-marker { display: none; }
 .library-header:hover { background: var(--hover); }
 .library-symbol, .server-symbol { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: var(--violet-surface); border: 1px solid var(--violet-line); color: var(--violet); flex-shrink: 0; }
-.library-title { flex: 1; }
+.library-title { flex: 1; min-width: 0; }
+.library-name-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .library-title strong { display: block; font-size: 14px; font-weight: 600; }
 .library-title small { font-size: 10px; }
 .library-title small span { margin: 0 5px; }
@@ -281,10 +282,10 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .server-settings { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 15px; }
 .server-brand { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 13px; font-weight: 650; }
 .server-card header > .server-brand { margin-left: auto; }
-.server-brand .plex-logo { font-size: 16px; }
+.server-brand .plex-logo { display: inline-flex; align-items: center; font-size: 16px; line-height: 1; }
+.server-brand .plex-logo span { font-size: 22px; line-height: 1; }
 .server-brand-jellyfin { color: #aa7cfa; }
 .server-brand svg { width: 24px; height: 22px; }
-.library-header > .server-brand { margin-right: 4px; }
 .connector-notice { display: flex; align-items: center; gap: 8px; }
 [data-connector-status] { display: block; margin-top: 10px; }
 .server-settings > summary, .manual-server > summary { display: flex; align-items: center; gap: 8px; list-style: none; color: var(--ink-soft); font-size: 11px; cursor: pointer; }
@@ -309,6 +310,11 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .server-empty > .lucide { color: var(--violet); width: 28px; height: 28px; margin-bottom: 12px; }
 .server-empty p { color: var(--muted); font-size: 12px; margin-top: 7px; }
 .discovery-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.server-connect-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.add-server-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.add-server-tabs > button { background: transparent; border: 0; border-bottom: 2px solid transparent; padding: 12px 18px; }
+.add-server-tabs > button[aria-selected="true"] { background: var(--hover); border-bottom-color: var(--accent); }
+.add-server-tabs > button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .discovery-actions > .muted { margin-left: auto; font-size: 10px; }
 .manual-server { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
 .manual-server > summary { font-size: 12px; }

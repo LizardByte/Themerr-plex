@@ -2,6 +2,38 @@ import { api, busy, toast } from './api.js';
 import { refreshPage } from './workspace_navigation.js';
 import { _ } from './i18n.js';
 
+let selectedServerTab = 'add-plex-tab';
+
+function initServerTabs(signal) {
+    const tablist = document.getElementById('add-server-tabs');
+    if (!tablist) return;
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const select = selected => {
+        selectedServerTab = selected.id;
+        tabs.forEach(tab => {
+            const active = tab === selected;
+            tab.setAttribute('aria-selected', String(active));
+            tab.tabIndex = active ? 0 : -1;
+            document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+        });
+    };
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => select(tab), { signal });
+        tab.addEventListener('keydown', event => {
+            let next;
+            if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+            else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+            else if (event.key === 'Home') next = 0;
+            else if (event.key === 'End') next = tabs.length - 1;
+            else return;
+            event.preventDefault();
+            select(tabs[next]);
+            tabs[next].focus();
+        }, { signal });
+    });
+    select(tabs.find(tab => tab.id === selectedServerTab) || tabs[0]);
+}
+
 function initLibraryPicker(form, signal) {
     const picker = form.querySelector('[data-library-picker]');
     const options = picker.querySelector('[data-library-options]');
@@ -95,18 +127,22 @@ function discoveredServer(resource, source) {
     const connect = document.createElement('button');
     connect.type = 'button';
     connect.className = 'btn btn-primary btn-sm';
-    connect.textContent = 'Connect';
-    connect.disabled = !resource.connections.length;
-    connect.addEventListener('click', () => busy(connect, async () => {
-        await api('/api/servers', { body: { url: addresses.value,
-            resource_id: source === 'account' ? resource.id : undefined } });
-        if (connect.isConnected) await refreshPage();
-    }));
+    connect.textContent = resource.connected ? _('Connected') : _('Connect');
+    connect.disabled = Boolean(resource.connected) || !resource.connections.length;
+    connect.addEventListener('click', () => {
+        if (resource.connected) return;
+        return busy(connect, async () => {
+            await api('/api/servers', { body: { url: addresses.value,
+                resource_id: source === 'account' ? resource.id : undefined } });
+            if (connect.isConnected) await refreshPage();
+        });
+    });
     row.append(name, addresses, connect);
     return row;
 }
 
 export function initServers(signal) {
+    initServerTabs(signal);
     initJellyfin(signal);
     const authStart = document.getElementById('plex-auth-start');
     if (!authStart) return;
@@ -247,8 +283,10 @@ function initJellyfin(signal) {
                 const choose = document.createElement('button');
                 choose.type = 'button';
                 choose.className = 'btn btn-outline-light btn-sm';
-                choose.textContent = _('Use this address');
+                choose.textContent = server.connected ? _('Connected') : _('Use this address');
+                choose.disabled = Boolean(server.connected);
                 choose.addEventListener('click', () => {
+                    if (server.connected) return;
                     form.elements.url.value = server.url;
                     form.elements.api_key.focus();
                 }, { signal });

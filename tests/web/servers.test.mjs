@@ -10,10 +10,12 @@ class Element {
     disabled = false;
     textContent = '';
     value = '';
+    attributes = {};
     isConnected = true;
     addEventListener(name, listener) { this.listeners[name] = listener; }
-    setAttribute() {}
-    removeAttribute() {}
+    setAttribute(name, value) { this.attributes[name] = value; }
+    getAttribute(name) { return this.attributes[name]; }
+    removeAttribute(name) { delete this.attributes[name]; }
     replaceChildren() { this.children = []; this.textContent = ''; }
     append(...elements) {
         elements.forEach((element, index) => { element.nextElementSibling = elements[index + 1]; });
@@ -74,6 +76,19 @@ function page(context, responses, savedServers = [], jellyfin = {}) {
         elements['jellyfin-discover'] = new Element('button');
         elements['jellyfin-discovery-results'] = new Element('div');
     }
+    if (jellyfin.tabs) {
+        const tabs = ['plex', 'jellyfin'].map(kind => {
+            const tab = new Element('button');
+            tab.id = `add-${kind}-tab`;
+            tab.setAttribute('aria-controls', `add-${kind}-panel`);
+            elements[tab.id] = tab;
+            elements[`add-${kind}-panel`] = new Element();
+            return tab;
+        });
+        const tablist = new Element();
+        tablist.querySelectorAll = () => tabs;
+        elements['add-server-tabs'] = tablist;
+    }
     const connectors = (jellyfin.servers || []).map(id => {
         const form = new Element('form');
         const status = new Element('output');
@@ -124,6 +139,34 @@ test('Jellyfin connection submits its key with CSRF and clears it after success'
     assert.equal(reload.mock.callCount(), 1);
 });
 
+test('server tabs support clicks and keyboard navigation while retaining the form and selected tab', context => {
+    const { elements, controller } = page(context, [], [], { connect: true, tabs: true });
+    const plex = elements['add-plex-tab'];
+    const jellyfin = elements['add-jellyfin-tab'];
+    const form = elements['jellyfin-server-form'];
+    assert.equal(plex.getAttribute('aria-selected'), 'true');
+    assert.equal(elements['add-jellyfin-panel'].hidden, true);
+    jellyfin.click();
+    assert.equal(elements['add-plex-panel'].hidden, true);
+    assert.equal(elements['add-jellyfin-panel'].hidden, false);
+    assert.equal(jellyfin.tabIndex, 0);
+    assert.equal(plex.tabIndex, -1);
+    const preventDefault = context.mock.fn();
+    jellyfin.listeners.keydown({ key: 'ArrowRight', preventDefault });
+    assert.equal(plex.focused, true);
+    assert.equal(plex.getAttribute('aria-selected'), 'true');
+    plex.listeners.keydown({ key: 'ArrowLeft', preventDefault });
+    assert.equal(jellyfin.getAttribute('aria-selected'), 'true');
+    jellyfin.listeners.keydown({ key: 'Home', preventDefault });
+    plex.listeners.keydown({ key: 'End', preventDefault });
+    assert.equal(preventDefault.mock.callCount(), 4);
+    assert.equal(form.values.api_key, 'private-key');
+    assert.equal(form.reset.mock.callCount(), 0);
+    initServers(controller.signal);
+    assert.equal(jellyfin.getAttribute('aria-selected'), 'true');
+    plex.click();
+});
+
 test('connector status and installation stay scoped to the selected Jellyfin server', async context => {
     const { connectors, fetch } = page(context, [{ body: { message: 'Install the matching connector.' } },
         { body: { message: 'Restart Jellyfin.' } }], [], { servers: ['jellyfin:abc'] });
@@ -172,6 +215,52 @@ test('empty LAN discovery explains GDM and offers account or manual connections'
     assert.match(elements['discovery-results'].textContent, /account or manual address/);
     assert.equal(buttons[1].disabled, false);
 });
+
+test('Jellyfin discovery retains connected addresses but prevents selecting them', async context => {
+    const { elements, fetch } = page(context, [{ body: { servers: [
+        { id: 'one', name: 'Saved', url: 'http://127.0.0.1:8096', connected: true },
+        { id: 'one', name: 'Saved', url: 'http://192.168.1.205:8096', connected: true },
+        { id: 'two', name: 'Saved', url: 'http://new.example:8096', connected: false },
+    ] } }], [], { connect: true, discover: true });
+    await elements['jellyfin-discover'].click();
+    const form = elements['jellyfin-server-form'];
+    const buttons = elements['jellyfin-discovery-results'].children.map(row => row.children[2]);
+    for (const button of buttons.slice(0, 2)) {
+        assert.equal(button.textContent, 'Connected');
+        assert.equal(button.disabled, true);
+        await button.click();
+        assert.equal(form.elements.url.value, '');
+        assert.equal(form.elements.api_key.focused, undefined);
+    }
+    assert.equal(buttons[2].disabled, false);
+    await buttons[2].click();
+    assert.equal(form.elements.url.value, 'http://new.example:8096');
+    assert.equal(form.elements.api_key.focused, true);
+    assert.equal(fetch.mock.callCount(), 1);
+});
+
+for (const [index, source] of ['account', 'local'].entries()) {
+    test(`Plex ${source} discovery disables connected servers while allowing new connections`, async context => {
+        const connections = [{ url: 'http://plex.example:32400', local: true, relay: false }];
+        const { elements, buttons, fetch } = page(context, [{ body: { servers: [
+            { id: 'one', name: 'Same name', connections, connected: true },
+            { id: 'two', name: 'Same name', connections, connected: false },
+        ] } }, { body: { message: 'Connected' } }]);
+        await buttons[index].click();
+        const [saved, fresh] = elements['discovery-results'].children.map(row => row.children[2]);
+        assert.equal(saved.textContent, 'Connected');
+        assert.equal(saved.disabled, true);
+        await saved.click();
+        assert.equal(saved.disabled, true);
+        assert.equal(fetch.mock.callCount(), 1);
+        assert.equal(fresh.textContent, 'Connect');
+        assert.equal(fresh.disabled, false);
+        await fresh.click();
+        const payload = JSON.parse(fetch.mock.calls[1].arguments[1].body);
+        assert.equal(payload.url, 'http://plex.example:32400');
+        assert.equal(payload.resource_id, source === 'account' ? 'two' : undefined);
+    });
+}
 
 test('failed discovery clears its loading state and shows the failure', async context => {
     const { elements, buttons } = page(context, [{ error: true, body: { message: 'Discovery failed.' } }]);

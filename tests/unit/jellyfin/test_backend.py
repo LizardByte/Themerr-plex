@@ -65,7 +65,8 @@ def test_verified_upload_and_user_theme_protection(
     configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] = not overwrite
     item = {'Id': ITEM, 'Name': 'Example', 'Type': 'Movie'}
     state = {'present': present, 'owned': owned, 'sha256': 'old'}
-    connected.json.side_effect = [item, state, {'owned': True, 'sha256': 'digest'}]
+    connected.json.side_effect = [{'Items': [item], 'TotalRecordCount': 1}, state,
+                                  {'owned': True, 'sha256': 'digest'}]
     monkeypatch.setattr(metadata, 'resolve', lambda _: {
         'exists': True, 'database_type': 'movies', 'database': 'themoviedb', 'database_id': '42'})
     monkeypatch.setattr(helpers, 'json_get', lambda **_: {'youtube_theme_url': 'https://youtube.example'})
@@ -75,6 +76,11 @@ def test_verified_upload_and_user_theme_protection(
     download = Mock(return_value=nullcontext(audio))
     monkeypatch.setattr(backend, 'download_youtube', download)
     assert backend.JellyfinMediaServer(SERVER).update_item(ITEM) is True
+    lookup = connected.json.call_args_list[0]
+    assert lookup.args == ('GET', '/Items')
+    assert lookup.kwargs['params']['Ids'] == ITEM
+    assert lookup.kwargs['params']['Limit'] == 1
+    assert 'UserId' not in lookup.kwargs['params']
     with storage.server_scope(SERVER):
         tracked = storage.get_tracking(ITEM)
     if present and not owned and not overwrite:
@@ -88,6 +94,16 @@ def test_verified_upload_and_user_theme_protection(
         assert connected.json.call_args.kwargs['headers']['X-Themerr-Backup-User'] == str(not overwrite).lower()
     assert storage.current_server_id() == 'default'
     assert storage.get_tracking(ITEM) == {}
+
+
+def test_deleted_item_records_a_fixed_error_without_attempting_an_upload(connected):
+    connected.json.return_value = {'Items': [], 'TotalRecordCount': 0}
+    assert backend.JellyfinMediaServer(SERVER).update_item(ITEM) is False
+    connected.json.assert_called_once()
+    connected.request.assert_not_called()
+    with storage.server_scope(SERVER):
+        assert storage.get_errors()[ITEM] == 'This Jellyfin item is unavailable.'
+        assert storage.get_tracking(ITEM) == {}
 
 
 def test_failed_upload_never_records_success(connected, monkeypatch, tmp_path):
