@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: cs_CZ\n"
-"PO-Revision-Date: 2026-10-04 15:02\n"
+"PO-Revision-Date: 2026-10-05 14:44\n"
 
 #: src/common/config.py:90
 msgid "Info"
@@ -26,11 +26,11 @@ msgstr "Pouze pro informační účely."
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "Konfigurační verze"
+msgstr "Verze konfigurace"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "Konfigurační verze."
+msgstr "Verze konfigurace."
 
 #: src/common/config.py:105
 msgid "First run complete"
@@ -38,11 +38,11 @@ msgstr "První běh dokončen"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "Dnes: Označuje, zda uživatel dokončil původní nastavení."
+msgstr "Todo: Uvádí, zda uživatel dokončil počáteční nastavení."
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "Obecná ustanovení"
+msgstr "Obecné"
 
 #: src/common/config.py:114
 msgid "General settings."
@@ -54,15 +54,15 @@ msgstr "Místní prostředí"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "Nastavení lokalizace, které chcete použít."
+msgstr "Nastavení lokalizace, které se má použít."
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "Spustit prohlížeč při spuštění "
+msgstr "Spustit prohlížeč při spuštění systému "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "Povolit ikonu systémové lišty"
+msgstr "Zapnout ikonu v systémové liště"
 
 #: src/common/config.py:142
 msgid "Notifications"
@@ -70,7 +70,7 @@ msgstr "Oznámení"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "Oznámení na ploše se zobrazí na počítači, který běží na Themerr. Docker a bezhlavá instalace je nezobrazují."
+msgstr "Oznámení na ploše se zobrazují na počítači, na kterém běží aplikace Themerr. V prostředí Dockeru a při instalacích bez grafického rozhraní se nezobrazují."
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
@@ -78,19 +78,19 @@ msgstr "K dispozici je nová verze"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "Upozornit, když je k dispozici novější verze Themerr. Kontroluje běží jednou za hodinu."
+msgstr "Upozornit, jakmile bude k dispozici novější verze Themerr. Kontrola se provádí jednou za hodinu."
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "Sledovat předběžné vydání"
+msgstr "Sledujte předběžné verze"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "Zahrnout předběžné vydání do nových oznámení."
+msgstr "Do oznámení o nových verzích zahrnout i předběžné verze."
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "Rozšíření témat zvýšeno"
+msgstr "Rozsah témat se rozšířil"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
