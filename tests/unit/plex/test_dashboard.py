@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 # local imports
-from themerr import cache
+from plex import dashboard as cache
 from themerr import storage
 
 

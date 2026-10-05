@@ -12,7 +12,9 @@ from sqlalchemy.orm import Session
 
 # local imports
 from plex import auth, plexapi, servers, token_store
-from themerr import cache, general, storage, tmdb
+from plex import dashboard, media as general, tmdb
+from media_servers import processing
+from themerr import cache, storage
 
 
 @pytest.fixture(autouse=True)
@@ -236,23 +238,23 @@ def test_cache_and_scan_keep_other_servers_running_when_one_is_offline(configure
         storage.replace_dashboard(snapshot(identifier))
         return True
 
-    monkeypatch.setattr(cache, '_cache_server', refresh)
+    monkeypatch.setattr(dashboard, '_cache_server', refresh)
     cache.cache_data()
     assert seen == ['a', 'b']
     assert servers.get_server('a')['last_error']
     assert servers.get_server('b')['last_refresh']
     seen.clear()
-    monkeypatch.setattr(plexapi, '_scheduled_update_server', refresh)
-    plexapi.scheduled_update()
+    monkeypatch.setattr(plexapi, 'scan_items', lambda enqueue: refresh())
+    processing.scheduled_update()
     assert seen == ['a', 'b']
     assert storage.current_server_id() == 'default'
 
 
 def test_registry_empty_never_falls_back_to_the_retired_single_connection(configured, monkeypatch):
     scan, refresh = Mock(), Mock()
-    monkeypatch.setattr(plexapi, '_scheduled_update_server', scan)
-    monkeypatch.setattr(cache, '_cache_server', refresh)
-    plexapi.scheduled_update()
+    monkeypatch.setattr(plexapi, 'scan_items', scan)
+    monkeypatch.setattr(dashboard, '_cache_server', refresh)
+    processing.scheduled_update()
     cache.cache_data()
     scan.assert_not_called()
     refresh.assert_not_called()
@@ -261,7 +263,7 @@ def test_registry_empty_never_falls_back_to_the_retired_single_connection(config
 def test_listener_callbacks_and_queue_carry_server_identity(configured, monkeypatch):
     from queue import Queue
     queue = Queue()
-    monkeypatch.setattr(plexapi, 'q', queue)
+    monkeypatch.setattr(processing, 'q', queue)
     monkeypatch.setattr(plexapi, '_alert_listeners', {})
     for identifier in ('a', 'b'):
         save_server(identifier)
@@ -280,7 +282,7 @@ def test_listener_callbacks_and_queue_carry_server_identity(configured, monkeypa
     for kwargs, _ in listeners:
         kwargs['callback'](event)
         kwargs['callback'](event)
-    assert list(queue.queue) == [('a', 42), ('b', 42)]
+    assert list(queue.queue) == [('a', '42'), ('b', '42')]
     servers.update_server('a', {'enabled': False})
     listeners[0][0]['callback'](event)
     assert queue.qsize() == 2
@@ -302,31 +304,31 @@ def test_proxy_and_metadata_paths_follow_current_server(configured, monkeypatch,
     tmdb._proxy_cache.clear()
     for identifier in ('a', 'b'):
         with storage.server_scope(identifier):
-            assert tmdb._plex_get('find/tt42', {})['movie_results'][0]['id'] == 99
+            assert tmdb.query('find/tt42', {})['movie_results'][0]['id'] == 99
             assert get.call_args.args[0] == 'http://' + identifier + ':32400/services/tmdb'
             assert get.call_args.kwargs['headers']['X-Plex-Token'] == 'token-' + identifier
             assert general.get_media_upload_path(item, 'themes').startswith('C:/Plex-' + identifier)
     servers.update_server('a', {'data_directory': '', 'enabled': False})
     with storage.server_scope('a'):
         assert general.get_media_upload_path(item, 'themes') == ''
-        assert tmdb._plex_get('find/tt42', {}) == {}
+        assert tmdb.query('find/tt42', {}) == {}
 
 
 def test_workers_keep_server_scope_deduplicate_active_work_and_release_failed_items(monkeypatch):
-    monkeypatch.setattr(plexapi, '_active_items', set())
-    queue = plexapi._WorkQueue()
-    monkeypatch.setattr(plexapi, 'q', queue)
+    monkeypatch.setattr(processing, '_active_items', set())
+    queue = processing._WorkQueue()
+    monkeypatch.setattr(processing, 'q', queue)
     monkeypatch.setattr(servers, 'get_server', lambda identifier: {'enabled': identifier != 'paused'})
     for identifier in ('a', 'b', 'paused'):
         with storage.server_scope(identifier):
-            assert plexapi.enqueue(42)
-            assert not plexapi.enqueue(42)
+            assert processing.enqueue(42)
+            assert not processing.enqueue(42)
     seen = []
 
     def update(rating_key):
         identifier = storage.current_server_id()
         seen.append((identifier, rating_key))
-        assert not plexapi.enqueue(rating_key)
+        assert not processing.enqueue(rating_key)
         if identifier == 'a':
             raise RuntimeError('One server failed')
 
@@ -340,13 +342,13 @@ def test_workers_keep_server_scope_deduplicate_active_work_and_release_failed_it
     monkeypatch.setattr(queue, 'get', next_work)
     monkeypatch.setattr(plexapi, 'update_plex_item', update)
     with pytest.raises(KeyboardInterrupt):
-        plexapi.process_queue()
+        processing.process_queue()
     assert seen == [('a', 42), ('b', 42)]
     assert queue.unfinished_tasks == 0
-    assert not plexapi._active_items
+    assert not processing._active_items
     assert storage.current_server_id() == 'default'
     with storage.server_scope('a'):
-        assert plexapi.enqueue(42)
+        assert processing.enqueue(42)
 
 
 def test_manual_address_uses_shared_server_resource_token(configured, monkeypatch):

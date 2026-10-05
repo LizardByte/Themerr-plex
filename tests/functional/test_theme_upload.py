@@ -14,7 +14,8 @@ import requests
 
 # local imports
 from plex import plexapi
-from themerr import general, storage, theme_errors
+from plex import media as general
+from themerr import storage, theme_errors
 from youtube import youtube_dl
 
 

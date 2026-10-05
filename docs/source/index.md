@@ -20,6 +20,7 @@ about/changelog
 
 contributing/contributing
 contributing/database
+contributing/media_servers
 contributing/build
 contributing/testing
 ```

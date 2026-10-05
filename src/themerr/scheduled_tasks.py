@@ -13,7 +13,7 @@ import schedule
 from common import config
 from common import logger
 from common.notifications import check_for_releases
-from plex.plexapi import scheduled_update
+from media_servers.processing import scheduled_update
 from themerr.cache import cache_data
 
 log = logger.get_logger(name=__name__)

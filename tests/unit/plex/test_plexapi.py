@@ -13,6 +13,7 @@ import requests
 # local imports
 from common import config
 from plex import plexapi
+from media_servers import processing
 from youtube.youtube_dl import AudioFile
 
 
@@ -513,12 +514,12 @@ def test_update_handles_themerrdb_failure(configured, item, monkeypatch):
 
 
 def test_listener_handler(configured, monkeypatch):
-    monkeypatch.setattr(plexapi, 'q', Queue())
+    monkeypatch.setattr(processing, 'q', Queue())
     configured['Themerr']['BOOL_PLEX_MOVIE_SUPPORT'] = True
     entry = {'type': 1, 'state': 5, 'identifier': 'com.plexapp.plugins.library', 'itemID': '42'}
     plexapi.plex_listener_handler({'type': 'timeline', 'TimelineEntry': [entry, entry]})
-    assert plexapi.q.qsize() == 1
-    assert plexapi.q.get_nowait() == 42
+    assert processing.q.qsize() == 1
+    assert processing.q.get_nowait() == ('default', '42')
 
 
 def test_scheduled_update(configured, item, monkeypatch):
@@ -530,9 +531,9 @@ def test_scheduled_update(configured, item, monkeypatch):
     library = SimpleNamespace(sections=lambda: [section])
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: SimpleNamespace(library=library))
     monkeypatch.setattr(plexapi.themerr_db, 'update_cache', Mock())
-    monkeypatch.setattr(plexapi, 'q', Queue())
-    plexapi._scheduled_update_server()
-    assert plexapi.q.get_nowait() == 42
+    monkeypatch.setattr(processing, 'q', Queue())
+    plexapi.scan_items(processing.enqueue)
+    assert processing.q.get_nowait() == ('default', '42')
     assert "library_id=1 library_name='Movies' item='Example'" in plexapi._item_log_context(item)
 
 
@@ -543,9 +544,9 @@ def test_scheduled_update_ignores_configured_library(configured, item, monkeypat
     library = SimpleNamespace(sections=lambda: [section])
     monkeypatch.setattr(plexapi, 'setup_plexapi', lambda: SimpleNamespace(library=library))
     monkeypatch.setattr(plexapi.themerr_db, 'update_cache', Mock())
-    monkeypatch.setattr(plexapi, 'q', Queue())
+    monkeypatch.setattr(processing, 'q', Queue())
 
-    plexapi._scheduled_update_server()
+    plexapi.scan_items(processing.enqueue)
 
     section.all.assert_not_called()
-    assert plexapi.q.empty()
+    assert processing.q.empty()

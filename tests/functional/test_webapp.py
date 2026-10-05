@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from tests.http_helpers import get_session, set_session
 from common import admin, webapp
 from plex import servers
-from plex import auth, plexapi
+from plex import auth, plexapi, web as plex_web
 from themerr import storage
 from themerr import theme_errors
 
@@ -563,7 +563,7 @@ def test_plex_sign_in_expired_and_upstream_failure(client, configured, monkeypat
     monkeypatch.setattr(auth, 'check_login', Mock(side_effect=RuntimeError('not called')))
     client.post('/api/plex/auth/start')
     browser_session = get_session(client)
-    browser_session['plex_login']['started'] -= webapp.PLEX_LOGIN_LIFETIME + 1
+    browser_session['plex_login']['started'] -= plex_web.PLEX_LOGIN_LIFETIME + 1
     set_session(client, browser_session)
     assert client.post('/api/plex/auth/check').status_code == 410
     assert client.post('/api/plex/auth/check').status_code == 400

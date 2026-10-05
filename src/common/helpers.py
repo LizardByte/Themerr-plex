@@ -236,7 +236,7 @@ def get_logger(name: str) -> logging.Logger:
     >>> get_logger(name='my_log')
     <Logger my_log (WARNING)>
     """
-    if name.split('.')[0] in ('common', 'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule'):
+    if name.split('.')[0] in ('common', 'media_servers', 'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule'):
         name = 'themerr'
     return logging.getLogger(name=name)
 

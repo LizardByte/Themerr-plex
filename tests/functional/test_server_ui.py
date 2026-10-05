@@ -18,6 +18,7 @@ from tests.http_helpers import set_session
 from common import admin, server_ui, webapp
 from common.validation import ValidationError, ValidationMessage
 from plex import auth, plexapi, servers, token_store
+from media_servers import processing
 from themerr import storage
 
 
@@ -339,7 +340,7 @@ def test_refresh_dispatch_and_task_status(client, configured, monkeypatch):
     response = client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client))
     assert response.status_code == 202
     assert response.json()['job_id'] == 'dashboard-job'
-    run.assert_called_once_with(target=plexapi.scheduled_update, task_name='Theme scan and queue')
+    run.assert_called_once_with(target=processing.scheduled_update, task_name='Theme scan and queue')
     server_ui._refresh.assert_called_once()
     configured['Themerr']['BOOL_THEMERR_ENABLED'] = False
     assert client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client)).status_code == 400

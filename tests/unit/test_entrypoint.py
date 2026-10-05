@@ -13,6 +13,7 @@ import common
 from common import helpers
 from common import threads
 from plex import plexapi
+from media_servers import processing
 from themerr import scheduled_tasks
 import themerr_plex
 
@@ -52,7 +53,7 @@ def test_main_starts_services(configured, monkeypatch):
     worker = Mock()
     worker.start = Mock()
     monkeypatch.setattr(threads, 'run_in_thread', Mock(return_value=worker))
-    monkeypatch.setattr(plexapi, 'start_queue_threads', Mock())
+    monkeypatch.setattr(processing, 'start_queue_threads', Mock())
     monkeypatch.setattr(plexapi, 'plex_listener', Mock())
     monkeypatch.setattr(scheduled_tasks, 'setup_scheduling', Mock())
     monkeypatch.setattr(themerr_plex, 'wait', Mock())
@@ -61,7 +62,7 @@ def test_main_starts_services(configured, monkeypatch):
 
     initialized.assert_called_once()
     worker.start.assert_called_once()
-    plexapi.start_queue_threads.assert_called_once()
+    processing.start_queue_threads.assert_called_once()
     plexapi.plex_listener.assert_called_once()
     scheduled_tasks.setup_scheduling.assert_called_once()
     assert configured['Network']['HTTP_PORT'] == 9495

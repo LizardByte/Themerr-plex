@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import pytest
 
 # local imports
-from themerr import general
+from plex import media as general
 
 
 def test_metadata_and_upload_paths(configured, item, tmp_path):

@@ -229,7 +229,7 @@ def main():
         time.sleep(3)  # show splash screen for a min of 3 seconds
         splash.close()  # close the splash screen
     from common import webapp  # import at use due to translations
-    from plex import plexapi  # import at use due to config
+    from media_servers import get_backend, processing  # import after config
     from themerr import scheduled_tasks
 
     scheme = 'https' if config.CONFIG['Network']['SSL'] else 'http'
@@ -244,8 +244,8 @@ def main():
         helpers.open_url_in_browser(url=browser_url)
 
     # start plex listener
-    plexapi.start_queue_threads()
-    plexapi.plex_listener()
+    processing.start_queue_threads()
+    get_backend().start_listeners()
 
     # scheduled tasks
     scheduled_tasks.setup_scheduling()

@@ -52,7 +52,7 @@
                         {% if item.theme %}
                         <button type="button" class="theme-playback" data-theme-url="{{ url_for('play_theme_default', rating_key=item.rating_key) if section.server_id == 'default' else url_for('play_theme', server_id=section.server_id, rating_key=item.rating_key) }}"
                             data-theme-title="{{ item.title }}" data-theme-year="{{ item.year or '' }}" data-theme-type="{{ item.type|capitalize }}" data-theme-server="{{ section.server_name }}"
-                            data-theme-poster="{{ url_for('theme_poster_default', rating_key=item.rating_key) if section.server_id == 'default' else url_for('theme_poster', server_id=section.server_id, rating_key=item.rating_key) }}" data-theme-item-url="{{ item.plex_url }}"
+                            data-theme-poster="{{ url_for('theme_poster_default', rating_key=item.rating_key) if section.server_id == 'default' else url_for('theme_poster', server_id=section.server_id, rating_key=item.rating_key) }}" data-theme-item-url="{{ item.server_item_url }}"
                             data-play-label="{{ _('Play theme for') }} {{ item.title }}" data-pause-label="{{ _('Pause theme for') }} {{ item.title }}"
                             data-error-label="{{ _('Unable to play this theme. Check the Plex connection and browser audio support.') }}"
                             aria-label="{{ _('Play theme for') }} {{ item.title }}" aria-pressed="false" aria-describedby="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}">
@@ -61,7 +61,7 @@
                         </button>
                         {% endif %}
                         </span>
-                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.plex_url }}" target="_blank" rel="noopener noreferrer" title="{{ _('Open in Plex') }}: {{ item.title }}">{{ _('Plex ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
+                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.server_item_url }}" target="_blank" rel="noopener noreferrer" title="{{ _('Open in Plex') }}: {{ item.title }}">{{ _('Plex ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
                     </div>
                     {% if item.theme %}<output id="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}" class="theme-playback-error" hidden></output>{% endif %}
                 </td>

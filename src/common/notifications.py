@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 
 # local imports
 from common import config, definitions, locales, logger, version
-from plex import servers
+from media_servers import get_backend
 from themerr import storage
 
 log = logger.get_logger(__name__)
@@ -153,7 +153,7 @@ def refresh_completed() -> None:
     """
     try:
         with _lock:
-            records = servers.list_servers()
+            records = get_backend().list_servers()
             items = []
             for record in records:
                 with storage.server_scope(record['id']):

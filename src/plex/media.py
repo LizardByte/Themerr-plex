@@ -10,7 +10,7 @@ from plexapi.base import PlexPartialObject
 # local imports
 from common import config
 from common import logger
-from themerr.constants import metadata_type_map
+from plex.constants import metadata_type_map
 from themerr import storage
 from plex import servers
 

@@ -74,14 +74,8 @@ def on_change_plex_url() -> None:
     --------
     >>> on_change_plex_url()
     """
-    from plex import plexapi
-    plexapi.stop_plex_listener()
-    plexapi.plex_server = None
-    if plexapi.auth.get_token():
-        try:
-            plexapi.plex_listener()
-        except Exception:
-            log.exception('Unable to reconnect to the changed Plex URL')
+    from plex.config import reconnect
+    reconnect()
 
 
 _CONFIG_SPEC_DICT = {

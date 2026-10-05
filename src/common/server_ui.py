@@ -2,14 +2,11 @@
 
 # standard imports
 import re
-from urllib.parse import quote, urlencode
 
 # lib imports
 from fastapi import APIRouter, Depends, Request
 from starlette.responses import JSONResponse
 from fastapi import HTTPException
-from plexapi.exceptions import Unauthorized
-from requests.exceptions import ConnectionError, RequestException, SSLError, Timeout
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -17,7 +14,8 @@ from sqlalchemy.orm import Session
 from common.http import read_json, render_template
 from common import logger
 from common.validation import ValidationError
-from plex import auth, plexapi, servers, token_store
+from media_servers import get_backend, processing
+from media_servers.base import MediaServerError
 from themerr import storage, theme_errors
 
 router = APIRouter()
@@ -64,7 +62,7 @@ def _metadata_url(item: dict) -> str | None:
     Parameters
     ----------
     item : dict
-        Cached Plex item and resolved external identifiers.
+        Cached media item and resolved external identifiers.
 
     Returns
     -------
@@ -96,24 +94,24 @@ def dashboard() -> tuple[dict, dict, dict]:
         Libraries, scoped errors, and real summary counts.
     """
     libraries, errors = {}, {}
-    registered = servers.list_servers()
-    records = registered
-    for record in records:
+    backend = get_backend()
+    registered = backend.list_servers()
+    for record in registered:
+        server = backend.server(record['id'])
         with storage.server_scope(record['id']):
             snapshot = storage.get_dashboard() or {}
             failures = storage.get_errors()
         for key, section in snapshot.items():
             identity = record['id'] + ':' + key
-            server_url = ('https://app.plex.tv/desktop/#!/media/' + quote(record['id'], safe='') +
-                          '/com.plexapp.plugins.library')
+            urls = server.web_urls(str(section['key']))
             libraries[identity] = {**section, 'server_id': record['id'], 'server_name': record['name'],
-                                   'enabled': record['enabled'], 'server_url': server_url,
-                                   'library_url': server_url + '?' + urlencode({'source': section['key']})}
+                                   'enabled': record['enabled'], 'server_url': urls['server'],
+                                   'library_url': urls['library']}
             for item in section['items']:
                 item['server_id'] = record['id']
                 item['error'] = failures.get(item['rating_key'])
-                item['plex_url'] = 'https://app.plex.tv/desktop/#!/server/' + quote(record['id'], safe='') + (
-                    '/details?' + urlencode({'key': '/library/metadata/' + str(item['rating_key'])}))
+                item['server_item_url'] = server.web_urls(
+                    str(section['key']), item['rating_key'])['item']
                 item['metadata_url'] = _metadata_url(item)
                 item['show_edit'] = theme_errors.is_video_issue(item['error'])
                 errors[record['id'] + ':' + item['rating_key']] = item['error']
@@ -139,8 +137,8 @@ def server_page(request: Request):
         request,
         'servers.html',
         title='Servers',
-        servers=servers.list_servers(),
-        plex_connected=bool(auth.get_token()),
+        servers=get_backend().list_servers(),
+        plex_connected=get_backend().account_connected(),
     )
 
 
@@ -152,14 +150,14 @@ def server_libraries(server_id: str):
     Parameters
     ----------
     server_id : str
-        Saved Plex machine identifier.
+        Saved server identifier.
 
     Returns
     -------
     Response
         Library choices, using cached metadata when the server is paused or offline.
     """
-    record = servers.get_server(server_id)
+    record = get_backend().get_server(server_id)
     if record is None:
         return JSONResponse({'message': 'Server not found.'}, status_code=404)
     with Session(storage.engine()) as session:
@@ -168,69 +166,12 @@ def server_libraries(server_id: str):
                 storage.LibrarySection.server_id == server_id).order_by(storage.LibrarySection.title))]
     if record['enabled']:
         try:
-            connection = servers.connect(server_id)
-            if connection is not None:
-                libraries = [{'id': str(section.key), 'title': section.title}
-                             for section in connection.library.sections()]
+            libraries = get_backend().server(server_id).libraries()
+            if libraries is not None:
                 return JSONResponse({'libraries': libraries, 'cached': False})
         except Exception as exc:
-            log.warning('Could not load Plex libraries (%s)', type(exc).__name__)
+            log.warning('Could not load media-server libraries (%s)', type(exc).__name__)
     return JSONResponse({'libraries': cached, 'cached': True})
-
-
-@router.api_route('/api/servers/discover', methods=['POST'], name='server_ui.discover', response_model=None)
-def discover(payload=Depends(_payload)):
-    """List account or LAN resources without disclosing access tokens.
-
-    Returns
-    -------
-    Response
-        Safe discovery results or a connection error.
-    """
-    source = payload.get('source')
-    if source not in ('account', 'local'):
-        return JSONResponse({'message': 'Choose account or local discovery.'}, status_code=400)
-    try:
-        resources = servers.discover_account() if source == 'account' else servers.discover_local()
-    except Exception as exc:
-        return _failure(exc, 'Discovery failed. Check the Plex connection, or enter an address manually.')
-    return JSONResponse({'servers': resources})
-
-
-@router.api_route('/api/servers', methods=['POST'], name='server_ui.add_server', response_model=None)
-def add_server(payload=Depends(_payload)):
-    """Connect to a selected or manually addressed server.
-
-    Returns
-    -------
-    Response
-        Saved public settings or a sanitized failure.
-    """
-    try:
-        record = servers.add_server(payload.get('url', ''), payload.get('resource_id'))
-    except token_store.TokenStorageError as exc:
-        return _failure(exc, 'Unable to save the Plex token. Check the configured credential store.', 500)
-    except SSLError as exc:
-        return _failure(exc, 'The secure connection to Plex failed. Use its advertised HTTPS address and check '
-                        'the server certificate.')
-    except Timeout as exc:
-        return _failure(exc, 'The Plex connection timed out. Check that the server is running and this address is '
-                        'reachable from the machine running Themerr. Try another advertised or manual address.')
-    except ConnectionError as exc:
-        return _failure(exc, 'Could not connect to this Plex address. Check its hostname, port, and network access '
-                        'from the machine running Themerr, or try another address.')
-    except Unauthorized as exc:
-        return _failure(exc, 'Plex denied access to this server. Check the linked account has permission, or '
-                        'reconnect your Plex account.')
-    except RequestException as exc:
-        return _failure(exc, 'Plex returned an invalid response. Check the address or try another connection.')
-    except ValidationError as exc:
-        return _failure(exc, exc.reason.value, 400)
-    except Exception as exc:
-        return _failure(exc, 'Could not connect to this Plex server. Check the address and account access.')
-    plexapi.plex_listener()
-    _refresh()
-    return JSONResponse({'server': record}, status_code=201)
 
 
 @router.api_route(
@@ -245,29 +186,30 @@ def edit_server(request: Request, server_id: str, payload=Depends(read_json)):
     Parameters
     ----------
     server_id : str
-        Plex machine identifier.
+        Server identifier.
 
     Returns
     -------
     Response
         Updated settings or removal result.
     """
-    if not servers.get_server(server_id):
+    if not get_backend().get_server(server_id):
         return JSONResponse({'message': 'Server not found.'}, status_code=404)
     if request.method != 'DELETE':
         payload = _validated_payload(payload)
     try:
         if request.method == 'DELETE':
-            servers.remove_server(server_id)
+            get_backend().remove_server(server_id)
         else:
-            servers.update_server(server_id, payload)
+            get_backend().update_server(server_id, payload)
     except ValidationError as exc:
         return _failure(exc, exc.reason.value, 400)
-    except token_store.TokenStorageError as exc:
-        return _failure(exc, 'Could not update the secure credential store.', 500)
+    except MediaServerError as exc:
+        return _failure(exc, str(exc), exc.status_code)
     except Exception as exc:
-        return _failure(exc, 'Could not update this Plex server. Check its connection and settings.', 500)
-    plexapi.plex_listener()
+        return _failure(exc, f'Could not update this {get_backend().name} server. '
+                        'Check its connection and settings.', 500)
+    get_backend().start_listeners()
     return JSONResponse({'message': 'Server removed.' if request.method == 'DELETE' else 'Server settings saved.'})
 
 
@@ -300,7 +242,7 @@ def refresh(payload=Depends(_payload)):
                 {'message': 'Enable theme updates in Settings before starting a scan.'},
                 status_code=400,
             )
-        scheduled_tasks.run_threaded(target=plexapi.scheduled_update, task_name='Theme scan and queue')
+        scheduled_tasks.run_threaded(target=processing.scheduled_update, task_name='Theme scan and queue')
     job = _refresh()
     return JSONResponse(
         {'message': 'Refreshing libraries. Follow progress in Activity.', 'job_id': job.job_id},
@@ -335,7 +277,7 @@ def activity(request: Request):
     failures = [{
         'server': section['server_name'], 'library': section['title'], **item,
         'reason': item['error'] or (
-            'TMDB ID unavailable. Review the item metadata in Plex.'
+            f'TMDB ID unavailable. Review the item metadata in {get_backend().name}.'
             if item['theme_status'] == 'unresolved' else 'The theme could not be added.'
         ),
     } for section in libraries.values() for item in section['items']
@@ -346,7 +288,7 @@ def activity(request: Request):
         title='Activity',
         jobs=scheduled_tasks.job_history(),
         failures=failures,
-        queue_size=plexapi.q.qsize(),
+        queue_size=processing.q.qsize(),
     )
 
 
@@ -360,4 +302,4 @@ def task_status():
         Recent tasks and current queued item count.
     """
     from themerr import scheduled_tasks
-    return JSONResponse({'jobs': scheduled_tasks.job_history(), 'queue_size': plexapi.q.qsize()})
+    return JSONResponse({'jobs': scheduled_tasks.job_history(), 'queue_size': processing.q.qsize()})
