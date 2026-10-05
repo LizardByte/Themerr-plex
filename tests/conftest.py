@@ -18,10 +18,10 @@ def connector_bundle(tmp_path, monkeypatch):
     directory.mkdir()
     (directory / 'thumb.png').write_bytes(b'\x89PNG\r\n\x1a\nthumbnail')
     artifacts = {}
-    for index, (profile, filename) in enumerate(connector.ARCHIVES.items()):
+    for profile, filename in connector.ARCHIVES.items():
         content = ('connector-' + profile).encode()
         (directory / filename).write_bytes(content)
-        artifacts[profile] = {'version': f'2026.1004.1234.{index}', 'targetAbi': profile + '.0',
+        artifacts[profile] = {'version': '2026.1004.1234.0', 'targetAbi': profile + '.0',
                               'checksum': hashlib.md5(content, usedforsecurity=False).hexdigest()}
     data = {'build': 'a' * 64, 'protocol': 1, 'themerrVersion': VERSION, 'artifacts': artifacts}
     (directory / 'bundle.json').write_text(json.dumps(data), encoding='utf-8')

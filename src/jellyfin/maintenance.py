@@ -52,19 +52,22 @@ def install(server_id, url):
             restart = legacy_removed or restart
         legacy_checked = connector.bundle()['build'] if config.CONFIG['Jellyfin']['REMOVE_LEGACY_PLUGIN'] else None
         if restart:
-            message = 'Connector installed. Jellyfin will restart when playback finishes.'
+            action = ('Connector replacement needs a restart before installation.' if result.get('reinstall_required')
+                      else 'Connector installed.')
+            message = action + ' Jellyfin will restart when playback finishes.'
             if not config.CONFIG['Jellyfin']['WAIT_FOR_IDLE']:
-                message = 'Connector installed. Jellyfin will restart shortly to load it.'
+                message = action + ' Jellyfin will restart shortly.'
             if not config.CONFIG['Jellyfin']['AUTO_RESTART']:
-                message = 'Connector installed. Automatic restarts are disabled; restart Jellyfin to load it.'
+                message = action + ' Automatic restarts are disabled; restart Jellyfin to continue.'
             _save(server_id, phase='pending', message=message, restart_required=True,
                   restart_after=time.time() + 30, build=connector.bundle()['build'], force_restart=legacy_removed,
-                  legacy_checked=legacy_checked)
+                  legacy_checked=legacy_checked, reinstall_required=result.get('reinstall_required', False),
+                  repository_url=url, manual_restart=False)
             log.info('%s (%s)', message, server_id)
             result['message'] = message
         else:
             _save(server_id, phase='active', message=result['message'], restart_required=False, force_restart=False,
-                  legacy_checked=legacy_checked)
+                  legacy_checked=legacy_checked, reinstall_required=False, manual_restart=False)
         return {**result, 'restart_required': restart}
 
 
@@ -100,6 +103,27 @@ def _restart(server_id, connection, current):
             raise
 
 
+def force_restart(server_id):
+    """Honor an explicit server-card restart, bypassing automatic delays and idle preferences."""
+    with _lock:
+        connection = servers.client(server_id)
+        info = connection.json('GET', '/System/Info')
+        if not isinstance(info, dict) or info.get('CanSelfRestart') is not True:
+            raise MediaServerError('This Jellyfin installation cannot restart itself. '
+                                   'Restart its service or container instead.', 409)
+        current = state(server_id)
+        log.info('Administrator requested an immediate Jellyfin restart (%s)', server_id)
+        try:
+            connection.request('POST', '/System/Restart').close()
+        except MediaServerError as exc:
+            if exc.status_code != 502:
+                raise
+        return _save(server_id, phase='restarting', restart_required=current.get('restart_required', False),
+                     force_restart=current.get('force_restart', False), manual_restart=True,
+                     restart_started=time.time(), build=current.get('build'),
+                     message='Restarting Jellyfin. Active playback may be interrupted.')
+
+
 def maintain(server_id):
     """Advance one connection's installation or restart without blocking other work."""
     with _lock:
@@ -113,11 +137,16 @@ def maintain(server_id):
                     _save(server_id, phase='manual', message='Jellyfin has not loaded the connector after restarting. '
                           'Check its service or container and restart it manually.')
                 return
+            if current.get('reinstall_required'):
+                install(server_id, current['repository_url'])
+                return
             from jellyfin.backend import JellyfinMediaServer
             JellyfinMediaServer(server_id).cache_dashboard()
             servers.record_refresh(server_id)
-            _save(server_id, phase='active', message='Matching connector is active. Libraries refreshed.',
-                  restart_required=False, force_restart=False)
+            message = 'Jellyfin restarted. Libraries refreshed.' if current.get('manual_restart') else \
+                'Matching connector is active. Libraries refreshed.'
+            _save(server_id, phase='active', message=message,
+                  restart_required=False, force_restart=False, manual_restart=False)
             return
         if current.get('restart_required') and current.get('build') == connector.bundle()['build']:
             try:
@@ -125,6 +154,9 @@ def maintain(server_id):
             except MediaServerError:
                 if current.get('phase') != 'manual':
                     _restart(server_id, connection, current)
+                return
+            if current.get('reinstall_required'):
+                install(server_id, current['repository_url'])
                 return
             from jellyfin.backend import JellyfinMediaServer
             JellyfinMediaServer(server_id).cache_dashboard()
@@ -150,6 +182,14 @@ def maintain(server_id):
 
 def _verify_loaded(connection, current):
     """Require legacy cleanup's restart even when the matching connector was already active."""
+    if current.get('reinstall_required'):
+        info = connection.json('GET', '/System/Info')
+        if not isinstance(info, dict) or info.get('HasPendingRestart') is not False:
+            raise MediaServerError('Restart Jellyfin before replacing the loaded connector.', 409)
+        return
+    if current.get('manual_restart') and not current.get('restart_required'):
+        connection.json('GET', '/System/Info')
+        return
     connector.verify(connection)
     if current.get('force_restart'):
         info = connection.json('GET', '/System/Info')

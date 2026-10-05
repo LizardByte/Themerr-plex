@@ -134,6 +134,19 @@ def test_server_page_preselects_saved_ids_in_separate_dropdowns(client):
     assert 'Comma-separated library IDs' not in page
 
 
+def test_collection_library_header_uses_collection_coverage(client):
+    save_server('one')
+    data = snapshot('Top Gun', 'themerr')
+    data['1'].update(type='collection', media_count=0, media_percent_complete=0,
+                     collection_count=1, collection_percent_complete=100, collections_enabled=True)
+    data['1']['items'][0]['type'] = 'collection'
+    with storage.server_scope('one'):
+        storage.replace_dashboard(data)
+    page = client.get('/').text
+    assert '<strong>100%</strong><span class="mini-progress"><span style="width: 100%">' in page
+    assert '<strong>0%</strong><span class="mini-progress">' not in page
+
+
 def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(client):
     for identifier, provider in [('a', 'themerr'), ('b', 'plex')]:
         save_server(identifier)

@@ -300,14 +300,25 @@ function initJellyfin(signal) {
     }), { signal });
     document.querySelectorAll('[data-connector-form]').forEach(connectorForm => {
         const status = connectorForm.querySelector('[data-connector-status]');
+        const button = connectorForm.querySelector('button[type="submit"]');
+        const restartButton = connectorForm.querySelector('[data-restart-server]');
         const url = `/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/connector`;
         let timer;
         let suggested = false;
+        let automatic = connectorForm.dataset.autoUpdate === 'true';
         async function check() {
             try {
                 const result = await api(url, { method: 'GET' });
                 if (signal?.aborted || !status.isConnected) return;
                 status.textContent = result.message;
+                automatic = Boolean(result.auto_update);
+                button.textContent = automatic ? _('Save connector address') : _('Install matching connector');
+                button.hidden = !automatic && Boolean(result.installed || result.restart_required || result.phase === 'restarting');
+                if (restartButton) {
+                    restartButton.disabled = !result.can_restart || result.phase === 'restarting';
+                    restartButton.title = result.can_restart ? '' :
+                        _('This server cannot restart itself. Restart its service or container.');
+                }
                 if (!suggested) {
                     const address = new URL(result.repository_url || window.location.origin);
                     if (result.http_port && (!result.repository_url ||
@@ -333,8 +344,22 @@ function initJellyfin(signal) {
         void check();
         connectorForm.addEventListener('submit', event => {
             event.preventDefault();
-            void busy(connectorForm.querySelector('button[type="submit"]'), async () => {
-                const result = await api(url, { body: { themerr_url: new FormData(connectorForm).get('themerr_url') } });
+            void busy(button, async () => {
+                const result = await api(url, { method: automatic ? 'PUT' : 'POST',
+                    body: { themerr_url: new FormData(connectorForm).get('themerr_url') } });
+                if (!signal?.aborted && status.isConnected) {
+                    status.textContent = result.message;
+                    toast(result.message);
+                    clearTimeout(timer);
+                    timer = setTimeout(check, 5000);
+                }
+            });
+        }, { signal });
+        restartButton?.addEventListener('click', () => {
+            if (!window.confirm(_('Restart Jellyfin now? Active playback will be interrupted.'))) return;
+            void busy(restartButton, async () => {
+                const result = await api(`/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/restart`,
+                    { body: {} });
                 if (!signal?.aborted && status.isConnected) {
                     status.textContent = result.message;
                     toast(result.message);

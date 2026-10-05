@@ -260,6 +260,11 @@ _CONFIG_SPEC_DICT = {
             'description': _('Keep existing user themes in a backup folder when replacing them. '
                              'Disable to permanently remove replaced themes.'),
         },
+        'IMPORT_LEGACY_OWNERSHIP': {
+            'type': 'boolean', 'name': _('Import older Themerr-jellyfin ownership'), 'default': True,
+            'description': _('Recognize themes recorded in the older plugin’s database only when their SHA-256 '
+                             'still matches. Changed files stay protected. The old database is left untouched.'),
+        },
         'BOOL_IGNORE_LOCKED_FIELDS': {
             'type': 'boolean', 'name': _('Ignore locked metadata'), 'default': False,
             'description': _('Allow Jellyfin theme updates for items with locked metadata.'),
@@ -279,7 +284,7 @@ _CONFIG_SPEC_DICT = {
             'description': _('Defer connector restarts until there are no playing or paused streams.'),
         },
         'REMOVE_LEGACY_PLUGIN': {
-            'type': 'boolean', 'name': _('Remove the older Themerr-jellyfin plugin'), 'default': False,
+            'type': 'boolean', 'name': _('Remove the older Themerr-jellyfin plugin'), 'default': True,
             'description': _('After installing the connector, uninstall the older Themerr plugin and remove only '
                              'its dedicated repository. Existing theme files are kept.'),
         },

@@ -38,12 +38,13 @@ def build_identity(root=ROOT, version=None):
 
 def assembly_version(version):
     """Map timestamp release tags to four valid monotonic .NET version components."""
-    if version == '0.0.0':
-        now = datetime.now(timezone.utc)
-        return f'{now.year}.{now.month * 100 + now.day}.{now.hour * 100 + now.minute}.{now.second}'
     parts = version.split('.')
-    if len(parts) == 3 and len(parts[2]) == 6:
-        parts = [parts[0], parts[1], str(int(parts[2][:4])), str(int(parts[2][4:]))]
+    # release_setup strips leading zeroes from HHMMSS in its three-part scheme.
+    # Its dotnet scheme instead emits HHMM and SS as separate integer components.
+    if (len(parts) == 3 and len(parts[0]) == 4 and len(parts[1]) in (3, 4) and
+            parts[2].isascii() and parts[2].isdigit()):
+        timestamp = int(parts[2])
+        parts = [parts[0], parts[1], str(timestamp // 100), str(timestamp % 100)]
     parts += ['0'] * (4 - len(parts))
     if len(parts) != 4 or any(not p.isascii() or not p.isdigit() or int(p) > 65535 for p in parts):
         raise ValueError('Themerr release version must map to a valid four-part .NET version.')
@@ -62,12 +63,8 @@ def build(dotnet='dotnet', root=ROOT):
     directory.mkdir(exist_ok=True)
     shutil.copyfile(root / 'connectors/jellyfin' / THUMBNAIL, directory / THUMBNAIL)
     artifacts = {}
-    for index, (profile, (abi, framework)) in enumerate(PROFILES.items()):
-        parts = base_version.split('.')
-        parts[-1] = str(int(parts[-1]) * len(PROFILES) + index)
-        version = '.'.join(parts)
-        if int(parts[-1]) > 65535:
-            raise ValueError('Release revision is too large for the connector compatibility matrix.')
+    for profile, (abi, framework) in PROFILES.items():
+        version = base_version
         with tempfile.TemporaryDirectory(prefix='themerr-connector-') as temp:
             output = Path(temp) / 'out'
             subprocess.run([
@@ -102,7 +99,7 @@ def check_bundle(root=ROOT):
     for profile, (abi, _) in PROFILES.items():
         artifact = descriptor['artifacts'][profile]
         archive = directory / f'connector-{profile}.zip'
-        if (artifact['targetAbi'] != abi or
+        if (artifact['targetAbi'] != abi or artifact['version'] != assembly_version(release) or
                 artifact['checksum'] != hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()):
             raise ValueError('Prebuilt Jellyfin connector checksum or ABI does not match.')
         with zipfile.ZipFile(archive) as content:

@@ -19,6 +19,7 @@ public sealed class Controller : ControllerBase
     private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> Locks = new();
     private readonly ILibraryManager _library;
     private readonly ThemeFiles _themes;
+    private readonly LegacyOwnership _legacy;
     private readonly ILogger<Controller> _logger;
     private static string Metadata(string key) => typeof(Plugin).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
         .Single(a => a.Key == key).Value!;
@@ -27,6 +28,7 @@ public sealed class Controller : ControllerBase
     {
         _library = library;
         _themes = new(new ThemeOwnership(paths.DataPath));
+        _legacy = new(paths.DataPath);
         _logger = logger;
     }
 
@@ -77,6 +79,33 @@ public sealed class Controller : ControllerBase
     {
         _logger.LogError(error, "Could not access connector theme storage.");
         return StatusCode(500, "Could not access connector theme storage.");
+    }
+
+    [HttpPost("Items/{itemId:guid}/Theme/Import")]
+    public async Task<ActionResult<ThemeState>> Import(Guid itemId, CancellationToken cancellationToken)
+    {
+        if (Request.Headers["X-Themerr-Connector"] != Metadata("ThemerrBuild")) return Conflict();
+        var item = _library.GetItemById(itemId);
+        if (item is null) return NotFound();
+        var root = Root(item);
+        if (root is null) return BadRequest();
+        var gate = Locks.GetOrAdd(itemId, _ => new SemaphoreSlim(1, 1));
+        await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            string? digest;
+            try { digest = _legacy.Hash(itemId); }
+            catch (SqliteException error)
+            {
+                _logger.LogWarning(error, "Could not read older Themerr ownership; existing themes remain protected.");
+                digest = null;
+            }
+            return _themes.Import(itemId, root, digest, item.GetThemeSongs().Count);
+        }
+        catch (ThemeConflictException) { return Conflict(); }
+        catch (Exception error) when (error is SqliteException or IOException or UnauthorizedAccessException)
+        { return StorageFailure(error); }
+        finally { gate.Release(); }
     }
 
     private static string? Root(BaseItem item) =>

@@ -19,6 +19,7 @@ def connection(configured, connector_bundle, monkeypatch):
     monkeypatch.setattr(maintenance, '_stop', Event())
     monkeypatch.setattr(connector, 'install', Mock(return_value={
         'restart_required': True, 'message': 'Installed', 'version': '2026.1004.1.0'}))
+    monkeypatch.setattr(connector, 'remove_legacy', Mock(return_value=False))
     return value
 
 
@@ -109,6 +110,16 @@ def test_legacy_cleanup_requires_restart_even_with_matching_connector(connection
     connection.request.assert_called_once_with('POST', '/System/Restart')
 
 
+def test_default_legacy_cleanup_without_old_plugin_does_not_add_a_restart(connection, configured):
+    assert configured['Jellyfin']['REMOVE_LEGACY_PLUGIN'] is True
+    connector.install.return_value['restart_required'] = False
+    result = maintenance.install(SERVER, 'http://themerr.example')
+    connector.remove_legacy.assert_called_once_with(connection)
+    assert result['restart_required'] is False
+    assert maintenance.state(SERVER)['phase'] == 'active'
+    assert maintenance.state(SERVER)['legacy_checked'] == connector.bundle()['build']
+
+
 @pytest.mark.parametrize('phase', ['pending', 'manual', 'restarting'])
 def test_legacy_cleanup_waits_for_and_recognizes_a_manual_restart(connection, monkeypatch, phase):
     from jellyfin.backend import JellyfinMediaServer
@@ -162,3 +173,61 @@ def test_shutdown_cancels_a_restart_after_an_in_flight_idle_check(connection):
     connection.json.side_effect = check
     maintenance._restart(SERVER, connection, {})
     connection.request.assert_not_called()
+
+
+def test_force_restart_bypasses_automatic_preferences_and_active_playback(connection, configured):
+    configured['Jellyfin']['AUTO_RESTART'] = False
+    configured['Jellyfin']['WAIT_FOR_IDLE'] = True
+    connection.json.return_value = {'CanSelfRestart': True}
+    result = maintenance.force_restart(SERVER)
+    assert result['phase'] == 'restarting'
+    assert result['manual_restart'] is True
+    connection.json.assert_called_once_with('GET', '/System/Info')
+    connection.request.assert_called_once_with('POST', '/System/Restart')
+
+
+@pytest.mark.parametrize('info', [None, {}, {'CanSelfRestart': False}])
+def test_force_restart_requires_explicit_server_capability(connection, info):
+    connection.json.return_value = info
+    with pytest.raises(MediaServerError, match='cannot restart itself'):
+        maintenance.force_restart(SERVER)
+    connection.request.assert_not_called()
+    assert maintenance.state(SERVER) == {}
+
+
+def test_force_restart_without_connector_recovers_without_installing_it(connection, configured, monkeypatch):
+    from jellyfin.backend import JellyfinMediaServer
+    configured['Jellyfin']['AUTO_UPDATE_CONNECTOR'] = False
+    connection.json.return_value = {'CanSelfRestart': True}
+    maintenance.force_restart(SERVER)
+    verify = Mock()
+    refresh = Mock(return_value=True)
+    monkeypatch.setattr(connector, 'verify', verify)
+    monkeypatch.setattr(JellyfinMediaServer, 'cache_dashboard', refresh)
+    monkeypatch.setattr(servers, 'record_refresh', Mock())
+    maintenance.maintain(SERVER)
+    verify.assert_not_called()
+    refresh.assert_called_once_with()
+    assert maintenance.state(SERVER)['phase'] == 'active'
+    assert maintenance.state(SERVER)['manual_restart'] is False
+
+
+@pytest.mark.parametrize('phase', ['pending', 'manual', 'restarting'])
+def test_same_version_replacement_waits_for_unload_then_installs(connection, monkeypatch, phase):
+    connector.install.return_value['reinstall_required'] = True
+    maintenance.install(SERVER, 'http://themerr.example')
+    maintenance._save(SERVER, phase=phase, restart_started=999)
+    verify = Mock()
+    monkeypatch.setattr(connector, 'verify', verify)
+    connection.json.return_value = {'HasPendingRestart': True}
+    maintenance.maintain(SERVER)
+    assert connector.install.call_count == 1
+    assert maintenance.state(SERVER)['reinstall_required']
+    connection.json.return_value = {'HasPendingRestart': False}
+    connector.install.return_value.pop('reinstall_required')
+    maintenance.maintain(SERVER)
+    assert connector.install.call_count == 2
+    assert maintenance.state(SERVER)['reinstall_required'] is False
+    assert maintenance.state(SERVER)['restart_required']
+    assert maintenance.state(SERVER)['phase'] == 'pending'
+    verify.assert_not_called()

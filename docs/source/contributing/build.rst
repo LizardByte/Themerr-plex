@@ -31,6 +31,18 @@ their descriptor and catalog thumbnail live in the ignored ``jellyfin-connector`
 changing connector source, the thumbnail, or the Themerr version. To use a SDK outside ``PATH``, pass
 ``--dotnet /path/to/dotnet``.
 
+Both connector builds use Themerr's release version mapped with the ``release_setup`` action's .NET scheme.
+Dated versions split the ``HHMMSS`` component into ``HHMM`` and seconds, each with leading zeroes removed:
+``2026.1005.51610`` becomes ``2026.1005.516.10``. Ordinary three-part versions append a zero revision;
+four-part versions are preserved. Development builds use ``0.0.0.0`` rather than a separate timestamp.
+The server-specific repository advertises only the matching Jellyfin ABI, and the source fingerprint verifies
+the exact build even when release versions are equal.
+
+The connector uses EF Core's SQLite provider and migrations, matching Jellyfin's SDK dependency versions:
+9.0.10 for the 10.11 SDK and 10.0.11 for the 12.1 SDK. Runtime dependency assemblies are supplied by Jellyfin
+and are excluded from the connector ZIP. ASP.NET Core supplies JSON serialization; the connector does not
+manipulate JSON files.
+
 Run the connector's file ownership and upload integrity checks with:
 
 .. code-block:: shell

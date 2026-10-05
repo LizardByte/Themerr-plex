@@ -17,7 +17,7 @@ def test_manifest_has_only_bundled_versions_and_ignores_request_hosts(configured
     assert manifest['guid'] == connector.PLUGIN_ID
     assert manifest['imageUrl'] == 'http://themerr.example:9494/prefix' + connector.THUMBNAIL_PATH
     assert {item['targetAbi'] for item in manifest['versions']} == {'10.11.0', '12.1.0'}
-    assert len({item['version'] for item in manifest['versions']}) == 2
+    assert len({item['version'] for item in manifest['versions']}) == 1
     assert [item['sourceUrl'] for item in manifest['versions']] == [
         'http://themerr.example:9494/prefix/jellyfin/connector/' + filename
         for filename in connector.ARCHIVES.values()
@@ -32,18 +32,18 @@ def test_install_preserves_repositories_and_selects_exact_artifact(
     connection.json.side_effect = [
         {'Version': server_version}, MediaServerError('Missing connector.', 404), repositories,
         {'versions': [{'version': connector_bundle['artifacts'][profile]['version'],
-                       'repositoryUrl': 'http://themerr.example:9494' + connector.MANIFEST_PATH}]}, [],
+                       'repositoryUrl': 'http://themerr.example:9494' + connector.PROFILE_MANIFESTS[profile]}]}, [],
     ]
     result = connector.install(connection, 'http://themerr.example:9494')
     assert result['restart_required'] is True
     assert result['version'] == connector_bundle['artifacts'][profile]['version']
     posted = connection.request.call_args_list[0].kwargs['json']
     assert posted[0] == repositories[0]
-    assert posted[1]['Url'] == 'http://themerr.example:9494' + connector.MANIFEST_PATH
+    assert posted[1]['Url'] == 'http://themerr.example:9494' + connector.PROFILE_MANIFESTS[profile]
     assert connection.request.call_args_list[1].kwargs['params'] == {
         'assemblyGuid': connector.PLUGIN_ID,
         'version': connector_bundle['artifacts'][profile]['version'],
-        'repositoryUrl': 'http://themerr.example:9494' + connector.MANIFEST_PATH,
+        'repositoryUrl': 'http://themerr.example:9494' + connector.PROFILE_MANIFESTS[profile],
     }
 
 
@@ -55,8 +55,54 @@ def test_install_does_not_overwrite_an_active_matching_assembly(configured, conn
     assert connector.install(connection, 'http://themerr.example')['restart_required'] is False
     connection.request.assert_called_once_with('POST', '/Repositories', json=[
         {'Name': connector.PLUGIN_NAME,
-         'Url': 'http://themerr.example' + connector.MANIFEST_PATH, 'Enabled': True},
+         'Url': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12.1'], 'Enabled': True},
     ])
+
+
+@pytest.mark.parametrize('key', connector.ARCHIVES)
+def test_profile_repository_has_only_the_requested_abi(configured, connector_bundle, key):
+    connector.repository_url('http://themerr.example')
+    versions = connector.manifest(key)[0]['versions']
+    assert len(versions) == 1
+    assert versions[0]['targetAbi'] == key + '.0'
+    assert versions[0]['version'] == connector_bundle['artifacts'][key]['version']
+
+
+@pytest.mark.parametrize('status', ['Active', 'Disabled', 'Malfunctioned', 'Deleted', 'Restart'])
+def test_changed_build_with_same_version_is_unloaded_before_reinstallation(configured, connector_bundle, status):
+    release = connector_bundle['artifacts']['12.1']['version']
+    connection = Mock(server_version='12.1.0')
+    connection.json.side_effect = [
+        {'Version': '12.1.0'}, MediaServerError('Mismatch', 409), [],
+        {'versions': [{'version': release,
+                       'repositoryUrl': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12.1']}]},
+        [{'Id': connector.PLUGIN_ID.replace('-', ''), 'Version': release, 'Status': status}],
+    ]
+    result = connector.install(connection, 'http://themerr.example')
+    assert result['restart_required']
+    assert bool(result.get('reinstall_required')) == (status != 'Restart')
+    calls = connection.request.call_args_list
+    assert not any(call.args[1].startswith('/Packages/Installed') for call in calls)
+    assert len(calls) == (1 if status in ('Deleted', 'Restart') else 2)
+    if len(calls) == 2:
+        assert calls[1].args == ('DELETE', '/Plugins/' + connector.PLUGIN_ID + '/' + release)
+
+
+def test_older_connector_versions_are_removed_on_a_downgrade(configured, connector_bundle):
+    release = connector_bundle['artifacts']['12.1']['version']
+    connection = Mock(server_version='12.1.0')
+    connection.json.side_effect = [
+        {'Version': '12.1.0'}, MediaServerError('Mismatch', 409), [],
+        {'versions': [{'version': release,
+                       'repositoryUrl': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12.1']}]},
+        [{'Id': connector.PLUGIN_ID, 'Version': '2026.1005.9999.0', 'Status': 'Active'},
+         {'Id': connector.LEGACY_PLUGIN_ID, 'Version': '2026.1005.9999.0', 'Status': 'Active'}],
+    ]
+    result = connector.install(connection, 'http://themerr.example')
+    assert not result.get('reinstall_required')
+    assert connection.request.call_args_list[1].args == (
+        'DELETE', '/Plugins/' + connector.PLUGIN_ID + '/2026.1005.9999.0')
+    assert connection.request.call_args_list[2].args == ('POST', '/Packages/Installed/' + connector.PLUGIN_NAME)
 
 
 @pytest.mark.parametrize('field, value', [('protocol', 2), ('build', 'b' * 64), ('targetAbi', '10.11.0')])

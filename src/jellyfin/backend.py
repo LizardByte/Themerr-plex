@@ -36,6 +36,16 @@ def _eligible(item):
                 (not item.get('IsLocked') or config.CONFIG['Jellyfin']['BOOL_IGNORE_LOCKED_FIELDS']))
 
 
+def _theme_state(connection, item_id):
+    """Optionally import digest-verified legacy ownership through the authenticated connector."""
+    route = '/Themerr/Items/' + identifier(item_id) + '/Theme'
+    state = connection.json('GET', route)
+    if (state.get('present') and not state['owned'] and config.CONFIG['Jellyfin']['IMPORT_LEGACY_OWNERSHIP']):
+        state = connection.json('POST', route + '/Import',
+                                headers={'X-Themerr-Connector': connector.bundle()['build']})
+    return state
+
+
 class JellyfinMediaServer(MediaServer):
     """Apply native Jellyfin operations within an independent storage scope."""
 
@@ -100,7 +110,7 @@ class JellyfinMediaServer(MediaServer):
             status = 'pending' if details['exists'] else 'missing'
         owned = False
         if theme and connection is not None:
-            owned = connection.json('GET', '/Themerr/Items/' + key + '/Theme')['owned']
+            owned = _theme_state(connection, key)['owned']
         return {**{name: value for name, value in details.items() if name != 'exists'}, 'rating_key': key,
                 'title': item['Name'], 'year': item.get('ProductionYear'), 'agent': 'jellyfin', 'theme': theme,
                 'theme_provider': 'themerr' if owned else 'uploaded' if theme else None,
@@ -145,7 +155,7 @@ class JellyfinMediaServer(MediaServer):
             ancestors = connection.json('GET', '/Items/' + item_id + '/Ancestors')
             if ignored.intersection(identifier(row['Id']) for row in ancestors):
                 return False
-        state = connection.json('GET', '/Themerr/Items/' + item_id + '/Theme')
+        state = _theme_state(connection, item_id)
         if state['present'] and not state['owned'] and not config.CONFIG['Jellyfin']['BOOL_OVERWRITE_USER_THEMES']:
             theme_errors.set_error(item_id, None)
             return True

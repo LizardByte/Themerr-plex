@@ -82,6 +82,29 @@ public sealed class ThemeOwnershipTests : IDisposable
         Assert.Equal("invalid database", File.ReadAllText(DatabasePath));
     }
 
+    [Fact]
+    public void EfMigrationsAdoptTheExistingConnectorDatabaseWithoutLosingOwnership()
+    {
+        Directory.CreateDirectory(DirectoryPath);
+        var id = Guid.NewGuid();
+        using (var database = new SqliteConnection(new SqliteConnectionStringBuilder
+            { DataSource = DatabasePath, Pooling = false }.ToString()))
+        {
+            database.Open();
+            using var seed = database.CreateCommand();
+            // Fixture representing the pre-EF connector schema, rather than a new EF-created database.
+            seed.CommandText = "CREATE TABLE theme_ownership (item_id TEXT PRIMARY KEY NOT NULL, filename TEXT NOT NULL, sha256 TEXT NOT NULL); " +
+                "INSERT INTO theme_ownership VALUES ($id, 'theme.mp3', 'original')";
+            seed.Parameters.AddWithValue("$id", id.ToString("N"));
+            seed.ExecuteNonQuery();
+        }
+        Assert.Equal(new Ownership("theme.mp3", "original"), _ownership.Find(id));
+        var next = Guid.NewGuid();
+        _ownership.Record(next, "theme.m4a", "new", () => { });
+        Assert.Equal(new Ownership("theme.mp3", "original"), _ownership.Find(id));
+        Assert.Equal(new Ownership("theme.m4a", "new"), _ownership.Find(next));
+    }
+
     [Theory]
     [InlineData("ownership.db")]
     [InlineData("ownership.db-journal")]

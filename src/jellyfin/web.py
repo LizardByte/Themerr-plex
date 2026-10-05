@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request
 from typing import Annotated
 from starlette.responses import JSONResponse
 
-from common import credentials, logger
+from common import config, credentials, logger
 from common.http import file_response, read_json
 from jellyfin import connector, discovery, maintenance, repository, servers
 from media_servers.base import MediaServerError
@@ -56,15 +56,46 @@ def connector_status(server_id: str):
                 raise
             return JSONResponse({**result, 'installed': False,
                                  'repository_url': connector.repository_url(required=False),
-                                 'http_port': repository.http_port()})
+                                 'http_port': repository.http_port(), 'can_restart': False,
+                                 'auto_update': config.CONFIG['Jellyfin']['AUTO_UPDATE_CONNECTOR']})
+        info = connection.json('GET', '/System/Info')
         try:
             connector.verify(connection)
             message = result['message'] if result.get('restart_required') else 'Matching connector is active.'
             result = {**result, 'installed': True, 'message': message}
         except MediaServerError:
-            result = {'installed': False, 'message': 'Install the matching Themerr connector.', **result}
+            message = ('Save the Themerr address to allow automatic connector installation.'
+                       if config.CONFIG['Jellyfin']['AUTO_UPDATE_CONNECTOR']
+                       else 'Install the matching Themerr connector.')
+            result = {'installed': False, 'message': message, **result}
         return JSONResponse({**result, 'repository_url': connector.repository_url(required=False),
-                             'http_port': repository.http_port()})
+                             'http_port': repository.http_port(),
+                             'can_restart': isinstance(info, dict) and info.get('CanSelfRestart') is True,
+                             'auto_update': config.CONFIG['Jellyfin']['AUTO_UPDATE_CONNECTOR']})
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.put('/api/jellyfin/servers/{server_id}/connector', name='jellyfin.connector_address', response_model=None)
+def connector_address(server_id: str, payload: Annotated[object, Depends(read_json)]):
+    """Save the reachable repository address for automatic connector installation."""
+    try:
+        payload = _payload(payload)
+        servers.client(server_id)
+        connector.configure_repository(payload.get('themerr_url'))
+        return JSONResponse({'message': 'Connector address saved. Automatic installation will run shortly.'},
+                            status_code=202)
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.post('/api/jellyfin/servers/{server_id}/restart', name='jellyfin.restart', response_model=None)
+def restart(server_id: str):
+    """Restart a saved Jellyfin server immediately, including when streams are active."""
+    try:
+        if not servers.get_server(server_id):
+            raise MediaServerError('Jellyfin server not found.', 404)
+        return JSONResponse(maintenance.force_restart(server_id), status_code=202)
     except Exception as exc:
         return _failure(exc)
 
@@ -93,10 +124,15 @@ def discover():
 
 
 @router.api_route(connector.MANIFEST_PATH, methods=['GET', 'HEAD'], name='jellyfin.manifest', response_model=None)
-def manifest():
+@router.api_route('/jellyfin/connector/manifest-10.11.json', methods=['GET', 'HEAD'],
+                  name='jellyfin.manifest_10_11', response_model=None)
+@router.api_route('/jellyfin/connector/manifest-12.1.json', methods=['GET', 'HEAD'],
+                  name='jellyfin.manifest_12_1', response_model=None)
+def manifest(request: Request):
     """Serve only bundled connector metadata so Jellyfin can install from this Themerr instance."""
     try:
-        return JSONResponse(connector.manifest())
+        profiles = {path: key for key, path in connector.PROFILE_MANIFESTS.items()}
+        return JSONResponse(connector.manifest(profiles.get(request.url.path)))
     except MediaServerError as exc:
         return _failure(exc)
 

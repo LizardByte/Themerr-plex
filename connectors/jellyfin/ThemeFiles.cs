@@ -33,7 +33,7 @@ public sealed class ThemeFiles(ThemeOwnership ownership)
         var present = files.Length > 0 || themeSongCount > 0 || Directory.Exists(music);
         var record = ownership.Find(itemId);
         // A database value selects a code-owned filename; it never becomes a path.
-        var file = Formats.Values.FirstOrDefault(value => value == record?.File);
+        var file = ThemeNames.FirstOrDefault(value => value == record?.File);
         if (file is null || files.Length != 1 || themeSongCount > 1 || Directory.Exists(music))
             return new(present, false, null);
         var path = Path.Combine(root, file);
@@ -69,7 +69,7 @@ public sealed class ThemeFiles(ThemeOwnership ownership)
                 RejectLink(path);
                 if (current.Present && !current.Owned) ReplaceUserThemes(root, themeSongCount, backupUser);
                 File.Move(temporary, path, true);
-                foreach (var other in Formats.Values.Where(value => value != file))
+                foreach (var other in ThemeNames.Where(value => value != file))
                 {
                     var old = Path.Combine(root, other);
                     RejectLink(old);
@@ -82,6 +82,28 @@ public sealed class ThemeFiles(ThemeOwnership ownership)
         {
             File.Delete(temporary);
         }
+    }
+
+    public ThemeState Import(Guid itemId, string root, string? expectedDigest, int themeSongCount = 0)
+    {
+        var current = State(itemId, root, themeSongCount);
+        if (current.Owned || expectedDigest is null || expectedDigest.Length != 64 ||
+            !expectedDigest.All(Uri.IsHexDigit) || themeSongCount > 1 || Directory.Exists(Path.Combine(root, ThemeMusic)))
+            return current;
+        var files = ThemeNames.Where(name => File.Exists(Path.Combine(root, name))).ToArray();
+        if (files.Length != 1) return current;
+        var original = Snapshot(root);
+        var file = files[0];
+        using (var stream = File.OpenRead(Path.Combine(root, file)))
+        {
+            var digest = Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
+            if (!string.Equals(digest, expectedDigest, StringComparison.OrdinalIgnoreCase)) return current;
+            ownership.Record(itemId, file, digest, () =>
+            {
+                if (!original.SequenceEqual(Snapshot(root))) throw new ThemeConflictException();
+            });
+        }
+        return State(itemId, root, themeSongCount);
     }
 
     private static async Task<string> Write(Stream body, string temporary, CancellationToken cancellationToken)

@@ -37,7 +37,8 @@
         <summary class="library-header">
             <span class="library-symbol"><i data-lucide="{{ 'tv' if section.type == 'show' else 'clapperboard' }}"></i></span>
             <span class="library-title"><span class="library-name-row"><strong>{{ section.title }}</strong>{{ server_brand('jellyfin' if section.server_label == 'Jellyfin' else 'plex') }}</span><small><a href="{{ section.server_url }}" target="_blank" rel="noopener noreferrer">{{ section.server_name }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a><span>·</span><a href="{{ section.library_url }}" target="_blank" rel="noopener noreferrer">{{ _('Library ID') }} {{ section.key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% if not section.enabled %} <span>·</span> {{ _('Paused') }}{% endif %}</small></span>
-            <span class="library-coverage"><strong>{{ section.media_percent_complete }}%</strong><span class="mini-progress"><span style="width: {{ section.media_percent_complete }}%"></span></span></span>
+            {% set coverage = section.collection_percent_complete if section.type == 'collection' else section.media_percent_complete %}
+            <span class="library-coverage"><strong>{{ coverage }}%</strong><span class="mini-progress"><span style="width: {{ coverage }}%"></span></span></span>
             <i data-lucide="chevron-down" class="details-chevron"></i>
         </summary>
         <div class="library-table-wrap">

@@ -65,8 +65,10 @@ def test_verified_upload_and_user_theme_protection(
     configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] = not overwrite
     item = {'Id': ITEM, 'Name': 'Example', 'Type': 'Movie'}
     state = {'present': present, 'owned': owned, 'sha256': 'old'}
-    connected.json.side_effect = [{'Items': [item], 'TotalRecordCount': 1}, state,
-                                  {'owned': True, 'sha256': 'digest'}]
+    connected.json.side_effect = [
+        {'Items': [item], 'TotalRecordCount': 1}, state,
+        *([state] if present and not owned else []), {'owned': True, 'sha256': 'digest'},
+    ]
     monkeypatch.setattr(metadata, 'resolve', lambda _: {
         'exists': True, 'database_type': 'movies', 'database': 'themoviedb', 'database_id': '42'})
     monkeypatch.setattr(helpers, 'json_get', lambda **_: {'youtube_theme_url': 'https://youtube.example'})

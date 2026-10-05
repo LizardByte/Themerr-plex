@@ -81,6 +81,8 @@ public sealed class ControllerTests : IDisposable
         _controller.Request.Headers["X-Themerr-Connector"] = "different";
         Assert.IsType<ConflictResult>((await _controller.Upload(Guid.NewGuid(), CancellationToken.None)).Result);
         _library.Verify(value => value.GetItemById(It.IsAny<Guid>()), Times.Never);
+        Assert.IsType<ConflictResult>((await _controller.Import(Guid.NewGuid(), CancellationToken.None)).Result);
+        _library.Verify(value => value.GetItemById(It.IsAny<Guid>()), Times.Never);
     }
 
     [Fact]

@@ -94,3 +94,23 @@ def test_dashboard_snapshot_uses_uuid_keys_and_owned_theme_status(configured, mo
     assert snapshot['items'][0]['theme_provider'] == 'themerr'
     assert snapshot['items'][1]['theme_status'] == 'pending'
     assert storage.get_dashboard() is None
+
+
+def test_legacy_import_is_optional_and_only_requests_unowned_existing_themes(
+        configured, connector_bundle, monkeypatch):
+    from jellyfin import connector
+    item = '2' * 32
+    connection = Mock()
+    original = {'present': True, 'owned': False, 'sha256': None}
+    connection.json.return_value = original
+    assert configured['Jellyfin']['IMPORT_LEGACY_OWNERSHIP'] is True
+    configured['Jellyfin']['IMPORT_LEGACY_OWNERSHIP'] = False
+    assert backend._theme_state(connection, item) == original
+    connection.json.assert_called_once_with('GET', '/Themerr/Items/' + item + '/Theme')
+    connection.reset_mock()
+    configured['Jellyfin']['IMPORT_LEGACY_OWNERSHIP'] = True
+    imported = {'present': True, 'owned': True, 'sha256': 'a' * 64}
+    connection.json.side_effect = [original, imported]
+    assert backend._theme_state(connection, item) == imported
+    assert connection.json.call_args.args == ('POST', '/Themerr/Items/' + item + '/Theme/Import')
+    assert connection.json.call_args.kwargs == {'headers': {'X-Themerr-Connector': connector.bundle()['build']}}

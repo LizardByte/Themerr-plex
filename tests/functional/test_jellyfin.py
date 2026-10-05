@@ -31,6 +31,12 @@ def sign_in(browser):
 def test_repository_is_public_but_setup_and_sibling_paths_are_private(browser, connector_bundle, monkeypatch):
     connector.repository_url('http://themerr.example:9494')
     assert browser.get(connector.MANIFEST_PATH).status_code == 200
+    for key, path in connector.PROFILE_MANIFESTS.items():
+        result = browser.get(path)
+        assert result.status_code == 200
+        assert len(result.json()[0]['versions']) == 1
+        assert result.json()[0]['versions'][0]['targetAbi'] == key + '.0'
+        assert browser.head(path).content == b''
     image = browser.get(connector.THUMBNAIL_PATH)
     assert image.status_code == 200
     assert image.headers['Content-Type'] == 'image/png'
@@ -158,3 +164,32 @@ def test_connector_status_retains_restart_notices_while_offline_or_already_match
     assert result.json()['message'] == 'Restarting Jellyfin.'
     assert result.json()['restart_required'] is True
     assert result.json()['installed'] is online
+
+
+def test_manual_restart_requires_login_csrf_and_a_saved_server(browser, monkeypatch):
+    restart = Mock(return_value={'message': 'Restarting Jellyfin.'})
+    monkeypatch.setattr(maintenance, 'force_restart', restart)
+    path = '/api/jellyfin/servers/missing/restart'
+    assert browser.post(path).status_code == 401
+    headers = sign_in(browser)
+    assert browser.post(path).status_code == 400
+    restart.assert_not_called()
+    assert browser.post(path, headers=headers).status_code == 404
+    restart.assert_not_called()
+    monkeypatch.setattr(servers, 'get_server', lambda _: {'id': 'missing'})
+    assert browser.post(path, headers=headers).status_code == 202
+    restart.assert_called_once_with('missing')
+
+
+def test_automatic_connector_address_is_saved_without_requesting_installation(browser, monkeypatch):
+    path = '/api/jellyfin/servers/jellyfin:test/connector'
+    configure = Mock()
+    install = Mock()
+    monkeypatch.setattr(servers, 'client', Mock())
+    monkeypatch.setattr(connector, 'configure_repository', configure)
+    monkeypatch.setattr(maintenance, 'install', install)
+    headers = sign_in(browser)
+    assert browser.put(path, json={'themerr_url': 'http://themerr.example:9495'}).status_code == 400
+    assert browser.put(path, json={'themerr_url': 'http://themerr.example:9495'}, headers=headers).status_code == 202
+    configure.assert_called_once_with('http://themerr.example:9495')
+    install.assert_not_called()

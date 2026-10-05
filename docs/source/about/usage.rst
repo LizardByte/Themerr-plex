@@ -170,7 +170,9 @@ address reachable from the machine running Themerr. Each saved server has indepe
 ignored libraries, dashboard records, and upload history.
 
 Theme uploads require the small **Themerr Connector** bundled with this Themerr build. On the server card,
-enter a Themerr address reachable from the Jellyfin machine and select **Install matching connector**.
+enter a Themerr address reachable from the Jellyfin machine and select **Save connector address** when automatic
+updates are enabled. With automatic updates disabled, **Install matching connector** appears only when the
+matching connector is missing and no installation is awaiting a restart.
 Themerr registers its local plugin repository and installs the exact compatible connector through Jellyfin's API,
 preserving other registered repositories. Themerr shows the pending restart on the server card, waits at least
 30 seconds and, by default, waits until playing and paused streams finish before restarting Jellyfin. Libraries
@@ -178,6 +180,10 @@ are refreshed when the connector becomes active. Installations that cannot resta
 service and container configurations, show instructions to restart manually. Automatic updates install a
 mismatched connector when Themerr starts or checks the connection. Both automatic updates and restarts can be
 disabled under **Settings > Jellyfin**.
+The **Force restart** button restarts Jellyfin immediately after confirmation, even during playback; it is
+available only when the server reports that it can restart itself. Plex does not expose a documented general
+server restart API. Replacing a changed development or PR connector with the same version can require two
+restarts: one to unload the old assembly and another to load its replacement.
 
 The download address must use a certificate trusted by Jellyfin or HTTP on your private network. Themerr's
 default self-signed HTTPS certificate is not automatically trusted by Jellyfin. A trusted reverse proxy can
@@ -187,18 +193,28 @@ expose that port when running Docker. Configure or disable it under **Settings >
 Jellyfin downloads the fixed manifest, thumbnail, and archive routes without a Themerr admin session; all connection,
 installation, library, and theme APIs retain administrator authentication.
 
-The connector only accepts matching uploads from Themerr and stores files beside the native library item.
+The connector uses Jellyfin's administrator authentication policy. Themerr sends the server's API key, verifies
+the connector protocol, build fingerprint and Jellyfin ABI, and includes the fingerprint with uploads and
+ownership imports. The fingerprint checks compatibility; it is public and is not an additional secret.
+Other programs with administrator credentials can use the connector API. Uploads also carry a SHA-256 digest
+that the connector verifies before replacing files. Themes are stored beside the native library item.
 Movies must have their own local folders; a shared folder containing unrelated movies cannot have independent themes.
 The connector tracks its uploads in one SQLite database under Jellyfin's server data root at
 ``data/themerr-connector/ownership.db``. Include this file in Jellyfin backups. Ownership records survive
 connector updates and are checked against each theme's digest before replacement.
 Existing user themes are preserved by default, including themes created by the older Themerr-jellyfin plugin.
+**Import older Themerr-jellyfin ownership** is enabled by default and recognizes themes recorded in the old
+plugin's ``data/Themerr/themerr.db``. It can be disabled and reads the old database without changing it. Only records
+marked as Themerr-provided with SHA-256 matching the current theme file are imported. Changed files, other
+hash algorithms and ambiguous records remain protected. Verified old MP3 themes can then be replaced by
+the connector's M4A or Opus themes during normal updates. Per-item JSON sidecars are not imported or removed.
 Enable **Overwrite user themes** to replace them. **Back up replaced user themes** is enabled by default and
 keeps replaced files in ``.themerr-user-themes`` and ``.themerr-user-theme-music`` beside the item. Disable that
 separate option to remove replaced themes permanently. Existing backups are never overwritten. Themes outside
 the connector's supported item resources remain protected. Manual edits are treated as user themes.
-You can also enable **Remove the older Themerr-jellyfin plugin** to uninstall only that plugin and remove its
-dedicated repository after installing the connector. Otherwise, disable its processing yourself.
+**Remove the older Themerr-jellyfin plugin** is enabled by default to uninstall only that plugin and remove its
+dedicated repository after installing the connector. Disable this option to keep the older plugin, and disable
+its processing yourself.
 Locked items and ignored libraries follow the processing settings. Jellyfin uses Themerr's scheduled scans;
 **Activity > Scan for themes** also starts a scan. Movies, series, and collections can be enabled separately
 under **Settings > Jellyfin**.

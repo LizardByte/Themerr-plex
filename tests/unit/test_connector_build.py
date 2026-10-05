@@ -45,8 +45,19 @@ def test_reused_bundle_is_portable_across_line_endings(builder):
     assert module['check_bundle'](root) == data
 
 
+@pytest.mark.parametrize('release, expected', [
+    ('0.0.0', '0.0.0.0'), ('0.0.600', '0.0.600.0'), ('1.2.3', '1.2.3.0'),
+    ('2026.105.7', '2026.105.0.7'), ('2026.1005.51610', '2026.1005.516.10'),
+    ('2026.1005.120000', '2026.1005.1200.0'), ('2026.1231.235959', '2026.1231.2359.59'),
+    ('2026.1005.516.10', '2026.1005.516.10'),
+])
+def test_dotnet_mapping_matches_release_setup(builder, release, expected):
+    module, _, _ = builder
+    assert module['assembly_version'](release) == expected
+
+
 @pytest.mark.parametrize('change', [
-    'source', 'thumbnail_source', 'thumbnail_bundle', 'release', 'checksum', 'abi', 'extra_file',
+    'source', 'thumbnail_source', 'thumbnail_bundle', 'release', 'checksum', 'abi', 'version', 'extra_file',
 ])
 def test_stale_or_modified_bundles_fail_before_packaging(builder, monkeypatch, change):
     module, root, data = builder
@@ -64,6 +75,8 @@ def test_stale_or_modified_bundles_fail_before_packaging(builder, monkeypatch, c
         (directory / 'connector-12.1.zip').write_bytes(b'changed')
     elif change == 'abi':
         data['artifacts']['12.1']['targetAbi'] = '13.0.0'
+    elif change == 'version':
+        data['artifacts']['12.1']['version'] = '2026.1004.1200.1'
     else:
         archive = directory / 'connector-12.1.zip'
         with zipfile.ZipFile(archive, 'a') as content:

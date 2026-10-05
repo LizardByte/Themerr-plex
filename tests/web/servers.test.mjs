@@ -93,10 +93,13 @@ function page(context, responses, savedServers = [], jellyfin = {}) {
         const form = new Element('form');
         const status = new Element('output');
         const button = new Element('button');
+        const restart = new Element('button');
         form.dataset.serverId = id;
+        form.dataset.autoUpdate = String(Boolean(jellyfin.automatic));
         form.elements = { themerr_url: { value: '' } };
-        form.querySelector = selector => selector === '[data-connector-status]' ? status : button;
-        return { form, status, button };
+        form.querySelector = selector => ({ '[data-connector-status]': status,
+            '[data-restart-server]': restart, 'button[type="submit"]': button })[selector];
+        return { form, status, button, restart };
     });
     const events = new EventTarget();
     globalThis.document = {
@@ -113,7 +116,8 @@ function page(context, responses, savedServers = [], jellyfin = {}) {
         getAll() { return this.form.querySelectorAll('input:checked').map(input => input.value); }
     };
     const reload = context.mock.fn();
-    globalThis.window = { addEventListener() {}, location: { reload, origin: 'http://themerr.example:9494' } };
+    globalThis.window = { addEventListener() {}, confirm: context.mock.fn(() => true),
+        location: { reload, origin: 'http://themerr.example:9494' } };
     const fetch = context.mock.method(globalThis, 'fetch', async () => {
         const response = responses.shift();
         return { ok: !response.error, status: response.error ? 502 : 200, json: async () => response.body };
@@ -391,4 +395,56 @@ test('library loading does not replace controls after page navigation', async co
     await pending;
     assert.equal(summary.textContent, 'Library 1');
     assert.equal(options.children[0].children[1].textContent, 'Library 1');
+});
+
+for (const [automatic, installed, hidden] of [[true, false, false], [true, true, false],
+    [false, true, true], [false, false, false]]) {
+    test(`connector controls honor automatic=${automatic} and installed=${installed}`, async context => {
+        const { connectors } = page(context, [{ body: { auto_update: automatic, installed,
+            can_restart: true, message: 'Checked' } }], [], { servers: ['jellyfin:a'] });
+        await new Promise(setImmediate);
+        assert.equal(connectors[0].button.hidden, hidden);
+        assert.equal(connectors[0].button.textContent, automatic ? 'Save connector address' : 'Install matching connector');
+        assert.equal(connectors[0].restart.disabled, false);
+    });
+}
+
+test('automatic connector mode saves the address without manually installing', async context => {
+    const { connectors, fetch } = page(context, [{ body: { auto_update: true } },
+        { body: { message: 'Saved' } }], [], { servers: ['jellyfin:a'] });
+    await new Promise(setImmediate);
+    connectors[0].form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[1].arguments[1].method, 'PUT');
+    assert.equal(fetch.mock.calls[1].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+});
+
+test('automatic mode also saves safely before the initial status response', async context => {
+    const { connectors, fetch } = page(context, [{ body: { auto_update: true } },
+        { body: { message: 'Saved' } }], [], { servers: ['jellyfin:a'], automatic: true });
+    connectors[0].form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[1].arguments[1].method, 'PUT');
+});
+
+test('force restart warns about playback and targets the selected server', async context => {
+    const { connectors, fetch } = page(context, [{ body: { can_restart: true } },
+        { body: { message: 'Restarting' } }], [], { servers: ['jellyfin:a'] });
+    await new Promise(setImmediate);
+    connectors[0].restart.click();
+    await new Promise(setImmediate);
+    assert.match(window.confirm.mock.calls[0].arguments[0], /Active playback will be interrupted/);
+    assert.equal(fetch.mock.calls[1].arguments[0], '/api/jellyfin/servers/jellyfin%3Aa/restart');
+    assert.equal(fetch.mock.calls[1].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+});
+
+test('unsupported servers disable restart and cancellation sends no request', async context => {
+    const { connectors, fetch } = page(context, [{ body: { can_restart: false } }], [], { servers: ['jellyfin:a'] });
+    await new Promise(setImmediate);
+    assert.equal(connectors[0].restart.disabled, true);
+    assert.match(connectors[0].restart.title, /service or container/);
+    window.confirm = () => false;
+    connectors[0].restart.click();
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.callCount(), 1);
 });
