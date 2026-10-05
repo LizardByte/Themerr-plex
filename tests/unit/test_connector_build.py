@@ -48,7 +48,7 @@ def test_reused_bundle_is_portable_across_line_endings(builder):
     assert module['check_bundle'](root) == data
 
 
-def test_source_fingerprint_is_identical_for_windows_and_posix_ordering(builder):
+def test_source_fingerprint_is_identical_for_windows_and_posix_ordering(builder, monkeypatch):
     module, _, _ = builder
     identities = []
     path_orders = []
@@ -66,7 +66,7 @@ def test_source_fingerprint_is_identical_for_windows_and_posix_ordering(builder)
         ]
         path_orders.append([source.name for source in sorted(sources)])
         root = MagicMock()
-        (root / module['CONNECTOR_SOURCE']).glob.return_value = sources
+        monkeypatch.setattr((root / module['CONNECTOR_SOURCE']).glob, 'return_value', sources)
         identities.append(module['build_identity'](root, version='2026.1005.51610'))
 
     assert path_orders[0] != path_orders[1]

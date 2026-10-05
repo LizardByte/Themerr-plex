@@ -23,12 +23,14 @@ _BODIES = {
             'url',
             'api_key',
         ],
-        {'url': 'http://192.168.1.10:8096'},
+        # Documentation examples only; these values never initiate network requests.
+        {'url': 'http://192.168.1.10:8096'},  # NOSONAR python:S1313, python:S5332: example private LAN URL.
     ),
     'jellyfin.install_connector': (
         {'themerr_url': _STRING},
         ['themerr_url'],
-        {'themerr_url': 'http://192.168.1.20:9494'},
+        # Jellyfin may use HTTP on a private LAN when Themerr's HTTPS certificate is self-signed.
+        {'themerr_url': 'http://192.168.1.20:9494'},  # NOSONAR python:S1313, python:S5332: documentation only.
     ),
     'browse_directories': (
         {'path': _STRING},

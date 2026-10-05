@@ -12,19 +12,11 @@ build:
   jobs:
     build:
       html:
-        - |
-          uv run --no-sync python scripts/localize.py --compile
-          uv run --no-sync dockle check
-          uv run --no-sync dockle build
-          mkdir -p "${READTHEDOCS_OUTPUT}html/"
-          cp -r _site/. "${READTHEDOCS_OUTPUT}html/"
-
-    post_install:
-      - uv sync --locked --extra docs --no-install-project --no-build
+        - bash scripts/readthedocs_build.sh
 
 conda:
   environment: docs/environment.yml
 
 submodules:
-  include:
-    - third-party/sphinx-csharp
+  include: all
+  recursive: true
