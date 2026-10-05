@@ -425,9 +425,32 @@ def test_settings(client):
     assert 'PLEX_TOKEN' not in response.json()['Plex']
     assert b'Your Plex account' in client.get('/servers').content
     assert b'id="plex-auth-status"' in client.get('/servers').content
-    assert b'data-directory-target="LOG_DIR"' in client.get('/settings/').content
+    assert b'data-directory-target="Logging-LOG_DIR"' in client.get('/settings/').content
     assert b'Plex data directory' in client.get('/servers').content
     assert b'PLEX_TOKEN' not in client.get('/settings/').content
+
+
+def test_settings_separate_integrations_and_use_unique_field_identifiers(client, configured):
+    page = client.get('/settings/').text
+    ids = re.findall(r'\bid="([^"]+)"', page)
+    assert len(ids) == len(set(ids))
+    assert 'id="plex"' in page and 'href="#plex"' in page
+    assert 'id="jellyfin"' in page and 'href="#jellyfin"' in page
+    assert 'id="Themerr-BOOL_IGNORE_LOCKED_FIELDS"' in page
+    assert 'id="Jellyfin-BOOL_IGNORE_LOCKED_FIELDS"' in page
+    assert 'id="Jellyfin-BOOL_BACKUP_USER_THEMES"' in page
+    assert 'data-lucide="bell"' in page
+    assert configured['Jellyfin']['BOOL_OVERWRITE_USER_THEMES'] is False
+    assert configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] is True
+    response = client.post('/api/settings', data={
+        'Jellyfin|BOOL_OVERWRITE_USER_THEMES': 'true', 'Jellyfin|BOOL_BACKUP_USER_THEMES': 'false',
+        'Jellyfin|BOOL_IGNORE_LOCKED_FIELDS': 'true', 'Themerr|BOOL_IGNORE_LOCKED_FIELDS': 'false',
+    })
+    assert response.status_code == 200
+    assert configured['Jellyfin']['BOOL_OVERWRITE_USER_THEMES'] is True
+    assert configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] is False
+    assert configured['Jellyfin']['BOOL_IGNORE_LOCKED_FIELDS'] is True
+    assert configured['Themerr']['BOOL_IGNORE_LOCKED_FIELDS'] is False
 
 
 def test_notification_preferences_render_validate_and_persist(client, configured):
@@ -435,8 +458,8 @@ def test_notification_preferences_render_validate_and_persist(client, configured
     page = client.get('/settings/').text
     assert 'id="notifications"' in page
     assert 'href="#notifications"' in page
-    assert 'id="NEW_RELEASE"' in page
-    assert 'id="COVERAGE_INCREASE"' in page
+    assert 'id="Notifications-NEW_RELEASE"' in page
+    assert 'id="Notifications-COVERAGE_INCREASE"' in page
     assert configured['Notifications']['FOLLOW_PRERELEASES'] is False
     assert configured['Notifications']['NEW_RELEASE'] is True
     assert configured['Notifications']['COVERAGE_INCREASE'] is True

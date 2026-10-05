@@ -1,6 +1,6 @@
 <button class="sidebar-scrim" data-sidebar-toggle type="button" aria-label="{{ _('Close navigation') }}" tabindex="-1"></button>
 <aside class="app-sidebar" aria-label="{{ _('Main navigation') }}">
-    <a class="brand" data-workspace-link href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>FOR PLEX</small></span></a>
+    <a class="brand" data-workspace-link href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>{{ _('YOUR LIBRARY’S SOUNDTRACK') }}</small></span></a>
     <p class="nav-eyebrow">{{ _('YOUR WORKSPACE') }}</p>
     <nav class="primary-nav" aria-label="{{ _('Workspace pages') }}">
         {% for endpoint, label, icon in [('home', _('Overview'), 'layout-dashboard'), ('server_ui.server_page', _('Servers'), 'server'), ('settings', _('Settings'), 'sliders-horizontal'), ('server_ui.activity', _('Activity'), 'activity'), ('logs', _('Logs'), 'terminal')] %}

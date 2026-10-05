@@ -33,7 +33,7 @@ def _eligible(item):
     """Honor Jellyfin category settings and the shared locked-metadata preference."""
     setting = _SETTINGS.get(item.get('Type'))
     return bool(setting and config.CONFIG['Jellyfin'][setting] and
-                (not item.get('IsLocked') or config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']))
+                (not item.get('IsLocked') or config.CONFIG['Jellyfin']['BOOL_IGNORE_LOCKED_FIELDS']))
 
 
 class JellyfinMediaServer(MediaServer):
@@ -143,7 +143,7 @@ class JellyfinMediaServer(MediaServer):
             if ignored.intersection(identifier(row['Id']) for row in ancestors):
                 return False
         state = connection.json('GET', '/Themerr/Items/' + item_id + '/Theme')
-        if state['present'] and not state['owned']:
+        if state['present'] and not state['owned'] and not config.CONFIG['Jellyfin']['BOOL_OVERWRITE_USER_THEMES']:
             theme_errors.set_error(item_id, None)
             return True
         details = metadata.resolve(item)
@@ -183,7 +183,9 @@ class JellyfinMediaServer(MediaServer):
         """Verify acknowledged bytes before recording a successful upload."""
         headers = {'Content-Type': 'audio/mp4' if audio.codec == 'mp4a' else 'audio/ogg',
                    'X-Themerr-Connector': descriptor['build'], 'X-Themerr-SHA256': audio.sha256,
-                   'X-Themerr-Ignore-Locked': str(config.CONFIG['Themerr']['BOOL_IGNORE_LOCKED_FIELDS']).lower()}
+                   'X-Themerr-Ignore-Locked': str(config.CONFIG['Jellyfin']['BOOL_IGNORE_LOCKED_FIELDS']).lower(),
+                   'X-Themerr-Overwrite-User': str(config.CONFIG['Jellyfin']['BOOL_OVERWRITE_USER_THEMES']).lower(),
+                   'X-Themerr-Backup-User': str(config.CONFIG['Jellyfin']['BOOL_BACKUP_USER_THEMES']).lower()}
         with open(audio.path, 'rb') as stream:
             result = connection.json('POST', '/Themerr/Items/' + item_id + '/Theme',
                                      data=stream, headers=headers, timeout=120)
@@ -237,10 +239,14 @@ class JellyfinBackend(MediaServerBackend):
         return False
 
     def start_listeners(self):
-        """Jellyfin uses shared scheduled scans; no separate listener is required."""
+        """Start connector maintenance alongside shared scheduled theme scans."""
+        from jellyfin import maintenance
+        maintenance.start()
 
     def stop_listeners(self):
-        """Shared workers own the Jellyfin scan lifecycle."""
+        """Stop connector maintenance when Themerr shuts down."""
+        from jellyfin import maintenance
+        maintenance.stop()
 
     def web_router(self):
         from jellyfin.web import router

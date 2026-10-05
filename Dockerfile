@@ -1,12 +1,13 @@
 # syntax=docker/dockerfile:1
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS connector
-RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*
+COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /usr/local/bin/uv
 WORKDIR /connector
 COPY connectors/jellyfin/ connectors/jellyfin/
 COPY scripts/build_connector.py scripts/build_connector.py
 COPY src/common/version.py src/common/version.py
-ARG THEMERR_VERSION
-RUN python3 scripts/build_connector.py
+ARG BUILD_VERSION
+ARG THEMERR_VERSION=${BUILD_VERSION}
+RUN uv run --no-project --python 3.14 scripts/build_connector.py
 
 FROM ghcr.io/astral-sh/uv:0.12-python3.14-trixie-slim AS base
 
@@ -69,6 +70,7 @@ ENV THEMERR_DOCKER=True
 
 # network setup
 EXPOSE 9494
+EXPOSE 9495
 
 # setup user
 ARG PGID=1000

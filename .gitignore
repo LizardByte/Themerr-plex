@@ -170,3 +170,4 @@ http_cache.sqlite-*
 jellyfin-connector/
 connectors/**/bin/
 connectors/**/obj/
+connectors/**/TestResults/

@@ -478,6 +478,7 @@ def settings(request: Request) -> Response:
         title=_('Settings'),
         config_settings=config_settings,
         config_spec=config._CONFIG_SPEC_DICT,
+        settings_groups=config.settings_groups(),
     )
 
 
@@ -997,8 +998,11 @@ def start_webapp() -> None:
     _server = uvicorn.Server(server_config)
     _server_stopped.clear()
     try:
+        from jellyfin import repository
+        repository.start(cert_file)
         _server.run()
     finally:
+        repository.stop()
         _server = None
         _server_stopped.set()
 

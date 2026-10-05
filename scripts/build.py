@@ -15,8 +15,12 @@ import PyInstaller.__main__
 
 
 def build_connector():
-    """Compile all supported Jellyfin ABIs before collecting package resources."""
-    runpy.run_path(str(Path(__file__).with_name('build_connector.py')))['build']()
+    """Validate CI's shared artifacts or compile the connectors for a local build."""
+    builder = runpy.run_path(str(Path(__file__).with_name('build_connector.py')))
+    if os.environ.get('THEMERR_PREBUILT_CONNECTOR') == '1':
+        builder['check_bundle']()
+    else:
+        builder['build']()
 
 
 def build():

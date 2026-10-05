@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'server_brand.html' import server_brand %}
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">{{ _('ONE WORKSPACE. EVERY SERVER.') }}</span><h1>{{ _('Servers') }}<span class="heading-dot">.</span></h1><p>{{ _('Connect Plex or Jellyfin, then choose where the music goes.') }}</p></div><span class="count-pill">{{ servers|length }} {{ _('saved') }}</span></div>
 <section class="account-panel panel">
@@ -10,10 +11,22 @@
 <div class="server-grid">
 {% for server in servers %}
 <article class="server-card">
-    <header><span class="server-symbol"><i data-lucide="server"></i></span><div><h3>{{ server.name }}</h3><span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span></div></header>
+    <header><span class="server-symbol"><i data-lucide="server"></i></span><div><h3>{{ server.name }}</h3><span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span></div>{{ server_brand(server.type) }}</header>
     <p class="server-address"><i data-lucide="network"></i>{{ server.url }}</p>
     {% if server.last_error %}<p class="form-error">{{ server.last_error }}</p>{% endif %}
-    {% if server.type == 'jellyfin' %}<span class="status-badge neutral">Jellyfin {{ server.version }}</span><form data-connector-form data-server-id="{{ server.id }}"><label for="themerr-address-{{ loop.index }}">{{ _('Themerr address reachable from Jellyfin') }}</label><input id="themerr-address-{{ loop.index }}" class="form-control" type="url" name="themerr_url" placeholder="http://192.168.1.20:9494" required><p class="form-text">{{ _('Install the connector bundled with this Themerr build, then restart Jellyfin. Use a trusted HTTPS certificate or an HTTP address on your private network.') }}</p><button type="submit" class="btn btn-outline-light btn-sm">{{ _('Install matching connector') }}</button><output data-connector-status class="form-text"></output></form>{% endif %}<small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
+    {% if server.type == 'jellyfin' %}
+    <span class="status-badge neutral">Jellyfin {{ server.version }}</span>
+    <form data-connector-form data-server-id="{{ server.id }}">
+        <label for="themerr-address-{{ loop.index }}">{{ _('Themerr address reachable from Jellyfin') }}</label>
+        <input id="themerr-address-{{ loop.index }}" class="form-control" type="url" name="themerr_url" placeholder="http://localhost:9495" required>
+        <p class="form-text">{{ _('Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin.') }}</p>
+        {% if jellyfin_settings.AUTO_RESTART %}<p class="form-text connector-notice"><i data-lucide="refresh-cw"></i>{{ _('Jellyfin will restart after installation, once playback finishes.') if jellyfin_settings.WAIT_FOR_IDLE else _('Jellyfin will restart after installation. Active playback may be interrupted.') }}</p>{% else %}<p class="form-text">{{ _('Automatic restarts are disabled. Restart Jellyfin after installation.') }}</p>{% endif %}
+        {% if jellyfin_settings.REMOVE_LEGACY_PLUGIN %}<p class="form-text">{{ _('The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept.') }}</p>{% endif %}
+        <button type="submit" class="btn btn-outline-light btn-sm">{{ _('Install matching connector') }}</button>
+        <output data-connector-status class="form-text"></output>
+    </form>
+    <p class="form-text">{{ _('Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API.') }} <a href="{{ server.url }}/web/index.html#!/mypreferencesdisplay.html" target="_blank" rel="noopener noreferrer">{{ _('Open Jellyfin display settings') }}<i data-lucide="arrow-up-right"></i></a></p>
+    {% endif %}<small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
     <details class="server-settings"><summary>{{ _('Processing settings') }}<i data-lucide="chevron-down"></i></summary>
         <form data-server-form data-server-id="{{ server.id }}">
             <div class="setting-switch"><label for="enabled-{{ loop.index }}">{{ _('Process this server') }}</label><input id="enabled-{{ loop.index }}" type="checkbox" name="enabled" class="form-check-input" {% if server.enabled %}checked{% endif %}></div>
@@ -52,12 +65,14 @@
     <div class="section-heading"><div><h2>{{ _('Add Jellyfin') }}</h2><p>{{ _('Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys.') }}</p></div></div>
     <form id="jellyfin-server-form">
         <label for="jellyfin-address">{{ _('Jellyfin server address') }}</label>
-        <input id="jellyfin-address" name="url" type="url" class="form-control" placeholder="http://192.168.1.10:8096" required maxlength="2048">
+        <input id="jellyfin-address" name="url" type="url" class="form-control" placeholder="http://localhost:8096" required maxlength="2048">
         <label for="jellyfin-key">{{ _('Jellyfin API key') }}</label>
         <input id="jellyfin-key" name="api_key" type="password" class="form-control" autocomplete="off" required maxlength="256">
         <p class="form-text">{{ _('Keys stay in the secure credential store. After connecting, install the matching connector on the server card above.') }}</p>
         <button type="submit" class="btn btn-primary">{{ _('Connect Jellyfin') }}</button>
     </form>
+    <div class="discovery-actions"><button id="jellyfin-discover" class="btn btn-outline-light" type="button"><i data-lucide="radar"></i>{{ _('Discover Jellyfin on LAN') }}</button><span class="muted">{{ _('Uses UDP port 7359 on Themerr’s network. An API key is still required.') }}</span></div>
+    <div id="jellyfin-discovery-results" aria-live="polite"></div>
 </section>
 {% endblock %}
 {% block modals %}{% include 'directory_picker.html' %}{% endblock %}

@@ -2,11 +2,11 @@
 {% block content %}
 <div class="auth-layout">
     <section class="auth-story" aria-label="Themerr">
-        <a class="brand" href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>FOR PLEX</small></span></a>
+        <a class="brand" href="{{ url_for('home') }}"><img class="brand-logo" src="{{ url_for('image', img='icon-default.png') }}" width="42" height="42" alt=""><span>Themerr<small>{{ _('YOUR LIBRARY’S SOUNDTRACK') }}</small></span></a>
         <div class="auth-story-content">
             <span class="eyebrow">{{ _('THE SOUND OF YOUR LIBRARY') }}</span>
             <h1>{{ _('Every story') }}<br>{{ _('has a soundtrack.') }}</h1>
-            <p>{{ _('Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between.') }}</p>
+            <p>{{ _('Bring your libraries to life. One calm workspace for your servers, your themes, and everything in between.') }}</p>
             <div class="sound-wave" aria-hidden="true">{% for height in [24,48,34,72,102,58,84,126,94,60,110,80,46,68,32,52,24] %}<span style="--wave-height: {{ height }}px"></span>{% endfor %}</div>
         </div>
         <small>Made by LizardByte. Built for your library.</small>
@@ -36,7 +36,7 @@
                     {% endif %}
                     <button type="submit" class="btn btn-primary auth-submit">{{ _('Create workspace') if mode == 'setup' else _('Sign in') }}<i data-lucide="arrow-right"></i></button>
                 </form>
-                <p class="auth-footnote"><i data-lucide="shield-check"></i>{{ _('Plex account linking happens inside your workspace.') }}</p>
+                <p class="auth-footnote"><i data-lucide="shield-check"></i>{{ _('Connect your media servers inside your workspace.') }}</p>
             {% endif %}
         </div>
     </section>

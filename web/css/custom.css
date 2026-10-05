@@ -279,6 +279,14 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .server-refresh { font-size: 10px; }
 .server-refresh time { color: var(--ink-soft); }
 .server-settings { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 15px; }
+.server-brand { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 13px; font-weight: 650; }
+.server-card header > .server-brand { margin-left: auto; }
+.server-brand .plex-logo { font-size: 16px; }
+.server-brand-jellyfin { color: #aa7cfa; }
+.server-brand svg { width: 24px; height: 22px; }
+.library-header > .server-brand { margin-right: 4px; }
+.connector-notice { display: flex; align-items: center; gap: 8px; }
+[data-connector-status] { display: block; margin-top: 10px; }
 .server-settings > summary, .manual-server > summary { display: flex; align-items: center; gap: 8px; list-style: none; color: var(--ink-soft); font-size: 11px; cursor: pointer; }
 .server-settings > summary .lucide:last-child, .manual-server > summary .lucide:last-child { margin-left: auto; width: 13px; height: 13px; }
 .server-settings form { margin-top: 17px; }

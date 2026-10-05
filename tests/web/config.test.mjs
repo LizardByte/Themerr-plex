@@ -16,12 +16,12 @@ class Element {
 }
 
 function settings(t, request) {
-    const ids = ['configForm', 'save-button', 'settings-save-status', 'LOCALE', 'password-form', 'toast-region'];
+    const ids = ['configForm', 'save-button', 'settings-save-status', 'General-LOCALE', 'password-form', 'toast-region'];
     const elements = Object.fromEntries(ids.map(id => [id, new Element()]));
-    const locale = elements.LOCALE;
+    const locale = elements['General-LOCALE'];
     locale.value = 'en';
-    locale.id = 'LOCALE';
-    locale.getAttribute = () => 'General';
+    locale.id = 'General-LOCALE';
+    locale.getAttribute = name => name === 'category' ? 'General' : 'LOCALE';
     const form = elements.configForm;
     form.reportValidity = () => true;
     form.querySelectorAll = () => [locale];
@@ -50,6 +50,21 @@ test('a saved locale change reloads immediately', async t => {
     await page.save();
     assert.equal(page.reload.mock.callCount(), 1);
     assert.equal(page.elements['save-button'].disabled, true);
+});
+
+test('settings with the same key in Plex and Jellyfin retain their config namespaces', async t => {
+    let submitted;
+    const page = settings(t, async (url, options) => {
+        submitted = options.body;
+        return { ok: true, status: 200, json: async () => ({}) };
+    });
+    page.elements.configForm.querySelectorAll = () => ['Themerr', 'Jellyfin'].map(section => ({
+        id: `${section}-BOOL_IGNORE_LOCKED_FIELDS`, type: 'checkbox', checked: section === 'Jellyfin',
+        getAttribute: name => name === 'category' ? section : 'BOOL_IGNORE_LOCKED_FIELDS',
+    }));
+    await page.save();
+    assert.equal(submitted.get('Themerr|BOOL_IGNORE_LOCKED_FIELDS'), 'false');
+    assert.equal(submitted.get('Jellyfin|BOOL_IGNORE_LOCKED_FIELDS'), 'true');
 });
 
 test('failed locale saves keep the page and edits', async t => {

@@ -21,3 +21,6 @@ node_modules/
 web/assets/
 .build-tools/
 config/
+connectors/**/bin/
+connectors/**/obj/
+connectors/**/TestResults/

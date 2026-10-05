@@ -57,8 +57,12 @@ def test_scan_honors_paused_categories_ignored_libraries_and_scope(connected, co
     assert storage.current_server_id() == 'default'
 
 
-@pytest.mark.parametrize('owned, present', [(False, True), (True, True), (False, False)])
-def test_verified_upload_and_user_theme_protection(connected, configured, monkeypatch, tmp_path, owned, present):
+@pytest.mark.parametrize('owned, present, overwrite', [
+    (False, True, False), (True, True, False), (False, False, False), (False, True, True)])
+def test_verified_upload_and_user_theme_protection(
+        connected, configured, monkeypatch, tmp_path, owned, present, overwrite):
+    configured['Jellyfin']['BOOL_OVERWRITE_USER_THEMES'] = overwrite
+    configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] = not overwrite
     item = {'Id': ITEM, 'Name': 'Example', 'Type': 'Movie'}
     state = {'present': present, 'owned': owned, 'sha256': 'old'}
     connected.json.side_effect = [item, state, {'owned': True, 'sha256': 'digest'}]
@@ -73,13 +77,15 @@ def test_verified_upload_and_user_theme_protection(connected, configured, monkey
     assert backend.JellyfinMediaServer(SERVER).update_item(ITEM) is True
     with storage.server_scope(SERVER):
         tracked = storage.get_tracking(ITEM)
-    if present and not owned:
+    if present and not owned and not overwrite:
         download.assert_not_called()
         assert tracked == {}
     else:
         assert tracked['audio_sha256'] == 'digest'
         assert connected.json.call_args.kwargs['headers']['X-Themerr-Connector'] == 'a' * 64
         assert connected.json.call_args.kwargs['headers']['Content-Type'] == 'audio/mp4'
+        assert connected.json.call_args.kwargs['headers']['X-Themerr-Overwrite-User'] == str(overwrite).lower()
+        assert connected.json.call_args.kwargs['headers']['X-Themerr-Backup-User'] == str(not overwrite).lower()
     assert storage.current_server_id() == 'default'
     assert storage.get_tracking(ITEM) == {}
 

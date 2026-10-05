@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'server_brand.html' import server_brand %}
 {% block content %}
 <div class="page-heading">
     <div><span class="eyebrow">{{ _('YOUR LIBRARY, IN HARMONY') }}</span><h1>{{ _('Overview') }}<span class="heading-dot">.</span></h1><p>{{ _('A soundtrack for every story. See what’s playing, and what needs a little attention.') }}</p></div>
@@ -34,6 +35,7 @@
     {% for section in items.values() %}
     <details class="library-card" data-library data-server="{{ section.server_id }}" open>
         <summary class="library-header">
+            {{ server_brand('jellyfin' if section.server_label == 'Jellyfin' else 'plex') }}
             <span class="library-symbol"><i data-lucide="{{ 'tv' if section.type == 'show' else 'clapperboard' }}"></i></span>
             <span class="library-title"><strong>{{ section.title }}</strong><small><a href="{{ section.server_url }}" target="_blank" rel="noopener noreferrer">{{ section.server_name }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a><span>·</span><a href="{{ section.library_url }}" target="_blank" rel="noopener noreferrer">{{ _('Library ID') }} {{ section.key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% if not section.enabled %} <span>·</span> {{ _('Paused') }}{% endif %}</small></span>
             <span class="library-coverage"><strong>{{ section.media_percent_complete }}%</strong><span class="mini-progress"><span style="width: {{ section.media_percent_complete }}%"></span></span></span>

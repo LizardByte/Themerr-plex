@@ -3,6 +3,9 @@
 import json
 from pathlib import Path
 from threading import RLock
+from urllib.parse import quote
+
+import requests
 
 from sqlalchemy.orm import Session
 
@@ -18,6 +21,8 @@ ARCHIVES = {'10.11': 'connector-10.11.zip', '12.1': 'connector-12.1.zip'}
 MANIFEST_PATH = '/jellyfin/connector/manifest.json'
 PUBLIC_PATHS = frozenset([MANIFEST_PATH, *('/jellyfin/connector/' + name for name in ARCHIVES.values())])
 _install_lock = RLock()
+LEGACY_PLUGIN_ID = 'e41ef0c4-c413-41ba-b4fa-8c565dc3c969'
+LEGACY_REPOSITORY = 'https://app.lizardbyte.dev/jellyfin-plugin-repo/manifest.json'
 
 
 def directory():
@@ -48,7 +53,7 @@ def profile(server_version):
     return key
 
 
-def repository_url(value=None):
+def repository_url(value=None, required=True):
     """Save or read the administrator-selected Themerr URL reachable from Jellyfin."""
     with Session(storage.engine()) as session:
         row = session.get(storage.AppSetting, 'jellyfin_repository_base_url')
@@ -62,6 +67,8 @@ def repository_url(value=None):
             session.commit()
             return value
         if row is None:
+            if not required:
+                return None
             raise MediaServerError('Set the Themerr address reachable from Jellyfin '
                                    'before installing the connector.', 409)
         return row.value
@@ -112,14 +119,79 @@ def install(connection, themerr_url):
         if not isinstance(repositories, list) or any(not isinstance(entry, dict) for entry in repositories):
             raise MediaServerError('Jellyfin returned an invalid repository list.', 502)
         repositories = [entry for entry in repositories if entry.get('Url') != manifest_url]
-        repositories.append({'Name': PLUGIN_NAME + ' (Themerr)', 'Url': manifest_url, 'Enabled': True})
+        repositories.append({'Name': PLUGIN_NAME, 'Url': manifest_url, 'Enabled': True})
+        _check_certificate(url)
         repository_url(url)
         connection.request('POST', '/Repositories', json=repositories).close()
         if active:
             return {'message': 'Matching connector is already active.', 'version': artifact['version'],
                     'restart_required': False}
-        connection.request('POST', '/Packages/Installed/' + PLUGIN_NAME,
-                           params={'assemblyGuid': PLUGIN_ID, 'version': artifact['version'],
-                                   'repositoryUrl': manifest_url}, timeout=120).close()
-    return {'message': 'Connector installed. Restart Jellyfin, then refresh its libraries in Themerr.',
+        _check_repository(connection, url, artifact)
+        plugins = connection.json('GET', '/Plugins')
+        if not isinstance(plugins, list) or any(not isinstance(plugin, dict) for plugin in plugins):
+            raise MediaServerError('Jellyfin returned an invalid plugin list.', 502)
+        pending = any(str(plugin.get('Id', '')).lower() == PLUGIN_ID and
+                      plugin.get('Version') == artifact['version'] and
+                      plugin.get('Status') != 'Deleted' for plugin in plugins)
+        if not pending:
+            connection.request('POST', '/Packages/Installed/' + PLUGIN_NAME,
+                               params={'assemblyGuid': PLUGIN_ID, 'version': artifact['version'],
+                                       'repositoryUrl': manifest_url}, timeout=120).close()
+    return {'message': 'Connector installed. Jellyfin must restart to load it.',
             'version': artifact['version'], 'restart_required': True}
+
+
+def _check_certificate(url):
+    """Reject untrusted HTTPS before storing or registering a repository address."""
+    if url.startswith('https:'):
+        try:
+            # No credentials are sent to this administrator-selected repository URL.
+            response = requests.get(url + MANIFEST_PATH, timeout=10, allow_redirects=False, stream=True)
+            response.close()
+        except requests.exceptions.SSLError as exc:
+            raise MediaServerError('Themerr’s HTTPS certificate is not trusted or does not match its address. '
+                                   'Use the connector-only HTTP port or a trusted HTTPS address.', 400) from exc
+        except requests.RequestException as exc:
+            raise MediaServerError('Could not reach the Themerr repository address. Check its host and port.',
+                                   502) from exc
+
+
+def _check_repository(connection, url, artifact):
+    """Prove that Jellyfin can fetch the matching package before requesting installation."""
+    try:
+        package = connection.json('GET', '/Packages/' + PLUGIN_NAME, params={'assemblyGuid': PLUGIN_ID}, timeout=120)
+    except MediaServerError as exc:
+        if exc.status_code != 404:
+            raise
+        raise MediaServerError('Jellyfin could not read the Themerr connector repository. Check the reachable '
+                               'address, port and firewall. HTTPS requires a certificate Jellyfin trusts; '
+                               'use the connector-only HTTP port for self-signed certificates.', 502) from exc
+    versions = package.get('versions', package.get('Versions', [])) if isinstance(package, dict) else []
+    if not isinstance(versions, list) or not any(
+            isinstance(entry, dict) and entry.get('version', entry.get('Version')) == artifact['version'] and
+            entry.get('repositoryUrl', entry.get('RepositoryUrl')) == url + MANIFEST_PATH for entry in versions):
+        raise MediaServerError('Jellyfin did not find the matching connector in this repository. '
+                               'Check the Themerr address and rebuild or reinstall Themerr.', 502)
+
+
+def remove_legacy(connection):
+    """Uninstall only the known legacy plugin and its exact dedicated repository."""
+    changed = False
+    plugins = connection.json('GET', '/Plugins')
+    if not isinstance(plugins, list) or any(not isinstance(plugin, dict) for plugin in plugins):
+        raise MediaServerError('Jellyfin returned an invalid plugin list.', 502)
+    for plugin in plugins:
+        if str(plugin.get('Id', '')).lower() == LEGACY_PLUGIN_ID and plugin.get('Status') != 'Deleted':
+            version = str(plugin.get('Version', ''))
+            parts = version.split('.')
+            if len(parts) != 4 or not all(part.isascii() and part.isdigit() for part in parts):
+                raise MediaServerError('Jellyfin returned an invalid legacy plugin version.', 502)
+            connection.request('DELETE', '/Plugins/' + LEGACY_PLUGIN_ID + '/' + quote(version, safe='')).close()
+            changed = True
+    repositories = connection.json('GET', '/Repositories')
+    if not isinstance(repositories, list) or any(not isinstance(entry, dict) for entry in repositories):
+        raise MediaServerError('Jellyfin returned an invalid repository list.', 502)
+    remaining = [entry for entry in repositories if entry.get('Url', '').rstrip('/') != LEGACY_REPOSITORY]
+    if len(remaining) != len(repositories):
+        connection.request('POST', '/Repositories', json=remaining).close()
+    return changed

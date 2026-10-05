@@ -48,7 +48,8 @@ public sealed class Controller : ControllerBase
         {
             var state = await ThemeFiles.Save(root, Request.Body, Request.ContentType,
                 Request.Headers["X-Themerr-SHA256"].ToString(), item.GetThemeSongs().Count,
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken, Request.Headers["X-Themerr-Overwrite-User"] == "true",
+                Request.Headers["X-Themerr-Backup-User"] != "false").ConfigureAwait(false);
             await item.RefreshMetadata(cancellationToken).ConfigureAwait(false);
             return state;
         }

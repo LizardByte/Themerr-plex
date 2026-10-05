@@ -65,9 +65,14 @@ function page(context, responses, savedServers = [], jellyfin = {}) {
     if (jellyfin.connect) {
         const form = new Element('form');
         form.values = { url: 'http://jellyfin.example:8096', api_key: 'private-key' };
+        form.elements = { url: new Element('input'), api_key: new Element('input') };
         form.querySelector = () => new Element('button');
         form.reset = context.mock.fn(() => { form.values.api_key = ''; });
         elements['jellyfin-server-form'] = form;
+    }
+    if (jellyfin.discover) {
+        elements['jellyfin-discover'] = new Element('button');
+        elements['jellyfin-discovery-results'] = new Element('div');
     }
     const connectors = (jellyfin.servers || []).map(id => {
         const form = new Element('form');
@@ -132,6 +137,31 @@ test('connector status and installation stay scoped to the selected Jellyfin ser
     assert.equal(fetch.mock.calls[1].arguments[0], '/api/jellyfin/servers/jellyfin%3Aabc/connector');
     assert.deepEqual(JSON.parse(fetch.mock.calls[1].arguments[1].body), { themerr_url: 'https://trusted.example/themerr' });
     assert.equal(status.textContent, 'Restart Jellyfin.');
+});
+
+test('connector suggestions preserve reverse proxy paths and use the HTTP fallback for local TLS', async context => {
+    const { connectors } = page(context, [
+        { body: { repository_url: 'https://trusted.example/themerr', http_port: 9495 } },
+        { body: { http_port: 9495 } },
+    ], [], { servers: ['jellyfin:a', 'jellyfin:b'] });
+    await new Promise(setImmediate);
+    assert.equal(connectors[0].form.elements.themerr_url.value, 'https://trusted.example/themerr');
+    assert.equal(connectors[1].form.elements.themerr_url.value, 'http://themerr.example:9495');
+});
+
+test('Jellyfin discovery selects an address safely without transmitting credentials', async context => {
+    const { elements, fetch } = page(context, [{ body: { servers: [{
+        name: '<script>untrusted</script>', url: 'http://jellyfin.example:8096',
+    }] } }], [], { connect: true, discover: true });
+    await elements['jellyfin-discover'].click();
+    const [name, address, choose] = elements['jellyfin-discovery-results'].children[0].children;
+    assert.equal(name.textContent, '<script>untrusted</script>');
+    assert.equal(address.textContent, 'http://jellyfin.example:8096');
+    await choose.click();
+    assert.equal(elements['jellyfin-server-form'].elements.url.value, address.textContent);
+    assert.equal(elements['jellyfin-server-form'].elements.api_key.focused, true);
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/jellyfin/discover');
+    assert.equal(fetch.mock.calls[0].arguments[1].body, undefined);
 });
 
 test('empty LAN discovery explains GDM and offers account or manual connections', async context => {

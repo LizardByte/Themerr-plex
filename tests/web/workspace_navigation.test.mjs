@@ -54,7 +54,7 @@ function fixture(t, customLoad) {
     const breadcrumb = {};
     const meta = { content: 'old-token' };
     const logout = { value: 'old-token' };
-    const nav = [link('/home'), link('/servers'), link('/logs')];
+    const nav = [link('/home'), link('/servers'), link('/logs'), link('/settings/')];
     const main = { setAttribute() {}, removeAttribute() {}, focus: t.mock.fn() };
     let content;
     let modals;
@@ -92,6 +92,45 @@ function fixture(t, customLoad) {
     return { root, host, audio, widget, enter, leave, reportError, meta, logout, nav, load, controller, page };
 }
 const flush = () => new Promise(resolve => setImmediate(resolve));
+
+test('settings anchors with no history state scroll normally without reloading the page', async t => {
+    const f = fixture(t);
+    await f.controller.navigate(origin + '/settings/');
+    for (const section of ['Jellyfin', 'Notifications', 'Security']) {
+        f.host.location.href = origin + '/settings/#' + section;
+        const event = new Event('popstate');
+        event.state = null;
+        f.host.dispatchEvent(event);
+        await flush();
+        assert.equal(f.host.location.reload.mock.callCount(), 0);
+        assert.equal(f.host.location.assign.mock.callCount(), 0);
+        assert.equal(f.load.mock.callCount(), 1);
+        assert.equal(f.host.location.href, origin + '/settings/#' + section);
+    }
+});
+
+test('leaving a settings anchor records a workspace position so Back preserves the player', async t => {
+    const f = fixture(t);
+    await f.controller.navigate(origin + '/settings/');
+    f.host.location.href += '#jellyfin';
+    f.host.history.state = null;
+    let saved;
+    const replace = f.host.history.replaceState.bind(f.host.history);
+    f.host.history.replaceState = (state, unused, url) => {
+        saved = { state, url };
+        replace(state, unused, url);
+    };
+    await f.controller.navigate(origin + '/servers');
+    assert.equal(saved.state.workspacePosition, 1);
+    assert.equal(saved.url, origin + '/settings/#jellyfin');
+    f.host.location.href = saved.url;
+    const event = new Event('popstate');
+    event.state = saved.state;
+    f.host.dispatchEvent(event);
+    await flush();
+    assert.equal(f.host.location.reload.mock.callCount(), 0);
+    assert.equal(f.audio.paused, false);
+});
 
 test('page changes and refreshes preserve the player, update history, navigation and CSRF tokens', async t => {
     const f = fixture(t);

@@ -75,7 +75,11 @@ export function initWorkspaceNavigation({ enter, leave, reportError = () => {} }
     function recordNavigation(destination, state, replace) {
         if (state) position = state.workspacePosition;
         else {
-            host.history.replaceState({ ...host.history.state, scroll: [host.scrollX, host.scrollY] }, '', currentUrl);
+            // Same-page anchors update the browser URL without a workspace navigation.
+            // Preserve that URL when recording scroll, otherwise the next anchor resolves
+            // against the previous section and can reload the page at the top.
+            host.history.replaceState({ ...host.history.state, workspacePosition: position,
+                scroll: [host.scrollX, host.scrollY] }, '', host.location.href);
             if (!replace) ++position;
             host.history[replace ? 'replaceState' : 'pushState']({ workspacePosition: position }, '', destination.href);
         }
@@ -148,10 +152,10 @@ export function initWorkspaceNavigation({ enter, leave, reportError = () => {} }
     });
     host.addEventListener('popstate', event => {
         if (restoring) { restoring = false; return; }
-        if (!Number.isInteger(event.state?.workspacePosition)) { host.location.reload(); return; }
         const url = new URL(host.location.href);
         const previous = new URL(currentUrl);
         if (url.pathname === previous.pathname && url.search === previous.search) { currentUrl = url.href; return; }
+        if (!Number.isInteger(event.state?.workspacePosition)) { host.location.reload(); return; }
         if (!canLeave()) {
             restoring = true;
             host.history.go(position - event.state.workspacePosition);

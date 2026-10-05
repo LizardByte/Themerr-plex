@@ -226,20 +226,83 @@ function initJellyfin(signal) {
             if (!signal?.aborted && form.isConnected) await refreshPage();
         });
     }, { signal });
+    const discover = document.getElementById('jellyfin-discover');
+    discover?.addEventListener('click', () => busy(discover, async () => {
+        const results = document.getElementById('jellyfin-discovery-results');
+        results.textContent = _('Looking for Jellyfin servers…');
+        try {
+            const result = await api('/api/jellyfin/discover');
+            if (signal?.aborted || !results.isConnected) return;
+            results.replaceChildren();
+            if (!result.servers.length) {
+                results.textContent = _('No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually.');
+            }
+            result.servers.forEach(server => {
+                const row = document.createElement('div');
+                row.className = 'discovered-server';
+                const name = document.createElement('strong');
+                name.textContent = server.name;
+                const address = document.createElement('span');
+                address.textContent = server.url;
+                const choose = document.createElement('button');
+                choose.type = 'button';
+                choose.className = 'btn btn-outline-light btn-sm';
+                choose.textContent = _('Use this address');
+                choose.addEventListener('click', () => {
+                    form.elements.url.value = server.url;
+                    form.elements.api_key.focus();
+                }, { signal });
+                row.append(name, address, choose);
+                results.append(row);
+            });
+        } catch (error) {
+            if (!signal?.aborted && results.isConnected) results.textContent = error.message;
+            throw error;
+        }
+    }), { signal });
     document.querySelectorAll('[data-connector-form]').forEach(connectorForm => {
         const status = connectorForm.querySelector('[data-connector-status]');
-        connectorForm.elements.themerr_url.value = window.location.origin;
         const url = `/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/connector`;
-        void api(url, { method: 'GET' }).then(result => {
-            if (!signal?.aborted && status.isConnected) status.textContent = result.message;
-        }).catch(error => {
-            if (!signal?.aborted && status.isConnected) status.textContent = error.message;
-        });
+        let timer;
+        let suggested = false;
+        async function check() {
+            try {
+                const result = await api(url, { method: 'GET' });
+                if (signal?.aborted || !status.isConnected) return;
+                status.textContent = result.message;
+                if (!suggested) {
+                    const address = new URL(result.repository_url || window.location.origin);
+                    if (result.http_port && (!result.repository_url ||
+                        (address.hostname === window.location.hostname && address.port === window.location.port))) {
+                        address.protocol = 'http:';
+                        address.port = String(result.http_port);
+                        address.pathname = '/';
+                    }
+                    if (!connectorForm.elements.themerr_url.value) {
+                        connectorForm.elements.themerr_url.value = address.href.replace(/\/$/, '');
+                    }
+                    suggested = true;
+                }
+                timer = setTimeout(check, result.restart_required ? 5000 : 30000);
+            } catch (error) {
+                if (!signal?.aborted && status.isConnected) {
+                    status.textContent = error.message;
+                    timer = setTimeout(check, 10000);
+                }
+            }
+        }
+        signal?.addEventListener('abort', () => clearTimeout(timer), { once: true });
+        void check();
         connectorForm.addEventListener('submit', event => {
             event.preventDefault();
             void busy(connectorForm.querySelector('button[type="submit"]'), async () => {
                 const result = await api(url, { body: { themerr_url: new FormData(connectorForm).get('themerr_url') } });
-                if (!signal?.aborted && status.isConnected) status.textContent = result.message;
+                if (!signal?.aborted && status.isConnected) {
+                    status.textContent = result.message;
+                    toast(result.message);
+                    clearTimeout(timer);
+                    timer = setTimeout(check, 5000);
+                }
             });
         }, { signal });
     });

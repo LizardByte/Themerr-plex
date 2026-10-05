@@ -1,11 +1,12 @@
 """Authenticated Jellyfin setup and exact public routes for bundled plugin artifacts."""
 
 from fastapi import APIRouter, Depends, Request
+from typing import Annotated
 from starlette.responses import JSONResponse
 
 from common import credentials, logger
 from common.http import file_response, read_json
-from jellyfin import connector, servers
+from jellyfin import connector, discovery, maintenance, repository, servers
 from media_servers.base import MediaServerError
 
 router = APIRouter()
@@ -31,7 +32,7 @@ def _payload(value):
 
 
 @router.post('/api/jellyfin/servers', name='jellyfin.add_server', response_model=None)
-def add_server(payload=Depends(read_json)):
+def add_server(payload: Annotated[object, Depends(read_json)]):
     """Verify and securely save a Jellyfin server using an administrator API key."""
     try:
         payload = _payload(payload)
@@ -45,20 +46,45 @@ def add_server(payload=Depends(read_json)):
 def connector_status(server_id: str):
     """Check the installed connector without changing Jellyfin or its repositories."""
     try:
-        connection = servers.client(server_id)
-        connector.verify(connection)
-        return JSONResponse({'installed': True, 'message': 'Matching connector is active.'})
+        if not servers.get_server(server_id):
+            raise MediaServerError('Jellyfin server not found.', 404)
+        result = maintenance.state(server_id)
+        try:
+            connection = servers.client(server_id)
+        except MediaServerError:
+            if result.get('phase') != 'restarting':
+                raise
+            return JSONResponse({**result, 'installed': False,
+                                 'repository_url': connector.repository_url(required=False),
+                                 'http_port': repository.http_port()})
+        try:
+            connector.verify(connection)
+            message = result['message'] if result.get('restart_required') else 'Matching connector is active.'
+            result = {**result, 'installed': True, 'message': message}
+        except MediaServerError:
+            result = {'installed': False, 'message': 'Install the matching Themerr connector.', **result}
+        return JSONResponse({**result, 'repository_url': connector.repository_url(required=False),
+                             'http_port': repository.http_port()})
     except Exception as exc:
         return _failure(exc)
 
 
 @router.post('/api/jellyfin/servers/{server_id}/connector', name='jellyfin.install_connector', response_model=None)
-def install_connector(server_id: str, payload=Depends(read_json)):
-    """Register the local repository and install the exact matching connector; restart is manual."""
+def install_connector(server_id: str, payload: Annotated[object, Depends(read_json)]):
+    """Install the exact connector and schedule its restart according to Jellyfin settings."""
     try:
         payload = _payload(payload)
-        result = connector.install(servers.client(server_id), payload.get('themerr_url'))
+        result = maintenance.install(server_id, payload.get('themerr_url'))
         return JSONResponse(result, status_code=202)
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.post('/api/jellyfin/discover', name='jellyfin.discover', response_model=None)
+def discover():
+    """Discover nearby addresses; an administrator must still provide each server's API key."""
+    try:
+        return JSONResponse({'servers': discovery.discover()})
     except Exception as exc:
         return _failure(exc)
 

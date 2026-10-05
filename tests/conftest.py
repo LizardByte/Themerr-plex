@@ -32,12 +32,15 @@ def connector_bundle(tmp_path, monkeypatch):
 def configured(tmp_path, monkeypatch):
     import common
     from common import config, definitions, notifications
+    from jellyfin import maintenance
     from plex import token_store
     from themerr import storage
 
     old_config, old_common = config.CONFIG, common.CONFIG
     passwords = {}
     monkeypatch.delenv(token_store.KEY_FILE_ENV, raising=False)
+    monkeypatch.delenv('THEMERR_PLEX_TOKEN_KEY_FILE', raising=False)
+    monkeypatch.setattr(maintenance, 'start', lambda: None)
     monkeypatch.delenv('THEMERR_DOCKER', raising=False)
     monkeypatch.setattr(token_store.keyring, 'get_password', lambda service, client: passwords.get((service, client)))
     monkeypatch.setattr(token_store.keyring, 'set_password',

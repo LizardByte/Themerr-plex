@@ -248,7 +248,46 @@ _CONFIG_SPEC_DICT = {
         },
         'BOOL_COLLECTION_SUPPORT': {
             'type': 'boolean', 'name': _('Collections'), 'default': True,
-            'description': _('Add themes to Jellyfin collections.'),
+            'description': _('Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere.'),
+        },
+        'BOOL_OVERWRITE_USER_THEMES': {
+            'type': 'boolean', 'name': _('Overwrite user themes'), 'default': False,
+            'description': _('Replace existing theme files, including themes created by the older '
+                             'Themerr-jellyfin plugin.'),
+        },
+        'BOOL_BACKUP_USER_THEMES': {
+            'type': 'boolean', 'name': _('Back up replaced user themes'), 'default': True,
+            'description': _('Keep existing user themes in a backup folder when replacing them. '
+                             'Disable to permanently remove replaced themes.'),
+        },
+        'BOOL_IGNORE_LOCKED_FIELDS': {
+            'type': 'boolean', 'name': _('Ignore locked metadata'), 'default': False,
+            'description': _('Allow Jellyfin theme updates for items with locked metadata.'),
+        },
+        'AUTO_UPDATE_CONNECTOR': {
+            'type': 'boolean', 'name': _('Update connector automatically'), 'default': True,
+            'description': _('Install the matching connector when Themerr starts or detects a version mismatch. '
+                             'Set the reachable Themerr address on the Servers page first.'),
+        },
+        'AUTO_RESTART': {
+            'type': 'boolean', 'name': _('Restart Jellyfin automatically'), 'default': True,
+            'description': _('Restart Jellyfin after installing or updating the connector. '
+                             'A pending restart is shown on the Servers page before it happens.'),
+        },
+        'WAIT_FOR_IDLE': {
+            'type': 'boolean', 'name': _('Wait for playback to finish'), 'default': True,
+            'description': _('Defer connector restarts until there are no playing or paused streams.'),
+        },
+        'REMOVE_LEGACY_PLUGIN': {
+            'type': 'boolean', 'name': _('Remove the older Themerr-jellyfin plugin'), 'default': False,
+            'description': _('After installing the connector, uninstall the older Themerr plugin and remove only '
+                             'its dedicated repository. Existing theme files are kept.'),
+        },
+        'REPOSITORY_HTTP_PORT': {
+            'type': 'integer', 'name': _('Connector HTTP port'), 'default': 9495, 'min': 0, 'max': 65535,
+            'description': _('Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. '
+                             'The admin UI stays on HTTPS. Use 0 to disable. '
+                             'Restart Themerr after changing this port.'),
         },
     },
     'Plex': {
@@ -415,6 +454,41 @@ _CONFIG_SPEC_DICT = {
         },
     },
 }
+
+# Keep existing config keys and values while presenting server-specific settings separately.
+PLEX_SETTING_KEYS = frozenset({
+    'BOOL_PLEX_COLLECTION_SUPPORT', 'BOOL_PLEX_MOVIE_SUPPORT', 'BOOL_PLEX_SERIES_SUPPORT',
+    'BOOL_OVERWRITE_PLEX_PROVIDED_THEMES', 'BOOL_REMOVE_UNUSED_THEMES', 'BOOL_REMOVE_UNUSED_ART',
+    'BOOL_REMOVE_UNUSED_POSTERS', 'BOOL_UPDATE_COLLECTION_METADATA', 'BOOL_IGNORE_LOCKED_FIELDS',
+    'INT_PLEXAPI_PLEXAPI_TIMEOUT', 'INT_PLEXAPI_UPLOAD_RETRIES_MAX',
+})
+
+
+def settings_groups():
+    """Group existing configuration fields by their server integration for display.
+
+    Retain the stored section and key names while separating the settings page into integrations.
+
+    Returns
+    -------
+    list of dict
+        Display sections with their original configuration source and field keys.
+
+    Examples
+    --------
+    >>> settings_groups()[0]['section']
+    'Themerr'
+    """
+    groups = []
+    for section in ('Themerr', 'Plex', 'Jellyfin', 'General', 'Notifications', 'Logging', 'Network'):
+        source = 'Themerr' if section == 'Plex' else section
+        keys = [key for key, value in _CONFIG_SPEC_DICT[source].items() if isinstance(value, dict)]
+        if section == 'Themerr':
+            keys = [key for key in keys if key not in PLEX_SETTING_KEYS]
+        elif section == 'Plex':
+            keys = [key for key in keys if key in PLEX_SETTING_KEYS]
+        groups.append({'section': section, 'source': source, 'keys': keys})
+    return groups
 
 
 def is_masked_field(section: str, key: str) -> bool:

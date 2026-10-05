@@ -24,6 +24,17 @@ metadata lookups, and theme playback isolation. Browser playback and dashboard f
 Use an isolated configuration file for manual browser testing so sample data and credentials do not affect your
 normal installation.
 
+Connector tests run the same xUnit suite against Jellyfin 10.11 and 12.1. Install the .NET 10 SDK and
+the .NET 9 and 10 ASP.NET Core runtimes, then run:
+
+.. code-block:: shell
+
+   uv run --no-project --python 3.14 scripts/test_connector.py
+
+The script writes OpenCover coverage and JUnit test reports into separate ``coverage/connector-*`` directories.
+Use ``--output`` to place reports outside the checkout. CI uploads both profiles to Codecov. Tests use temporary
+item directories and mocked Jellyfin services; no running media server is required.
+
 For documentation validation, install the docs extra and build with Dockle:
 
 .. code-block:: shell

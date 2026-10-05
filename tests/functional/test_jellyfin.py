@@ -7,7 +7,8 @@ from fastapi.testclient import TestClient
 import pytest
 
 from common import admin, webapp
-from jellyfin import connector, servers
+from jellyfin import connector, maintenance, servers
+from media_servers.base import MediaServerError
 from tests.http_helpers import set_session
 
 
@@ -75,3 +76,22 @@ def test_api_key_is_not_echoed_in_setup_response(browser, monkeypatch):
     assert result.status_code == 201
     assert b'secret' not in result.content
     add.assert_called_once_with('http://jellyfin.example', 'secret')
+
+
+@pytest.mark.parametrize('online', [True, False])
+def test_connector_status_retains_restart_notices_while_offline_or_already_matching(
+        browser, connector_bundle, monkeypatch, online):
+    sign_in(browser)
+    server_id = 'jellyfin:' + '3' * 32
+    monkeypatch.setattr(servers, 'get_server', lambda _: {'id': server_id})
+    client = Mock()
+    if not online:
+        client.side_effect = MediaServerError('Unavailable', 502)
+    monkeypatch.setattr(servers, 'client', client)
+    monkeypatch.setattr(connector, 'verify', Mock(return_value=connector_bundle))
+    maintenance._save(server_id, phase='restarting', message='Restarting Jellyfin.', restart_required=True)
+    result = browser.get('/api/jellyfin/servers/' + server_id + '/connector')
+    assert result.status_code == 200
+    assert result.json()['message'] == 'Restarting Jellyfin.'
+    assert result.json()['restart_required'] is True
+    assert result.json()['installed'] is online

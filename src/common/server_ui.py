@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 # local imports
 from common.http import read_json, render_template
-from common import logger
+from common import config, logger
 from common.validation import ValidationError
 from media_servers import get_backend, processing
 from media_servers.base import MediaServerError
@@ -140,6 +140,7 @@ def server_page(request: Request):
         title='Servers',
         servers=get_backend().list_servers(),
         plex_connected=get_backend().account_connected(),
+        jellyfin_settings=config.CONFIG['Jellyfin'],
     )
 
 

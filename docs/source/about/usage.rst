@@ -84,7 +84,7 @@ Select **Disconnect Plex** to erase Plex credentials and pause saved Plex server
 each server to resume processing with its retained upload history.
 
 On desktop systems, account and server tokens are saved in the operating system's credential store.
-For Docker or headless systems, provide ``THEMERR_PLEX_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
+For Docker or headless systems, provide ``THEMERR_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
 the configuration directory. Themerr-plex uses that key to encrypt tokens stored in SQLite. Keep the key file private;
 losing it requires signing in again. Docker sign-in requires this key file.
 
@@ -172,27 +172,46 @@ ignored libraries, dashboard records, and upload history.
 Theme uploads require the small **Themerr Connector** bundled with this Themerr build. On the server card,
 enter a Themerr address reachable from the Jellyfin machine and select **Install matching connector**.
 Themerr registers its local plugin repository and installs the exact compatible connector through Jellyfin's API,
-preserving other registered repositories. Restart Jellyfin to load the plugin, then refresh libraries in Themerr.
-After upgrading Themerr, install its matching connector again if the server card reports a mismatch.
+preserving other registered repositories. Themerr shows the pending restart on the server card, waits at least
+30 seconds and, by default, waits until playing and paused streams finish before restarting Jellyfin. Libraries
+are refreshed when the connector becomes active. Installations that cannot restart themselves, including some
+service and container configurations, show instructions to restart manually. Automatic updates install a
+mismatched connector when Themerr starts or checks the connection. Both automatic updates and restarts can be
+disabled under **Settings > Jellyfin**.
 
 The download address must use a certificate trusted by Jellyfin or HTTP on your private network. Themerr's
 default self-signed HTTPS certificate is not automatically trusted by Jellyfin. A trusted reverse proxy can
-provide the download address; alternatively, configure Themerr's network settings for HTTP on your private network.
+provide the download address. For self-signed certificates, Themerr also serves only the connector repository
+over HTTP on port 9495 by default; the administrator UI remains on HTTPS. Use an address Jellyfin can reach and
+expose that port when running Docker. Configure or disable it under **Settings > Jellyfin > Connector HTTP port**.
 Jellyfin downloads the fixed manifest and archive routes without a Themerr admin session; all connection,
 installation, library, and theme APIs retain administrator authentication.
 
 The connector only accepts matching uploads from Themerr and stores files beside the native library item.
 Movies must have their own local folders; a shared folder containing unrelated movies cannot have independent themes.
-Existing user themes are preserved, including themes created by the older Themerr-jellyfin plugin. Disable that
-older plugin's processing when using this integration. Theme files changed manually after an upload are also
-preserved. Themerr updates only themes whose current digest matches the connector's ownership record.
+Existing user themes are preserved by default, including themes created by the older Themerr-jellyfin plugin.
+Enable **Overwrite user themes** to replace them. **Back up replaced user themes** is enabled by default and
+keeps replaced files in ``.themerr-user-themes`` and ``.themerr-user-theme-music`` beside the item. Disable that
+separate option to remove replaced themes permanently. Existing backups are never overwritten. Themes outside
+the connector's supported item resources remain protected. Manual edits are treated as user themes.
+You can also enable **Remove the older Themerr-jellyfin plugin** to uninstall only that plugin and remove its
+dedicated repository after installing the connector. Otherwise, disable its processing yourself.
 Locked items and ignored libraries follow the processing settings. Jellyfin uses Themerr's scheduled scans;
 **Activity > Scan for themes** also starts a scan. Movies, series, and collections can be enabled separately
 under **Settings > Jellyfin**.
 
+Collection themes are stored in Jellyfin's own collection metadata directory, separately from media folders.
+Jellyfin must have permission to write to the item's directory. **Discover Jellyfin on LAN** uses UDP port 7359;
+discovery must be enabled on Jellyfin and allowed by the local network and firewall. An API key is still required.
+
+For theme playback, open **Jellyfin user settings > Display** and enable **Theme songs** in the **Library** section.
+The server card links directly to this page. Jellyfin Web stores this choice locally in each browser, so its
+REST API cannot enable it for all clients; repeat the choice in each browser or app that supports theme songs.
+
 API keys use the operating system credential store on desktops. Headless and Docker installations use the
-same ``THEMERR_PLEX_TOKEN_KEY_FILE`` encryption key as Plex, with a separate namespace for every Jellyfin server.
-The historical environment variable name remains supported. Removing a connection deletes its saved API key
+same ``THEMERR_TOKEN_KEY_FILE`` encryption key as Plex, with a separate namespace for every Jellyfin server.
+The historical ``THEMERR_PLEX_TOKEN_KEY_FILE`` name remains supported; the generic name takes precedence if
+both are set. Keep the same key when renaming the variable. Removing a connection deletes its saved API key
 and local records; themes already installed on Jellyfin remain there.
 
 Jellyfin provider IDs are resolved through ThemerrDB's index. Set ``TMDB_API_READ_ACCESS_TOKEN`` if you also

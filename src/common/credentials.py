@@ -15,7 +15,8 @@ from themerr import storage
 
 
 SERVICE = Names.name
-KEY_FILE_ENV = 'THEMERR_PLEX_TOKEN_KEY_FILE'
+KEY_FILE_ENV = 'THEMERR_TOKEN_KEY_FILE'
+LEGACY_KEY_FILE_ENV = 'THEMERR_PLEX_TOKEN_KEY_FILE'
 STORE_UNAVAILABLE = 'The OS credential store is unavailable.'
 
 
@@ -36,14 +37,14 @@ def _cipher() -> Fernet | None:
     TokenStorageError
         The key is missing or invalid in a headless installation.
     """
-    key_path = os.environ.get(KEY_FILE_ENV)
+    key_path = os.environ.get(KEY_FILE_ENV) or os.environ.get(LEGACY_KEY_FILE_ENV)
     if key_path:
         try:
             return Fernet(Path(key_path).read_bytes().strip())
         except (OSError, ValueError) as exc:
-            raise TokenStorageError(f'Unable to read a valid Plex token key from {KEY_FILE_ENV}.') from exc
+            raise TokenStorageError(f'Unable to read a valid token encryption key from {KEY_FILE_ENV}.') from exc
     if os.environ.get('THEMERR_DOCKER'):
-        raise TokenStorageError(f'Set {KEY_FILE_ENV} to a mounted secret before signing in to Plex.')
+        raise TokenStorageError(f'Set {KEY_FILE_ENV} to a mounted secret before connecting a media server.')
     return None
 
 
@@ -68,7 +69,7 @@ def get_token(client_id: str) -> str:
         try:
             return cipher.decrypt(encrypted.encode('ascii')).decode('utf-8')
         except (InvalidToken, UnicodeError) as exc:
-            raise TokenStorageError('The Plex token key does not match the stored token.') from exc
+            raise TokenStorageError('The encryption key does not match the stored token.') from exc
     try:
         return keyring.get_password(SERVICE, client_id) or ''
     # Native backends can raise errors outside keyring's exception hierarchy.
@@ -84,7 +85,7 @@ def save_token(client_id: str, token: str) -> None:
     client_id : str
         Installation-scoped credential identifier.
     token : str
-        Plex account token.
+        Media-server account token or API key.
     """
     cipher = _cipher()
     if cipher is not None:
@@ -105,7 +106,7 @@ def delete_token(client_id: str) -> None:
         Installation-scoped credential identifier.
     """
     storage.save_encrypted_token(None, _namespace(client_id))
-    if os.environ.get(KEY_FILE_ENV) or os.environ.get('THEMERR_DOCKER'):
+    if os.environ.get(KEY_FILE_ENV) or os.environ.get(LEGACY_KEY_FILE_ENV) or os.environ.get('THEMERR_DOCKER'):
         return
     try:
         keyring.delete_password(SERVICE, client_id)

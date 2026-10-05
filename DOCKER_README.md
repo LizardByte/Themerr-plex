@@ -2,12 +2,17 @@
 
 ## lizardbyte/themerr-plex
 
-Before Plex sign-in, create a persistent key file outside the `/config` volume. Keep this file private and ensure the
+Before connecting a media server, create a persistent key file outside the `/config` volume. Keep this file private and ensure the
 container's `PUID` can read it. Keep the same key when recreating the container; losing it requires signing in again.
 
+`THEMERR_TOKEN_KEY_FILE` encrypts credentials for all media servers. The older `THEMERR_PLEX_TOKEN_KEY_FILE`
+name is still accepted; use the same key when renaming it. The generic variable takes precedence if both are set.
+Port 9495 serves only the Jellyfin connector repository over HTTP when the admin UI uses a self-signed certificate.
+Use a host address reachable from Jellyfin; `localhost` inside another container refers to that container itself.
+
 ```bash
-python3 -c 'import base64, os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())' > themerr-plex.key
-chmod 600 themerr-plex.key
+python3 -c 'import base64, os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())' > themerr-tokens.key
+chmod 600 themerr-tokens.key
 ```
 
 ### Using docker run
@@ -18,12 +23,13 @@ docker run -d \
   --name=themerr-plex \
   --restart=unless-stopped \
   -v <path to data>:/config \
-  -v <absolute path to themerr-plex.key>:/run/secrets/themerr_plex_key:ro \
-  -e THEMERR_PLEX_TOKEN_KEY_FILE=/run/secrets/themerr_plex_key \
+  -v <absolute path to themerr-tokens.key>:/run/secrets/themerr_token_key:ro \
+  -e THEMERR_TOKEN_KEY_FILE=/run/secrets/themerr_token_key \
   -e PUID=<uid> \
   -e PGID=<gid> \
   -e TZ=<timezone> \
   -p 9494:9494 \
+  -p 9495:9495 \
   lizardbyte/themerr-plex
 ```
 
@@ -53,14 +59,15 @@ services:
     restart: unless-stopped
     volumes:
       - <path to data>:/config
-      - <absolute path to themerr-plex.key>:/run/secrets/themerr_plex_key:ro
+      - <absolute path to themerr-tokens.key>:/run/secrets/themerr_token_key:ro
     environment:
-      - THEMERR_PLEX_TOKEN_KEY_FILE=/run/secrets/themerr_plex_key
+      - THEMERR_TOKEN_KEY_FILE=/run/secrets/themerr_token_key
       - PUID=<uid>
       - PGID=<gid>
       - TZ=<timezone>
     ports:
       - 9494:9494
+      - 9495:9495
 ```
 
 Create and start the container (run the command from the same folder as your `docker-compose.yml` file):
@@ -88,15 +95,16 @@ Therefore `-p 9494:9494` exposes port `9494` from inside the container on the ho
 The internal port is `9494`; the host port may be changed (e.g. `-p 8080:9494`).
 
 
-| Parameter                   | Function                                                                             | Example Value        | Required |
-|-----------------------------|--------------------------------------------------------------------------------------|----------------------|:--------:|
-| `-p <port>:9494`            | Web UI Port                                                                          | `9494`               |   True   |
-| `-v <path to data>:/config` | Volume mapping                                                                       | `/home/themerr-plex` |   True   |
-| `-v <path to key>:/run/secrets/themerr_plex_key:ro` | Read-only token encryption key | `/home/me/themerr-plex.key` | True |
-| `-e THEMERR_PLEX_TOKEN_KEY_FILE=...` | Container path to the token encryption key | `/run/secrets/themerr_plex_key` | True |
-| `-e PUID=<uid>`             | User ID                                                                              | `1001`               |  False   |
-| `-e PGID=<gid>`             | Group ID                                                                             | `1001`               |  False   |
-| `-e TZ=<timezone>`          | Lookup TZ value [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | `America/New_York`   |   True   |
+| Parameter                                            | Function                                                                             | Example Value                    | Required |
+|------------------------------------------------------|--------------------------------------------------------------------------------------|----------------------------------|:--------:|
+| `-p <port>:9494`                                     | Web UI Port                                                                          | `9494`                           |   True   |
+| `-p <port>:9495`                                     | Jellyfin connector repository with self-signed TLS on the UI                         | `9495`                           |  False   |
+| `-v <path to data>:/config`                          | Volume mapping                                                                       | `/home/themerr-plex`             |   True   |
+| `-v <path to key>:/run/secrets/themerr_token_key:ro` | Read-only token encryption key                                                       | `/home/me/themerr-tokens.key`    |   True   |
+| `-e THEMERR_TOKEN_KEY_FILE=...`                      | Container path to the token encryption key                                           | `/run/secrets/themerr_token_key` |   True   |
+| `-e PUID=<uid>`                                      | User ID                                                                              | `1001`                           |  False   |
+| `-e PGID=<gid>`                                      | Group ID                                                                             | `1001`                           |  False   |
+| `-e TZ=<timezone>`                                   | Lookup TZ value [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | `America/New_York`               |   True   |
 
 ### User / Group Identifiers:
 

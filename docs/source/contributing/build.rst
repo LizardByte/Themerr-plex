@@ -74,13 +74,15 @@ Build the documentation and standalone executable:
 
 Dockle writes the site to _site. PyInstaller includes that site, the web assets, and translations in the
 executable under dist, including Deno for yt-dlp and both Jellyfin connector archives. The standalone build
-rebuilds the connectors after stamping the release version. macOS also produces ``dist/themerr_plex.app``, a directory
+rebuilds the connectors after stamping the release version. CI builds both connectors once and shares the artifact
+with all desktop packaging jobs. ``THEMERR_PREBUILT_CONNECTOR=1`` validates the artifact's source identity, release,
+ABI and checksums instead of compiling again. macOS also produces ``dist/themerr_plex.app``, a directory
 bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release version before running
 ``scripts/build.py`` to stamp ``src/common/version.py`` with the version used by release notifications and
 ``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
 is included through normal imports. Unversioned builds compare releases against ``0.0.0``.
 
-Docker uses the same lockfile and Dockle build. A separate .NET build stage compiles both connectors;
+Docker uses the same lockfile and Dockle build. A separate .NET stage uses uv to run the connector build script;
 the runtime image contains their artifacts without the SDK:
 
 .. code-block:: shell
