@@ -21,6 +21,8 @@ PLUGIN_ID = 'f9a117dc-b44a-4507-9706-241837784369'
 PLUGIN_NAME = 'Themerr Connector'
 VERSION_FILE = 'src/common/version.py'
 THUMBNAIL = 'thumb.png'
+CONNECTOR_SOURCE = 'connectors/jellyfin'
+ASSEMBLY_FILE = 'Themerr.Connector.dll'
 
 
 def build_identity(root=ROOT, version=None):
@@ -28,7 +30,7 @@ def build_identity(root=ROOT, version=None):
     version = version or runpy.run_path(str(root / VERSION_FILE))['VERSION']
     digest = hashlib.sha256(version.encode())
     digest.update(json.dumps(PROFILES, sort_keys=True).encode())
-    for path in sorted((root / 'connectors/jellyfin').glob('*')):
+    for path in sorted((root / CONNECTOR_SOURCE).glob('*')):
         if path.suffix in ('.cs', '.csproj', '.png'):
             digest.update(path.name.encode())
             content = path.read_bytes()
@@ -61,7 +63,7 @@ def build(dotnet='dotnet', root=ROOT):
     base_version = assembly_version(release)
     directory = root / 'jellyfin-connector'
     directory.mkdir(exist_ok=True)
-    shutil.copyfile(root / 'connectors/jellyfin' / THUMBNAIL, directory / THUMBNAIL)
+    shutil.copyfile(root / CONNECTOR_SOURCE / THUMBNAIL, directory / THUMBNAIL)
     artifacts = {}
     for profile, (abi, framework) in PROFILES.items():
         version = base_version
@@ -77,7 +79,7 @@ def build(dotnet='dotnet', root=ROOT):
             ], check=True)
             archive = directory / f'connector-{profile}.zip'
             with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as bundle:
-                bundle.write(output / 'Themerr.Connector.dll', 'Themerr.Connector.dll')
+                bundle.write(output / ASSEMBLY_FILE, ASSEMBLY_FILE)
             artifacts[profile] = {'targetAbi': abi, 'version': version,
                                   'timestamp': datetime.now(timezone.utc).isoformat(),
                                   'checksum': hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()}
@@ -94,7 +96,7 @@ def check_bundle(root=ROOT):
     if (descriptor.get('protocol') != 1 or descriptor.get('build') != build_identity(root, release) or
             descriptor.get('themerrVersion') != release or set(descriptor['artifacts']) != set(PROFILES)):
         raise ValueError('Prebuilt Jellyfin connector does not match this Themerr source and release.')
-    if (directory / THUMBNAIL).read_bytes() != (root / 'connectors/jellyfin' / THUMBNAIL).read_bytes():
+    if (directory / THUMBNAIL).read_bytes() != (root / CONNECTOR_SOURCE / THUMBNAIL).read_bytes():
         raise ValueError('Prebuilt Jellyfin connector thumbnail does not match.')
     for profile, (abi, _) in PROFILES.items():
         artifact = descriptor['artifacts'][profile]
@@ -103,7 +105,7 @@ def check_bundle(root=ROOT):
                 artifact['checksum'] != hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()):
             raise ValueError('Prebuilt Jellyfin connector checksum or ABI does not match.')
         with zipfile.ZipFile(archive) as content:
-            if content.namelist() != ['Themerr.Connector.dll']:
+            if content.namelist() != [ASSEMBLY_FILE]:
                 raise ValueError('Prebuilt Jellyfin connector contains unexpected files.')
     return descriptor
 

@@ -251,6 +251,17 @@ export function initServers(signal) {
     }));
 }
 
+function connectorAddress(result) {
+    const address = new URL(result.repository_url || window.location.origin);
+    if (result.http_port && (!result.repository_url ||
+        (address.hostname === window.location.hostname && address.port === window.location.port))) {
+        address.protocol = 'http:';
+        address.port = String(result.http_port);
+        address.pathname = '/';
+    }
+    return address.href.replace(/\/$/, '');
+}
+
 function initJellyfin(signal) {
     const form = document.getElementById('jellyfin-server-form');
     form?.addEventListener('submit', event => {
@@ -320,15 +331,8 @@ function initJellyfin(signal) {
                         _('This server cannot restart itself. Restart its service or container.');
                 }
                 if (!suggested) {
-                    const address = new URL(result.repository_url || window.location.origin);
-                    if (result.http_port && (!result.repository_url ||
-                        (address.hostname === window.location.hostname && address.port === window.location.port))) {
-                        address.protocol = 'http:';
-                        address.port = String(result.http_port);
-                        address.pathname = '/';
-                    }
                     if (!connectorForm.elements.themerr_url.value) {
-                        connectorForm.elements.themerr_url.value = address.href.replace(/\/$/, '');
+                        connectorForm.elements.themerr_url.value = connectorAddress(result);
                     }
                     suggested = true;
                 }

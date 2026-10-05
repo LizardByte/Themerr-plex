@@ -56,6 +56,10 @@ def test_listener_runs_only_for_self_signed_tls_on_a_separate_enabled_port(
         assert factory.call_args.args[0].ssl_certfile is None
         thread.call_args.kwargs['target']()
         server.run.assert_called_once_with()
+        server.started = False
+        server.run.side_effect = SystemExit(1)
+        thread.call_args.kwargs['target']()
+        assert repository.http_port() is None
         repository.stop()
         assert server.should_exit is True
         worker.join.assert_called_once_with(timeout=6)

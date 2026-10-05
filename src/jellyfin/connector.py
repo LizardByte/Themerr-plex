@@ -27,6 +27,7 @@ PUBLIC_PATHS = frozenset([MANIFEST_PATH, THUMBNAIL_PATH, *PROFILE_MANIFESTS.valu
 _install_lock = RLock()
 LEGACY_PLUGIN_ID = 'e41ef0c4-c413-41ba-b4fa-8c565dc3c969'
 LEGACY_REPOSITORY = 'https://app.lizardbyte.dev/jellyfin-plugin-repo/manifest.json'
+_REPOSITORIES = '/Repositories'
 
 
 def directory():
@@ -126,42 +127,15 @@ def install(connection, themerr_url):
             active = True
         except MediaServerError:
             active = False
-        # Jellyfin replaces the repository list, so merge instead of overwriting it.
-        repositories = connection.json('GET', '/Repositories')
-        if not isinstance(repositories, list) or any(not isinstance(entry, dict) for entry in repositories):
-            raise MediaServerError('Jellyfin returned an invalid repository list.', 502)
-        owned_repositories = {url + path for path in (MANIFEST_PATH, *PROFILE_MANIFESTS.values())}
-        repositories = [entry for entry in repositories if entry.get('Url') not in owned_repositories]
-        repositories.append({'Name': PLUGIN_NAME, 'Url': manifest_url, 'Enabled': True})
-        _check_certificate(url)
-        repository_url(url)
-        connection.request('POST', '/Repositories', json=repositories).close()
+        _register_repository(connection, url, manifest_url)
         if active:
             return {'message': 'Matching connector is already active.', 'version': artifact['version'],
                     'restart_required': False}
         _check_repository(connection, url, artifact, manifest_path)
-        plugins = connection.json('GET', '/Plugins')
-        if not isinstance(plugins, list) or any(not isinstance(plugin, dict) for plugin in plugins):
-            raise MediaServerError('Jellyfin returned an invalid plugin list.', 502)
-        owned = [plugin for plugin in plugins
-                 if str(plugin.get('Id', '')).replace('-', '').lower() == PLUGIN_ID.replace('-', '')]
-        pending = any(plugin.get('Version') == artifact['version'] and
-                      plugin.get('Status') == 'Restart' for plugin in owned)
-        if not pending:
-            replace_loaded = False
-            for plugin in owned:
-                plugin_version = str(plugin.get('Version', ''))
-                parts = plugin_version.split('.')
-                if len(parts) != 4 or not all(part.isascii() and part.isdigit() for part in parts):
-                    raise MediaServerError('Jellyfin returned an invalid connector version.', 502)
-                if plugin.get('Status') != 'Deleted':
-                    connection.request('DELETE', '/Plugins/' + PLUGIN_ID + '/' + quote(plugin_version, safe='')).close()
-                # On Windows a loaded DLL cannot be overwritten. Unload it before reinstalling
-                # a changed development/PR build that has the same release version.
-                replace_loaded = replace_loaded or plugin_version == artifact['version']
-            if replace_loaded:
-                return {'message': 'Jellyfin must restart before replacing the connector.',
-                        'version': artifact['version'], 'restart_required': True, 'reinstall_required': True}
+        pending, replace_loaded = _prepare_installation(connection, artifact['version'])
+        if replace_loaded:
+            return {'message': 'Jellyfin must restart before replacing the connector.',
+                    'version': artifact['version'], 'restart_required': True, 'reinstall_required': True}
         if not pending:
             connection.request('POST', '/Packages/Installed/' + PLUGIN_NAME,
                                params={'assemblyGuid': PLUGIN_ID, 'version': artifact['version'],
@@ -170,11 +144,50 @@ def install(connection, themerr_url):
             'version': artifact['version'], 'restart_required': True}
 
 
+def _register_repository(connection, url, manifest_url):
+    """Merge Jellyfin's replacement repository list without changing unrelated entries."""
+    repositories = connection.json('GET', _REPOSITORIES)
+    if not isinstance(repositories, list) or any(not isinstance(entry, dict) for entry in repositories):
+        raise MediaServerError('Jellyfin returned an invalid repository list.', 502)
+    owned_repositories = {url + path for path in (MANIFEST_PATH, *PROFILE_MANIFESTS.values())}
+    repositories = [entry for entry in repositories if entry.get('Url') not in owned_repositories]
+    repositories.append({'Name': PLUGIN_NAME, 'Url': manifest_url, 'Enabled': True})
+    _check_certificate(url)
+    repository_url(url)
+    connection.request('POST', _REPOSITORIES, json=repositories).close()
+
+
+def _prepare_installation(connection, version):
+    """Preserve pending installs and remove only this connector's older loaded assemblies."""
+    plugins = connection.json('GET', '/Plugins')
+    if not isinstance(plugins, list) or any(not isinstance(plugin, dict) for plugin in plugins):
+        raise MediaServerError('Jellyfin returned an invalid plugin list.', 502)
+    owned = [plugin for plugin in plugins
+             if str(plugin.get('Id', '')).replace('-', '').lower() == PLUGIN_ID.replace('-', '')]
+    pending = any(plugin.get('Version') == version and plugin.get('Status') == 'Restart' for plugin in owned)
+    if pending:
+        return True, False
+    replace_loaded = False
+    for plugin in owned:
+        plugin_version = str(plugin.get('Version', ''))
+        parts = plugin_version.split('.')
+        if len(parts) != 4 or not all(part.isascii() and part.isdigit() for part in parts):
+            raise MediaServerError('Jellyfin returned an invalid connector version.', 502)
+        if plugin.get('Status') != 'Deleted':
+            connection.request('DELETE', '/Plugins/' + PLUGIN_ID + '/' + quote(plugin_version, safe='')).close()
+        # On Windows a loaded DLL cannot be overwritten; unload changed builds of the same version first.
+        replace_loaded = replace_loaded or plugin_version == version
+    return False, replace_loaded
+
+
 def _check_certificate(url):
     """Reject untrusted HTTPS before storing or registering a repository address."""
     if url.startswith('https:'):
         try:
             # No credentials are sent to this administrator-selected repository URL.
+            # CodeQL py/full-ssrf: authenticated admins choose their reachable Themerr repository.
+            # base_url restricts URL syntax and schemes; LAN/loopback deployments are intentional.
+            # Probe only this fixed manifest, with TLS validation, no credentials and no redirects.
             response = requests.get(url + MANIFEST_PATH, timeout=10, allow_redirects=False, stream=True)
             response.close()
         except requests.exceptions.SSLError as exc:
@@ -218,10 +231,10 @@ def remove_legacy(connection):
                 raise MediaServerError('Jellyfin returned an invalid legacy plugin version.', 502)
             connection.request('DELETE', '/Plugins/' + LEGACY_PLUGIN_ID + '/' + quote(version, safe='')).close()
             changed = True
-    repositories = connection.json('GET', '/Repositories')
+    repositories = connection.json('GET', _REPOSITORIES)
     if not isinstance(repositories, list) or any(not isinstance(entry, dict) for entry in repositories):
         raise MediaServerError('Jellyfin returned an invalid repository list.', 502)
     remaining = [entry for entry in repositories if entry.get('Url', '').rstrip('/') != LEGACY_REPOSITORY]
     if len(remaining) != len(repositories):
-        connection.request('POST', '/Repositories', json=remaining).close()
+        connection.request('POST', _REPOSITORIES, json=remaining).close()
     return changed

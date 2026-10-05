@@ -74,6 +74,9 @@ class Client:
         headers = {'Authorization': 'MediaBrowser Token="' + quote(self.token, safe='') + '"',
                    **kwargs.pop('headers', {})}
         try:
+            # CodeQL py/full-ssrf: connecting to an administrator-selected media server is intentional.
+            # Setup requires an authenticated admin session and CSRF; base_url restricts schemes and
+            # rejects userinfo/queries. LAN and loopback addresses are required; redirects are disabled.
             response = requests.request(method, self.url + path, headers=headers, allow_redirects=False,
                                         timeout=kwargs.pop('timeout', 30), **kwargs)
         except requests.RequestException as exc:

@@ -67,8 +67,9 @@ def test_item_identifiers_cannot_supply_paths(item_id):
 def test_client_keeps_credentials_in_headers_and_rejects_redirects(monkeypatch):
     request = Mock(return_value=response({}, 302))
     monkeypatch.setattr(requests, 'request', request)
+    connection = Client('http://jellyfin.example', 'secret')
     with pytest.raises(MediaServerError):
-        Client('http://jellyfin.example', 'secret').request('GET', '/System/Info')
+        connection.request('GET', '/System/Info')
     assert request.call_args.kwargs['headers'] == {'Authorization': 'MediaBrowser Token="secret"'}
     assert request.call_args.kwargs['allow_redirects'] is False
     request.return_value.close.assert_called_once()

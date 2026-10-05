@@ -12,6 +12,8 @@ from youtube.youtube_dl import download_youtube
 
 log = logger.get_logger(__name__)
 _SETTINGS = {'Movie': 'BOOL_MOVIE_SUPPORT', 'Series': 'BOOL_SERIES_SUPPORT', 'BoxSet': 'BOOL_COLLECTION_SUPPORT'}
+_LIBRARY_FOLDERS = '/Library/VirtualFolders'
+_ITEM_PREFIX = '/Items/'
 
 
 def _items(connection, **params):
@@ -52,7 +54,7 @@ class JellyfinMediaServer(MediaServer):
     def libraries(self):
         connection = servers.client(self.server_id)
         return [{'id': identifier(row['ItemId']), 'title': row['Name']}
-                for row in connection.json('GET', '/Library/VirtualFolders')]
+                for row in connection.json('GET', _LIBRARY_FOLDERS)]
 
     def web_urls(self, library_id, item_id=None):
         record = servers.get_server(self.server_id)
@@ -76,7 +78,7 @@ class JellyfinMediaServer(MediaServer):
                 connected = True
             except MediaServerError:
                 connected = False
-            for library in connection.json('GET', '/Library/VirtualFolders'):
+            for library in connection.json('GET', _LIBRARY_FOLDERS):
                 key = identifier(library['ItemId'])
                 themed = {identifier(row['Id']) for row in _items(connection, ParentId=key, HasThemeSong=True)}
                 rows = [self._dashboard_item(item, themed, errors, connection if connected else None)
@@ -105,15 +107,24 @@ class JellyfinMediaServer(MediaServer):
         details = metadata.resolve(item)
         key = identifier(item['Id'])
         theme = key in themed
-        status = 'complete' if theme else 'failed' if key in errors else 'unresolved'
+        status = 'unresolved'
+        if theme:
+            status = 'complete'
+        elif key in errors:
+            status = 'failed'
         if not theme and key not in errors and details['database_id']:
             status = 'pending' if details['exists'] else 'missing'
         owned = False
         if theme and connection is not None:
             owned = _theme_state(connection, key)['owned']
+        provider = None
+        if owned:
+            provider = 'themerr'
+        elif theme:
+            provider = 'uploaded'
         return {**{name: value for name, value in details.items() if name != 'exists'}, 'rating_key': key,
                 'title': item['Name'], 'year': item.get('ProductionYear'), 'agent': 'jellyfin', 'theme': theme,
-                'theme_provider': 'themerr' if owned else 'uploaded' if theme else None,
+                'theme_provider': provider,
                 'theme_status': status}
 
     def scan(self, enqueue):
@@ -121,7 +132,7 @@ class JellyfinMediaServer(MediaServer):
             connection = servers.client(self.server_id)
             connector.verify(connection)
             ignored = set(servers.get_server(self.server_id)['ignored_libraries'].split(','))
-            for library in connection.json('GET', '/Library/VirtualFolders'):
+            for library in connection.json('GET', _LIBRARY_FOLDERS):
                 key = identifier(library['ItemId'])
                 if key in ignored:
                     continue
@@ -152,7 +163,7 @@ class JellyfinMediaServer(MediaServer):
             return False
         ignored = set(servers.get_server(self.server_id)['ignored_libraries'].split(',')) - {''}
         if ignored:
-            ancestors = connection.json('GET', '/Items/' + item_id + '/Ancestors')
+            ancestors = connection.json('GET', _ITEM_PREFIX + item_id + '/Ancestors')
             if ignored.intersection(identifier(row['Id']) for row in ancestors):
                 return False
         state = _theme_state(connection, item_id)
@@ -216,7 +227,7 @@ class JellyfinMediaServer(MediaServer):
         item_id = identifier(item_id)
         connection = servers.client(self.server_id)
         try:
-            return connection.request('GET', '/Items/' + identifier(item_id) + '/Images/Primary',
+            return connection.request('GET', _ITEM_PREFIX + identifier(item_id) + '/Images/Primary',
                                       params={'MaxWidth': 600}, stream=True)
         except MediaServerError as exc:
             if exc.status_code == 404:
@@ -226,7 +237,7 @@ class JellyfinMediaServer(MediaServer):
     def open_theme(self, item_id, headers):
         item_id = identifier(item_id)
         connection = servers.client(self.server_id)
-        songs = connection.json('GET', '/Items/' + identifier(item_id) + '/ThemeSongs',
+        songs = connection.json('GET', _ITEM_PREFIX + identifier(item_id) + '/ThemeSongs',
                                 params={'InheritFromParent': False})['Items']
         if not songs:
             raise MediaServerError('This item has no theme.', 404)

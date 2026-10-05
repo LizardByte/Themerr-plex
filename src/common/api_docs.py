@@ -11,10 +11,14 @@ from fastapi.routing import APIRoute
 _STRING = {'type': 'string'}
 _ADD_SERVER = 'server_ui.add_server'
 _BODIES = {
-    'jellyfin.add_server': ({'url': _STRING, 'api_key': {'type': 'string', 'format': 'password'}},
-                            ['url', 'api_key'], {'url': 'http://192.168.1.10:8096'}),
-    'jellyfin.install_connector': ({'themerr_url': _STRING}, ['themerr_url'],
-                                   {'themerr_url': 'http://192.168.1.20:9494'}),
+    'jellyfin.add_server': (
+        {'url': _STRING, 'api_key': {'type': 'string', 'format': 'password'}}, ['url', 'api_key'],
+        {'url': 'http://192.168.1.10:8096'},  # NOSONAR python:S5332, python:S1313: documentation-only LAN example.
+    ),
+    'jellyfin.install_connector': (
+        {'themerr_url': _STRING}, ['themerr_url'],
+        {'themerr_url': 'http://192.168.1.20:9494'},  # NOSONAR python:S5332, python:S1313: LAN repository example.
+    ),
     'browse_directories': ({'path': _STRING}, [], {'path': ''}),
     'server_ui.discover': ({'source': {'type': 'string', 'enum': ['account', 'local']}},
                            ['source'], {'source': 'account'}),

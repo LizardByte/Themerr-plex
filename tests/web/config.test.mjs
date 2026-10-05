@@ -9,6 +9,7 @@ class Element {
     value = '';
     disabled = false;
     children = [];
+    dataset = {};
     addEventListener(name, fn) { this.listeners[name] = fn; }
     setAttribute() {}
     removeAttribute() {}
@@ -21,6 +22,7 @@ function settings(t, request) {
     const locale = elements['General-LOCALE'];
     locale.value = 'en';
     locale.id = 'General-LOCALE';
+    locale.dataset.settingKey = 'LOCALE';
     locale.getAttribute = name => name === 'category' ? 'General' : 'LOCALE';
     const form = elements.configForm;
     form.reportValidity = () => true;
@@ -60,6 +62,7 @@ test('settings with the same key in Plex and Jellyfin retain their config namesp
     });
     page.elements.configForm.querySelectorAll = () => ['Themerr', 'Jellyfin'].map(section => ({
         id: `${section}-BOOL_IGNORE_LOCKED_FIELDS`, type: 'checkbox', checked: section === 'Jellyfin',
+        dataset: { settingKey: 'BOOL_IGNORE_LOCKED_FIELDS' },
         getAttribute: name => name === 'category' ? section : 'BOOL_IGNORE_LOCKED_FIELDS',
     }));
     await page.save();

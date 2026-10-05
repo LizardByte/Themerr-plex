@@ -30,7 +30,7 @@ export function initSettings(signal) {
         if (!form.reportValidity()) return;
         const data = new FormData();
         form.querySelectorAll('[category]').forEach(field => {
-            if (!field.disabled) data.append(`${field.getAttribute('category')}|${field.getAttribute('data-setting-key') || field.id}`,
+            if (!field.disabled) data.append(`${field.getAttribute('category')}|${field.dataset.settingKey || field.id}`,
                 field.type === 'checkbox' ? String(field.checked) : field.value);
         });
         save.disabled = true;

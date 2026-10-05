@@ -35,6 +35,20 @@ def test_movie_imdb_fallback_and_invalid_provider_values(monkeypatch):
     assert invalid['issue_url'] is None
 
 
+@pytest.mark.parametrize('native_type, provider, value', [
+    ('Movie', 'Tmdb', '４２'), ('Movie', 'Imdb', 'tt٤٢'), ('Series', 'Tvdb', '٤٢'),
+])
+def test_provider_identifiers_do_not_accept_unicode_digits(monkeypatch, native_type, provider, value):
+    monkeypatch.setattr(metadata.tmdb, 'get_tmdb_id_from_external_id', Mock(return_value=None))
+    lookup = Mock()
+    monkeypatch.setattr(metadata.themerr_db, 'item_exists', lookup)
+    result = metadata.resolve({'Type': native_type, 'Name': 'Example', 'ProviderIds': {provider: value}})
+    assert result['database_id'] is None
+    assert result['source_id'] is None
+    assert result['issue_url'] is None
+    lookup.assert_not_called()
+
+
 def test_tvdb_series_resolves_to_the_shared_tmdb_database(monkeypatch):
     resolve = Mock(return_value=1396)
     lookup = Mock(return_value=True)

@@ -54,7 +54,7 @@ def start(cert_file):
     def serve():
         try:
             server.run()
-        except SystemExit:
+        except SystemExit:  # NOSONAR python:S5754: log Uvicorn's worker bind failure without an uncaught thread exit.
             log.error('Could not bind the connector HTTP listener. Check its configured port.')
 
     _thread = Thread(target=serve, name='Jellyfin connector repository', daemon=True)

@@ -14,6 +14,7 @@ from media_servers.base import MediaServerError
 from themerr import storage
 
 _credential_lock = RLock()
+_SERVER_PREFIX = 'jellyfin:'
 
 
 class ServerRecord(storage.Base):
@@ -53,7 +54,7 @@ def credential_id(server_id):
             row = storage.AppSetting(key='jellyfin_client_id', value=uuid4().hex)
             session.add(row)
             session.commit()
-        return 'jellyfin:' + row.value + ':' + server_id
+        return _SERVER_PREFIX + row.value + ':' + server_id
 
 
 def add_server(url, token):
@@ -64,7 +65,7 @@ def add_server(url, token):
     logger.blacklist_config({'Jellyfin': {'API_TOKEN': token}})
     info = Client(url, token).json('GET', '/System/Info')
     try:
-        server_id = 'jellyfin:' + identifier(info['Id'])
+        server_id = _SERVER_PREFIX + identifier(info['Id'])
         name, version = str(info['ServerName'])[:128], str(info['Version'])[:32]
     except (KeyError, TypeError) as exc:
         raise MediaServerError('Jellyfin did not provide valid server information.', 502) from exc
@@ -93,7 +94,7 @@ def client(server_id):
         raise MediaServerError('Reconnect this server to restore its Jellyfin API key.', 503)
     connection = Client(record['url'], token)
     info = connection.json('GET', '/System/Info')
-    if 'jellyfin:' + identifier(info.get('Id')) != server_id:
+    if _SERVER_PREFIX + identifier(info.get('Id')) != server_id:
         raise MediaServerError('This address now belongs to a different Jellyfin server.', 409)
     return connection
 

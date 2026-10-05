@@ -434,8 +434,10 @@ def test_settings_separate_integrations_and_use_unique_field_identifiers(client,
     page = client.get('/settings/').text
     ids = re.findall(r'\bid="([^"]+)"', page)
     assert len(ids) == len(set(ids))
-    assert 'id="plex"' in page and 'href="#plex"' in page
-    assert 'id="jellyfin"' in page and 'href="#jellyfin"' in page
+    assert 'id="plex"' in page
+    assert 'href="#plex"' in page
+    assert 'id="jellyfin"' in page
+    assert 'href="#jellyfin"' in page
     assert 'id="Themerr-BOOL_IGNORE_LOCKED_FIELDS"' in page
     assert 'id="Jellyfin-BOOL_IGNORE_LOCKED_FIELDS"' in page
     assert 'id="Jellyfin-BOOL_BACKUP_USER_THEMES"' in page
