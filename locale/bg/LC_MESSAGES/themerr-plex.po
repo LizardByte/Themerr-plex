@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: bg_BG\n"
-"PO-Revision-Date: 2026-10-04 15:02\n"
+"PO-Revision-Date: 2026-10-05 07:01\n"
 
 #: src/common/config.py:90
 msgid "Info"
@@ -398,7 +398,7 @@ msgstr "Документация"
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "Документация за API"
+msgstr "Документация за ППИ"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
@@ -489,11 +489,11 @@ msgstr "Отпечатай подробностите за версията и �
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "Сесията Ви изтече. Влезте, за да продължите."
+msgstr "Сесията изтече. Влезте, за да продължите."
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "Затвори съобщението"
+msgstr "Затваряне на съобщението"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
@@ -513,11 +513,11 @@ msgstr "Настройките са запазени. Промените в мр
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "Не е възможно да се запазят промените."
+msgstr "Промените не могат да бъдат запазени."
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "Запазете промените в настройките, преди да промените паролата си."
+msgstr "Запазете промените по настройките, преди да смените паролата си."
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
@@ -623,7 +623,7 @@ msgstr "Остаряла информация от ThemerrDB"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "Разгледайте API-то, като използвате сесията си за вход."
+msgstr "Разгледайте приложно-програмният интерфейс, като използвате текущата си сесия."
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
