@@ -119,6 +119,18 @@ wheels = [
 ]
 
 [[package]]
+name = "breathe"
+version = "5.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7d/7f/c64ce129d35f05bac6b3d044ee2d3aea24b0c819f2f57cd34020b74d5efc/breathe-5.1.0.tar.gz", hash = "sha256:ff56af8bfd0b50ebf10c81a07b8a5739787eb015d26b4ba162b6983d6e17c7c3", size = 201885, upload-time = "2026-10-02T13:42:51.164Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/7c/ff68c2846946ed17daca3355e47d49fcb8422ad373627d2b56488d6bd484/breathe-5.1.0-py3-none-any.whl", hash = "sha256:6a81b5fff50fb35b7f6bec1aa1a8621a596ee5ffec453eccd7d5e1f9e682d9a0", size = 100534, upload-time = "2026-10-02T13:42:49.767Z" },
+]
+
+[[package]]
 name = "brotli"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1791,6 +1803,7 @@ dev = [
     { name = "pytest-cov" },
 ]
 docs = [
+    { name = "breathe" },
     { name = "lizardbyte-dockle", extra = ["sphinx"] },
     { name = "numpydoc" },
     { name = "rstcheck", extra = ["sphinx"] },
@@ -1802,6 +1815,7 @@ requires-dist = [
     { name = "anyio", specifier = "==4.15.1" },
     { name = "av", specifier = "==19.0.1" },
     { name = "babel", specifier = "==2.18.0" },
+    { name = "breathe", marker = "extra == 'docs'", specifier = "==5.1.0" },
     { name = "configobj", specifier = "==5.0.9" },
     { name = "cryptography", specifier = "==50.0.2" },
     { name = "desktop-notifier", specifier = "==6.2.0" },

@@ -3,6 +3,8 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS connector
 COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /usr/local/bin/uv
 WORKDIR /connector
 COPY connectors/jellyfin/ connectors/jellyfin/
+COPY connectors/Directory.Build.props connectors/Directory.Build.props
+COPY .editorconfig .editorconfig
 COPY scripts/build_connector.py scripts/build_connector.py
 COPY src/common/version.py src/common/version.py
 ARG BUILD_VERSION
@@ -13,7 +15,12 @@ FROM ghcr.io/astral-sh/uv:0.12-python3.14-trixie-slim AS base
 
 COPY --from=denoland/deno:bin-2.9.7 /deno /usr/local/bin/deno
 
+FROM condaforge/miniforge3:26.7.2-0 AS docs-tools
+COPY docs/environment.yml /tmp/docs-environment.yml
+RUN conda env create --file /tmp/docs-environment.yml
+
 FROM base AS build
+COPY --from=docs-tools /opt/conda/envs/dockle-docs/ /opt/conda/envs/dockle-docs/
 
 # install build dependencies
 RUN <<EOF
@@ -32,7 +39,7 @@ EOF
 
 # uv creates the environment at a stable path for the runtime stage.
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+ENV PATH="/opt/venv/bin:/opt/conda/envs/dockle-docs/bin:$PATH"
 
 # setup app directory
 WORKDIR /build
@@ -41,7 +48,7 @@ COPY --from=connector /connector/jellyfin-connector/ /build/jellyfin-connector/
 COPY --from=connector /connector/src/common/version.py /build/src/common/version.py
 
 # setup locked Python dependencies
-RUN uv sync --locked --extra docs --no-build --no-install-project --no-python-downloads
+RUN uv sync --locked --extra docs --no-build --no-install-project --no-python-downloads --python /usr/local/bin/python
 
 # setup npm and dependencies
 RUN npm ci --ignore-scripts && npm run build

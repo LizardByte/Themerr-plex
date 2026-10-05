@@ -41,7 +41,10 @@ def _cipher() -> Fernet | None:
     if key_path:
         try:
             return Fernet(Path(key_path).read_bytes().strip())
-        except (OSError, ValueError) as exc:
+        except (
+            OSError,
+            ValueError,
+        ) as exc:
             raise TokenStorageError(f'Unable to read a valid token encryption key from {KEY_FILE_ENV}.') from exc
     if os.environ.get('THEMERR_DOCKER'):
         raise TokenStorageError(f'Set {KEY_FILE_ENV} to a mounted secret before connecting a media server.')
@@ -68,7 +71,10 @@ def get_token(client_id: str) -> str:
             return ''
         try:
             return cipher.decrypt(encrypted.encode('ascii')).decode('utf-8')
-        except (InvalidToken, UnicodeError) as exc:
+        except (
+            InvalidToken,
+            UnicodeError,
+        ) as exc:
             raise TokenStorageError('The encryption key does not match the stored token.') from exc
     try:
         return keyring.get_password(SERVICE, client_id) or ''
@@ -118,4 +124,13 @@ def delete_token(client_id: str) -> None:
 
 def _namespace(client_id: str) -> str:
     """Choose a separate encrypted slot for a server credential."""
-    return ':' + client_id if client_id.startswith(('server:', 'jellyfin:')) else ''
+    return (
+        f':{client_id}'
+        if client_id.startswith(
+            (
+                'server:',
+                'jellyfin:',
+            )
+        )
+        else ''
+    )

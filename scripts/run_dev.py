@@ -37,7 +37,15 @@ def _assets_need_build() -> bool:
     bool
         True when ``npm run build`` is needed.
     """
-    outputs = [ROOT / 'web' / 'assets' / name for name in ('app.js', 'app.css', 'api_docs.js', 'api_docs.css')]
+    outputs = [
+        ROOT / 'web' / 'assets' / name
+        for name in (
+            'app.js',
+            'app.css',
+            'api_docs.js',
+            'api_docs.css',
+        )
+    ]
     if any(not output.is_file() for output in outputs):
         return True
     oldest_output = min(output.stat().st_mtime_ns for output in outputs)
@@ -57,8 +65,24 @@ def _ensure_assets() -> None:
         raise SystemExit('npm is required to build browser assets. Install Node.js and try again.')
 
     if not installed:
-        subprocess.run([npm, 'ci', '--ignore-scripts'], cwd=ROOT, check=True)
-    subprocess.run([npm, 'run', 'build'], cwd=ROOT, check=True)
+        subprocess.run(
+            [
+                npm,
+                'ci',
+                '--ignore-scripts',
+            ],
+            cwd=ROOT,
+            check=True,
+        )
+    subprocess.run(
+        [
+            npm,
+            'run',
+            'build',
+        ],
+        cwd=ROOT,
+        check=True,
+    )
 
 
 def _docs_need_build() -> bool:
@@ -73,7 +97,14 @@ def _docs_need_build() -> bool:
     if not site_index.is_file():
         return True
     built_at = site_index.stat().st_mtime_ns
-    sources = [*ROOT.joinpath('docs', 'source').rglob('*'), ROOT / 'dockle.toml']
+    sources = [
+        *ROOT.joinpath('docs', 'source').rglob('*'),
+        *ROOT.joinpath('connectors', 'jellyfin').glob('*.cs'),
+        ROOT / 'connectors' / 'jellyfin' / 'Themerr.Connector.csproj',
+        *ROOT.joinpath('docs').glob('*.py'),
+        ROOT / 'docs' / 'environment.yml',
+        ROOT / 'dockle.toml',
+    ]
     return any(source.is_file() and source.stat().st_mtime_ns > built_at for source in sources)
 
 
@@ -84,7 +115,16 @@ def _ensure_docs() -> None:
     if importlib.util.find_spec('dockle') is None:
         print('Documentation is unavailable; install the docs extra to build it.', file=sys.stderr)
         return
-    subprocess.run([sys.executable, '-m', 'dockle', 'build'], cwd=ROOT, check=True)
+    subprocess.run(
+        [
+            sys.executable,
+            '-m',
+            'dockle',
+            'build',
+        ],
+        cwd=ROOT,
+        check=True,
+    )
 
 
 def _has_js_runtime() -> bool:

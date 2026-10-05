@@ -20,6 +20,7 @@ From the repository root, install dependencies and build browser assets:
 
 .. code-block:: shell
 
+   git submodule update --init --recursive
    uv sync --locked --all-extras
    npm ci --ignore-scripts
    npm run build
@@ -77,7 +78,15 @@ and starts the Python source in the same process. Point an IDE debugger at this 
 
    uv run --locked --all-extras python scripts/run_dev.py --nolaunch
 
-Build the documentation and standalone executable:
+Create the documentation's conda environment with the pinned Doxygen and Graphviz versions. The same
+environment file is used by CI, Read the Docs, and Docker. It also supplies Python 3.14 and uv:
+
+.. code-block:: shell
+
+   conda env create --file docs/environment.yml
+   conda activate dockle-docs
+
+Build the documentation and standalone executable from that environment:
 
 .. code-block:: shell
 
@@ -94,6 +103,12 @@ bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release v
 ``scripts/build.py`` to stamp ``src/common/version.py`` with the version used by release notifications and
 ``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
 is included through normal imports. Unversioned builds compare releases against ``0.0.0``.
+
+Dockle generates the connector's Doxygen XML before building Sphinx. Breathe and the pinned
+``third-party/sphinx-csharp`` extension render its C# API alongside the Python reference, with links to
+Jellyfin and Microsoft dependency documentation. Missing documentation, parameter descriptions, and
+documentation warnings fail the build. Write C# XML comments for types and members, and use
+``see``/``seealso`` references for related types. See :doc:`../src/jellyfin_connector` for the generated API.
 
 Docker uses the same lockfile and Dockle build. A separate .NET stage uses uv to run the connector build script;
 the runtime image contains their artifacts without the SDK:

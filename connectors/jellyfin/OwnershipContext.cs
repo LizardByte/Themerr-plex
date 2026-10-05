@@ -1,21 +1,23 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Themerr.Connector;
 
-public sealed class OwnershipEntry
+/// <summary>Maps the connector's verified upload ownership records to SQLite.</summary>
+/// <seealso cref="OwnershipEntry"/>
+public sealed class OwnershipContext : DbContext
 {
-    public string ItemId { get; set; } = "";
-    public string File { get; set; } = "";
-    public string Sha256 { get; set; } = "";
-}
+    /// <summary>Initializes a new instance of the <see cref="OwnershipContext"/> class.</summary>
+    /// <param name="options">The fixed SQLite connection and EF provider settings.</param>
+    public OwnershipContext(DbContextOptions<OwnershipContext> options)
+        : base(options)
+    {
+    }
 
-public sealed class OwnershipContext(DbContextOptions<OwnershipContext> options) : DbContext(options)
-{
+    /// <summary>Gets the ownership rows indexed by native Jellyfin item ID.</summary>
     public DbSet<OwnershipEntry> Themes => Set<OwnershipEntry>();
-    protected override void OnModelCreating(ModelBuilder modelBuilder) => ConfigureModel(modelBuilder);
 
+    /// <summary>Configures the fixed ownership table and required columns.</summary>
+    /// <param name="modelBuilder">EF's model definition builder.</param>
     internal static void ConfigureModel(ModelBuilder modelBuilder)
     {
         var entry = modelBuilder.Entity<OwnershipEntry>();
@@ -25,29 +27,8 @@ public sealed class OwnershipContext(DbContextOptions<OwnershipContext> options)
         entry.Property(value => value.File).HasColumnName("filename").HasColumnType("TEXT").IsRequired();
         entry.Property(value => value.Sha256).HasColumnName("sha256").HasColumnType("TEXT").IsRequired();
     }
-}
 
-[DbContext(typeof(OwnershipContext))]
-[Migration(InitialOwnership.Id)]
-public sealed class InitialOwnership : Migration
-{
-    internal const string Id = "202610050001_InitialOwnership";
-    protected override void Up(MigrationBuilder migrationBuilder) => migrationBuilder.CreateTable(
-        name: "theme_ownership",
-        columns: table => new
-        {
-            item_id = table.Column<string>(type: "TEXT", nullable: false),
-            filename = table.Column<string>(type: "TEXT", nullable: false),
-            sha256 = table.Column<string>(type: "TEXT", nullable: false)
-        },
-        constraints: table => table.PrimaryKey("PK_theme_ownership", value => value.item_id));
-
-    protected override void Down(MigrationBuilder migrationBuilder) => migrationBuilder.DropTable("theme_ownership");
-    protected override void BuildTargetModel(ModelBuilder modelBuilder) => OwnershipContext.ConfigureModel(modelBuilder);
-}
-
-[DbContext(typeof(OwnershipContext))]
-public sealed class OwnershipModelSnapshot : ModelSnapshot
-{
-    protected override void BuildModel(ModelBuilder modelBuilder) => OwnershipContext.ConfigureModel(modelBuilder);
+    /// <summary>Builds the ownership model using the shared migration definition.</summary>
+    /// <param name="modelBuilder">EF's model definition builder.</param>
+    protected override void OnModelCreating(ModelBuilder modelBuilder) => ConfigureModel(modelBuilder);
 }

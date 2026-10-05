@@ -66,6 +66,11 @@ jobs:
           THEMERR_VERSION: ${{ needs.setup_release.outputs.release_version }}
         run: uv run --no-project --python ${{ env.PYTHON_VERSION }} scripts/build_connector.py
 
+      - name: Check C# formatting
+        run: |
+          dotnet format connectors/jellyfin/Themerr.Connector.csproj --verify-no-changes --no-restore
+          dotnet format connectors/jellyfin.tests/Connector.Tests.csproj --verify-no-changes
+
       - name: Test Jellyfin ABIs with coverage
         id: test
         run: uv run --no-project --python ${{ env.PYTHON_VERSION }} scripts/test_connector.py
@@ -150,6 +155,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          submodules: recursive
+
+      - name: Setup documentation environment
+        uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167  # v3.3.0
+        with:
+          miniforge-version: latest
+          environment-file: docs/environment.yml
+          activate-environment: dockle-docs
+          architecture: ${{ (runner.os == 'Windows' || matrix.arch == 'x86_64') && 'x64' || 'arm64' }}
 
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
@@ -198,8 +213,8 @@ jobs:
 
       - name: Build Docs with Dockle
         run: |
-          uv run --locked --all-extras --no-build --no-sync python -m dockle check
-          uv run --locked --all-extras --no-build --no-sync python -m dockle build
+          conda run --no-capture-output -n dockle-docs uv run --locked --all-extras --no-build --no-sync python -m dockle check
+          conda run --no-capture-output -n dockle-docs uv run --locked --all-extras --no-build --no-sync python -m dockle build
 
       - name: Set up virtual desktop
         if: runner.os == 'Linux'

@@ -35,13 +35,28 @@ The script writes OpenCover coverage and JUnit test reports into separate ``cove
 Use ``--output`` to place reports outside the checkout. CI uploads both profiles to Codecov. Tests use temporary
 item directories and mocked Jellyfin services; no running media server is required.
 
-For documentation validation, install the docs extra and build with Dockle:
+The connector and its tests use the repository's ``.editorconfig`` and the Sonar and StyleCop analyzers
+configured in ``connectors/Directory.Build.props``. Analyzer warnings fail compilation. CI also rejects
+formatting changes; run the same checks locally with:
 
 .. code-block:: shell
 
+   dotnet format connectors/jellyfin/Themerr.Connector.csproj --verify-no-changes
+   dotnet format connectors/jellyfin.tests/Connector.Tests.csproj --verify-no-changes
+
+For documentation validation, initialize the C# extension submodule, create the conda environment,
+and install the docs extra. See :doc:`build` for the complete build setup:
+
+.. code-block:: shell
+
+   git submodule update --init --recursive
+   conda env create --file docs/environment.yml
+   conda activate dockle-docs
    uv sync --locked --extra docs
    uv run --locked --extra docs python -m dockle check
    uv run --locked --extra docs python -m dockle build
 
 Python API docstrings use NumPy style. Dockle runs numpydoc validation for project objects during the
 strict documentation build.
+The connector uses XML documentation comments; strict Doxygen and C# compilation reject undocumented
+types and members. Sphinx checks references to Jellyfin and Microsoft dependency documentation.

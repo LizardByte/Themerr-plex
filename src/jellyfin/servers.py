@@ -1,12 +1,15 @@
 """Persist independent Jellyfin connections without plaintext credentials."""
 
+# standard imports
 from datetime import datetime, timezone
 from uuid import uuid4
 from threading import RLock
 
+# lib imports
 from sqlalchemy import Boolean, String, delete, select
 from sqlalchemy.orm import Mapped, Session, mapped_column
 
+# local imports
 from common import credentials, logger
 from common.validation import ValidationError, ValidationMessage
 from jellyfin.client import Client, base_url, identifier
@@ -37,8 +40,9 @@ def list_servers(enabled_only=False):
         query = select(ServerRecord).order_by(ServerRecord.name)
         if enabled_only:
             query = query.where(ServerRecord.enabled.is_(True))
-        return [{c.name: getattr(row, c.name) for c in ServerRecord.__table__.columns}
-                for row in session.scalars(query)]
+        return [
+            {c.name: getattr(row, c.name) for c in ServerRecord.__table__.columns} for row in session.scalars(query)
+        ]
 
 
 def get_server(server_id):
@@ -54,7 +58,7 @@ def credential_id(server_id):
             row = storage.AppSetting(key='jellyfin_client_id', value=uuid4().hex)
             session.add(row)
             session.commit()
-        return _SERVER_PREFIX + row.value + ':' + server_id
+        return f'{_SERVER_PREFIX}{row.value}:{server_id}'
 
 
 def add_server(url, token):
@@ -65,11 +69,18 @@ def add_server(url, token):
     logger.blacklist_config({'Jellyfin': {'API_TOKEN': token}})
     info = Client(url, token).json('GET', '/System/Info')
     try:
-        server_id = _SERVER_PREFIX + identifier(info['Id'])
-        name, version = str(info['ServerName'])[:128], str(info['Version'])[:32]
-    except (KeyError, TypeError) as exc:
+        server_id = f'{_SERVER_PREFIX}{identifier(info["Id"])}'
+        name, version = (
+            str(info['ServerName'])[:128],
+            str(info['Version'])[:32],
+        )
+    except (
+        KeyError,
+        TypeError,
+    ) as exc:
         raise MediaServerError('Jellyfin did not provide valid server information.', 502) from exc
     from jellyfin.connector import profile
+
     profile(version)
     credentials.save_token(credential_id(server_id), token)
     with Session(storage.engine()) as session:
@@ -77,7 +88,11 @@ def add_server(url, token):
         if row is None:
             row = ServerRecord(id=server_id, enabled=True, ignored_libraries='')
             session.add(row)
-        row.name, row.url, row.version = name, url, version
+        row.name, row.url, row.version = (
+            name,
+            url,
+            version,
+        )
         session.commit()
     return get_server(server_id)
 
@@ -94,7 +109,7 @@ def client(server_id):
         raise MediaServerError('Reconnect this server to restore its Jellyfin API key.', 503)
     connection = Client(record['url'], token)
     info = connection.json('GET', '/System/Info')
-    if _SERVER_PREFIX + identifier(info.get('Id')) != server_id:
+    if f'{_SERVER_PREFIX}{identifier(info.get("Id"))}' != server_id:
         raise MediaServerError('This address now belongs to a different Jellyfin server.', 409)
     return connection
 
@@ -132,7 +147,12 @@ def remove_server(server_id):
     """Remove local history and credentials while retaining media on Jellyfin."""
     credentials.delete_token(credential_id(server_id))
     with Session(storage.engine()) as session:
-        for model in (storage.LibraryItem, storage.LibrarySection, storage.ThemeRecord, storage.ThemeError):
+        for model in (
+            storage.LibraryItem,
+            storage.LibrarySection,
+            storage.ThemeRecord,
+            storage.ThemeError,
+        ):
             session.execute(delete(model).where(model.server_id == server_id))
         session.execute(delete(ServerRecord).where(ServerRecord.id == server_id))
         session.commit()

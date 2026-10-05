@@ -65,15 +65,25 @@ def _cache_item(item, errors: dict[str, str] | None = None) -> dict:
     source_database, source_id = get_external_id(item)
     original_id = database_id
     year = getattr(item, 'year', None)
-    if item.type == 'movie' and database_id and (
-            item_agent == 'com.plexapp.agents.imdb' or database_id.startswith('tt')
+    if (
+        item.type == 'movie'
+        and database_id
+        and (item_agent == 'com.plexapp.agents.imdb' or database_id.startswith('tt'))
     ):
-        database_id = tmdb.get_tmdb_id_from_external_id(
-            external_id=database_id, database='imdb', item_type='movie') or None
+        database_id = (
+            tmdb.get_tmdb_id_from_external_id(external_id=database_id, database='imdb', item_type='movie') or None
+        )
 
-    exists = bool(database_type and database and original_id and themerr_db.item_exists(
-        database_type=database_type, database=database, id=original_id,
-    ))
+    exists = bool(
+        database_type
+        and database
+        and original_id
+        and themerr_db.item_exists(
+            database_type=database_type,
+            database=database,
+            id=original_id,
+        )
+    )
     issue_action = 'edit' if exists else 'add'
     if item.theme:
         theme_status = 'complete'
@@ -120,7 +130,10 @@ def _section_media_items(section) -> list:
     """
     if section.agent in contributes_to:
         return section.all()
-    if section.type not in ('movie', 'show'):
+    if section.type not in (
+        'movie',
+        'show',
+    ):
         return []
     guid_prefix = f'plex://{section.type}/'
     return [item for item in section.all() if (getattr(item, 'guid', None) or '').startswith(guid_prefix)]
@@ -146,9 +159,7 @@ def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
         media_items_with_themes = section.all(theme__exists=True)
     else:
         media_items_with_themes = [item for item in media_items if item.theme]
-    collections_enabled = (
-        config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] and section.agent in contributes_to
-    )
+    collections_enabled = config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] and section.agent in contributes_to
     collections = section.collections() if collections_enabled else []
     collections_with_themes = section.collections(theme__exists=True) if collections_enabled else []
     all_items = media_items + collections
@@ -160,10 +171,12 @@ def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
         'items': [_cache_item(item, errors=errors) for item in all_items],
         'media_count': len(media_items),
         'media_percent_complete': int(len(media_items_with_themes) / len(media_items) * 100)
-        if media_items_with_themes else 0,
+        if media_items_with_themes
+        else 0,
         'collection_count': len(collections),
         'collection_percent_complete': int(len(collections_with_themes) / len(collections) * 100)
-        if collections_with_themes else 0,
+        if collections_with_themes
+        else 0,
         'collections_enabled': collections_enabled,
         'total_count': len(all_items),
         'type': section.type,
@@ -201,12 +214,14 @@ def _cache_server() -> bool:
     errors = storage.get_errors()
 
     for section in sections:
-        if section.agent not in contributes_to and getattr(section, 'type', None) not in ('movie', 'show'):
+        if section.agent not in contributes_to and getattr(section, 'type', None) not in (
+            'movie',
+            'show',
+        ):
             continue
         log.info('Caching dashboard library %r (ID %s)', section.title, section.key)
         section_data = _cache_section(section, errors=errors)
-        log.info('Cached %d items from library %r (ID %s)',
-                 section_data['total_count'], section.title, section.key)
+        log.info('Cached %d items from library %r (ID %s)', section_data['total_count'], section.title, section.key)
         if section.agent in contributes_to or section_data['total_count']:
             items[section.key] = section_data
 

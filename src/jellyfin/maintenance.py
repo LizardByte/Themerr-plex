@@ -1,11 +1,14 @@
 """Keep bundled connectors current and defer their restarts until playback finishes."""
 
+# standard imports
 import json
 from threading import Event, RLock, Thread
 import time
 
+# lib imports
 from sqlalchemy.orm import Session
 
+# local imports
 from common import config, logger
 from jellyfin import connector, servers
 from media_servers.base import MediaServerError
@@ -22,14 +25,14 @@ _SYSTEM_INFO = '/System/Info'
 def state(server_id):
     """Read restart progress without exposing credentials."""
     with Session(storage.engine()) as session:
-        row = session.get(storage.AppSetting, _STATE_PREFIX + server_id)
+        row = session.get(storage.AppSetting, f'{_STATE_PREFIX}{server_id}')
         return json.loads(row.value) if row else {}
 
 
 def _save(server_id, **values):
     """Persist pending restarts so a Themerr restart does not lose their progress."""
     with Session(storage.engine()) as session:
-        key = _STATE_PREFIX + server_id
+        key = f'{_STATE_PREFIX}{server_id}'
         row = session.get(storage.AppSetting, key)
         current = json.loads(row.value) if row else {}
         current.update(values)
@@ -53,29 +56,51 @@ def install(server_id, url):
             restart = legacy_removed or restart
         legacy_checked = connector.bundle()['build'] if config.CONFIG['Jellyfin']['REMOVE_LEGACY_PLUGIN'] else None
         if restart:
-            action = ('Connector replacement needs a restart before installation.' if result.get('reinstall_required')
-                      else 'Connector installed.')
-            message = action + ' Jellyfin will restart when playback finishes.'
+            action = (
+                'Connector replacement needs a restart before installation.'
+                if result.get('reinstall_required')
+                else 'Connector installed.'
+            )
+            message = f'{action} Jellyfin will restart when playback finishes.'
             if not config.CONFIG['Jellyfin']['WAIT_FOR_IDLE']:
-                message = action + ' Jellyfin will restart shortly.'
+                message = f'{action} Jellyfin will restart shortly.'
             if not config.CONFIG['Jellyfin']['AUTO_RESTART']:
-                message = action + ' Automatic restarts are disabled; restart Jellyfin to continue.'
-            _save(server_id, phase='pending', message=message, restart_required=True,
-                  restart_after=time.time() + 30, build=connector.bundle()['build'], force_restart=legacy_removed,
-                  legacy_checked=legacy_checked, reinstall_required=result.get('reinstall_required', False),
-                  repository_url=url, manual_restart=False)
+                message = f'{action} Automatic restarts are disabled; restart Jellyfin to continue.'
+            _save(
+                server_id,
+                phase='pending',
+                message=message,
+                restart_required=True,
+                restart_after=time.time() + 30,
+                build=connector.bundle()['build'],
+                force_restart=legacy_removed,
+                legacy_checked=legacy_checked,
+                reinstall_required=result.get('reinstall_required', False),
+                repository_url=url,
+                manual_restart=False,
+            )
             log.info('%s (%s)', message, server_id)
             result['message'] = message
         else:
-            _save(server_id, phase='active', message=result['message'], restart_required=False, force_restart=False,
-                  legacy_checked=legacy_checked, reinstall_required=False, manual_restart=False)
-        return {**result, 'restart_required': restart}
+            _save(
+                server_id,
+                phase='active',
+                message=result['message'],
+                restart_required=False,
+                force_restart=False,
+                legacy_checked=legacy_checked,
+                reinstall_required=False,
+                manual_restart=False,
+            )
+        return {
+            **result,
+            'restart_required': restart,
+        }
 
 
 def _restart(server_id, connection, current):
     """Restart only a known pending connector after the notice and idle checks."""
-    if (_stop.is_set() or not config.CONFIG['Jellyfin']['AUTO_RESTART'] or
-            time.time() < current.get('restart_after', 0)):
+    if _stop.is_set() or not config.CONFIG['Jellyfin']['AUTO_RESTART'] or time.time() < current.get('restart_after', 0):
         return
     if config.CONFIG['Jellyfin']['WAIT_FOR_IDLE']:
         sessions = connection.json('GET', '/Sessions')
@@ -88,13 +113,18 @@ def _restart(server_id, connection, current):
             return
     info = connection.json('GET', _SYSTEM_INFO)
     if info.get('CanSelfRestart') is False:
-        _save(server_id, phase='manual', message='This Jellyfin installation cannot restart itself. '
-              'Restart its service or container to load the connector.')
+        _save(
+            server_id,
+            phase='manual',
+            message='This Jellyfin installation cannot restart itself. '
+            'Restart its service or container to load the connector.',
+        )
         return
     if _stop.is_set():
         return
-    _save(server_id, phase='restarting', message='Restarting Jellyfin to load the connector.',
-          restart_started=time.time())
+    _save(
+        server_id, phase='restarting', message='Restarting Jellyfin to load the connector.', restart_started=time.time()
+    )
     log.info('Restarting Jellyfin for the connector (%s)', server_id)
     # A closed connection can mean that Jellyfin already accepted the restart.
     try:
@@ -110,8 +140,9 @@ def force_restart(server_id):
         connection = servers.client(server_id)
         info = connection.json('GET', _SYSTEM_INFO)
         if not isinstance(info, dict) or info.get('CanSelfRestart') is not True:
-            raise MediaServerError('This Jellyfin installation cannot restart itself. '
-                                   'Restart its service or container instead.', 409)
+            raise MediaServerError(
+                'This Jellyfin installation cannot restart itself. Restart its service or container instead.', 409
+            )
         current = state(server_id)
         log.info('Administrator requested an immediate Jellyfin restart (%s)', server_id)
         try:
@@ -119,10 +150,16 @@ def force_restart(server_id):
         except MediaServerError as exc:
             if exc.status_code != 502:
                 raise
-        return _save(server_id, phase='restarting', restart_required=current.get('restart_required', False),
-                     force_restart=current.get('force_restart', False), manual_restart=True,
-                     restart_started=time.time(), build=current.get('build'),
-                     message='Restarting Jellyfin. Active playback may be interrupted.')
+        return _save(
+            server_id,
+            phase='restarting',
+            restart_required=current.get('restart_required', False),
+            force_restart=current.get('force_restart', False),
+            manual_restart=True,
+            restart_started=time.time(),
+            build=current.get('build'),
+            message='Restarting Jellyfin. Active playback may be interrupted.',
+        )
 
 
 def maintain(server_id):
@@ -147,8 +184,11 @@ def maintain(server_id):
             if not _stop.is_set():
                 install(server_id, url)
         else:
-            if (config.CONFIG['Jellyfin']['REMOVE_LEGACY_PLUGIN'] and
-                    current.get('legacy_checked') != connector.bundle()['build'] and not _stop.is_set()):
+            if (
+                config.CONFIG['Jellyfin']['REMOVE_LEGACY_PLUGIN']
+                and current.get('legacy_checked') != connector.bundle()['build']
+                and not _stop.is_set()
+            ):
                 install(server_id, url)
 
 
@@ -159,8 +199,12 @@ def _maintain_restart(server_id, connection, current, restarting):
     except MediaServerError:
         if restarting:
             if time.time() - current['restart_started'] > 180:
-                _save(server_id, phase='manual', message='Jellyfin has not loaded the connector after restarting. '
-                      'Check its service or container and restart it manually.')
+                _save(
+                    server_id,
+                    phase='manual',
+                    message='Jellyfin has not loaded the connector after restarting. '
+                    'Check its service or container and restart it manually.',
+                )
         elif current.get('phase') != 'manual':
             _restart(server_id, connection, current)
         return
@@ -168,13 +212,13 @@ def _maintain_restart(server_id, connection, current, restarting):
         install(server_id, current['repository_url'])
         return
     from jellyfin.backend import JellyfinMediaServer
+
     JellyfinMediaServer(server_id).cache_dashboard()
     servers.record_refresh(server_id)
     message = 'Matching connector is active. Libraries refreshed.'
     if restarting and current.get('manual_restart'):
         message = 'Jellyfin restarted. Libraries refreshed.'
-    _save(server_id, phase='active', message=message,
-          restart_required=False, force_restart=False, manual_restart=False)
+    _save(server_id, phase='active', message=message, restart_required=False, force_restart=False, manual_restart=False)
 
 
 def _verify_loaded(connection, current):
@@ -206,8 +250,11 @@ def reconcile():
             if current.get('phase') == 'restarting':
                 if time.time() - current['restart_started'] <= 180:
                     continue
-                _save(server['id'], phase='manual', message='Jellyfin did not become available after restarting. '
-                      'Check its service or container.')
+                _save(
+                    server['id'],
+                    phase='manual',
+                    message='Jellyfin did not become available after restarting. Check its service or container.',
+                )
                 continue
             _save(server['id'], message=str(exc))
             log.warning('Jellyfin connector maintenance: %s (%s)', str(exc), server['id'])

@@ -1,5 +1,6 @@
 """Build the portable Jellyfin connector artifacts bundled with this Themerr build."""
 
+# standard imports
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -14,8 +15,14 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILES = {
-    '10.11': ('10.11.0', 'net9.0'),
-    '12.1': ('12.1.0', 'net10.0'),
+    '10.11': (
+        '10.11.0',
+        'net9.0',
+    ),
+    '12.1': (
+        '12.1.0',
+        'net10.0',
+    ),
 }
 PLUGIN_ID = 'f9a117dc-b44a-4507-9706-241837784369'
 PLUGIN_NAME = 'Themerr Connector'
@@ -30,8 +37,14 @@ def build_identity(root=ROOT, version=None):
     version = version or runpy.run_path(str(root / VERSION_FILE))['VERSION']
     digest = hashlib.sha256(version.encode())
     digest.update(json.dumps(PROFILES, sort_keys=True).encode())
-    for path in sorted((root / CONNECTOR_SOURCE).glob('*')):
-        if path.suffix in ('.cs', '.csproj', '.png'):
+    # Path ordering is case-insensitive on Windows and case-sensitive on POSIX.
+    # Use the filename string so CI artifacts have the same identity on every host.
+    for path in sorted((root / CONNECTOR_SOURCE).glob('*'), key=lambda source: source.name):
+        if path.suffix in (
+            '.cs',
+            '.csproj',
+            '.png',
+        ):
             digest.update(path.name.encode())
             content = path.read_bytes()
             digest.update(content if path.suffix == '.png' else content.replace(b'\r\n', b'\n'))
@@ -43,10 +56,24 @@ def assembly_version(version):
     parts = version.split('.')
     # release_setup strips leading zeroes from HHMMSS in its three-part scheme.
     # Its dotnet scheme instead emits HHMM and SS as separate integer components.
-    if (len(parts) == 3 and len(parts[0]) == 4 and len(parts[1]) in (3, 4) and
-            parts[2].isascii() and parts[2].isdigit()):
+    if (
+        len(parts) == 3
+        and len(parts[0]) == 4
+        and len(parts[1])
+        in (
+            3,
+            4,
+        )
+        and parts[2].isascii()
+        and parts[2].isdigit()
+    ):
         timestamp = int(parts[2])
-        parts = [parts[0], parts[1], str(timestamp // 100), str(timestamp % 100)]
+        parts = [
+            parts[0],
+            parts[1],
+            str(timestamp // 100),
+            str(timestamp % 100),
+        ]
     parts += ['0'] * (4 - len(parts))
     if len(parts) != 4 or any(not p.isascii() or not p.isdigit() or int(p) > 65535 for p in parts):
         raise ValueError('Themerr release version must map to a valid four-part .NET version.')
@@ -58,7 +85,8 @@ def build(dotnet='dotnet', root=ROOT):
     release = os.environ.get('THEMERR_VERSION') or runpy.run_path(str(root / VERSION_FILE))['VERSION']
     if os.environ.get('THEMERR_VERSION'):
         (root / VERSION_FILE).write_text(
-            f'"""Release identity stamped by the release setup action."""\n\nVERSION = {release!r}\n', encoding='utf-8')
+            f'"""Release identity stamped by the release setup action."""\n\nVERSION = {release!r}\n', encoding='utf-8'
+        )
     identity = build_identity(root, release)
     base_version = assembly_version(release)
     directory = root / 'jellyfin-connector'
@@ -69,22 +97,41 @@ def build(dotnet='dotnet', root=ROOT):
         version = base_version
         with tempfile.TemporaryDirectory(prefix='themerr-connector-') as temp:
             output = Path(temp) / 'out'
-            subprocess.run([
-                dotnet, 'build', str(root / 'connectors/jellyfin/Themerr.Connector.csproj'),
-                '--configuration', 'Release', '--output', str(output),
-                '--configfile', str(root / 'connectors/jellyfin/NuGet.Config'),
-                f'-p:ConnectorFramework={framework}', f'-p:JellyfinVersion={abi}',
-                f'-p:ConnectorBuild={identity}', f'-p:AssemblyVersion={version}',
-                f'-p:BaseIntermediateOutputPath={Path(temp) / "obj"}{os.sep}',
-            ], check=True)
+            subprocess.run(
+                [
+                    dotnet,
+                    'build',
+                    str(root / 'connectors/jellyfin/Themerr.Connector.csproj'),
+                    '--configuration',
+                    'Release',
+                    '--output',
+                    str(output),
+                    '--configfile',
+                    str(root / 'connectors/jellyfin/NuGet.Config'),
+                    f'-p:ConnectorFramework={framework}',
+                    f'-p:JellyfinVersion={abi}',
+                    f'-p:ConnectorBuild={identity}',
+                    f'-p:AssemblyVersion={version}',
+                    f'-p:BaseIntermediateOutputPath={Path(temp) / "obj"}{os.sep}',
+                ],
+                check=True,
+            )
             archive = directory / f'connector-{profile}.zip'
             with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as bundle:
                 bundle.write(output / ASSEMBLY_FILE, ASSEMBLY_FILE)
-            artifacts[profile] = {'targetAbi': abi, 'version': version,
-                                  'timestamp': datetime.now(timezone.utc).isoformat(),
-                                  'checksum': hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()}
-    descriptor = {'build': identity, 'themerrVersion': release, 'protocol': 1, 'artifacts': artifacts}
-    (directory / 'bundle.json').write_text(json.dumps(descriptor, indent=2) + '\n', encoding='utf-8')
+            artifacts[profile] = {
+                'targetAbi': abi,
+                'version': version,
+                'timestamp': datetime.now(timezone.utc).isoformat(),
+                'checksum': hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest(),
+            }
+    descriptor = {
+        'build': identity,
+        'themerrVersion': release,
+        'protocol': 1,
+        'artifacts': artifacts,
+    }
+    (directory / 'bundle.json').write_text(f'{json.dumps(descriptor, indent=2)}\n', encoding='utf-8')
     return descriptor
 
 
@@ -93,16 +140,23 @@ def check_bundle(root=ROOT):
     directory = root / 'jellyfin-connector'
     descriptor = json.loads((directory / 'bundle.json').read_text(encoding='utf-8'))
     release = os.environ.get('THEMERR_VERSION') or runpy.run_path(str(root / VERSION_FILE))['VERSION']
-    if (descriptor.get('protocol') != 1 or descriptor.get('build') != build_identity(root, release) or
-            descriptor.get('themerrVersion') != release or set(descriptor['artifacts']) != set(PROFILES)):
+    if (
+        descriptor.get('protocol') != 1
+        or descriptor.get('build') != build_identity(root, release)
+        or descriptor.get('themerrVersion') != release
+        or set(descriptor['artifacts']) != set(PROFILES)
+    ):
         raise ValueError('Prebuilt Jellyfin connector does not match this Themerr source and release.')
     if (directory / THUMBNAIL).read_bytes() != (root / CONNECTOR_SOURCE / THUMBNAIL).read_bytes():
         raise ValueError('Prebuilt Jellyfin connector thumbnail does not match.')
     for profile, (abi, _) in PROFILES.items():
         artifact = descriptor['artifacts'][profile]
         archive = directory / f'connector-{profile}.zip'
-        if (artifact['targetAbi'] != abi or artifact['version'] != assembly_version(release) or
-                artifact['checksum'] != hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()):
+        if (
+            artifact['targetAbi'] != abi
+            or artifact['version'] != assembly_version(release)
+            or artifact['checksum'] != hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()
+        ):
             raise ValueError('Prebuilt Jellyfin connector checksum or ABI does not match.')
         with zipfile.ZipFile(archive) as content:
             if content.namelist() != [ASSEMBLY_FILE]:

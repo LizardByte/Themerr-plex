@@ -164,82 +164,40 @@ web settings and configuration file.
 Jellyfin servers
 ----------------
 
-Jellyfin 10.11 and 12.1 are supported. Under **Servers**, enter the server's HTTP or HTTPS base address and an
-API key created under **Jellyfin Dashboard > Advanced > API Keys**, then select **Connect**. Use an
-address reachable from the machine running Themerr. Each saved server has independent processing settings,
-ignored libraries, dashboard records, and upload history.
+Themerr supports Jellyfin 10.11 and 12.1. Open **Servers**, select the **Jellyfin** tab, and enter the
+server address, such as `http://localhost:8096`. Create an API key under **Jellyfin Dashboard > Advanced >
+API Keys**, paste it into Themerr, and select **Connect**. Use **Discover Jellyfin on LAN** to find nearby
+servers; you still need an API key. If discovery finds nothing, enter the address manually.
 
-Theme uploads require the small **Themerr Connector** bundled with this Themerr build. On the server card,
-enter a Themerr address reachable from the Jellyfin machine and select **Save connector address** when automatic
-updates are enabled. With automatic updates disabled, **Install matching connector** appears only when the
-matching connector is missing and no installation is awaiting a restart.
-Themerr registers its local plugin repository and installs the exact compatible connector through Jellyfin's API,
-preserving other registered repositories. Themerr shows the pending restart on the server card, waits at least
-30 seconds and, by default, waits until playing and paused streams finish before restarting Jellyfin. Libraries
-are refreshed when the connector becomes active. Installations that cannot restart themselves, including some
-service and container configurations, show instructions to restart manually. Automatic updates install a
-mismatched connector when Themerr starts or checks the connection. Both automatic updates and restarts can be
-disabled under **Settings > Jellyfin**.
-The **Force restart** button restarts Jellyfin immediately after confirmation, even during playback; it is
-available only when the server reports that it can restart itself. Plex does not expose a documented general
-server restart API. Replacing a changed development or PR connector with the same version can require two
-restarts: one to unload the old assembly and another to load its replacement.
+On the connected server card, save a Themerr address that the Jellyfin server can reach. For a local
+installation using Themerr's default certificate, use `http://localhost:9495`. If Jellyfin runs on
+another computer, replace `localhost` with Themerr's hostname or IP address. Docker installations
+must expose port 9495. A trusted HTTPS address also works.
 
-The download address must use a certificate trusted by Jellyfin or HTTP on your private network. Themerr's
-default self-signed HTTPS certificate is not automatically trusted by Jellyfin. A trusted reverse proxy can
-provide the download address. For self-signed certificates, Themerr also serves only the connector repository
-over HTTP on port 9495 by default; the administrator UI remains on HTTPS. Use an address Jellyfin can reach and
-expose that port when running Docker. Configure or disable it under **Settings > Jellyfin > Connector HTTP port**.
-Jellyfin downloads the fixed manifest, thumbnail, and archive routes without a Themerr admin session; all connection,
-installation, library, and theme APIs retain administrator authentication.
+Themerr automatically installs and updates its **Themerr Connector**. The server card shows its progress.
+By default, Themerr waits for playback to finish before restarting Jellyfin and refreshing its libraries.
+If your installation needs a manual restart, follow the message on the card. Change these preferences
+under **Settings > Jellyfin**. When automatic updates are disabled, use **Install matching connector**
+when the button appears. **Force restart** interrupts playback and should only be used when you are
+ready to restart the server.
 
-The connector uses Jellyfin's administrator authentication policy. Themerr sends the server's API key, verifies
-the connector protocol, build fingerprint and Jellyfin ABI, and includes the fingerprint with uploads and
-ownership imports. The fingerprint checks compatibility; it is public and is not an additional secret.
-Other programs with administrator credentials can use the connector API. Uploads also carry a SHA-256 digest
-that the connector verifies before replacing files. Themes are stored beside the native library item.
-Movies must have their own local folders; a shared folder containing unrelated movies cannot have independent themes.
-The connector tracks its uploads in one SQLite database under Jellyfin's server data root at
-``data/themerr-connector/ownership.db``. Include this file in Jellyfin backups. Ownership records survive
-connector updates and are checked against each theme's digest before replacement.
-Existing user themes are preserved by default, including themes created by the older Themerr-jellyfin plugin.
-**Import older Themerr-jellyfin ownership** is enabled by default and recognizes themes recorded in the old
-plugin's ``data/Themerr/themerr.db``. It can be disabled and reads the old database without changing it. Only records
-marked as Themerr-provided with SHA-256 matching the current theme file are imported. Changed files, other
-hash algorithms and ambiguous records remain protected. Verified old MP3 themes can then be replaced by
-the connector's M4A or Opus themes during normal updates. Per-item JSON sidecars are not imported or removed.
-Enable **Overwrite user themes** to replace them. **Back up replaced user themes** is enabled by default and
-keeps replaced files in ``.themerr-user-themes`` and ``.themerr-user-theme-music`` beside the item. Disable that
-separate option to remove replaced themes permanently. Existing backups are never overwritten. Themes outside
-the connector's supported item resources remain protected. Manual edits are treated as user themes.
-**Remove the older Themerr-jellyfin plugin** is enabled by default to uninstall only that plugin and remove its
-dedicated repository after installing the connector. Disable this option to keep the older plugin, and disable
-its processing yourself.
-Locked items and ignored libraries follow the processing settings. Jellyfin uses Themerr's scheduled scans;
-**Activity > Scan for themes** also starts a scan. Movies, series, and collections can be enabled separately
-under **Settings > Jellyfin**.
+Enable movie, series, and collection support under **Settings > Jellyfin**, then choose the libraries to
+process on each server card. Jellyfin TV libraries can use TMDB or TheTVDB metadata. Collections created
+by Jellyfin's TMDb Box Sets plugin appear in its **Collections** library. Include that library to add
+collection themes. Jellyfin must be able to write to your media folders, and each movie needs its own folder.
 
-The TMDb Box Sets plugin creates a separate **Collections** library. Its folders are stored under Jellyfin's
-server data root at ``data/collections/<collection name> [boxset]``; in the official Docker image this is usually
-``/config/data/collections``. Members link to the existing movies. Enable **Collection support** and include
-the Collections library in processing to add its themes. Collection themes are stored in these folders.
-Jellyfin must have permission to write to the item's directory. **Discover Jellyfin on LAN** uses UDP port 7359;
-discovery must be enabled on Jellyfin and allowed by the local network and firewall. An API key is still required.
+Existing user themes are protected by default. Under **Settings > Jellyfin**, enable **Overwrite user themes**
+if you want Themerr to replace them. **Back up replaced user themes** controls whether replaced themes are kept.
+If you used the older Themerr-jellyfin plugin, Themerr recognizes its unchanged themes by default and
+removes the old plugin and its repository after connecting. You can disable either choice in the same
+settings section before connecting the server.
 
-For theme playback, open **Jellyfin user settings > Display** and enable **Theme songs** in the **Library** section.
-The server card links directly to this page. Jellyfin Web stores this choice locally in each browser, so its
-REST API cannot enable it for all clients; repeat the choice in each browser or app that supports theme songs.
+For playback in Jellyfin, open **Jellyfin user settings > Display** and enable **Theme songs** under
+**Library**. The server card links to this page. Repeat this setting in each browser or app you use.
 
-API keys use the operating system credential store on desktops. Headless and Docker installations use the
-same ``THEMERR_TOKEN_KEY_FILE`` encryption key as Plex, with a separate namespace for every Jellyfin server.
-The historical ``THEMERR_PLEX_TOKEN_KEY_FILE`` name remains supported; the generic name takes precedence if
-both are set. Keep the same key when renaming the variable. Removing a connection deletes its saved API key
-and local records; themes already installed on Jellyfin remain there.
-
-TV libraries can use TMDB or TheTVDB metadata. Themerr uses each item's provider IDs and resolves TVDB-backed
-series to ThemerrDB's TMDB IDs through its title index. Set ``TMDB_API_READ_ACCESS_TOKEN`` if you also want
-TMDB lookups for other IMDb or TVDB IDs and collection names. Native IDs, posters, and theme playback
-remain scoped to their Jellyfin server.
+Removing a server from Themerr removes its saved connection; themes already installed in Jellyfin remain.
+For Docker and headless installations, set up the persistent credential encryption key described in
+:doc:`docker` before connecting.
 
 Local data
 ----------

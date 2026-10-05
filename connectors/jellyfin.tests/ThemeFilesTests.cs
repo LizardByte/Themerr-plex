@@ -1,67 +1,102 @@
+﻿using System.Diagnostics;
 using System.Security.Cryptography;
-using System.Diagnostics;
 using Themerr.Connector;
 using Xunit;
 
 namespace Themerr.Connector.Tests;
 
+/// <summary>Tests upload integrity, ownership, protected themes, and filesystem boundaries.</summary>
 public sealed class ThemeFilesTests : IDisposable
 {
-    private readonly string _root = Path.Combine(Path.GetTempPath(), "themerr-connector-test-" + Guid.NewGuid());
+    private readonly string _root = Path.Combine(Path.GetTempPath(), $"themerr-connector-test-{Guid.NewGuid()}");
     private readonly byte[] _audio = "complete validated audio"u8.ToArray();
     private readonly Guid _itemId = Guid.NewGuid();
     private readonly ThemeFiles _themes;
     private readonly ThemeOwnership _ownership;
-    private string Digest => Convert.ToHexString(SHA256.HashData(_audio)).ToLowerInvariant();
+
+    /// <summary>Initializes a new instance of the <see cref="ThemeFilesTests"/> class.</summary>
     public ThemeFilesTests()
     {
         Directory.CreateDirectory(_root);
         _ownership = new ThemeOwnership(Path.Combine(_root, "server-data"));
         _themes = new ThemeFiles(_ownership);
     }
-    public void Dispose() => Directory.Delete(_root, true);
-    private string FilePath(string name) => Path.Combine(_root, name);
-    private Task<ThemeState> Save(string? type = "audio/mp4", string? digest = null, int count = 0,
-        bool overwrite = false, Stream? stream = null, bool backup = true) => _themes.Save(_itemId, _root,
-            stream ?? new MemoryStream(_audio), type, digest ?? Digest, count, CancellationToken.None, overwrite, backup);
 
+    private string Digest => Convert.ToHexString(SHA256.HashData(_audio)).ToLowerInvariant();
+
+    /// <inheritdoc/>
+    public void Dispose() => Directory.Delete(_root, true);
+
+    /// <summary>Checks that theme directory junctions cannot redirect deletion into sibling media.</summary>
+    /// <param name="nested">Whether the junction is nested inside the theme-music directory.</param>
+    /// <returns>The asynchronous test execution.</returns>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task WindowsJunctionsNeverDeleteSiblingThemes(bool nested)
     {
-        if (!OperatingSystem.IsWindows()) Assert.Skip("Windows junction test.");
-        var sibling = _root + "-sibling";
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("Windows junction test.");
+        }
+
+        var sibling = $"{_root}-sibling";
         Directory.CreateDirectory(sibling);
         var outside = Path.Combine(sibling, "outside.mp3");
-        File.WriteAllText(outside, "outside theme");
+        await File.WriteAllTextAsync(outside, "outside theme", TestContext.Current.CancellationToken);
         var music = FilePath("theme-music");
-        if (nested) Directory.CreateDirectory(music);
+        if (nested)
+        {
+            Directory.CreateDirectory(music);
+        }
+
         var link = nested ? Path.Combine(music, "nested") : music;
         var command = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe"))
-        { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
-        foreach (var argument in new[] { "/c", "mklink", "/J", link, sibling }) command.ArgumentList.Add(argument);
+        {
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+        };
+        foreach (var argument in new[]
+        {
+            "/c",
+            "mklink",
+            "/J",
+            link,
+            sibling,
+        })
+        {
+            command.ArgumentList.Add(argument);
+        }
+
         try
         {
             using var process = Process.Start(command)!;
             await process.WaitForExitAsync(TestContext.Current.CancellationToken);
             Assert.Equal(0, process.ExitCode);
             await Assert.ThrowsAsync<ThemeConflictException>(() => Save(count: 1, overwrite: true, backup: false));
-            Assert.Equal("outside theme", File.ReadAllText(outside));
+            Assert.Equal("outside theme", await File.ReadAllTextAsync(outside, TestContext.Current.CancellationToken));
         }
         finally
         {
-            if (Directory.Exists(link)) Directory.Delete(link);
+            if (Directory.Exists(link))
+            {
+                Directory.Delete(link);
+            }
+
             Directory.Delete(sibling, true);
         }
     }
 
+    /// <summary>Checks that explicit replacement can remove user themes when backups are disabled.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task ReplacementCanRemoveUserThemesWithoutCreatingBackups()
     {
-        File.WriteAllText(FilePath("theme.mp3"), "user theme");
+        await File.WriteAllTextAsync(FilePath("theme.mp3"), "user theme", TestContext.Current.CancellationToken);
         var music = Directory.CreateDirectory(FilePath("theme-music"));
-        File.WriteAllText(Path.Combine(music.FullName, "user.mp3"), "another theme");
+        await File.WriteAllTextAsync(Path.Combine(music.FullName, "user.mp3"), "another theme", TestContext.Current.CancellationToken);
         await Save(count: 2, overwrite: true, backup: false);
         Assert.True(_themes.State(_itemId, _root).Owned);
         Assert.False(File.Exists(FilePath("theme.mp3")));
@@ -70,6 +105,9 @@ public sealed class ThemeFilesTests : IDisposable
         Assert.False(Directory.Exists(FilePath(".themerr-user-theme-music")));
     }
 
+    /// <summary>Checks that unsupported audio MIME types are rejected before file creation.</summary>
+    /// <param name="type">The candidate audio MIME type.</param>
+    /// <returns>The asynchronous test execution.</returns>
     [Theory]
     [InlineData(null)]
     [InlineData("../../file")]
@@ -80,6 +118,9 @@ public sealed class ThemeFilesTests : IDisposable
         Assert.Empty(Directory.GetFiles(_root));
     }
 
+    /// <summary>Checks that malformed or mismatched audio digests are rejected.</summary>
+    /// <param name="digest">The candidate SHA-256 digest.</param>
+    /// <returns>The asynchronous test execution.</returns>
     [Theory]
     [InlineData("short")]
     [InlineData("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")]
@@ -90,6 +131,8 @@ public sealed class ThemeFilesTests : IDisposable
         Assert.Empty(Directory.GetFiles(_root));
     }
 
+    /// <summary>Checks that empty uploads are rejected and temporary files are removed.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task RejectsEmptyAudioAndCleansTemporaryFiles()
     {
@@ -97,6 +140,8 @@ public sealed class ThemeFilesTests : IDisposable
         Assert.Empty(Directory.GetFiles(_root));
     }
 
+    /// <summary>Checks that verified uploads retain ownership when switching audio formats.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task SavesVerifiedAudioAndSwitchesFormats()
     {
@@ -109,56 +154,65 @@ public sealed class ThemeFilesTests : IDisposable
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save(count: 2));
         await Save("audio/ogg", Digest.ToUpperInvariant());
         Assert.False(File.Exists(FilePath("theme.m4a")));
-        Assert.Equal(_audio, File.ReadAllBytes(FilePath("theme.opus")));
+        Assert.Equal(_audio, await File.ReadAllBytesAsync(FilePath("theme.opus"), TestContext.Current.CancellationToken));
         Assert.Equal([FilePath("theme.opus")], Directory.GetFiles(_root));
         Assert.True(new ThemeFiles(new ThemeOwnership(FilePath("server-data"))).State(_itemId, _root).Owned);
         Assert.False(_themes.State(Guid.NewGuid(), _root).Owned);
     }
 
+    /// <summary>Checks that user themes and manually edited uploads remain protected by default.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task PreservesUserThemesByDefaultIncludingManuallyEditedUploads()
     {
-        File.WriteAllText(FilePath("theme.mp3"), "user theme");
+        await File.WriteAllTextAsync(FilePath("theme.mp3"), "user theme", TestContext.Current.CancellationToken);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
-        Assert.Equal("user theme", File.ReadAllText(FilePath("theme.mp3")));
+        Assert.Equal("user theme", await File.ReadAllTextAsync(FilePath("theme.mp3"), TestContext.Current.CancellationToken));
         File.Delete(FilePath("theme.mp3"));
         await Save();
-        File.WriteAllText(FilePath("theme.m4a"), "manually changed");
+        await File.WriteAllTextAsync(FilePath("theme.m4a"), "manually changed", TestContext.Current.CancellationToken);
         Assert.False(_themes.State(_itemId, _root).Owned);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
-        Assert.Equal("manually changed", File.ReadAllText(FilePath("theme.m4a")));
+        Assert.Equal("manually changed", await File.ReadAllTextAsync(FilePath("theme.m4a"), TestContext.Current.CancellationToken));
     }
 
+    /// <summary>Checks that explicit replacement backs up user themes and records the new upload.</summary>
+    /// <param name="name">The fixed theme resource name exercised by the test.</param>
+    /// <returns>The asynchronous test execution.</returns>
     [Theory]
     [InlineData("theme.mp3")]
     [InlineData("theme.m4a")]
     [InlineData("theme.opus")]
     public async Task ExplicitReplacementBacksUpUserFiles(string name)
     {
-        File.WriteAllText(FilePath(name), "user theme");
+        await File.WriteAllTextAsync(FilePath(name), "user theme", TestContext.Current.CancellationToken);
         var state = await Save(overwrite: true);
         Assert.True(state.Owned);
         Assert.True(_themes.State(_itemId, _root).Owned);
-        Assert.Equal("user theme", File.ReadAllText(Path.Combine(_root, ".themerr-user-themes", name)));
-        Assert.Equal(_audio, File.ReadAllBytes(FilePath("theme.m4a")));
+        Assert.Equal("user theme", await File.ReadAllTextAsync(Path.Combine(_root, ".themerr-user-themes", name), TestContext.Current.CancellationToken));
+        Assert.Equal(_audio, await File.ReadAllBytesAsync(FilePath("theme.m4a"), TestContext.Current.CancellationToken));
     }
 
+    /// <summary>Checks that theme-music backups are preserved instead of overwritten by later replacements.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task ReplacementBacksUpThemeMusicFolderAndNeverOverwritesEarlierBackups()
     {
         var music = FilePath("theme-music");
         Directory.CreateDirectory(music);
-        File.WriteAllText(Path.Combine(music, "my song.mp3"), "user theme");
+        await File.WriteAllTextAsync(Path.Combine(music, "my song.mp3"), "user theme", TestContext.Current.CancellationToken);
         Assert.True(_themes.State(_itemId, _root).Present);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save(count: 1));
         await Save(count: 1, overwrite: true);
-        Assert.Equal("user theme", File.ReadAllText(Path.Combine(_root, ".themerr-user-theme-music", "my song.mp3")));
+        Assert.Equal("user theme", await File.ReadAllTextAsync(Path.Combine(_root, ".themerr-user-theme-music", "my song.mp3"), TestContext.Current.CancellationToken));
         Directory.CreateDirectory(music);
-        File.WriteAllText(Path.Combine(music, "second.mp3"), "another theme");
+        await File.WriteAllTextAsync(Path.Combine(music, "second.mp3"), "another theme", TestContext.Current.CancellationToken);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save(count: 2, overwrite: true));
         Assert.True(File.Exists(Path.Combine(music, "second.mp3")));
     }
 
+    /// <summary>Checks that themes outside recognized resources remain protected.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task NativeThemesOutsideFixedResourcesStayProtected()
     {
@@ -166,30 +220,37 @@ public sealed class ThemeFilesTests : IDisposable
         Assert.False(File.Exists(FilePath("theme.m4a")));
     }
 
+    /// <summary>Checks that stored filenames cannot select filesystem resources.</summary>
+    /// <param name="filename">The database filename or recorded value exercised by the test.</param>
+    /// <returns>The asynchronous test execution.</returns>
     [Theory]
     [InlineData("../outside.m4a")]
     [InlineData("theme.mp3")]
     public async Task DatabaseValuesNeverBecomePaths(string filename)
     {
-        File.WriteAllText(FilePath("theme.m4a"), "user theme");
+        await File.WriteAllTextAsync(FilePath("theme.m4a"), "user theme", TestContext.Current.CancellationToken);
         _ownership.Record(_itemId, filename, Digest, () => { });
         Assert.False(_themes.State(_itemId, _root).Owned);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
     }
 
+    /// <summary>Checks that obsolete JSON sidecars are ignored and left untouched.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task JsonSidecarsAreIgnoredAndNeverMigratedOrRemoved()
     {
-        File.WriteAllBytes(FilePath("theme.m4a"), _audio);
-        var json = "{\"File\":\"theme.m4a\",\"Sha256\":\"" + Digest + "\"}";
-        File.WriteAllText(FilePath(".themerr-connector.json"), json);
+        await File.WriteAllBytesAsync(FilePath("theme.m4a"), _audio, TestContext.Current.CancellationToken);
+        var json = $$"""{"File":"theme.m4a","Sha256":"{{Digest}}"}""";
+        await File.WriteAllTextAsync(FilePath(".themerr-connector.json"), json, TestContext.Current.CancellationToken);
         Assert.False(_themes.State(_itemId, _root).Owned);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
         await Save(overwrite: true, backup: false);
-        Assert.Equal(json, File.ReadAllText(FilePath(".themerr-connector.json")));
+        Assert.Equal(json, await File.ReadAllTextAsync(FilePath(".themerr-connector.json"), TestContext.Current.CancellationToken));
         Assert.True(_themes.State(_itemId, _root).Owned);
     }
 
+    /// <summary>Checks that a missing theme file cannot retain ownership.</summary>
+    /// <returns>The asynchronous test execution.</returns>
     [Fact]
     public async Task OwnershipWithoutItsFileIsNotOwned()
     {
@@ -199,30 +260,68 @@ public sealed class ThemeFilesTests : IDisposable
         Assert.False(_themes.State(_itemId, _root).Owned);
     }
 
+    /// <summary>Checks that file and directory links cannot escape into sibling media.</summary>
+    /// <param name="name">The fixed theme resource name exercised by the test.</param>
+    /// <param name="directory">Whether to create a directory link instead of a file link.</param>
+    /// <returns>The asynchronous test execution.</returns>
     [Theory]
     [InlineData("theme.m4a", false)]
     [InlineData("theme-music", true)]
     [InlineData(".themerr-user-themes", true)]
     public async Task RejectsLinksIntoSiblingDirectories(string name, bool directory)
     {
-        var sibling = _root + "-sibling";
+        var sibling = $"{_root}-sibling";
         Directory.CreateDirectory(sibling);
         var target = Path.Combine(sibling, "outside.m4a");
-        File.WriteAllText(target, "outside");
+        await File.WriteAllTextAsync(target, "outside", TestContext.Current.CancellationToken);
         try
         {
             try
             {
-                if (directory) Directory.CreateSymbolicLink(FilePath(name), sibling);
-                else File.CreateSymbolicLink(FilePath(name), target);
+                if (directory)
+                {
+                    Directory.CreateSymbolicLink(FilePath(name), sibling);
+                }
+                else
+                {
+                    File.CreateSymbolicLink(FilePath(name), target);
+                }
             }
-            catch (UnauthorizedAccessException) { Assert.Skip("Symbolic link creation privilege unavailable."); }
+            catch (UnauthorizedAccessException)
+            {
+                Assert.Skip("Symbolic link creation privilege unavailable.");
+            }
             catch (IOException error) when (OperatingSystem.IsWindows() && (error.HResult & 0xffff) == 1314)
-            { Assert.Skip("Symbolic link creation privilege unavailable."); }
-            File.WriteAllText(FilePath("theme.mp3"), "user theme");
+            {
+                Assert.Skip("Symbolic link creation privilege unavailable.");
+            }
+
+            await File.WriteAllTextAsync(FilePath("theme.mp3"), "user theme", TestContext.Current.CancellationToken);
             await Assert.ThrowsAsync<ThemeConflictException>(() => Save(overwrite: true));
-            Assert.Equal("outside", File.ReadAllText(target));
+            Assert.Equal("outside", await File.ReadAllTextAsync(target, TestContext.Current.CancellationToken));
         }
-        finally { Directory.Delete(sibling, true); }
+        finally
+        {
+            Directory.Delete(sibling, true);
+        }
     }
+
+    private string FilePath(string name) => Path.Combine(_root, name);
+
+    private Task<ThemeState> Save(
+        string? type = "audio/mp4",
+        string? digest = null,
+        int count = 0,
+        bool overwrite = false,
+        Stream? stream = null,
+        bool backup = true) => _themes.Save(
+            _itemId,
+            _root,
+            stream ?? new MemoryStream(_audio),
+            type,
+            digest ?? Digest,
+            count,
+            CancellationToken.None,
+            overwrite,
+            backup);
 }

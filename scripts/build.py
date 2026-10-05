@@ -3,6 +3,7 @@ scripts/build.py
 
 Creates spec and builds binaries for Themerr-plex.
 """
+
 # standard imports
 import os
 from pathlib import Path
@@ -56,7 +57,7 @@ def build():
         f'--add-data=src/themerr/migrations{os.pathsep}themerr/migrations',
         f'--add-data=jellyfin-connector{os.pathsep}jellyfin-connector',
         f'--add-binary={deno}{os.pathsep}.',
-        '--icon=./web/images/favicon.ico'
+        '--icon=./web/images/favicon.ico',
     ]
 
     if sys.platform.lower() == 'win32':  # windows

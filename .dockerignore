@@ -3,6 +3,7 @@
 
 # ignore hidden files
 .*
+!.editorconfig
 
 # ignore directories
 tests/

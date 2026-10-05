@@ -1,8 +1,10 @@
 """Server-scoped theme queue and scan orchestration."""
 
+# standard imports
 import queue
 import threading
 
+# local imports
 from common import config, logger
 from media_servers import get_backend
 from themerr import storage
@@ -36,7 +38,10 @@ def enqueue(item_id: str) -> bool:
     bool
         Whether new work was queued, including active-work deduplication.
     """
-    work = (storage.current_server_id(), str(item_id))
+    work = (
+        storage.current_server_id(),
+        str(item_id),
+    )
     with q.mutex:
         if work in q.queue or work in _active_items:
             return False
@@ -59,7 +64,12 @@ def process_queue() -> None:
             log.exception('Unexpected error processing item %s on server %s', item_id, server_id)
         finally:
             with q.mutex:
-                _active_items.discard((server_id, item_id))
+                _active_items.discard(
+                    (
+                        server_id,
+                        item_id,
+                    )
+                )
             q.task_done()
 
 
@@ -86,5 +96,6 @@ def scheduled_update() -> None:
                 backend.server(record['id']).scan(enqueue)
         except Exception:
             log.exception('Theme scan failed for server %s', record['id'])
-            backend.record_refresh(record['id'],
-                                   f'Theme scan could not reach {backend.name}. Check its address and access.')
+            backend.record_refresh(
+                record['id'], f'Theme scan could not reach {backend.name}. Check its address and access.'
+            )

@@ -42,4 +42,5 @@ src/common/logger
 src/common/threads
 src/common/tray_icon
 src/common/webapp
+src/jellyfin_connector
 ```

@@ -1,12 +1,15 @@
 """Plex implementation of the media-server contracts."""
 
+# standard imports
 import re
 from typing import Callable, Mapping
 from urllib.parse import quote, urlencode
 
+# lib imports
 from plexapi import exceptions
 from requests import Response
 
+# local imports
 from common import config, logger
 from media_servers.base import MediaServer, MediaServerBackend, MediaServerError
 from plex import auth, dashboard, plexapi, servers, tmdb, token_store
@@ -29,7 +32,13 @@ class PlexMediaServer(MediaServer):
             connection = plexapi.setup_plexapi()
             if connection is None:
                 return None
-            return [{'id': str(section.key), 'title': section.title} for section in connection.library.sections()]
+            return [
+                {
+                    'id': str(section.key),
+                    'title': section.title,
+                }
+                for section in connection.library.sections()
+            ]
 
     def cache_dashboard(self) -> bool:
         with storage.server_scope(self.server_id):
@@ -49,11 +58,14 @@ class PlexMediaServer(MediaServer):
 
     def web_urls(self, library_id: str, item_id: str | None = None) -> dict[str, str]:
         identifier = quote(self.server_id, safe='')
-        server_url = 'https://app.plex.tv/desktop/#!/media/' + identifier + '/com.plexapp.plugins.library'
-        urls = {'server': server_url, 'library': server_url + '?' + urlencode({'source': library_id})}
+        server_url = f'https://app.plex.tv/desktop/#!/media/{identifier}/com.plexapp.plugins.library'
+        urls = {
+            'server': server_url,
+            'library': f'{server_url}?{urlencode({"source": library_id})}',
+        }
         if item_id is not None:
-            urls['item'] = ('https://app.plex.tv/desktop/#!/server/' + identifier + '/details?' +
-                            urlencode({'key': '/library/metadata/' + str(item_id)}))
+            item_query = urlencode({'key': f'/library/metadata/{item_id}'})
+            urls['item'] = f'https://app.plex.tv/desktop/#!/server/{identifier}/details?{item_query}'
         return urls
 
     def open_poster(self, item_id: str) -> Response | None:
@@ -71,7 +83,11 @@ class PlexMediaServer(MediaServer):
             return self._open_stream(server, thumbnail, {})
         except exceptions.NotFound:
             return None
-        except (exceptions.PlexApiException, OSError, ValueError) as error:
+        except (
+            exceptions.PlexApiException,
+            OSError,
+            ValueError,
+        ) as error:
             log.warning('Unable to load poster for item_id=%s (%s)', item_id, type(error).__name__)
             raise MediaServerError('Unable to load poster from Plex.', 502) from error
 
@@ -92,7 +108,11 @@ class PlexMediaServer(MediaServer):
             return self._open_stream(server, theme_path, headers)
         except exceptions.NotFound as error:
             raise MediaServerError('This Plex item is no longer available.', 404) from error
-        except (exceptions.PlexApiException, OSError, ValueError) as error:
+        except (
+            exceptions.PlexApiException,
+            OSError,
+            ValueError,
+        ) as error:
             log.warning('Unable to load theme for item_id=%s (%s)', item_id, type(error).__name__)
             raise MediaServerError('Unable to load theme audio from Plex.', 502) from error
 
@@ -100,8 +120,11 @@ class PlexMediaServer(MediaServer):
     def _open_stream(server, path: str, headers: Mapping[str, str]) -> Response:
         """Open a validated native Plex media path using backend-only credentials."""
         return server._session.get(
-            server.url(path, includeToken=False), headers=server._headers(**headers),
-            stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
+            server.url(path, includeToken=False),
+            headers=server._headers(**headers),
+            stream=True,
+            allow_redirects=False,
+            timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
         )
 
 
@@ -142,4 +165,5 @@ class PlexBackend(MediaServerBackend):
 
     def web_router(self):
         from plex.web import router
+
         return router

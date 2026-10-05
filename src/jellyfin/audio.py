@@ -1,13 +1,16 @@
 """Prepare lossless container changes for Jellyfin's local theme-file formats."""
 
+# standard imports
 from contextlib import contextmanager
 from dataclasses import replace
 import hashlib
 from pathlib import Path
 import tempfile
 
+# lib imports
 import av
 
+# local imports
 from youtube.youtube_dl import validate_audio
 
 

@@ -45,6 +45,7 @@ dev = [
     "pytest-cov==7.1.0",
 ]
 docs = [
+    "breathe==5.1.0",
     "lizardbyte-dockle[sphinx]==2026.924.215413",
     "numpydoc==1.11.0",
     "rstcheck[sphinx]==6.3.0",

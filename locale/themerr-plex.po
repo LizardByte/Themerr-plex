@@ -719,7 +719,7 @@ msgid ""
 "list to retry."
 msgstr ""
 
-#: web/js/servers.js:130 web/js/servers.js:297
+#: web/js/servers.js:130 web/js/servers.js:296
 msgid "Connected"
 msgstr ""
 
@@ -728,33 +728,33 @@ msgstr ""
 msgid "Connect"
 msgstr ""
 
-#: web/js/servers.js:279
+#: web/js/servers.js:278
 msgid "Looking for Jellyfin servers…"
 msgstr ""
 
-#: web/js/servers.js:285
+#: web/js/servers.js:284
 msgid ""
 "No Jellyfin servers responded. Check UDP port 7359 and local network "
 "discovery, or enter an address manually."
 msgstr ""
 
-#: web/js/servers.js:297
+#: web/js/servers.js:296
 msgid "Use this address"
 msgstr ""
 
-#: web/js/servers.js:326 web/templates/servers.html:26
+#: web/js/servers.js:325 web/templates/servers.html:26
 msgid "Save connector address"
 msgstr ""
 
-#: web/js/servers.js:326 web/templates/servers.html:27
+#: web/js/servers.js:325 web/templates/servers.html:27
 msgid "Install matching connector"
 msgstr ""
 
-#: web/js/servers.js:331
+#: web/js/servers.js:330
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr ""
 
-#: web/js/servers.js:363
+#: web/js/servers.js:362
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr ""
 

@@ -1,11 +1,14 @@
 """Serve fixed connector artifacts over HTTP without exposing the administrator UI."""
 
+# standard imports
 from threading import Thread
 
+# lib imports
 from cryptography import x509
 from fastapi import FastAPI
 import uvicorn
 
+# local imports
 from common import config, logger
 from jellyfin import connector
 
@@ -18,6 +21,7 @@ _port = None
 def create_app():
     """Expose only the code-owned public connector downloads and metadata."""
     from jellyfin.web import router
+
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
     app.router.routes.extend(route for route in router.routes if route.path in connector.PUBLIC_PATHS)
     return app
@@ -38,17 +42,29 @@ def start(cert_file):
         cert = x509.load_pem_x509_certificate(stream.read())
     try:
         cert.verify_directly_issued_by(cert)
-    except (ValueError, TypeError):
+    except (
+        ValueError,
+        TypeError,
+    ):
         return
     if port == config.CONFIG['Network']['HTTP_PORT']:
         log.error('Connector HTTP port must differ from the administrator UI port.')
         return
     _port = port
-    _server = uvicorn.Server(uvicorn.Config(
-        create_app(), host=config.CONFIG['Network']['HTTP_HOST'], port=port,
-        loop='asyncio', http='h11', ws='none', lifespan='off', proxy_headers=False,
-        log_config=None, timeout_graceful_shutdown=5,
-    ))
+    _server = uvicorn.Server(
+        uvicorn.Config(
+            create_app(),
+            host=config.CONFIG['Network']['HTTP_HOST'],
+            port=port,
+            loop='asyncio',
+            http='h11',
+            ws='none',
+            lifespan='off',
+            proxy_headers=False,
+            log_config=None,
+            timeout_graceful_shutdown=5,
+        )
+    )
     server = _server
 
     def serve():
@@ -69,4 +85,8 @@ def stop():
         _server.should_exit = True
     if _thread is not None:
         _thread.join(timeout=6)
-    _server, _thread, _port = None, None, None
+    _server, _thread, _port = (
+        None,
+        None,
+        None,
+    )

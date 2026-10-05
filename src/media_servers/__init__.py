@@ -1,7 +1,9 @@
 """Dispatch shared services to independently scoped media-server integrations."""
 
+# standard imports
 from functools import lru_cache
 
+# local imports
 from media_servers.base import MediaServerBackend
 
 
@@ -13,6 +15,7 @@ class ServerRegistry(MediaServerBackend):
     def __init__(self):
         from plex.backend import PlexBackend
         from jellyfin.backend import JellyfinBackend
+
         self.plex = PlexBackend()
         self.jellyfin = JellyfinBackend()
 
@@ -26,8 +29,23 @@ class ServerRegistry(MediaServerBackend):
         return self._backend(server_id).name
 
     def list_servers(self, enabled_only=False):
-        return [{**record, 'type': kind} for kind, backend in (('plex', self.plex), ('jellyfin', self.jellyfin))
-                for record in backend.list_servers(enabled_only)]
+        return [
+            {
+                **record,
+                'type': kind,
+            }
+            for kind, backend in (
+                (
+                    'plex',
+                    self.plex,
+                ),
+                (
+                    'jellyfin',
+                    self.jellyfin,
+                ),
+            )
+            for record in backend.list_servers(enabled_only)
+        ]
 
     def get_server(self, server_id):
         return self._backend(server_id).get_server(server_id)
@@ -54,7 +72,13 @@ class ServerRegistry(MediaServerBackend):
 
     def web_router(self):
         from fastapi import APIRouter
-        return APIRouter(routes=[*self.plex.web_router().routes, *self.jellyfin.web_router().routes])
+
+        return APIRouter(
+            routes=[
+                *self.plex.web_router().routes,
+                *self.jellyfin.web_router().routes,
+            ]
+        )
 
 
 @lru_cache(maxsize=1)

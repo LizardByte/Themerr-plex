@@ -1,13 +1,16 @@
 """Plex sign-in and discovery routes protected by the shared browser middleware."""
 
+# standard imports
 import time
 
+# lib imports
 from fastapi import APIRouter, Depends, Request
 from starlette.responses import JSONResponse, Response
 from plexapi.exceptions import Unauthorized
 from requests.exceptions import ConnectionError, RequestException, SSLError, Timeout
 import requests
 
+# local imports
 from common import logger, server_ui
 from common.server_ui import _failure, _payload
 from common.validation import ValidationError
@@ -19,7 +22,15 @@ log = logger.get_logger(__name__)
 PLEX_LOGIN_LIFETIME = 600
 
 
-@router.api_route('/api/plex/auth', methods=['GET', 'HEAD'], name='plex_auth_status', response_model=None)
+@router.api_route(
+    '/api/plex/auth',
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='plex_auth_status',
+    response_model=None,
+)
 def plex_auth_status() -> Response:
     """Report whether this installation has a token from Plex sign-in.
 
@@ -61,11 +72,20 @@ def plex_auth_start(request: Request) -> Response:
     """
     try:
         login = plex_auth.start_login()
-    except (OSError, KeyError, TypeError, ValueError):
+    except (
+        OSError,
+        KeyError,
+        TypeError,
+        ValueError,
+    ):
         log.exception('Unable to start Plex sign-in')
         return JSONResponse({'message': 'Unable to start Plex sign-in. Please try again.'}, status_code=502)
 
-    request.session['plex_login'] = {'pin_id': login['pin_id'], 'code': login['code'], 'started': time.time()}
+    request.session['plex_login'] = {
+        'pin_id': login['pin_id'],
+        'code': login['code'],
+        'started': time.time(),
+    }
     return JSONResponse({'auth_url': login['auth_url']})
 
 
@@ -100,12 +120,20 @@ def plex_auth_check(request: Request) -> Response:
     try:
         token = plex_auth.check_login(pin_id=login['pin_id'], code=login['code'])
     except requests.HTTPError as error:
-        if error.response is not None and error.response.status_code in (404, 410):
+        if error.response is not None and error.response.status_code in (
+            404,
+            410,
+        ):
             request.session.pop('plex_login', None)
             return JSONResponse({'message': 'Plex sign-in expired. Please try again.'}, status_code=410)
         log.warning('Unable to check Plex sign-in: %s', error)
         return JSONResponse({'message': 'Unable to check Plex sign-in. Please try again.'}, status_code=502)
-    except (requests.RequestException, KeyError, TypeError, ValueError):
+    except (
+        requests.RequestException,
+        KeyError,
+        TypeError,
+        ValueError,
+    ):
         log.exception('Unable to check Plex sign-in')
         return JSONResponse({'message': 'Unable to check Plex sign-in. Please try again.'}, status_code=502)
 
@@ -165,12 +193,21 @@ def discover(payload=Depends(_payload)):
         Safe discovery results or a connection error.
     """
     source = payload.get('source')
-    if source not in ('account', 'local'):
+    if source not in (
+        'account',
+        'local',
+    ):
         return JSONResponse({'message': 'Choose account or local discovery.'}, status_code=400)
     try:
         resources = servers.discover_account() if source == 'account' else servers.discover_local()
         connected = {server['id'] for server in servers.list_servers()}
-        resources = [{**resource, 'connected': resource['id'] in connected} for resource in resources]
+        resources = [
+            {
+                **resource,
+                'connected': resource['id'] in connected,
+            }
+            for resource in resources
+        ]
     except Exception as exc:
         return _failure(exc, 'Discovery failed. Check the Plex connection, or enter an address manually.')
     return JSONResponse({'servers': resources})
@@ -190,17 +227,28 @@ def add_server(payload=Depends(_payload)):
     except token_store.TokenStorageError as exc:
         return _failure(exc, 'Unable to save the Plex token. Check the configured credential store.', 500)
     except SSLError as exc:
-        return _failure(exc, 'The secure connection to Plex failed. Use its advertised HTTPS address and check '
-                        'the server certificate.')
+        return _failure(
+            exc,
+            'The secure connection to Plex failed. Use its advertised HTTPS address and check the server certificate.',
+        )
     except Timeout as exc:
-        return _failure(exc, 'The Plex connection timed out. Check that the server is running and this address is '
-                        'reachable from the machine running Themerr. Try another advertised or manual address.')
+        return _failure(
+            exc,
+            'The Plex connection timed out. Check that the server is running and this address is '
+            'reachable from the machine running Themerr. Try another advertised or manual address.',
+        )
     except ConnectionError as exc:
-        return _failure(exc, 'Could not connect to this Plex address. Check its hostname, port, and network access '
-                        'from the machine running Themerr, or try another address.')
+        return _failure(
+            exc,
+            'Could not connect to this Plex address. Check its hostname, port, and network access '
+            'from the machine running Themerr, or try another address.',
+        )
     except Unauthorized as exc:
-        return _failure(exc, 'Plex denied access to this server. Check the linked account has permission, or '
-                        'reconnect your Plex account.')
+        return _failure(
+            exc,
+            'Plex denied access to this server. Check the linked account has permission, or '
+            'reconnect your Plex account.',
+        )
     except RequestException as exc:
         return _failure(exc, 'Plex returned an invalid response. Check the address or try another connection.')
     except ValidationError as exc:

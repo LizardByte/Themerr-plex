@@ -212,8 +212,7 @@ export function initServers(signal) {
         results.replaceChildren();
         if (!response.servers.length) {
             results.textContent = button.dataset.discover === 'local'
-                ? 'No Plex servers responded on LAN. Check that local network discovery (GDM) is enabled in Plex ' +
-                  'and multicast can reach this machine. You can use an account or manual address instead.'
+                ? 'No Plex servers responded on LAN. Check that local network discovery (GDM) is enabled in Plex and multicast can reach this machine. You can use an account or manual address instead.'
                 : 'No servers are advertised for this Plex account. Check account access or enter an address manually.';
             return;
         }
