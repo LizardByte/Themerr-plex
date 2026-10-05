@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import runpy
+import shutil
 import subprocess
 import tempfile
 import zipfile
@@ -19,6 +20,7 @@ PROFILES = {
 PLUGIN_ID = 'f9a117dc-b44a-4507-9706-241837784369'
 PLUGIN_NAME = 'Themerr Connector'
 VERSION_FILE = 'src/common/version.py'
+THUMBNAIL = 'thumb.png'
 
 
 def build_identity(root=ROOT, version=None):
@@ -27,9 +29,10 @@ def build_identity(root=ROOT, version=None):
     digest = hashlib.sha256(version.encode())
     digest.update(json.dumps(PROFILES, sort_keys=True).encode())
     for path in sorted((root / 'connectors/jellyfin').glob('*')):
-        if path.suffix in ('.cs', '.csproj'):
+        if path.suffix in ('.cs', '.csproj', '.png'):
             digest.update(path.name.encode())
-            digest.update(path.read_bytes().replace(b'\r\n', b'\n'))
+            content = path.read_bytes()
+            digest.update(content if path.suffix == '.png' else content.replace(b'\r\n', b'\n'))
     return digest.hexdigest()
 
 
@@ -57,6 +60,7 @@ def build(dotnet='dotnet', root=ROOT):
     base_version = assembly_version(release)
     directory = root / 'jellyfin-connector'
     directory.mkdir(exist_ok=True)
+    shutil.copyfile(root / 'connectors/jellyfin' / THUMBNAIL, directory / THUMBNAIL)
     artifacts = {}
     for index, (profile, (abi, framework)) in enumerate(PROFILES.items()):
         parts = base_version.split('.')
@@ -93,6 +97,8 @@ def check_bundle(root=ROOT):
     if (descriptor.get('protocol') != 1 or descriptor.get('build') != build_identity(root, release) or
             descriptor.get('themerrVersion') != release or set(descriptor['artifacts']) != set(PROFILES)):
         raise ValueError('Prebuilt Jellyfin connector does not match this Themerr source and release.')
+    if (directory / THUMBNAIL).read_bytes() != (root / 'connectors/jellyfin' / THUMBNAIL).read_bytes():
+        raise ValueError('Prebuilt Jellyfin connector thumbnail does not match.')
     for profile, (abi, _) in PROFILES.items():
         artifact = descriptor['artifacts'][profile]
         archive = directory / f'connector-{profile}.zip'

@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Themerr.Connector;
@@ -11,9 +10,8 @@ public sealed record ThemeState(
 public sealed class ThemeConflictException : Exception;
 
 /// <summary>Writes only server-owned filenames beneath a library item's directory.</summary>
-public static class ThemeFiles
+public sealed class ThemeFiles(ThemeOwnership ownership)
 {
-    private const string OwnershipFile = ".themerr-connector.json";
     private const long MaximumBytes = 104857600;
     private const string UserBackup = ".themerr-user-themes";
     private const string ThemeMusic = "theme-music";
@@ -26,23 +24,16 @@ public static class ThemeFiles
         ["audio/mp4"] = "theme.m4a",
         ["audio/ogg"] = "theme.opus"
     };
-    private sealed record Ownership(string File, string Sha256);
-
-    public static ThemeState State(string root, int themeSongCount = 0)
+    public ThemeState State(Guid itemId, string root, int themeSongCount = 0)
     {
         RejectDirectoryLink(root);
         var files = ThemeNames.Where(name => File.Exists(Path.Combine(root, name))).ToArray();
         var music = Path.Combine(root, ThemeMusic);
         RejectDirectoryLink(music);
         var present = files.Length > 0 || themeSongCount > 0 || Directory.Exists(music);
-        var metadata = Path.Combine(root, OwnershipFile);
-        RejectLink(metadata);
-        if (!File.Exists(metadata)) return new(present, false, null);
-        Ownership? ownership;
-        try { ownership = JsonSerializer.Deserialize<Ownership>(File.ReadAllText(metadata)); }
-        catch (JsonException) { return new(present, false, null); }
-        // A metadata value selects a code-owned filename; it never becomes a path.
-        var file = Formats.Values.FirstOrDefault(value => value == ownership?.File);
+        var record = ownership.Find(itemId);
+        // A database value selects a code-owned filename; it never becomes a path.
+        var file = Formats.Values.FirstOrDefault(value => value == record?.File);
         if (file is null || files.Length != 1 || themeSongCount > 1 || Directory.Exists(music))
             return new(present, false, null);
         var path = Path.Combine(root, file);
@@ -50,55 +41,46 @@ public static class ThemeFiles
         if (!File.Exists(path)) return new(present, false, null);
         using var stream = File.OpenRead(path);
         var digest = Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
-        return new(true, digest == ownership!.Sha256, digest);
+        return new(true, digest == record!.Sha256, digest);
     }
 
-    public static async Task<ThemeState> Save(string root, Stream body, string? contentType,
+    public async Task<ThemeState> Save(Guid itemId, string root, Stream body, string? contentType,
         string expectedDigest, int themeSongCount, CancellationToken cancellationToken,
         bool overwriteUser = false, bool backupUser = true)
     {
         if (contentType is null || !Formats.TryGetValue(contentType, out var file) ||
             expectedDigest.Length != 64 || !expectedDigest.All(Uri.IsHexDigit)) throw new InvalidDataException();
-        var state = State(root, themeSongCount);
+        var state = State(itemId, root, themeSongCount);
         if (state.Present && !state.Owned && !overwriteUser) throw new ThemeConflictException();
         var originals = Snapshot(root);
         var path = Path.Combine(root, file);
-        var metadata = Path.Combine(root, OwnershipFile);
         RejectLink(path);
-        RejectLink(metadata);
         var temporary = Path.Combine(root, Path.GetRandomFileName());
-        var metadataTemporary = Path.Combine(root, Path.GetRandomFileName());
         try
         {
             var digest = await Write(body, temporary, cancellationToken).ConfigureAwait(false);
             if (!string.Equals(digest, expectedDigest, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException();
-            await using (var metadataStream = new FileStream(metadataTemporary, FileMode.CreateNew,
-                FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous))
+            ownership.Record(itemId, file, digest, () =>
             {
-                await JsonSerializer.SerializeAsync(metadataStream, new Ownership(file, digest),
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
-            }
-            // Recheck the ownership and link boundaries after receiving the complete body.
-            var current = State(root, themeSongCount);
-            if ((current.Present && !current.Owned && !overwriteUser) ||
-                !originals.SequenceEqual(Snapshot(root))) throw new ThemeConflictException();
-            RejectLink(path);
-            RejectLink(metadata);
-            if (current.Present && !current.Owned) ReplaceUserThemes(root, themeSongCount, backupUser);
-            File.Move(temporary, path, true);
-            File.Move(metadataTemporary, metadata, true);
-            foreach (var other in Formats.Values.Where(value => value != file))
-            {
-                var old = Path.Combine(root, other);
-                RejectLink(old);
-                if (state.Owned && File.Exists(old)) File.Delete(old);
-            }
+                // Recheck ownership and link boundaries after receiving the complete body.
+                var current = State(itemId, root, themeSongCount);
+                if ((current.Present && !current.Owned && !overwriteUser) ||
+                    !originals.SequenceEqual(Snapshot(root))) throw new ThemeConflictException();
+                RejectLink(path);
+                if (current.Present && !current.Owned) ReplaceUserThemes(root, themeSongCount, backupUser);
+                File.Move(temporary, path, true);
+                foreach (var other in Formats.Values.Where(value => value != file))
+                {
+                    var old = Path.Combine(root, other);
+                    RejectLink(old);
+                    if (state.Owned && File.Exists(old)) File.Delete(old);
+                }
+            });
             return new(true, true, digest);
         }
         finally
         {
             File.Delete(temporary);
-            File.Delete(metadataTemporary);
         }
     }
 

@@ -35,6 +35,40 @@ def test_movie_imdb_fallback_and_invalid_provider_values(monkeypatch):
     assert invalid['issue_url'] is None
 
 
+def test_tvdb_series_resolves_to_the_shared_tmdb_database(monkeypatch):
+    resolve = Mock(return_value=1396)
+    lookup = Mock(return_value=True)
+    monkeypatch.setattr(metadata.tmdb, 'get_tmdb_id_from_external_id', resolve)
+    monkeypatch.setattr(metadata.themerr_db, 'item_exists', lookup)
+    result = metadata.resolve({'Type': 'Series', 'Name': 'Breaking Bad', 'ProviderIds': {'Tvdb': '81189'}})
+    resolve.assert_called_once_with('81189', 'tvdb', 'tv', title='Breaking Bad')
+    lookup.assert_called_once_with('tv_shows', 'themoviedb', '1396')
+    assert (result['source_database'], result['source_id']) == ('thetvdb', '81189')
+    assert (result['database'], result['database_id'], result['exists']) == ('themoviedb', '1396', True)
+
+
+def test_series_with_tmdb_and_tvdb_uses_the_existing_tmdb_id(monkeypatch):
+    resolve = Mock()
+    monkeypatch.setattr(metadata.tmdb, 'get_tmdb_id_from_external_id', resolve)
+    monkeypatch.setattr(metadata.themerr_db, 'item_exists', Mock(return_value=True))
+    result = metadata.resolve({'Type': 'Series', 'Name': 'Breaking Bad',
+                               'ProviderIds': {'Tvdb': '81189', 'Tmdb': '1396'}})
+    assert (result['database'], result['database_id']) == ('themoviedb', '1396')
+    resolve.assert_not_called()
+
+
+def test_unmapped_tvdb_series_does_not_treat_a_tvdb_id_as_a_tmdb_id(monkeypatch):
+    monkeypatch.setattr(metadata.tmdb, 'get_tmdb_id_from_external_id', Mock(return_value=None))
+    lookup = Mock()
+    monkeypatch.setattr(metadata.themerr_db, 'item_exists', lookup)
+    result = metadata.resolve({'Type': 'Series', 'Name': 'Unmapped show', 'ProviderIds': {'Tvdb': '81189'}})
+    assert (result['source_database'], result['source_id']) == ('thetvdb', '81189')
+    assert result['database_id'] is None
+    assert result['exists'] is False
+    assert result['issue_url'] is None
+    lookup.assert_not_called()
+
+
 def test_dashboard_snapshot_uses_uuid_keys_and_owned_theme_status(configured, monkeypatch):
     connection = Mock()
     library, first, second = '1' * 32, '2' * 32, '3' * 32

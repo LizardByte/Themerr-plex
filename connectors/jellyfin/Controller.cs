@@ -1,10 +1,13 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using MediaBrowser.Common.Api;
+using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 
 namespace Themerr.Connector;
 
@@ -15,10 +18,17 @@ public sealed class Controller : ControllerBase
 {
     private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> Locks = new();
     private readonly ILibraryManager _library;
+    private readonly ThemeFiles _themes;
+    private readonly ILogger<Controller> _logger;
     private static string Metadata(string key) => typeof(Plugin).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
         .Single(a => a.Key == key).Value!;
 
-    public Controller(ILibraryManager library) => _library = library;
+    public Controller(ILibraryManager library, IApplicationPaths paths, ILogger<Controller> logger)
+    {
+        _library = library;
+        _themes = new(new ThemeOwnership(paths.DataPath));
+        _logger = logger;
+    }
 
     [HttpGet("Connector")]
     public object Identity() => new { protocol = 1, build = Metadata("ThemerrBuild"), targetAbi = Metadata("JellyfinAbi") };
@@ -30,7 +40,10 @@ public sealed class Controller : ControllerBase
         if (item is null) return NotFound();
         var root = Root(item);
         if (root is null) return BadRequest();
-        return ThemeFiles.State(root, item.GetThemeSongs().Count);
+        try { return _themes.State(itemId, root, item.GetThemeSongs().Count); }
+        catch (ThemeConflictException) { return Conflict(); }
+        catch (Exception error) when (error is SqliteException or IOException or UnauthorizedAccessException)
+        { return StorageFailure(error); }
     }
 
     [HttpPost("Items/{itemId:guid}/Theme")]
@@ -46,7 +59,7 @@ public sealed class Controller : ControllerBase
         await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            var state = await ThemeFiles.Save(root, Request.Body, Request.ContentType,
+            var state = await _themes.Save(itemId, root, Request.Body, Request.ContentType,
                 Request.Headers["X-Themerr-SHA256"].ToString(), item.GetThemeSongs().Count,
                 cancellationToken, Request.Headers["X-Themerr-Overwrite-User"] == "true",
                 Request.Headers["X-Themerr-Backup-User"] != "false").ConfigureAwait(false);
@@ -55,9 +68,15 @@ public sealed class Controller : ControllerBase
         }
         catch (ThemeConflictException) { return Conflict(); }
         catch (InvalidDataException) { return BadRequest(); }
-        catch (IOException) { return StatusCode(500); }
-        catch (UnauthorizedAccessException) { return StatusCode(500); }
+        catch (Exception error) when (error is SqliteException or IOException or UnauthorizedAccessException)
+        { return StorageFailure(error); }
         finally { gate.Release(); }
+    }
+
+    private ObjectResult StorageFailure(Exception error)
+    {
+        _logger.LogError(error, "Could not access connector theme storage.");
+        return StatusCode(500, "Could not access connector theme storage.");
     }
 
     private static string? Root(BaseItem item) =>

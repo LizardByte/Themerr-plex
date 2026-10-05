@@ -52,23 +52,42 @@ re-encoding.
 
 ``scripts/build_connector.py`` builds one assembly for each explicitly supported
 Jellyfin ABI: 10.11 and 12.1. Its descriptor records a fingerprint of the connector
-source, build profiles, and Themerr version. Installation selects the exact
+source, thumbnail, build profiles, and Themerr version. Installation selects the exact
 bundled version for the target server, and uploads require a matching fingerprint,
 protocol, and ABI. Unsupported versions and stale connectors fail with an
 installation error. Jellyfin must restart to load a newly installed plugin.
 
-Themerr serves the manifest and two archives at fixed routes under
+Themerr serves the manifest, thumbnail, and two archives at fixed routes under
 ``/jellyfin/connector``. These exact GET and HEAD routes are public so Jellyfin
 can download them. Connection and installation APIs require the usual admin
 session and CSRF token. Downloads use the shared canonical path policy and file
 response helper. Request values never select filenames. The manifest uses the
 administrator-selected Themerr address, rather than the request's Host header.
 Installing the connector preserves the server's other plugin repositories.
+The manifest's ``imageUrl`` points to the bundled Themerr-jellyfin artwork.
+Jellyfin downloads and saves that image when installing the connector, so the
+catalog and installed-plugin cards use the same thumbnail. The thumbnail is
+included in the build fingerprint and shared CI, Docker, and PyInstaller data.
+
+Jellyfin TV libraries can use TMDB or TheTVDB metadata. Themerr reads provider
+IDs from each item. A series with a TVDB ID is resolved to ThemerrDB's TMDB ID
+through its title index or, when configured, ``TMDB_API_READ_ACCESS_TOKEN``.
+Unresolved TVDB IDs are retained as source metadata and never treated as TMDB IDs.
+
+The TMDb Box Sets plugin creates collections through Jellyfin's collection
+manager. They belong to the separate Collections library, under Jellyfin's
+server data root at ``data/collections/<collection name> [boxset]``. Collection members
+link to the existing movies. Enable collection support and allow processing of
+the Collections library to manage their themes.
 
 The connector maps native item GUIDs through Jellyfin's library manager to local
 movie, series, and collection folders. Uploads use fixed ``theme.m4a`` or
-``theme.opus`` filenames. A digest-verified ownership record permits subsequent
-updates; existing user themes and manually changed files are preserved. An
+``theme.opus`` filenames. Ownership records live in one SQLite database at
+``data/themerr-connector/ownership.db`` beneath Jellyfin's server data root,
+keyed by native item GUID. The connector uses Jellyfin's SQLite runtime and
+keeps this database across connector updates. No per-item JSON files are read,
+written, or migrated. A digest-verified record permits subsequent updates;
+existing user themes and manually changed files are preserved. An
 upload is bounded, verified, and staged before replacing an owned file. File
 links are rejected. Python records successful uploads only after the connector
 acknowledges the expected digest.
@@ -77,4 +96,5 @@ Tests under ``tests/unit/plex`` and ``tests/unit/jellyfin`` mock native services
 ``tests/unit/media_servers`` covers shared orchestration. Functional Jellyfin
 tests cover authentication, CSRF, fixed resource routes, and rejected paths.
 The C# harness under ``connectors/jellyfin.tests`` checks native file ownership,
-integrity, replacement, and link protection.
+integrity, replacement, and link protection, along with SQLite persistence,
+transaction rollback, concurrent item updates, and database path protection.

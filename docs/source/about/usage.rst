@@ -165,7 +165,7 @@ Jellyfin servers
 ----------------
 
 Jellyfin 10.11 and 12.1 are supported. Under **Servers**, enter the server's HTTP or HTTPS base address and an
-API key created under **Jellyfin Dashboard > Advanced > API Keys**, then select **Connect Jellyfin**. Use an
+API key created under **Jellyfin Dashboard > Advanced > API Keys**, then select **Connect**. Use an
 address reachable from the machine running Themerr. Each saved server has independent processing settings,
 ignored libraries, dashboard records, and upload history.
 
@@ -184,11 +184,14 @@ default self-signed HTTPS certificate is not automatically trusted by Jellyfin. 
 provide the download address. For self-signed certificates, Themerr also serves only the connector repository
 over HTTP on port 9495 by default; the administrator UI remains on HTTPS. Use an address Jellyfin can reach and
 expose that port when running Docker. Configure or disable it under **Settings > Jellyfin > Connector HTTP port**.
-Jellyfin downloads the fixed manifest and archive routes without a Themerr admin session; all connection,
+Jellyfin downloads the fixed manifest, thumbnail, and archive routes without a Themerr admin session; all connection,
 installation, library, and theme APIs retain administrator authentication.
 
 The connector only accepts matching uploads from Themerr and stores files beside the native library item.
 Movies must have their own local folders; a shared folder containing unrelated movies cannot have independent themes.
+The connector tracks its uploads in one SQLite database under Jellyfin's server data root at
+``data/themerr-connector/ownership.db``. Include this file in Jellyfin backups. Ownership records survive
+connector updates and are checked against each theme's digest before replacement.
 Existing user themes are preserved by default, including themes created by the older Themerr-jellyfin plugin.
 Enable **Overwrite user themes** to replace them. **Back up replaced user themes** is enabled by default and
 keeps replaced files in ``.themerr-user-themes`` and ``.themerr-user-theme-music`` beside the item. Disable that
@@ -200,7 +203,10 @@ Locked items and ignored libraries follow the processing settings. Jellyfin uses
 **Activity > Scan for themes** also starts a scan. Movies, series, and collections can be enabled separately
 under **Settings > Jellyfin**.
 
-Collection themes are stored in Jellyfin's own collection metadata directory, separately from media folders.
+The TMDb Box Sets plugin creates a separate **Collections** library. Its folders are stored under Jellyfin's
+server data root at ``data/collections/<collection name> [boxset]``; in the official Docker image this is usually
+``/config/data/collections``. Members link to the existing movies. Enable **Collection support** and include
+the Collections library in processing to add its themes. Collection themes are stored in these folders.
 Jellyfin must have permission to write to the item's directory. **Discover Jellyfin on LAN** uses UDP port 7359;
 discovery must be enabled on Jellyfin and allowed by the local network and firewall. An API key is still required.
 
@@ -214,8 +220,9 @@ The historical ``THEMERR_PLEX_TOKEN_KEY_FILE`` name remains supported; the gener
 both are set. Keep the same key when renaming the variable. Removing a connection deletes its saved API key
 and local records; themes already installed on Jellyfin remain there.
 
-Jellyfin provider IDs are resolved through ThemerrDB's index. Set ``TMDB_API_READ_ACCESS_TOKEN`` if you also
-want TMDB lookups for other IMDb or TVDB IDs and collection names. Native IDs, posters, and theme playback
+TV libraries can use TMDB or TheTVDB metadata. Themerr uses each item's provider IDs and resolves TVDB-backed
+series to ThemerrDB's TMDB IDs through its title index. Set ``TMDB_API_READ_ACCESS_TOKEN`` if you also want
+TMDB lookups for other IMDb or TVDB IDs and collection names. Native IDs, posters, and theme playback
 remain scoped to their Jellyfin server.
 
 Local data

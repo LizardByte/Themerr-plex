@@ -20,9 +20,12 @@ def builder(tmp_path, monkeypatch):
     sources = tmp_path / 'connectors/jellyfin'
     sources.mkdir(parents=True)
     (sources / 'Controller.cs').write_bytes(b'source\r\n')
+    thumbnail = b'\x89PNG\r\n\x1a\nthumbnail'
+    (sources / module['THUMBNAIL']).write_bytes(thumbnail)
     artifacts = {}
     directory = tmp_path / 'jellyfin-connector'
     directory.mkdir()
+    (directory / module['THUMBNAIL']).write_bytes(thumbnail)
     for profile, (abi, _) in module['PROFILES'].items():
         archive = directory / ('connector-' + profile + '.zip')
         with zipfile.ZipFile(archive, 'w') as content:
@@ -42,12 +45,19 @@ def test_reused_bundle_is_portable_across_line_endings(builder):
     assert module['check_bundle'](root) == data
 
 
-@pytest.mark.parametrize('change', ['source', 'release', 'checksum', 'abi', 'extra_file'])
+@pytest.mark.parametrize('change', [
+    'source', 'thumbnail_source', 'thumbnail_bundle', 'release', 'checksum', 'abi', 'extra_file',
+])
 def test_stale_or_modified_bundles_fail_before_packaging(builder, monkeypatch, change):
     module, root, data = builder
     directory = root / 'jellyfin-connector'
     if change == 'source':
         (root / 'connectors/jellyfin/Controller.cs').write_text('changed', encoding='utf-8')
+    elif change == 'thumbnail_source':
+        # Binary line endings must remain part of the build identity.
+        (root / 'connectors/jellyfin' / module['THUMBNAIL']).write_bytes(b'\x89PNG\n\x1a\nthumbnail')
+    elif change == 'thumbnail_bundle':
+        (directory / module['THUMBNAIL']).write_bytes(b'changed')
     elif change == 'release':
         monkeypatch.setenv('THEMERR_VERSION', '2026.1004.130000')
     elif change == 'checksum':

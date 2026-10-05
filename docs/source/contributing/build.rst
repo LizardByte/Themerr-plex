@@ -27,8 +27,9 @@ From the repository root, install dependencies and build browser assets:
 
 The connector builder produces separate Jellyfin 10.11 and 12.1 assemblies, targeting .NET 9 and .NET 10.
 The .NET 10 SDK builds both targets; Jellyfin supplies their runtime dependencies. Generated ZIP archives and
-their descriptor live in the ignored ``jellyfin-connector`` directory. Rebuild them after changing connector
-source or the Themerr version. To use a SDK outside ``PATH``, pass ``--dotnet /path/to/dotnet``.
+their descriptor and catalog thumbnail live in the ignored ``jellyfin-connector`` directory. Rebuild them after
+changing connector source, the thumbnail, or the Themerr version. To use a SDK outside ``PATH``, pass
+``--dotnet /path/to/dotnet``.
 
 Run the connector's file ownership and upload integrity checks with:
 

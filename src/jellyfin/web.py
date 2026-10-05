@@ -101,6 +101,16 @@ def manifest():
         return _failure(exc)
 
 
+@router.api_route(connector.THUMBNAIL_PATH, methods=['GET', 'HEAD'], name='jellyfin.thumbnail', response_model=None)
+def thumbnail():
+    """Serve the build-owned connector thumbnail for Jellyfin's catalog and installed plugin cards."""
+    try:
+        connector.bundle()
+        return file_response(str(connector.directory()), 'thumb.png', 'image/png')
+    except MediaServerError as exc:
+        return _failure(exc)
+
+
 @router.api_route('/jellyfin/connector/connector-10.11.zip', methods=['GET', 'HEAD'],
                   name='jellyfin.archive_10_11', response_model=None)
 @router.api_route('/jellyfin/connector/connector-12.1.zip', methods=['GET', 'HEAD'],

@@ -16,7 +16,7 @@ _port = None
 
 
 def create_app():
-    """Expose only the three code-owned public connector routes."""
+    """Expose only the code-owned public connector downloads and metadata."""
     from jellyfin.web import router
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
     app.router.routes.extend(route for route in router.routes if route.path in connector.PUBLIC_PATHS)

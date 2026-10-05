@@ -1,5 +1,6 @@
 """Browser authentication and fixed public Jellyfin repository resources."""
 
+import os
 import re
 from unittest.mock import Mock
 
@@ -7,7 +8,7 @@ from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy.orm import Session
 
-from common import admin, webapp
+from common import admin, path_policy, webapp
 from jellyfin import connector, discovery, maintenance, servers
 from media_servers.base import MediaServerError
 from tests.http_helpers import set_session
@@ -30,6 +31,11 @@ def sign_in(browser):
 def test_repository_is_public_but_setup_and_sibling_paths_are_private(browser, connector_bundle, monkeypatch):
     connector.repository_url('http://themerr.example:9494')
     assert browser.get(connector.MANIFEST_PATH).status_code == 200
+    image = browser.get(connector.THUMBNAIL_PATH)
+    assert image.status_code == 200
+    assert image.headers['Content-Type'] == 'image/png'
+    assert image.content == (connector.directory() / 'thumb.png').read_bytes()
+    assert browser.head(connector.THUMBNAIL_PATH).content == b''
     for name in connector.ARCHIVES.values():
         result = browser.get('/jellyfin/connector/' + name)
         assert result.status_code == 200
@@ -48,25 +54,51 @@ def test_repository_is_public_but_setup_and_sibling_paths_are_private(browser, c
 
 @pytest.mark.parametrize('path', [
     '../config.ini', '%2e%2e%2fconfig.ini', 'C:%5cconfig.ini',
-    '..%5cconfig.ini', 'connector-12.1.zip:secret', 'CON',
+    '..%5cconfig.ini', 'connector-12.1.zip:secret', 'thumb.png:secret',
+    '%2e%2e%5cthumb.png', 'C:%5cthumb.png', '%5c%5cserver%5cthumb.png', 'CON',
 ])
 def test_repository_rejects_unmapped_paths(browser, connector_bundle, path):
     sign_in(browser)
     assert browser.get('/jellyfin/connector/' + path).status_code == 404
 
 
-def test_archive_symlink_escape_is_rejected(browser, connector_bundle, tmp_path):
+@pytest.mark.parametrize('filename', ['connector-12.1.zip', 'thumb.png'])
+def test_artifact_symlink_escape_is_rejected(browser, connector_bundle, tmp_path, filename):
     directory = connector.directory()
     target = tmp_path / 'connector-sibling'
     target.mkdir()
     (target / 'outside.zip').write_bytes(b'private')
-    archive = directory / 'connector-12.1.zip'
+    archive = directory / filename
     archive.unlink()
     try:
         archive.symlink_to(target / 'outside.zip')
     except OSError:
         pytest.skip('Creating symlinks requires privileges on this host.')
-    assert browser.get('/jellyfin/connector/connector-12.1.zip').status_code == 404
+    assert browser.get('/jellyfin/connector/' + filename).status_code == 404
+
+
+def test_thumbnail_canonical_escape_to_a_similarly_named_sibling_is_rejected(
+        browser, connector_bundle, monkeypatch):
+    directory = connector.directory()
+    sibling = directory.with_name(directory.name + '-private')
+    sibling.mkdir()
+    private = sibling / 'thumb.png'
+    private.write_bytes(b'private')
+    realpath = os.path.realpath
+
+    def redirected(path, **kwargs):
+        # Both symlinks and Windows junctions must be checked after canonical resolution.
+        if os.path.normpath(path) == str(directory / 'thumb.png'):
+            return str(private)
+        return realpath(path, **kwargs)
+
+    monkeypatch.setattr(path_policy.os.path, 'realpath', redirected)
+    assert browser.get(connector.THUMBNAIL_PATH).status_code == 404
+
+
+def test_missing_packaged_thumbnail_has_no_source_fallback(browser, connector_bundle):
+    (connector.directory() / 'thumb.png').unlink()
+    assert browser.get(connector.THUMBNAIL_PATH).status_code == 404
 
 
 def test_api_key_is_not_echoed_in_setup_response(browser, monkeypatch):

@@ -19,7 +19,9 @@ PLUGIN_ID = 'f9a117dc-b44a-4507-9706-241837784369'
 PLUGIN_NAME = 'Themerr Connector'
 ARCHIVES = {'10.11': 'connector-10.11.zip', '12.1': 'connector-12.1.zip'}
 MANIFEST_PATH = '/jellyfin/connector/manifest.json'
-PUBLIC_PATHS = frozenset([MANIFEST_PATH, *('/jellyfin/connector/' + name for name in ARCHIVES.values())])
+THUMBNAIL_PATH = '/jellyfin/connector/thumb.png'
+PUBLIC_PATHS = frozenset([MANIFEST_PATH, THUMBNAIL_PATH,
+                          *('/jellyfin/connector/' + name for name in ARCHIVES.values())])
 _install_lock = RLock()
 LEGACY_PLUGIN_ID = 'e41ef0c4-c413-41ba-b4fa-8c565dc3c969'
 LEGACY_REPOSITORY = 'https://app.lizardbyte.dev/jellyfin-plugin-repo/manifest.json'
@@ -80,7 +82,7 @@ def manifest():
     url = repository_url()
     return [{'guid': PLUGIN_ID, 'name': PLUGIN_NAME, 'overview': 'Theme uploads for the matching Themerr build.',
              'description': 'Managed by your Themerr installation. Restart Jellyfin after installation.',
-             'owner': 'LizardByte', 'category': 'General',
+             'owner': 'LizardByte', 'category': 'General', 'imageUrl': url + THUMBNAIL_PATH,
              'versions': [{**artifact, 'sourceUrl': url + '/jellyfin/connector/' + ARCHIVES[key],
                            'changelog': 'Connector bundled with Themerr ' + data['themerrVersion']}
                           for key, artifact in data['artifacts'].items()]}]

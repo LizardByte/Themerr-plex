@@ -15,6 +15,7 @@ def test_manifest_has_only_bundled_versions_and_ignores_request_hosts(configured
     connector.repository_url('http://themerr.example:9494/prefix')
     manifest = connector.manifest()[0]
     assert manifest['guid'] == connector.PLUGIN_ID
+    assert manifest['imageUrl'] == 'http://themerr.example:9494/prefix' + connector.THUMBNAIL_PATH
     assert {item['targetAbi'] for item in manifest['versions']} == {'10.11.0', '12.1.0'}
     assert len({item['version'] for item in manifest['versions']}) == 2
     assert [item['sourceUrl'] for item in manifest['versions']] == [

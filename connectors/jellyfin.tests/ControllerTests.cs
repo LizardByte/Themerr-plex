@@ -9,6 +9,7 @@ using MediaBrowser.Model.MediaInfo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -27,7 +28,9 @@ public sealed class ControllerTests : IDisposable
         BaseItem.MediaSourceManager = media.Object;
         BaseItem.LibraryManager = _library.Object;
         _library.Setup(value => value.GetItemList(It.IsAny<InternalItemsQuery>())).Returns([]);
-        _controller = new Controller(_library.Object)
+        var paths = new Mock<IApplicationPaths>();
+        paths.SetupGet(value => value.DataPath).Returns(Path.Combine(_root, "server-data"));
+        _controller = new Controller(_library.Object, paths.Object, NullLogger<Controller>.Instance)
         { ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() } };
     }
     public void Dispose() => Directory.Delete(_root, true);
@@ -113,5 +116,25 @@ public sealed class ControllerTests : IDisposable
         _controller.Request.ContentType = "audio/mp4";
         _controller.Request.Headers["X-Themerr-SHA256"] = new string('a', 64);
         Assert.IsType<ConflictResult>((await _controller.Upload(id, CancellationToken.None)).Result);
+    }
+
+    [Fact]
+    public async Task DatabaseErrorsReturnFixedMessagesAndLeaveAudioUntouched()
+    {
+        var id = Guid.NewGuid();
+        _library.Setup(value => value.GetItemById(id)).Returns(new BoxSet { Id = id, Path = _root });
+        var data = Path.Combine(_root, "server-data", "themerr-connector");
+        Directory.CreateDirectory(data);
+        File.WriteAllText(Path.Combine(data, "ownership.db"), "private database contents");
+        var state = Assert.IsType<ObjectResult>(_controller.State(id).Result);
+        Assert.Equal(500, state.StatusCode);
+        Assert.Equal("Could not access connector theme storage.", state.Value);
+        _controller.Request.Headers["X-Themerr-Connector"] = "development";
+        _controller.Request.ContentType = "audio/mp4";
+        _controller.Request.Headers["X-Themerr-SHA256"] = new string('a', 64);
+        var upload = Assert.IsType<ObjectResult>((await _controller.Upload(id, CancellationToken.None)).Result);
+        Assert.Equal(500, upload.StatusCode);
+        Assert.Equal(state.Value, upload.Value);
+        Assert.Empty(Directory.GetFiles(_root));
     }
 }

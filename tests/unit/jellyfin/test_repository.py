@@ -12,6 +12,11 @@ def test_http_repository_exposes_no_admin_or_setup_routes(configured, connector_
     connector.repository_url('http://themerr.example:9495')
     with TestClient(repository.create_app()) as client:
         assert client.get(connector.MANIFEST_PATH).status_code == 200
+        image = client.get(connector.THUMBNAIL_PATH)
+        assert image.status_code == 200
+        assert image.headers['Content-Type'] == 'image/png'
+        assert image.content == (connector.directory() / 'thumb.png').read_bytes()
+        assert client.head(connector.THUMBNAIL_PATH).content == b''
         for filename in connector.ARCHIVES.values():
             assert client.get('/jellyfin/connector/' + filename).status_code == 200
             assert client.head('/jellyfin/connector/' + filename).content == b''
@@ -21,6 +26,7 @@ def test_http_repository_exposes_no_admin_or_setup_routes(configured, connector_
                      '/jellyfin/connector/C:%5cconfig.ini', '/jellyfin/connector/connector-12.1.zip:secret'):
             assert client.get(path).status_code == 404
         assert client.post(connector.MANIFEST_PATH).status_code == 405
+        assert client.post(connector.THUMBNAIL_PATH).status_code == 405
 
 
 @pytest.mark.parametrize('self_signed, port, expected', [

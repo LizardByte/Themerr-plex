@@ -16,6 +16,7 @@ def connector_bundle(tmp_path, monkeypatch):
     from common.version import VERSION
     directory = tmp_path / 'connector'
     directory.mkdir()
+    (directory / 'thumb.png').write_bytes(b'\x89PNG\r\n\x1a\nthumbnail')
     artifacts = {}
     for index, (profile, filename) in enumerate(connector.ARCHIVES.items()):
         content = ('connector-' + profile).encode()

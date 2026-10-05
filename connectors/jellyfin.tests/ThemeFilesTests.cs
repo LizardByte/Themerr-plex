@@ -9,12 +9,20 @@ public sealed class ThemeFilesTests : IDisposable
 {
     private readonly string _root = Path.Combine(Path.GetTempPath(), "themerr-connector-test-" + Guid.NewGuid());
     private readonly byte[] _audio = "complete validated audio"u8.ToArray();
+    private readonly Guid _itemId = Guid.NewGuid();
+    private readonly ThemeFiles _themes;
+    private readonly ThemeOwnership _ownership;
     private string Digest => Convert.ToHexString(SHA256.HashData(_audio)).ToLowerInvariant();
-    public ThemeFilesTests() => Directory.CreateDirectory(_root);
+    public ThemeFilesTests()
+    {
+        Directory.CreateDirectory(_root);
+        _ownership = new ThemeOwnership(Path.Combine(_root, "server-data"));
+        _themes = new ThemeFiles(_ownership);
+    }
     public void Dispose() => Directory.Delete(_root, true);
     private string FilePath(string name) => Path.Combine(_root, name);
     private Task<ThemeState> Save(string? type = "audio/mp4", string? digest = null, int count = 0,
-        bool overwrite = false, Stream? stream = null, bool backup = true) => ThemeFiles.Save(_root,
+        bool overwrite = false, Stream? stream = null, bool backup = true) => _themes.Save(_itemId, _root,
             stream ?? new MemoryStream(_audio), type, digest ?? Digest, count, CancellationToken.None, overwrite, backup);
 
     [Theory]
@@ -55,7 +63,7 @@ public sealed class ThemeFilesTests : IDisposable
         var music = Directory.CreateDirectory(FilePath("theme-music"));
         File.WriteAllText(Path.Combine(music.FullName, "user.mp3"), "another theme");
         await Save(count: 2, overwrite: true, backup: false);
-        Assert.True(ThemeFiles.State(_root).Owned);
+        Assert.True(_themes.State(_itemId, _root).Owned);
         Assert.False(File.Exists(FilePath("theme.mp3")));
         Assert.False(Directory.Exists(music.FullName));
         Assert.False(Directory.Exists(FilePath(".themerr-user-themes")));
@@ -92,16 +100,19 @@ public sealed class ThemeFilesTests : IDisposable
     [Fact]
     public async Task SavesVerifiedAudioAndSwitchesFormats()
     {
-        Assert.False(ThemeFiles.State(_root).Present);
+        Assert.False(_themes.State(_itemId, _root).Present);
         var saved = await Save();
         Assert.True(saved.Owned);
         Assert.Equal(Digest, saved.Sha256);
-        Assert.True(ThemeFiles.State(_root).Owned);
-        Assert.False(ThemeFiles.State(_root, 2).Owned);
+        Assert.True(_themes.State(_itemId, _root).Owned);
+        Assert.False(_themes.State(_itemId, _root, 2).Owned);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save(count: 2));
         await Save("audio/ogg", Digest.ToUpperInvariant());
         Assert.False(File.Exists(FilePath("theme.m4a")));
         Assert.Equal(_audio, File.ReadAllBytes(FilePath("theme.opus")));
+        Assert.Equal([FilePath("theme.opus")], Directory.GetFiles(_root));
+        Assert.True(new ThemeFiles(new ThemeOwnership(FilePath("server-data"))).State(_itemId, _root).Owned);
+        Assert.False(_themes.State(Guid.NewGuid(), _root).Owned);
     }
 
     [Fact]
@@ -113,7 +124,7 @@ public sealed class ThemeFilesTests : IDisposable
         File.Delete(FilePath("theme.mp3"));
         await Save();
         File.WriteAllText(FilePath("theme.m4a"), "manually changed");
-        Assert.False(ThemeFiles.State(_root).Owned);
+        Assert.False(_themes.State(_itemId, _root).Owned);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
         Assert.Equal("manually changed", File.ReadAllText(FilePath("theme.m4a")));
     }
@@ -127,7 +138,7 @@ public sealed class ThemeFilesTests : IDisposable
         File.WriteAllText(FilePath(name), "user theme");
         var state = await Save(overwrite: true);
         Assert.True(state.Owned);
-        Assert.True(ThemeFiles.State(_root).Owned);
+        Assert.True(_themes.State(_itemId, _root).Owned);
         Assert.Equal("user theme", File.ReadAllText(Path.Combine(_root, ".themerr-user-themes", name)));
         Assert.Equal(_audio, File.ReadAllBytes(FilePath("theme.m4a")));
     }
@@ -138,7 +149,7 @@ public sealed class ThemeFilesTests : IDisposable
         var music = FilePath("theme-music");
         Directory.CreateDirectory(music);
         File.WriteAllText(Path.Combine(music, "my song.mp3"), "user theme");
-        Assert.True(ThemeFiles.State(_root).Present);
+        Assert.True(_themes.State(_itemId, _root).Present);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save(count: 1));
         await Save(count: 1, overwrite: true);
         Assert.Equal("user theme", File.ReadAllText(Path.Combine(_root, ".themerr-user-theme-music", "my song.mp3")));
@@ -156,15 +167,27 @@ public sealed class ThemeFilesTests : IDisposable
     }
 
     [Theory]
-    [InlineData("not json")]
-    [InlineData("null")]
-    [InlineData("{\"File\":\"../outside.m4a\",\"Sha256\":\"anything\"}")]
-    public async Task CorruptOrTraversingOwnershipDoesNotAuthorizeReplacement(string ownership)
+    [InlineData("../outside.m4a")]
+    [InlineData("theme.mp3")]
+    public async Task DatabaseValuesNeverBecomePaths(string filename)
     {
         File.WriteAllText(FilePath("theme.m4a"), "user theme");
-        File.WriteAllText(FilePath(".themerr-connector.json"), ownership);
-        Assert.False(ThemeFiles.State(_root).Owned);
+        _ownership.Record(_itemId, filename, Digest, () => { });
+        Assert.False(_themes.State(_itemId, _root).Owned);
         await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
+    }
+
+    [Fact]
+    public async Task JsonSidecarsAreIgnoredAndNeverMigratedOrRemoved()
+    {
+        File.WriteAllBytes(FilePath("theme.m4a"), _audio);
+        var json = "{\"File\":\"theme.m4a\",\"Sha256\":\"" + Digest + "\"}";
+        File.WriteAllText(FilePath(".themerr-connector.json"), json);
+        Assert.False(_themes.State(_itemId, _root).Owned);
+        await Assert.ThrowsAsync<ThemeConflictException>(() => Save());
+        await Save(overwrite: true, backup: false);
+        Assert.Equal(json, File.ReadAllText(FilePath(".themerr-connector.json")));
+        Assert.True(_themes.State(_itemId, _root).Owned);
     }
 
     [Fact]
@@ -172,13 +195,12 @@ public sealed class ThemeFilesTests : IDisposable
     {
         await Save();
         File.Delete(FilePath("theme.m4a"));
-        Assert.False(ThemeFiles.State(_root).Present);
-        Assert.False(ThemeFiles.State(_root).Owned);
+        Assert.False(_themes.State(_itemId, _root).Present);
+        Assert.False(_themes.State(_itemId, _root).Owned);
     }
 
     [Theory]
     [InlineData("theme.m4a", false)]
-    [InlineData(".themerr-connector.json", false)]
     [InlineData("theme-music", true)]
     [InlineData(".themerr-user-themes", true)]
     public async Task RejectsLinksIntoSiblingDirectories(string name, bool directory)
