@@ -3,13 +3,13 @@
 Build
 =====
 
-Themerr-plex uses Python 3.14, uv, npm, Deno, Dockle, and the .NET 10 SDK. Python dependencies are specified in pyproject.toml and
+Themerr-plex uses Python 3.14, uv, npm, Deno, and the .NET 10 SDK. Python dependencies are specified in pyproject.toml and
 resolved in uv.lock. The npm lockfile supplies reproducible web assets. esbuild bundles browser dependencies and local
 scripts into ``web/assets``.
 
 The browser interface and JSON API use FastAPI with Uvicorn. Uvicorn runs in the application's web thread and
 uses the existing host, port, and TLS settings. Blocking media-server and database calls run in worker threads, while
-theme audio streams through ASGI. The ``/docs/`` route serves the bundled project documentation.
+theme audio streams through ASGI. The application links to the hosted project documentation.
 Signed-in administrators can explore the API at ``/api/docs`` or retrieve its OpenAPI schema at
 ``/api/openapi.json``. The sidebar links to both kinds of documentation.
 
@@ -20,8 +20,7 @@ From the repository root, install dependencies and build browser assets:
 
 .. code-block:: shell
 
-   git submodule update --init --recursive
-   uv sync --locked --all-extras
+   uv sync --locked --extra build --extra dev
    npm ci --ignore-scripts
    npm run build
    uv run --locked python scripts/build_connector.py
@@ -70,31 +69,21 @@ To extract the template manually:
    uv run --locked --no-sync python scripts/localize.py --extract
 
 For local development, run ``scripts/run_dev.py`` with the project's Python interpreter. The wrapper installs locked
-npm dependencies when needed, rebuilds changed browser assets and documentation when Dockle is available,
+npm dependencies when needed, rebuilds changed browser assets,
 and starts the Python source in the same process. Point an IDE debugger at this script to use normal breakpoints in
 ``src``. It uses Deno from ``PATH`` or ``.build-tools``; if Deno is unavailable, yt-dlp can use Node instead.
 
 .. code-block:: shell
 
-   uv run --locked --all-extras python scripts/run_dev.py --nolaunch
+   uv run --locked --extra dev python scripts/run_dev.py --nolaunch
 
-Create the documentation's conda environment with the pinned Doxygen and Graphviz versions. The same
-environment file is used by CI, Read the Docs, and Docker. It also supplies Python 3.14 and uv:
-
-.. code-block:: shell
-
-   conda env create --file docs/environment.yml
-   conda activate dockle-docs
-
-Build the documentation and standalone executable from that environment:
+Build the standalone executable:
 
 .. code-block:: shell
 
-   uv run --locked --all-extras python -m dockle check
-   uv run --locked --all-extras python -m dockle build
-   uv run --locked --all-extras python scripts/build.py
+   uv run --locked --extra build python scripts/build.py
 
-Dockle writes the site to _site. PyInstaller includes that site, the web assets, and translations in the
+PyInstaller includes the web assets and translations in the
 executable under dist, including Deno for yt-dlp and both Jellyfin connector archives. The standalone build
 rebuilds the connectors after stamping the release version. CI builds both connectors once and shares the artifact
 with all desktop packaging jobs. ``THEMERR_PREBUILT_CONNECTOR=1`` validates the artifact's source identity, release,
@@ -104,13 +93,32 @@ bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release v
 ``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
 is included through normal imports. Unversioned builds compare releases against ``0.0.0``.
 
+Read the Docs is the only documentation build service. It uses the checked-out
+``third-party/dockle`` submodule's shared conda environment and build script. The shared script installs
+Themerr's locked runtime and documentation dependencies for autodoc. Tool versions are declared in
+Dockle's environment file. Python and the pinned Doxygen stay in the same environment. Documentation is
+published online and is not bundled in Docker images or standalone executables.
+
+For local documentation validation, initialize the submodules and create the documentation's conda
+environment with pinned Doxygen and Graphviz versions:
+
+.. code-block:: shell
+
+   git submodule update --init --recursive
+   conda env create --file third-party/dockle/environment.yml
+   conda activate dockle-docs
+   uv run --locked --extra docs python -m dockle check
+   uv run --locked --extra docs python -m dockle build
+
+Dockle writes the local site to ``_site``.
+
 Dockle generates the connector's Doxygen XML before building Sphinx. Breathe and the pinned
 ``third-party/sphinx-csharp`` extension render its C# API alongside the Python reference, with links to
 Jellyfin and Microsoft dependency documentation. Missing documentation, parameter descriptions, and
 documentation warnings fail the build. Write C# XML comments for types and members, and use
 ``see``/``seealso`` references for related types. See :doc:`../src/jellyfin_connector` for the generated API.
 
-Docker uses the same lockfile and Dockle build. A separate .NET stage uses uv to run the connector build script;
+Docker uses the same Python lockfile. A separate .NET stage uses uv to run the connector build script;
 the runtime image contains their artifacts without the SDK:
 
 .. code-block:: shell

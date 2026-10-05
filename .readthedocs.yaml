@@ -3,19 +3,29 @@
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
+# Required
 version: 2
 
 build:
   os: ubuntu-26.04
   tools:
+    nodejs: "26"
     python: "miniforge3-26.3"
   jobs:
     build:
       html:
-        - bash scripts/readthedocs_build.sh
+        - |
+          if [ -f readthedocs_build.sh ]; then
+            dockle_dir="."
+          else
+            dockle_dir="./third-party/dockle"
+          fi
+          chmod +x "${dockle_dir}/readthedocs_build.sh"
+          export DOCKLE_DIR="${dockle_dir}"
+          "${dockle_dir}/readthedocs_build.sh"
 
 conda:
-  environment: docs/environment.yml
+  environment: third-party/dockle/environment.yml
 
 submodules:
   include: all

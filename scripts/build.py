@@ -51,7 +51,6 @@ def build():
         '--hidden-import=uvicorn.loops.asyncio',
         '--hidden-import=uvicorn.protocols.http.h11_impl',
         '--hidden-import=uvicorn.lifespan.off',
-        f'--add-data=_site{os.pathsep}_site',
         f'--add-data=web{os.pathsep}web',
         f'--add-data=locale{os.pathsep}locale',
         f'--add-data=src/themerr/migrations{os.pathsep}themerr/migrations',

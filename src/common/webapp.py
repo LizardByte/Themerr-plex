@@ -525,39 +525,6 @@ def browse_directories(payload=Depends(read_json)) -> Response:
     return JSONResponse({'path': directory, 'parent': parent if parent != directory else None, 'directories': children})
 
 
-@router.api_route('/docs/', methods=['GET', 'HEAD'], name='docs', response_model=None)
-@router.api_route('/docs/{filename:path}', methods=['GET', 'HEAD'], name='docs_file', response_model=None)
-def docs(filename: str = 'index.html') -> Response:
-    """
-    Serve the Sphinx html documentation.
-
-    Resolve the requested page from the built documentation directory.
-
-    Parameters
-    ----------
-    filename : str
-        Path to an HTML documentation file relative to the built documentation directory.
-
-    Returns
-    -------
-    FileResponse
-        The requested documentation page, or a 404 response when the file is absent.
-
-    Notes
-    -----
-    The following routes trigger this function.
-
-        `/docs/`
-        `/docs/<page.html>`
-
-    Examples
-    --------
-    >>> docs(filename='index.html')
-    """
-
-    return file_response(Paths.DOCS_DIR, filename or 'index.html')
-
-
 @router.api_route('/favicon.ico', methods=['GET', 'HEAD'], name='favicon', response_model=None)
 @router.api_route('/images/{img:path}', methods=['GET', 'HEAD'], name='image', response_model=None)
 def image(img: str = 'favicon.ico') -> Response:
@@ -921,7 +888,7 @@ async def unexpected_error(request: Request, error: Exception) -> Response:
 def create_app(*, https_only: bool | None = None) -> FastAPI:
     """Build an ASGI application with private routes and signed browser sessions.
 
-    Retain the browser interface, bounded requests, and bundled documentation routes.
+    Retain the browser interface, bounded requests, and authenticated API documentation.
 
     Parameters
     ----------

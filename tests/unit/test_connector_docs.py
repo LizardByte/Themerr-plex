@@ -39,7 +39,9 @@ import pytest
 def test_property_signatures_preserve_spacing_outside_generic_brackets(monkeypatch, signature, expected):
     root = Path(__file__).resolve().parents[2]
     monkeypatch.syspath_prepend(root / 'third-party/sphinx-csharp')
-    from breathe.renderer.sphinxrenderer import CSharpProperty
+    pytest.importorskip('sphinx_csharp', reason='Requires documentation dependencies and the C# extension submodule')
+    renderer = pytest.importorskip('breathe.renderer.sphinxrenderer', reason='Requires the docs extra')
+    CSharpProperty = renderer.CSharpProperty
 
     adapter = runpy.run_path(str(root / 'docs/connector_docs.py'))
     signode = object()

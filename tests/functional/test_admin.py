@@ -12,7 +12,7 @@ import pytest
 from werkzeug.security import check_password_hash
 
 # local imports
-from tests.http_helpers import get_session, set_session
+from tests.http_helpers import get_session
 from common import admin, webapp
 from themerr import storage
 
@@ -107,7 +107,7 @@ def test_private_apis_require_login(browser, path):
 
 
 def test_pages_require_login_while_health_and_assets_are_public(browser):
-    for path in ('/', '/servers', '/settings/', '/activity', '/docs/', '/translations'):
+    for path in ('/', '/servers', '/settings/', '/activity', '/translations'):
         assert browser.get(path).status_code == 302
     assert browser.get('/status').status_code == 200
     assert browser.get('/favicon.ico').status_code == 200
@@ -145,30 +145,20 @@ def test_login_csrf_session_rotation_logout_and_security_headers(browser):
     assert PASSWORD not in str(session)
 
 
-def test_translation_hosts_are_allowed_only_for_bundled_docs(browser, monkeypatch, tmp_path):
-    from common.definitions import Paths
-    (tmp_path / 'index.html').write_text('<html>Documentation</html>', encoding='utf-8')
-    monkeypatch.setattr(Paths, 'DOCS_DIR', str(tmp_path))
+def test_removed_docs_keep_the_private_browser_security_policy(browser):
     create_account(browser)
-    for path in ('/docs/', '/docs/index.html'):
+    for path in (
+        '/docs/',
+        '/docs/index.html',
+    ):
         result = browser.get(path, follow_redirects=True)
-        assert result.status_code == 200
+        assert result.status_code == 404
         policy = result.headers['Content-Security-Policy']
         directives = {parts[0]: set(parts[1:]) for entry in policy.split(';') if (parts := entry.split())}
-        assert directives['script-src'] == {
-            "'self'", 'https://cdn.jsdelivr.net', 'https://website-translator.app.crowdin.net',
-        }
-        assert directives['connect-src'] == {
-            "'self'", 'https://cdn.jsdelivr.net', 'https://distributions.crowdin.net',
-        }
+        assert directives['script-src'] == {"'self'"}
+        assert directives['connect-src'] == {"'self'"}
         assert directives['frame-ancestors'] == {"'none'"}
         assert result.headers['X-Frame-Options'] == 'DENY'
-    assert 'crowdin.net' not in browser.get('/').headers['Content-Security-Policy']
-    assert 'cdn.jsdelivr.net' not in browser.get('/').headers['Content-Security-Policy']
-    set_session(browser, {'admin_revision': admin.account()['revision']}, host='127.0.0.1')
-    translated = browser.get('https://127.0.0.1:9494/docs/?lng=es-ES')
-    assert translated.status_code == 200
-    assert b'Documentation' in translated.content
 
 
 def test_https_csrf_requires_same_origin_referer(browser):

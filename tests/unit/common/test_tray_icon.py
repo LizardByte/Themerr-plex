@@ -126,7 +126,7 @@ def test_about_and_donation_links_use_the_native_callback_contract(configured, m
     destinations = {
         'Repository': 'https://github.com/LizardByte/Themerr-plex',
         'GitHub Releases': 'https://github.com/LizardByte/Themerr-plex/releases/latest',
-        'Documentation': '/docs/',
+        'Documentation': 'https://docs.lizardbyte.dev/projects/themerr-plex/latest/',
         'API documentation': '/api/docs',
         'ThemerrDB': 'https://github.com/LizardByte/ThemerrDB',
         'GitHub Sponsors': 'https://github.com/sponsors/LizardByte',

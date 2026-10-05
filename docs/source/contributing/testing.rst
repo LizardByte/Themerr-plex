@@ -44,13 +44,13 @@ formatting changes; run the same checks locally with:
    dotnet format connectors/jellyfin/Themerr.Connector.csproj --verify-no-changes
    dotnet format connectors/jellyfin.tests/Connector.Tests.csproj --verify-no-changes
 
-For documentation validation, initialize the C# extension submodule, create the conda environment,
+For documentation validation, initialize the documentation submodules, create the conda environment,
 and install the docs extra. See :doc:`build` for the complete build setup:
 
 .. code-block:: shell
 
    git submodule update --init --recursive
-   conda env create --file docs/environment.yml
+   conda env create --file third-party/dockle/environment.yml
    conda activate dockle-docs
    uv sync --locked --extra docs
    uv run --locked --extra docs python -m dockle check

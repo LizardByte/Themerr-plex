@@ -7,6 +7,10 @@
 
 # ignore directories
 tests/
+docs/
+third-party/
+dockle.toml
+readthedocs*.sh
 
 # ignore venv when building locally
 venv/

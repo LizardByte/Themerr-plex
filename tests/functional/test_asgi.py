@@ -343,16 +343,6 @@ def test_documentation_supplies_session_bound_csrf_defaults(browser):
     assert all('default' not in p['schema'] for p in parameters if p['name'] == 'X-CSRFToken')
 
 
-def test_docs_reject_directory_traversal(browser, monkeypatch, tmp_path):
-    docs = tmp_path / 'docs'
-    docs.mkdir()
-    (tmp_path / 'private.txt').write_text('private file contents', encoding='utf-8')
-    monkeypatch.setattr(Paths, 'DOCS_DIR', str(docs))
-    response = browser.get('/docs/%2e%2e/private.txt')
-    assert response.status_code == 404
-    assert b'private file contents' not in response.content
-
-
 def test_unexpected_api_failure_keeps_generic_errors_and_security_headers(browser, monkeypatch):
     from themerr import github_status
     monkeypatch.setattr(github_status, 'publication_status', Mock(side_effect=RuntimeError('private details')))

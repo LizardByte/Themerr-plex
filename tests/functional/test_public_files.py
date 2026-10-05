@@ -14,14 +14,16 @@ from tests.http_helpers import set_session
 
 PUBLIC = b'0123456789'
 PRIVATE = b'private file contents must never be served'
-ROUTES = ('/docs', '/images', '/web/assets')
+ROUTES = (
+    '/images',
+    '/web/assets',
+)
 
 
 @pytest.fixture
 def public_files(configured, monkeypatch, tmp_path):
     root = tmp_path / 'installation'
     directories = {
-        '/docs': root / 'docs',
         '/images': root / 'web' / 'images',
         '/web/assets': root / 'web' / 'assets',
     }
@@ -34,9 +36,7 @@ def public_files(configured, monkeypatch, tmp_path):
         sibling = directory.with_name(directory.name + '-private')
         sibling.mkdir()
         (sibling / 'private.png').write_bytes(PRIVATE)
-    (directories['/docs'] / 'index.html').write_bytes(PUBLIC)
     monkeypatch.setattr(Paths, 'ROOT_DIR', str(root))
-    monkeypatch.setattr(Paths, 'DOCS_DIR', str(directories['/docs']))
     monkeypatch.setattr(admin, 'HASH_METHOD', 'scrypt:16384:8:1')
     account = admin._save('admin', 'a unique test password')
     with TestClient(webapp.create_app(https_only=False), base_url='http://localhost') as client:
@@ -93,7 +93,6 @@ def test_public_routes_preserve_nested_files_head_and_byte_ranges(public_files, 
         assert partial.headers['content-range'] == 'bytes 2-4/10'
         invalid = client.get(url, headers={'Range': 'bytes=100-'})
         assert invalid.status_code == 416
-    assert client.get('/docs/').content == PUBLIC
 
 
 def _directory_link(target, link):

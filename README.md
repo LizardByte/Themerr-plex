@@ -28,4 +28,4 @@ resolved with `yt-dlp`.
 It works with the Plex Movie (`tv.plex.agents.movie`) and Plex Series (`tv.plex.agents.series`) agents. Install and
 configure the application separately from Plex; no Plex plug-in directory is used.
 
-LizardByte has the full documentation hosted on [Read the Docs](https://themerr-plex.readthedocs.io/).
+LizardByte has the full documentation hosted on [Read the Docs](https://docs.lizardbyte.dev/projects/themerr-plex/latest/).

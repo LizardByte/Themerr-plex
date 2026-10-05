@@ -1,7 +1,6 @@
 """Prepare local assets and run Themerr-plex in this Python process for debugging."""
 
 # standard imports
-import importlib.util
 import os
 from pathlib import Path
 import shutil
@@ -85,48 +84,6 @@ def _ensure_assets() -> None:
     )
 
 
-def _docs_need_build() -> bool:
-    """Check whether bundled documentation is missing or stale.
-
-    Returns
-    -------
-    bool
-        True when Dockle should rebuild the site.
-    """
-    site_index = ROOT / '_site' / 'index.html'
-    if not site_index.is_file():
-        return True
-    built_at = site_index.stat().st_mtime_ns
-    sources = [
-        *ROOT.joinpath('docs', 'source').rglob('*'),
-        *ROOT.joinpath('connectors', 'jellyfin').glob('*.cs'),
-        ROOT / 'connectors' / 'jellyfin' / 'Themerr.Connector.csproj',
-        *ROOT.joinpath('docs').glob('*.py'),
-        ROOT / 'docs' / 'environment.yml',
-        ROOT / 'dockle.toml',
-    ]
-    return any(source.is_file() and source.stat().st_mtime_ns > built_at for source in sources)
-
-
-def _ensure_docs() -> None:
-    """Build changed documentation when Dockle is installed."""
-    if not _docs_need_build():
-        return
-    if importlib.util.find_spec('dockle') is None:
-        print('Documentation is unavailable; install the docs extra to build it.', file=sys.stderr)
-        return
-    subprocess.run(
-        [
-            sys.executable,
-            '-m',
-            'dockle',
-            'build',
-        ],
-        cwd=ROOT,
-        check=True,
-    )
-
-
 def _has_js_runtime() -> bool:
     """Check for Deno or Node for yt-dlp's YouTube challenge solver.
 
@@ -143,7 +100,6 @@ def main() -> None:
     """Prepare resources and launch the app in the debugger's Python process."""
     os.chdir(ROOT)
     _ensure_assets()
-    _ensure_docs()
     if not _has_js_runtime():
         print('No Deno or Node runtime found; YouTube extraction may be incomplete.', file=sys.stderr)
 

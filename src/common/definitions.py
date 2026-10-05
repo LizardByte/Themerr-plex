@@ -9,6 +9,9 @@ import platform
 import sys
 
 
+DOCUMENTATION_URL = 'https://docs.lizardbyte.dev/projects/themerr-plex/latest/'
+
+
 class Names:
     """
     Class representing common names.
@@ -134,8 +137,6 @@ class Paths:
         The root directory of the application. This is where the source files exist.
     DATA_DIR : str
         The data directory of the application.
-    DOCS_DIR : str
-        The directory containing html documentation.
     LOCALE_DIR : str
         The directory containing localization files.
     LOG_DIR : str
@@ -164,6 +165,5 @@ class Paths:
     else:
         CONFIG_DIR = os.path.join(DATA_DIR, 'config')
 
-    DOCS_DIR = os.path.join(ROOT_DIR, '_site')
     LOCALE_DIR = os.path.join(ROOT_DIR, 'locale')
     LOG_DIR = os.path.join(CONFIG_DIR, 'logs')

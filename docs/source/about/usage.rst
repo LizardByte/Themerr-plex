@@ -6,7 +6,7 @@ Usage
 Start Themerr-plex, then open its web UI at https://localhost:9494 (or the host and port you configured).
 
 The web sidebar footer shows the installed version. In the system tray, open **About** to see the version and
-links to the repository, releases, bundled documentation, API documentation, and ThemerrDB. The API documentation
+links to the repository, releases, online documentation, API documentation, and ThemerrDB. The API documentation
 requires signing in to the web UI.
 
 Notifications
@@ -38,7 +38,7 @@ For a remote or Docker installation, replace ``127.0.0.1`` in the link with the 
 token. Opening the normal address before setup shows instructions for obtaining this link.
 
 The admin password is stored as a salted scrypt hash in SQLite. Sign in with this account to access libraries,
-settings, server connections, theme playback, and bundled documentation. Sessions expire after 12 hours of inactivity and
+settings, server connections, and theme playback. Sessions expire after 12 hours of inactivity and
 restarting the application signs them out. Every form and modifying API request requires a CSRF token, and the
 web UI cannot be embedded in an iframe.
 
@@ -207,8 +207,8 @@ and non-secret client IDs in
 ``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
 ``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted tokens and API keys there.
 
-The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
-bundled with packaged and Docker builds.
+The ``/status`` endpoint returns a JSON health response. Open **Documentation** in the sidebar or
+system tray to read the online project documentation.
 
 YouTube cookies
 ---------------

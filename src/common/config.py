@@ -453,7 +453,7 @@ _CONFIG_SPEC_DICT = {
                 'then paste the entire JSON array here and save. '
                 'Cookies contain your browser session; keep them private.'
             ),
-            'help_url': '/docs/about/usage.html#youtube-cookies',
+            'help_url': f'{definitions.DOCUMENTATION_URL}docs/about/usage.html#youtube-cookies',
             'help_label': _('Cookie export instructions'),
             'advanced': True,
         },

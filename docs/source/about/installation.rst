@@ -32,9 +32,8 @@ Then run from the repository root:
 .. code-block:: shell
 
    uv sync --locked
-   uv run --locked python scripts/localize.py --compile
    npm ci --ignore-scripts
    npm run build
    uv run --locked python src/themerr_plex.py
 
-For a packaged build with web assets and documentation, see :ref:`Build <contributing/build:build>`.
+For a packaged build with web assets, see :ref:`Build <contributing/build:build>`.

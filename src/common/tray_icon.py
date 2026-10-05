@@ -116,7 +116,7 @@ def tray_initialize() -> Icon | bool:
                 MenuItem(text=_('%(github)s Releases') % {'github': 'GitHub'},
                          action=functools.partial(
                              open_link, 'https://github.com/LizardByte/Themerr-plex/releases/latest')),
-                MenuItem(text=_('Documentation'), action=functools.partial(open_link, '/docs/')),
+                MenuItem(text=_('Documentation'), action=functools.partial(open_link, definitions.DOCUMENTATION_URL)),
                 MenuItem(text=_('API documentation'), action=functools.partial(open_link, '/api/docs')),
                 MenuItem(text='ThemerrDB',
                          action=functools.partial(open_link, 'https://github.com/LizardByte/ThemerrDB')),
