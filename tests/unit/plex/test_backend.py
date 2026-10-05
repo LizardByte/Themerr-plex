@@ -8,13 +8,13 @@ import pytest
 from media_servers import get_backend
 from media_servers.base import MediaServerBackend
 from plex import dashboard, plexapi, tmdb
-from plex.backend import PlexBackend, PlexMediaServer
+from plex.backend import PlexMediaServer
 from themerr import storage
 
 
-def test_selection_contains_only_the_plex_implementation():
+def test_registry_retains_default_plex_implementation():
     assert isinstance(get_backend(), MediaServerBackend)
-    assert isinstance(get_backend(), PlexBackend)
+    assert isinstance(get_backend().server('default'), PlexMediaServer)
     assert get_backend() is get_backend()
 
 

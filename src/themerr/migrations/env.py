@@ -5,8 +5,10 @@ from alembic import context
 
 # local imports
 from plex.servers import ServerRecord
+from jellyfin.servers import ServerRecord as JellyfinServerRecord
 
 target_metadata = ServerRecord.metadata
+assert JellyfinServerRecord.metadata is target_metadata
 
 
 def run_migrations_online() -> None:

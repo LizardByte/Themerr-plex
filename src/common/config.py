@@ -233,6 +233,24 @@ _CONFIG_SPEC_DICT = {
             'default': False,
         },
     },
+    'Jellyfin': {
+        'type': 'section',
+        'name': _('Jellyfin'),
+        'description': _('Jellyfin theme processing settings. Connections are managed on the Servers page.'),
+        'icon': 'server',
+        'BOOL_MOVIE_SUPPORT': {
+            'type': 'boolean', 'name': _('Movie support'), 'default': True,
+            'description': _('Add themes to Jellyfin movies.'),
+        },
+        'BOOL_SERIES_SUPPORT': {
+            'type': 'boolean', 'name': _('Series support'), 'default': True,
+            'description': _('Add themes to Jellyfin series.'),
+        },
+        'BOOL_COLLECTION_SUPPORT': {
+            'type': 'boolean', 'name': _('Collections'), 'default': True,
+            'description': _('Add themes to Jellyfin collections.'),
+        },
+    },
     'Plex': {
         'type': 'section',
         'name': _('Plex'),

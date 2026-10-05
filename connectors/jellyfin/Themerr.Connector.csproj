@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ConnectorFramework Condition="'$(ConnectorFramework)' == ''">net10.0</ConnectorFramework>
+    <TargetFramework>$(ConnectorFramework)</TargetFramework>
+    <JellyfinVersion Condition="'$(JellyfinVersion)' == ''">12.1.0</JellyfinVersion>
+    <ConnectorBuild Condition="'$(ConnectorBuild)' == ''">development</ConnectorBuild>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AssemblyName>Themerr.Connector</AssemblyName>
+    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">0.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Jellyfin.Controller" Version="$(JellyfinVersion)" PrivateAssets="all" />
+    <AssemblyMetadata Include="ThemerrBuild" Value="$(ConnectorBuild)" />
+    <AssemblyMetadata Include="JellyfinAbi" Value="$(JellyfinVersion)" />
+  </ItemGroup>
+</Project>

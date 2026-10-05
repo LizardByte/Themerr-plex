@@ -107,6 +107,7 @@ function discoveredServer(resource, source) {
 }
 
 export function initServers(signal) {
+    initJellyfin(signal);
     const authStart = document.getElementById('plex-auth-start');
     if (!authStart) return;
     const status = document.getElementById('plex-auth-status');
@@ -156,7 +157,7 @@ export function initServers(signal) {
     });
     const disconnect = document.getElementById('plex-auth-disconnect');
     disconnect.addEventListener('click', () => {
-        if (!window.confirm('Disconnect Plex and pause all saved servers? Your local theme history will be kept.')) return;
+        if (!window.confirm('Disconnect Plex and pause all saved Plex servers? Your local theme history will be kept.')) return;
         void busy(disconnect, async () => {
             await api('/api/plex/auth/disconnect');
             if (active) await refreshPage();
@@ -206,10 +207,40 @@ export function initServers(signal) {
         });
     });
     document.querySelectorAll('[data-remove-server]').forEach(button => button.addEventListener('click', () => {
-        if (!window.confirm('Remove this server and its local theme history? Plex media will stay on the server.')) return;
+        if (!window.confirm('Remove this server and its local theme history? Media will stay on the server.')) return;
         void busy(button, async () => {
             await api(`/api/servers/${encodeURIComponent(button.dataset.removeServer)}`, { method: 'DELETE' });
             if (active) await refreshPage();
         });
     }));
+}
+
+function initJellyfin(signal) {
+    const form = document.getElementById('jellyfin-server-form');
+    form?.addEventListener('submit', event => {
+        event.preventDefault();
+        void busy(form.querySelector('button[type="submit"]'), async () => {
+            const data = new FormData(form);
+            await api('/api/jellyfin/servers', { body: { url: data.get('url'), api_key: data.get('api_key') } });
+            form.reset();
+            if (!signal?.aborted && form.isConnected) await refreshPage();
+        });
+    }, { signal });
+    document.querySelectorAll('[data-connector-form]').forEach(connectorForm => {
+        const status = connectorForm.querySelector('[data-connector-status]');
+        connectorForm.elements.themerr_url.value = window.location.origin;
+        const url = `/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/connector`;
+        void api(url, { method: 'GET' }).then(result => {
+            if (!signal?.aborted && status.isConnected) status.textContent = result.message;
+        }).catch(error => {
+            if (!signal?.aborted && status.isConnected) status.textContent = error.message;
+        });
+        connectorForm.addEventListener('submit', event => {
+            event.preventDefault();
+            void busy(connectorForm.querySelector('button[type="submit"]'), async () => {
+                const result = await api(url, { body: { themerr_url: new FormData(connectorForm).get('themerr_url') } });
+                if (!signal?.aborted && status.isConnected) status.textContent = result.message;
+            });
+        }, { signal });
+    });
 }

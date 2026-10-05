@@ -11,6 +11,10 @@ from fastapi.routing import APIRoute
 _STRING = {'type': 'string'}
 _ADD_SERVER = 'server_ui.add_server'
 _BODIES = {
+    'jellyfin.add_server': ({'url': _STRING, 'api_key': {'type': 'string', 'format': 'password'}},
+                            ['url', 'api_key'], {'url': 'http://192.168.1.10:8096'}),
+    'jellyfin.install_connector': ({'themerr_url': _STRING}, ['themerr_url'],
+                                   {'themerr_url': 'http://192.168.1.20:9494'}),
     'browse_directories': ({'path': _STRING}, [], {'path': ''}),
     'server_ui.discover': ({'source': {'type': 'string', 'enum': ['account', 'local']}},
                            ['source'], {'source': 'account'}),
@@ -66,9 +70,10 @@ def _describe_operation(route: APIRoute, operation: dict) -> None:
     """Add browser authentication, request bodies, and response metadata."""
     method = next(iter(route.methods)).lower()
     operation['responses']['200']['content'] = {'application/json': {'schema': {'type': 'object'}}}
-    if route.name in (_ADD_SERVER, 'server_ui.refresh'):
-        status = '201' if route.name == _ADD_SERVER else '202'
-        operation['responses'][status] = operation['responses'].pop('200')
+    statuses = {_ADD_SERVER: '201', 'jellyfin.add_server': '201',
+                'server_ui.refresh': '202', 'jellyfin.install_connector': '202'}
+    if route.name in statuses:
+        operation['responses'][statuses[route.name]] = operation['responses'].pop('200')
     operation['tags'] = [route.path.split('/')[2].title() if route.path.startswith('/api/') else 'Status']
     if route.path != '/status':
         operation['security'] = [{'BrowserSession': []}]
@@ -93,12 +98,12 @@ def _describe_operation(route: APIRoute, operation: dict) -> None:
         operation['responses']['416'] = {'description': 'Requested audio range is unavailable.'}
     if route.name.startswith('theme_poster'):
         operation['responses']['200'] = {
-            'description': 'Plex item poster.',
+            'description': 'Media-server item poster.',
             'content': {kind: {'schema': {'type': 'string', 'format': 'binary'}}
                         for kind in ('image/jpeg', 'image/png', 'image/webp', 'image/gif')},
         }
         operation['responses']['404'] = {'description': 'Poster is unavailable.'}
-        operation['responses']['502'] = {'description': 'Unable to load a bounded poster from Plex.'}
+        operation['responses']['502'] = {'description': 'Unable to load a bounded poster from the media server.'}
 
 
 def schema(routes: list) -> dict:

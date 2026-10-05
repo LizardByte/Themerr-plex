@@ -3,12 +3,12 @@
 Build
 =====
 
-Themerr-plex uses Python 3.14, uv, npm, Deno, and Dockle. Python dependencies are specified in pyproject.toml and
+Themerr-plex uses Python 3.14, uv, npm, Deno, Dockle, and the .NET 10 SDK. Python dependencies are specified in pyproject.toml and
 resolved in uv.lock. The npm lockfile supplies reproducible web assets. esbuild bundles browser dependencies and local
 scripts into ``web/assets``.
 
 The browser interface and JSON API use FastAPI with Uvicorn. Uvicorn runs in the application's web thread and
-uses the existing host, port, and TLS settings. Blocking Plex and database calls run in worker threads, while
+uses the existing host, port, and TLS settings. Blocking media-server and database calls run in worker threads, while
 theme audio streams through ASGI. The ``/docs/`` route serves the bundled project documentation.
 Signed-in administrators can explore the API at ``/api/docs`` or retrieve its OpenAPI schema at
 ``/api/openapi.json``. The sidebar links to both kinds of documentation.
@@ -23,6 +23,18 @@ From the repository root, install dependencies and build browser assets:
    uv sync --locked --all-extras
    npm ci --ignore-scripts
    npm run build
+   uv run --locked python scripts/build_connector.py
+
+The connector builder produces separate Jellyfin 10.11 and 12.1 assemblies, targeting .NET 9 and .NET 10.
+The .NET 10 SDK builds both targets; Jellyfin supplies their runtime dependencies. Generated ZIP archives and
+their descriptor live in the ignored ``jellyfin-connector`` directory. Rebuild them after changing connector
+source or the Themerr version. To use a SDK outside ``PATH``, pass ``--dotnet /path/to/dotnet``.
+
+Run the connector's file ownership and upload integrity checks with:
+
+.. code-block:: shell
+
+   dotnet run --project connectors/jellyfin.tests/Connector.Tests.csproj --configuration Release
 
 Install the commit hook once per checkout:
 
@@ -61,13 +73,15 @@ Build the documentation and standalone executable:
    uv run --locked --all-extras python scripts/build.py
 
 Dockle writes the site to _site. PyInstaller includes that site, the web assets, and translations in the
-executable under dist, including Deno for yt-dlp. macOS also produces ``dist/themerr_plex.app``, a directory
+executable under dist, including Deno for yt-dlp and both Jellyfin connector archives. The standalone build
+rebuilds the connectors after stamping the release version. macOS also produces ``dist/themerr_plex.app``, a directory
 bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release version before running
 ``scripts/build.py`` to stamp ``src/common/version.py`` with the version used by release notifications and
 ``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
 is included through normal imports. Unversioned builds compare releases against ``0.0.0``.
 
-Docker uses the same lockfile and Dockle build:
+Docker uses the same lockfile and Dockle build. A separate .NET build stage compiles both connectors;
+the runtime image contains their artifacts without the SDK:
 
 .. code-block:: shell
 

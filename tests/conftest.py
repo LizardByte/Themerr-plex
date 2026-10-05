@@ -3,9 +3,29 @@
 # standard imports
 from types import SimpleNamespace
 from unittest.mock import Mock
+import hashlib
+import json
 
 # lib imports
 import pytest
+
+
+@pytest.fixture
+def connector_bundle(tmp_path, monkeypatch):
+    from jellyfin import connector
+    from common.version import VERSION
+    directory = tmp_path / 'connector'
+    directory.mkdir()
+    artifacts = {}
+    for index, (profile, filename) in enumerate(connector.ARCHIVES.items()):
+        content = ('connector-' + profile).encode()
+        (directory / filename).write_bytes(content)
+        artifacts[profile] = {'version': f'2026.1004.1234.{index}', 'targetAbi': profile + '.0',
+                              'checksum': hashlib.md5(content, usedforsecurity=False).hexdigest()}
+    data = {'build': 'a' * 64, 'protocol': 1, 'themerrVersion': VERSION, 'artifacts': artifacts}
+    (directory / 'bundle.json').write_text(json.dumps(data), encoding='utf-8')
+    monkeypatch.setattr(connector, 'directory', lambda: directory)
+    return data
 
 
 @pytest.fixture

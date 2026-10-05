@@ -24,7 +24,7 @@ _engine_path: str | None = None
 _dashboard_lock = RLock()
 _dashboard_revision = 0
 _theme_uploads: dict[tuple[str, str], tuple[int, str]] = {}
-_server_scope = ContextVar('plex_server_id', default='default')
+_server_scope = ContextVar('media_server_id', default='default')
 
 
 def current_server_id() -> str:
@@ -33,14 +33,14 @@ def current_server_id() -> str:
     Returns
     -------
     str
-        Plex machine identifier, or the default scope.
+        Saved server identity, or the default Plex scope.
     """
     return _server_scope.get()
 
 
 @contextmanager
 def server_scope(server_id: str):
-    """Scope storage and Plex operations to one server.
+    """Scope storage and integration operations to one server.
 
     Parameters
     ----------
@@ -64,13 +64,13 @@ class Base(DeclarativeBase):
 
 
 class LibrarySection(Base):
-    """One cached Plex library section."""
+    """One cached media-server library section."""
 
     __tablename__ = 'library_sections'
 
     server_id: Mapped[str] = mapped_column(String, primary_key=True, default=current_server_id)
 
-    key: Mapped[int] = mapped_column(Integer, primary_key=True)
+    key: Mapped[str] = mapped_column(String, primary_key=True)
     title: Mapped[str] = mapped_column(String, nullable=False)
     agent: Mapped[str] = mapped_column(String, nullable=False)
     type: Mapped[str] = mapped_column(String, nullable=False)
@@ -83,7 +83,7 @@ class LibrarySection(Base):
 
 
 class LibraryItem(Base):
-    """One dashboard row keyed by its stable Plex rating key."""
+    """One dashboard row keyed by its opaque server item identifier."""
 
     __tablename__ = 'library_items'
 
@@ -94,7 +94,7 @@ class LibraryItem(Base):
         ['server_id', 'section_key'], ['library_sections.server_id', 'library_sections.key'],
     ),)
 
-    section_key: Mapped[int] = mapped_column(Integer, nullable=False)
+    section_key: Mapped[str] = mapped_column(String, nullable=False)
     position: Mapped[int] = mapped_column(Integer, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
     type: Mapped[str] = mapped_column(String, nullable=False)
@@ -177,7 +177,7 @@ def _replace_dashboard(session: Session, sections: dict) -> None:
     session.execute(delete(LibrarySection).where(LibrarySection.server_id == current_server_id()))
     for section in sections.values():
         session.add(LibrarySection(**{
-            name: section[name] for name in (
+            name: str(section[name]) if name == 'key' else section[name] for name in (
                 'key', 'title', 'agent', 'type', 'media_count', 'media_percent_complete',
                 'collection_count', 'collection_percent_complete', 'collections_enabled', 'total_count',
             )
@@ -191,7 +191,7 @@ def _replace_dashboard(session: Session, sections: dict) -> None:
             if fields['database_id'] is not None:
                 fields['database_id'] = str(fields['database_id'])
             session.add(LibraryItem(
-                rating_key=str(item['rating_key']), section_key=int(section['key']), position=position, **fields,
+                rating_key=str(item['rating_key']), section_key=str(section['key']), position=position, **fields,
             ))
 
 

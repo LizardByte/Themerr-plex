@@ -169,11 +169,9 @@ def home(request: Request) -> Response:
     )
 
 
-@router.api_route('/api/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
-                  name='theme_poster_default', response_model=None)
-@router.api_route('/api/servers/{server_id}/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
+@router.api_route('/api/servers/{server_id}/themes/{rating_key}/poster', methods=['GET', 'HEAD'],
                   name='theme_poster', response_model=None)
-def theme_poster(request: Request, rating_key: int, server_id: str = 'default') -> Response:
+def theme_poster(request: Request, rating_key: str, server_id: str = 'default') -> Response:
     """Serve a bounded media-server poster without exposing server credentials.
 
     Resolve artwork from the saved server's current item metadata. Only raster images
@@ -183,7 +181,7 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
     ----------
     request : Request
         Authenticated browser request.
-    rating_key : int
+    rating_key : str
         Media-server item identifier.
     server_id : str, optional
         Saved server identifier.
@@ -226,14 +224,41 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
         return Response(status_code=502)
 
 
-async def _stream_theme_audio(upstream: requests.Response, rating_key: int):
+@router.api_route('/api/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
+                  name='theme_poster_default', response_model=None)
+def theme_poster_default(request: Request, rating_key: int) -> Response:
+    """Serve posters through the legacy integer Plex route.
+
+    Convert the legacy path parameter before using the shared poster handler.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser request.
+    rating_key : int
+        Plex item identifier.
+
+    Returns
+    -------
+    Response
+        Bounded poster or a sanitized error.
+
+    Examples
+    --------
+    >>> theme_poster_default(request, 42)
+    <Response ...>
+    """
+    return theme_poster(request, str(rating_key))
+
+
+async def _stream_theme_audio(upstream: requests.Response, rating_key: str):
     """Stream theme audio and release the connection when playback stops.
 
     Parameters
     ----------
     upstream : requests.Response
         Open streaming response from the media server.
-    rating_key : int
+    rating_key : str
         Media-server item identifier for diagnostic logging.
 
     Yields
@@ -261,7 +286,7 @@ class ThemeAudioResponse(StreamingResponse):
     ----------
     upstream : requests.Response
         Open audio response from the media server.
-    rating_key : int
+    rating_key : str
         Item identifier used for playback diagnostics.
     headers : dict
         Validated media headers for the browser response.
@@ -271,7 +296,7 @@ class ThemeAudioResponse(StreamingResponse):
     >>> response = ThemeAudioResponse(upstream, 42, {'Content-Type': 'audio/mpeg'})
     """
 
-    def __init__(self, upstream: requests.Response, rating_key: int, headers: dict):
+    def __init__(self, upstream: requests.Response, rating_key: str, headers: dict):
         """Stream the open upstream response without buffering its audio."""
         self.upstream = upstream
         super().__init__(_stream_theme_audio(upstream, rating_key), status_code=upstream.status_code,
@@ -305,18 +330,12 @@ class ThemeAudioResponse(StreamingResponse):
 
 
 @router.api_route(
-    '/api/themes/{rating_key:int}',
-    methods=['GET', 'HEAD'],
-    name='play_theme_default',
-    response_model=None,
-)
-@router.api_route(
-    '/api/servers/{server_id}/themes/{rating_key:int}',
+    '/api/servers/{server_id}/themes/{rating_key}',
     methods=['GET', 'HEAD'],
     name='play_theme',
     response_model=None,
 )
-def play_theme(request: Request, rating_key: int, server_id: str = 'default') -> Response:
+def play_theme(request: Request, rating_key: str, server_id: str = 'default') -> Response:
     """Serve the item's current server theme without exposing server credentials.
 
     Resolve the selected audio from fresh server metadata and forward byte range requests
@@ -326,7 +345,7 @@ def play_theme(request: Request, rating_key: int, server_id: str = 'default') ->
     ----------
     request : Request
         Incoming browser or API request.
-    rating_key : int
+    rating_key : str
         Item whose selected theme should be played, regardless of its provider.
     server_id : str
         Server identifier.
@@ -353,7 +372,34 @@ def play_theme(request: Request, rating_key: int, server_id: str = 'default') ->
     return _theme_audio_response(request, upstream, rating_key)
 
 
-def _theme_audio_response(request: Request, upstream: requests.Response, rating_key: int) -> Response:
+@router.api_route('/api/themes/{rating_key:int}', methods=['GET', 'HEAD'],
+                  name='play_theme_default', response_model=None)
+def play_theme_default(request: Request, rating_key: int) -> Response:
+    """Serve audio through the legacy integer Plex route.
+
+    Convert the legacy path parameter before using the shared streaming handler.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser request.
+    rating_key : int
+        Plex item identifier.
+
+    Returns
+    -------
+    Response
+        Audio stream or a sanitized playback error.
+
+    Examples
+    --------
+    >>> play_theme_default(request, 42)
+    <Response ...>
+    """
+    return play_theme(request, str(rating_key))
+
+
+def _theme_audio_response(request: Request, upstream: requests.Response, rating_key: str) -> Response:
     """Build a browser response and close rejected theme audio streams.
 
     Parameters
@@ -362,7 +408,7 @@ def _theme_audio_response(request: Request, upstream: requests.Response, rating_
         Incoming browser or API request.
     upstream : requests.Response
         Stream returned by the media server.
-    rating_key : int
+    rating_key : str
         Media-server item identifier for playback diagnostics.
 
     Returns
@@ -382,11 +428,13 @@ def _theme_audio_response(request: Request, upstream: requests.Response, rating_
         status = 404 if upstream.status_code == 404 else 502
         log.warning('Media server rejected theme playback for rating_key=%s (HTTP %s)',
                     rating_key, upstream.status_code)
-        return JSONResponse({'message': f'{get_backend().name} could not provide theme audio.'}, status_code=status)
+        name = get_backend().display_name(request.path_params.get('server_id', 'default'))
+        return JSONResponse({'message': f'{name} could not provide theme audio.'}, status_code=status)
     content_type = upstream.headers.get('Content-Type', 'application/octet-stream').split(';', 1)[0].lower()
     if not content_type.startswith('audio/') and content_type not in ('video/mp4', 'application/octet-stream'):
         upstream.close()
-        return JSONResponse({'message': f'{get_backend().name} returned an unsupported audio format.'},
+        name = get_backend().display_name(request.path_params.get('server_id', 'default'))
+        return JSONResponse({'message': f'{name} returned an unsupported audio format.'},
                             status_code=502)
     headers['Content-Type'] = content_type
     if request.method == 'HEAD':

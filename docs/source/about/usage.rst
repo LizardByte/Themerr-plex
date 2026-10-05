@@ -80,7 +80,7 @@ server address.
 Each saved server has its own processing toggle, ignored library IDs, data directory, dashboard snapshot,
 upload history, and errors. Pausing a server prevents new work; an upload already in progress can finish.
 Removing a server erases its saved connection and local records, while themes already uploaded to Plex remain there.
-Select **Disconnect Plex** to erase Plex credentials and pause saved servers. After signing in again, reconnect
+Select **Disconnect Plex** to erase Plex credentials and pause saved Plex servers. After signing in again, reconnect
 each server to resume processing with its retained upload history.
 
 On desktop systems, account and server tokens are saved in the operating system's credential store.
@@ -134,12 +134,12 @@ open the item on Plex or its metadata provider in a new tab. Media type icons re
 regional failures do not by themselves require replacing the ThemerrDB video. ThemerrDB checks US availability
 when accepting themes; a regional failure elsewhere cannot establish that it is currently unavailable in the US.
 
-Select the play button beside an item's title to listen to its currently selected Plex theme, regardless of provider.
+Select the play button beside an item's title to listen to its currently selected media-server theme, regardless of provider.
 The button changes to pause during playback, and the ring around it shows playback progress. Pausing retains your
 position; selecting another item stops the previous theme. Items without an installed theme have no play button.
 
 The player at the bottom of the workspace shows the item's poster, title, year, media type, and server.
-Select the title to open the item in Plex. If its poster is unavailable, a music icon appears instead.
+Select the title to open the item in its media server. If its poster is unavailable, a music icon appears instead.
 Use the playback slider to seek, the volume slider to adjust sound, and the previous and next buttons to
 browse installed themes. **Surprise me** picks a random installed theme across your servers.
 **Shuffle** plays themes in random order without repeats until the library has played; **Repeat this theme**
@@ -161,13 +161,51 @@ resolve other IMDb or TVDB IDs and collection names. If the Plex proxy is unavai
 ``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
 web settings and configuration file.
 
+Jellyfin servers
+----------------
+
+Jellyfin 10.11 and 12.1 are supported. Under **Servers**, enter the server's HTTP or HTTPS base address and an
+API key created under **Jellyfin Dashboard > Advanced > API Keys**, then select **Connect Jellyfin**. Use an
+address reachable from the machine running Themerr. Each saved server has independent processing settings,
+ignored libraries, dashboard records, and upload history.
+
+Theme uploads require the small **Themerr Connector** bundled with this Themerr build. On the server card,
+enter a Themerr address reachable from the Jellyfin machine and select **Install matching connector**.
+Themerr registers its local plugin repository and installs the exact compatible connector through Jellyfin's API,
+preserving other registered repositories. Restart Jellyfin to load the plugin, then refresh libraries in Themerr.
+After upgrading Themerr, install its matching connector again if the server card reports a mismatch.
+
+The download address must use a certificate trusted by Jellyfin or HTTP on your private network. Themerr's
+default self-signed HTTPS certificate is not automatically trusted by Jellyfin. A trusted reverse proxy can
+provide the download address; alternatively, configure Themerr's network settings for HTTP on your private network.
+Jellyfin downloads the fixed manifest and archive routes without a Themerr admin session; all connection,
+installation, library, and theme APIs retain administrator authentication.
+
+The connector only accepts matching uploads from Themerr and stores files beside the native library item.
+Movies must have their own local folders; a shared folder containing unrelated movies cannot have independent themes.
+Existing user themes are preserved, including themes created by the older Themerr-jellyfin plugin. Disable that
+older plugin's processing when using this integration. Theme files changed manually after an upload are also
+preserved. Themerr updates only themes whose current digest matches the connector's ownership record.
+Locked items and ignored libraries follow the processing settings. Jellyfin uses Themerr's scheduled scans;
+**Activity > Scan for themes** also starts a scan. Movies, series, and collections can be enabled separately
+under **Settings > Jellyfin**.
+
+API keys use the operating system credential store on desktops. Headless and Docker installations use the
+same ``THEMERR_PLEX_TOKEN_KEY_FILE`` encryption key as Plex, with a separate namespace for every Jellyfin server.
+The historical environment variable name remains supported. Removing a connection deletes its saved API key
+and local records; themes already installed on Jellyfin remain there.
+
+Jellyfin provider IDs are resolved through ThemerrDB's index. Set ``TMDB_API_READ_ACCESS_TOKEN`` if you also
+want TMDB lookups for other IMDb or TVDB IDs and collection names. Native IDs, posters, and theme playback
+remain scoped to their Jellyfin server.
+
 Local data
 ----------
 
 Themerr-plex stores its server registry, admin password hash, dashboard snapshots, upload records, processing errors,
-and non-secret Plex client ID in
+and non-secret client IDs in
 ``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
-``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted Plex tokens there.
+``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted tokens and API keys there.
 
 The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
 bundled with packaged and Docker builds.

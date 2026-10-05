@@ -18,6 +18,7 @@ def test_build_stamps_ci_version_before_packaging(monkeypatch, tmp_path, platfor
     spec = importlib.util.spec_from_file_location('notification_build', source)
     builder = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(builder)
+    monkeypatch.setattr(builder, 'build_connector', Mock())
     module = tmp_path / 'src' / 'common' / 'version.py'
     module.parent.mkdir(parents=True)
     monkeypatch.setattr(builder, '__file__', str(tmp_path / 'scripts' / 'build.py'))
@@ -29,6 +30,7 @@ def test_build_stamps_ci_version_before_packaging(monkeypatch, tmp_path, platfor
     def bundle(arguments):
         assert runpy.run_path(str(module))['VERSION'] == '2026.1003.120000'
         assert not any('version.txt' in value for value in arguments)
+        assert any(value.startswith('--add-data=jellyfin-connector') for value in arguments)
         assert not any(value.startswith('--codesign-identity=') for value in arguments)
         if platform == 'darwin':
             assert '--onedir' in arguments

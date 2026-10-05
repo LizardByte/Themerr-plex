@@ -119,6 +119,17 @@ jobs:
           uv sync --locked --all-extras --no-install-project
           --no-python-downloads --python ${{ env.PYTHON_VERSION }}
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build Jellyfin connectors
+        run: uv run --locked --all-extras --no-build --no-sync python scripts/build_connector.py
+
+      - name: Test Jellyfin connector file handling
+        run: dotnet run --project connectors/jellyfin.tests/Connector.Tests.csproj --configuration Release
+
       - name: Build and test web assets
         run: |
           npm ci --ignore-scripts

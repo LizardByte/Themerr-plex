@@ -11,7 +11,7 @@ from themerr import cache, storage
 
 @pytest.mark.parametrize('outcome', [False, OSError('Offline'), True])
 def test_failed_refresh_preserves_snapshot_and_suppresses_notification(configured, monkeypatch, outcome):
-    snapshot = {'1': {'key': 1, 'title': 'Saved library', 'agent': 'saved', 'type': 'movie',
+    snapshot = {'1': {'key': '1', 'title': 'Saved library', 'agent': 'saved', 'type': 'movie',
                       'media_count': 0, 'media_percent_complete': 0, 'collection_count': 0,
                       'collection_percent_complete': 0, 'collections_enabled': False,
                       'total_count': 0, 'items': []}}

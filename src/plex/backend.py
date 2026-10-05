@@ -57,6 +57,8 @@ class PlexMediaServer(MediaServer):
         return urls
 
     def open_poster(self, item_id: str) -> Response | None:
+        if not str(item_id).isascii() or not str(item_id).isdigit():
+            raise MediaServerError('Invalid Plex item identifier.', 404)
         try:
             with storage.server_scope(self.server_id):
                 server = plexapi.setup_plexapi()
@@ -74,6 +76,8 @@ class PlexMediaServer(MediaServer):
             raise MediaServerError('Unable to load poster from Plex.', 502) from error
 
     def open_theme(self, item_id: str, headers: Mapping[str, str]) -> Response:
+        if not str(item_id).isascii() or not str(item_id).isdigit():
+            raise MediaServerError('Invalid Plex item identifier.', 404)
         try:
             with storage.server_scope(self.server_id):
                 server = plexapi.setup_plexapi()

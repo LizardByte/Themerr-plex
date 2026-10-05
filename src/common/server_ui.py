@@ -105,6 +105,7 @@ def dashboard() -> tuple[dict, dict, dict]:
             identity = record['id'] + ':' + key
             urls = server.web_urls(str(section['key']))
             libraries[identity] = {**section, 'server_id': record['id'], 'server_name': record['name'],
+                                   'server_label': backend.display_name(record['id']),
                                    'enabled': record['enabled'], 'server_url': urls['server'],
                                    'library_url': urls['library']}
             for item in section['items']:
@@ -207,7 +208,7 @@ def edit_server(request: Request, server_id: str, payload=Depends(read_json)):
     except MediaServerError as exc:
         return _failure(exc, str(exc), exc.status_code)
     except Exception as exc:
-        return _failure(exc, f'Could not update this {get_backend().name} server. '
+        return _failure(exc, f'Could not update this {get_backend().display_name(server_id)} server. '
                         'Check its connection and settings.', 500)
     get_backend().start_listeners()
     return JSONResponse({'message': 'Server removed.' if request.method == 'DELETE' else 'Server settings saved.'})
@@ -275,9 +276,9 @@ def activity(request: Request):
     from themerr import scheduled_tasks
     libraries, _, _ = dashboard()
     failures = [{
-        'server': section['server_name'], 'library': section['title'], **item,
+        'server': section['server_name'], 'server_label': section['server_label'], 'library': section['title'], **item,
         'reason': item['error'] or (
-            f'TMDB ID unavailable. Review the item metadata in {get_backend().name}.'
+            f'TMDB ID unavailable. Review the item metadata in {get_backend().display_name(item["server_id"])}.'
             if item['theme_status'] == 'unresolved' else 'The theme could not be added.'
         ),
     } for section in libraries.values() for item in section['items']

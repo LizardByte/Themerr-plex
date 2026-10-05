@@ -18,7 +18,7 @@
     <div class="welcome-art" aria-hidden="true"><span><i data-lucide="server"></i></span><span class="welcome-art-music"><i data-lucide="music"></i></span></div>
     <span class="eyebrow">{{ _('LET’S SET THE TONE') }}</span>
     <h2>{{ _('Your library deserves a soundtrack.') if not servers else _('Getting to know your library.') }}</h2>
-    <p>{{ _('Connect your Plex account, choose your servers, and let Themerr take care of the music.') if not servers else _('Your first refresh is building the library view. Check Activity for progress, or request a refresh above.') }}</p>
+    <p>{{ _('Connect Plex or Jellyfin, choose your servers, and let Themerr take care of the music.') if not servers else _('Your first refresh is building the library view. Check Activity for progress, or request a refresh above.') }}</p>
     <a class="btn btn-primary" href="{{ url_for('server_ui.server_page') if not servers else url_for('server_ui.activity') }}"><i data-lucide="{{ 'plus' if not servers else 'activity' }}"></i>{{ _('Connect a server') if not servers else _('View activity') }}</a>
 </section>
 {% else %}
@@ -54,14 +54,14 @@
                             data-theme-title="{{ item.title }}" data-theme-year="{{ item.year or '' }}" data-theme-type="{{ item.type|capitalize }}" data-theme-server="{{ section.server_name }}"
                             data-theme-poster="{{ url_for('theme_poster_default', rating_key=item.rating_key) if section.server_id == 'default' else url_for('theme_poster', server_id=section.server_id, rating_key=item.rating_key) }}" data-theme-item-url="{{ item.server_item_url }}"
                             data-play-label="{{ _('Play theme for') }} {{ item.title }}" data-pause-label="{{ _('Pause theme for') }} {{ item.title }}"
-                            data-error-label="{{ _('Unable to play this theme. Check the Plex connection and browser audio support.') }}"
+                            data-error-label="{{ _('Unable to play this theme. Check the server connection and browser audio support.') }}"
                             aria-label="{{ _('Play theme for') }} {{ item.title }}" aria-pressed="false" aria-describedby="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}">
                             <svg class="theme-playback-ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="theme-playback-track" cx="18" cy="18" r="16"/><circle class="theme-playback-progress" cx="18" cy="18" r="16" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
                             <span class="theme-play-icon"><i data-lucide="play" aria-hidden="true"></i></span><span class="theme-pause-icon d-none"><i data-lucide="pause" aria-hidden="true"></i></span>
                         </button>
                         {% endif %}
                         </span>
-                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.server_item_url }}" target="_blank" rel="noopener noreferrer" title="{{ _('Open in Plex') }}: {{ item.title }}">{{ _('Plex ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
+                        <span><strong>{{ item.title }}</strong><small>{{ item.year or '—' }} <span>·</span> {{ item.type|capitalize }} <span>·</span> <a class="plex-item-link" href="{{ item.server_item_url }}" target="_blank" rel="noopener noreferrer" title="{{ _('Open in %(server)s')|format(server=section.server_label) }}: {{ item.title }}">{{ section.server_label }} {{ _('ID') }}: {{ item.rating_key }}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></small></span>
                     </div>
                     {% if item.theme %}<output id="playback-error-{{ loop.index }}-{{ loop.index0 }}-{{ section.server_id }}-{{ section.key }}" class="theme-playback-error" hidden></output>{% endif %}
                 </td>

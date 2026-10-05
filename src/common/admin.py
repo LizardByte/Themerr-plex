@@ -303,6 +303,9 @@ def _require_admin(request: Request):
         Login response, or no response when access is permitted.
     """
     path = request.url.path
+    from jellyfin.connector import PUBLIC_PATHS
+    if request.method in ('GET', 'HEAD') and path in PUBLIC_PATHS:
+        return None
     if path in ('/login', '/setup', '/favicon.ico', '/status') or path.startswith(('/web/assets/', '/images/')):
         return None
     current = account()

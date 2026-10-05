@@ -179,197 +179,219 @@ msgid "Auto update"
 msgstr ""
 
 #: src/common/config.py:238
-msgid "Plex"
+msgid "Jellyfin"
 msgstr ""
 
 #: src/common/config.py:239
-msgid "Plex settings."
+msgid ""
+"Jellyfin theme processing settings. Connections are managed on the "
+"Servers page."
+msgstr ""
+
+#: src/common/config.py:242 src/common/config.py:299
+msgid "Movie support"
 msgstr ""
 
 #: src/common/config.py:243
+msgid "Add themes to Jellyfin movies."
+msgstr ""
+
+#: src/common/config.py:246 src/common/config.py:305
+msgid "Series support"
+msgstr ""
+
+#: src/common/config.py:247
+msgid "Add themes to Jellyfin series."
+msgstr ""
+
+#: src/common/config.py:250 src/common/config.py:293 web/templates/home.html:30
+msgid "Collections"
+msgstr ""
+
+#: src/common/config.py:251
+msgid "Add themes to Jellyfin collections."
+msgstr ""
+
+#: src/common/config.py:256
+msgid "Plex"
+msgstr ""
+
+#: src/common/config.py:257
+msgid "Plex settings."
+msgstr ""
+
+#: src/common/config.py:261
 msgid "Plex URL"
 msgstr ""
 
-#: src/common/config.py:244
+#: src/common/config.py:262
 msgid "The URL to the Plex server."
 msgstr ""
 
-#: src/common/config.py:253 web/templates/servers.html:20
+#: src/common/config.py:271 web/templates/servers.html:20
 msgid "Plex data directory"
 msgstr ""
 
-#: src/common/config.py:254
+#: src/common/config.py:272
 msgid ""
 "https://support.plex.tv/articles/202915258-where-is-the-plex-media-"
 "server-data-directory-located/"
 msgstr ""
 
-#: src/common/config.py:264
+#: src/common/config.py:282
 msgid "Themerr"
 msgstr ""
 
-#: src/common/config.py:265
+#: src/common/config.py:283
 msgid "Themerr settings."
 msgstr ""
 
-#: src/common/config.py:269
+#: src/common/config.py:287
 msgid "Themerr Enabled"
 msgstr ""
 
-#: src/common/config.py:270
+#: src/common/config.py:288
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr ""
 
-#: src/common/config.py:275 web/templates/home.html:30
-msgid "Collections"
-msgstr ""
-
-#: src/common/config.py:276
+#: src/common/config.py:294
 msgid "Add themes to collections."
 msgstr ""
 
-#: src/common/config.py:281
-msgid "Movie support"
-msgstr ""
-
-#: src/common/config.py:282
+#: src/common/config.py:300
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr ""
 
-#: src/common/config.py:287
-msgid "Series support"
-msgstr ""
-
-#: src/common/config.py:288
+#: src/common/config.py:306
 msgid "Add themes to series using the Plex Series agent."
 msgstr ""
 
-#: src/common/config.py:293
+#: src/common/config.py:311
 msgid "Overwrite Plex themes"
 msgstr ""
 
-#: src/common/config.py:294
+#: src/common/config.py:312
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr ""
 
-#: src/common/config.py:299
+#: src/common/config.py:317
 msgid "Prefer MP4A AAC Codec"
 msgstr ""
 
-#: src/common/config.py:300
+#: src/common/config.py:318
 msgid "This can improve theme compatibility with Apple devices."
 msgstr ""
 
-#: src/common/config.py:305
+#: src/common/config.py:323
 msgid "Remove unused themes"
 msgstr ""
 
-#: src/common/config.py:306
+#: src/common/config.py:324
 msgid ""
 "Frees up space in your Plex metadata directory. This option requires that"
 " the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:312
+#: src/common/config.py:330
 msgid "Remove unused art"
 msgstr ""
 
-#: src/common/config.py:313 src/common/config.py:321
+#: src/common/config.py:331 src/common/config.py:339
 msgid ""
 "Applies to collection. Frees up space in your Plex metadata directory. "
 "This option requires that the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:320
+#: src/common/config.py:338
 msgid "Remove unused posters"
 msgstr ""
 
-#: src/common/config.py:328
+#: src/common/config.py:346
 msgid "Collection metadata"
 msgstr ""
 
-#: src/common/config.py:329
+#: src/common/config.py:347
 msgid ""
 "Update collection metadata (poster, art, and summary) during scheduled "
 "update."
 msgstr ""
 
-#: src/common/config.py:334
+#: src/common/config.py:352
 msgid "Ignore locked fields."
 msgstr ""
 
-#: src/common/config.py:335
+#: src/common/config.py:353
 msgid ""
 "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable"
 " this to update items."
 msgstr ""
 
-#: src/common/config.py:341
+#: src/common/config.py:359
 msgid "Ignored library IDs"
 msgstr ""
 
-#: src/common/config.py:342
+#: src/common/config.py:360
 msgid ""
 "Comma-separated library IDs to exclude from scheduled updates. IDs appear"
 " on Home."
 msgstr ""
 
-#: src/common/config.py:348
+#: src/common/config.py:366
 msgid "Update themes interval"
 msgstr ""
 
-#: src/common/config.py:349
+#: src/common/config.py:367
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:356
+#: src/common/config.py:374
 msgid "Update database cache interval"
 msgstr ""
 
-#: src/common/config.py:357
+#: src/common/config.py:375
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:364
+#: src/common/config.py:382
 msgid "PlexAPI timeout"
 msgstr ""
 
-#: src/common/config.py:365
+#: src/common/config.py:383
 msgid ""
 "Increase this slightly if you experience timeouts when adding themes. "
 "(min: 1)"
 msgstr ""
 
-#: src/common/config.py:372
+#: src/common/config.py:390
 msgid "Theme upload retries"
 msgstr ""
 
-#: src/common/config.py:373
+#: src/common/config.py:391
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr ""
 
-#: src/common/config.py:380
+#: src/common/config.py:398
 msgid "Multiprocessing thread count"
 msgstr ""
 
-#: src/common/config.py:381
+#: src/common/config.py:399
 msgid ""
 "The number of threads to use when adding themes. Restart required. (min: "
 "1)"
 msgstr ""
 
-#: src/common/config.py:388
+#: src/common/config.py:406
 msgid "YouTube Cookies"
 msgstr ""
 
-#: src/common/config.py:390
+#: src/common/config.py:408
 msgid ""
 "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using "
 "its JSON format, then paste the entire JSON array here and save. Cookies "
 "contain your browser session; keep them private."
 msgstr ""
 
-#: src/common/config.py:395
+#: src/common/config.py:413
 msgid "Cookie export instructions"
 msgstr ""
 
@@ -463,7 +485,7 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: src/common/webapp.py:430 web/templates/config.html:22
+#: src/common/webapp.py:478 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr ""
@@ -651,7 +673,7 @@ msgid "No processing failures recorded. All quiet here."
 msgstr ""
 
 #: web/templates/activity.html:8 web/templates/home.html:64
-msgid "Plex ID"
+msgid "ID"
 msgstr ""
 
 #: web/templates/activity.html:8 web/templates/home.html:78
@@ -938,8 +960,8 @@ msgstr ""
 
 #: web/templates/home.html:21
 msgid ""
-"Connect your Plex account, choose your servers, and let Themerr take care"
-" of the music."
+"Connect Plex or Jellyfin, choose your servers, and let Themerr take care "
+"of the music."
 msgstr ""
 
 #: web/templates/home.html:21
@@ -1050,12 +1072,13 @@ msgstr ""
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid ""
-"Unable to play this theme. Check the Plex connection and browser audio "
+"Unable to play this theme. Check the server connection and browser audio "
 "support."
 msgstr ""
 
 #: web/templates/home.html:64
-msgid "Open in Plex"
+#, python-format
+msgid "Open in %(server)s"
 msgstr ""
 
 #: web/templates/home.html:68 web/templates/home.html:76
@@ -1277,7 +1300,7 @@ msgid "ONE WORKSPACE. EVERY SERVER."
 msgstr ""
 
 #: web/templates/servers.html:3
-msgid "Connect your Plex account, then choose where the music goes."
+msgid "Connect Plex or Jellyfin, then choose where the music goes."
 msgstr ""
 
 #: web/templates/servers.html:3
@@ -1322,6 +1345,21 @@ msgstr ""
 
 #: web/templates/servers.html:13
 msgid "Enabled"
+msgstr ""
+
+#: web/templates/servers.html:16
+msgid "Themerr address reachable from Jellyfin"
+msgstr ""
+
+#: web/templates/servers.html:16
+msgid ""
+"Install the connector bundled with this Themerr build, then restart "
+"Jellyfin. Use a trusted HTTPS certificate or an HTTP address on your "
+"private network."
+msgstr ""
+
+#: web/templates/servers.html:16
+msgid "Install matching connector"
 msgstr ""
 
 #: web/templates/servers.html:16
@@ -1385,7 +1423,7 @@ msgid "Your first server starts here."
 msgstr ""
 
 #: web/templates/servers.html:40
-msgid "Link Plex above, then discover or add an address below."
+msgid "Link Plex above or add a Jellyfin server below."
 msgstr ""
 
 #: web/templates/servers.html:43
@@ -1433,6 +1471,34 @@ msgstr ""
 msgid ""
 "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account"
 " must have access. Adding an existing server updates its address."
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid "Add Jellyfin"
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid ""
+"Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in"
+" Jellyfin Dashboard - API Keys."
+msgstr ""
+
+#: web/templates/servers.html:54
+msgid "Jellyfin server address"
+msgstr ""
+
+#: web/templates/servers.html:56
+msgid "Jellyfin API key"
+msgstr ""
+
+#: web/templates/servers.html:58
+msgid ""
+"Keys stay in the secure credential store. After connecting, install the "
+"matching connector on the server card above."
+msgstr ""
+
+#: web/templates/servers.html:59
+msgid "Connect Jellyfin"
 msgstr ""
 
 #: web/templates/theme_player.html:1

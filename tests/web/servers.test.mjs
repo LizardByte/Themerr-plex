@@ -55,28 +55,45 @@ function serverForm(id, selected) {
     return { form, picker, options, summary, status };
 }
 
-function page(context, responses, savedServers = []) {
+function page(context, responses, savedServers = [], jellyfin = {}) {
     const previous = { document: globalThis.document, window: globalThis.window, FormData: globalThis.FormData };
     context.after(() => Object.assign(globalThis, previous));
     const elements = Object.fromEntries(['plex-auth-start', 'plex-auth-status', 'plex-auth-link', 'plex-auth-disconnect',
         'discovery-results', 'manual-server-form', 'toast-region'].map(id => [id, new Element()]));
     const buttons = ['account', 'local'].map(source => Object.assign(new Element('button'), { dataset: { discover: source } }));
     const forms = savedServers.map(({ id, selected = [] }) => serverForm(id, selected));
+    if (jellyfin.connect) {
+        const form = new Element('form');
+        form.values = { url: 'http://jellyfin.example:8096', api_key: 'private-key' };
+        form.querySelector = () => new Element('button');
+        form.reset = context.mock.fn(() => { form.values.api_key = ''; });
+        elements['jellyfin-server-form'] = form;
+    }
+    const connectors = (jellyfin.servers || []).map(id => {
+        const form = new Element('form');
+        const status = new Element('output');
+        const button = new Element('button');
+        form.dataset.serverId = id;
+        form.elements = { themerr_url: { value: '' } };
+        form.querySelector = selector => selector === '[data-connector-status]' ? status : button;
+        return { form, status, button };
+    });
     const events = new EventTarget();
     globalThis.document = {
         getElementById: id => elements[id], createElement: tag => new Element(tag),
         querySelectorAll: selector => ({ '[data-discover]': buttons,
-            '[data-server-form]': forms.map(({ form }) => form) })[selector] || [],
+            '[data-server-form]': forms.map(({ form }) => form),
+            '[data-connector-form]': connectors.map(({ form }) => form) })[selector] || [],
         querySelector: () => ({ content: 'csrf-token' }),
         addEventListener: events.addEventListener.bind(events), dispatchEvent: events.dispatchEvent.bind(events),
     };
     globalThis.FormData = class {
         constructor(form) { this.form = form; }
-        get() { return ''; }
+        get(name) { return this.form.values?.[name] || this.form.elements?.[name]?.value || ''; }
         getAll() { return this.form.querySelectorAll('input:checked').map(input => input.value); }
     };
     const reload = context.mock.fn();
-    globalThis.window = { addEventListener() {}, location: { reload } };
+    globalThis.window = { addEventListener() {}, location: { reload, origin: 'http://themerr.example:9494' } };
     const fetch = context.mock.method(globalThis, 'fetch', async () => {
         const response = responses.shift();
         return { ok: !response.error, status: response.error ? 502 : 200, json: async () => response.body };
@@ -84,8 +101,38 @@ function page(context, responses, savedServers = []) {
     context.mock.method(globalThis, 'setTimeout', () => 0);
     const controller = new AbortController();
     initServers(controller.signal);
-    return { elements, buttons, fetch, reload, forms, controller };
+    return { elements, buttons, fetch, reload, forms, controller, connectors };
 }
+
+test('Jellyfin connection submits its key with CSRF and clears it after success', async context => {
+    const { elements, fetch, reload } = page(context, [{ body: { message: 'Connected' } }], [], { connect: true });
+    const form = elements['jellyfin-server-form'];
+    form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/jellyfin/servers');
+    assert.deepEqual(JSON.parse(fetch.mock.calls[0].arguments[1].body), {
+        url: 'http://jellyfin.example:8096', api_key: 'private-key',
+    });
+    assert.equal(fetch.mock.calls[0].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+    assert.equal(form.values.api_key, '');
+    assert.equal(form.reset.mock.callCount(), 1);
+    assert.equal(reload.mock.callCount(), 1);
+});
+
+test('connector status and installation stay scoped to the selected Jellyfin server', async context => {
+    const { connectors, fetch } = page(context, [{ body: { message: 'Install the matching connector.' } },
+        { body: { message: 'Restart Jellyfin.' } }], [], { servers: ['jellyfin:abc'] });
+    await new Promise(setImmediate);
+    const { form, status } = connectors[0];
+    assert.equal(status.textContent, 'Install the matching connector.');
+    assert.equal(form.elements.themerr_url.value, 'http://themerr.example:9494');
+    form.elements.themerr_url.value = 'https://trusted.example/themerr';
+    form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[1].arguments[0], '/api/jellyfin/servers/jellyfin%3Aabc/connector');
+    assert.deepEqual(JSON.parse(fetch.mock.calls[1].arguments[1].body), { themerr_url: 'https://trusted.example/themerr' });
+    assert.equal(status.textContent, 'Restart Jellyfin.');
+});
 
 test('empty LAN discovery explains GDM and offers account or manual connections', async context => {
     const { elements, buttons } = page(context, [{ body: { servers: [] } }]);

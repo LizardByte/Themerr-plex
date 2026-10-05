@@ -172,6 +172,21 @@ class MediaServerBackend(ABC):
 
     name: str
 
+    def display_name(self, server_id: str) -> str:
+        """Return the integration name for public messages about one saved server.
+
+        Parameters
+        ----------
+        server_id : str
+            Saved server identity.
+
+        Returns
+        -------
+        str
+            Integration display name.
+        """
+        return self.name
+
     @abstractmethod
     def server(self, server_id: str) -> MediaServer:
         """Create an operations adapter for a saved or legacy default connection.

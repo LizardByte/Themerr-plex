@@ -8,9 +8,15 @@ import os
 from pathlib import Path
 import shutil
 import sys
+import runpy
 
 # lib imports
 import PyInstaller.__main__
+
+
+def build_connector():
+    """Compile all supported Jellyfin ABIs before collecting package resources."""
+    runpy.run_path(str(Path(__file__).with_name('build_connector.py')))['build']()
 
 
 def build():
@@ -22,6 +28,7 @@ def build():
             f'"""Release identity stamped by the release setup action."""\n\nVERSION = {release_version!r}\n',
             encoding='utf-8',
         )
+    build_connector()
     deno = shutil.which('deno')
     if deno is None:
         executable = 'deno.exe' if sys.platform == 'win32' else 'deno'
@@ -43,6 +50,7 @@ def build():
         f'--add-data=web{os.pathsep}web',
         f'--add-data=locale{os.pathsep}locale',
         f'--add-data=src/themerr/migrations{os.pathsep}themerr/migrations',
+        f'--add-data=jellyfin-connector{os.pathsep}jellyfin-connector',
         f'--add-binary={deno}{os.pathsep}.',
         '--icon=./web/images/favicon.ico'
     ]
