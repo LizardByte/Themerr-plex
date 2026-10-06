@@ -8,13 +8,16 @@
         {% if spec.type == 'boolean' %}<input id="{{ field_id }}" data-setting-key="{{ key }}" type="checkbox" class="form-check-input" category="{{ section }}" aria-describedby="{{ field_id }}-help" {% if value %}checked{% endif %}>
         {% elif spec.type == 'option' %}<select id="{{ field_id }}" data-setting-key="{{ key }}" class="form-select" category="{{ section }}" aria-describedby="{{ field_id }}-help">{% for option in spec.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ spec.option_names[loop.index0] }}</option>{% endfor %}</select>
         {% else %}
-        <div class="{{ 'input-group' if spec.button_directory }}">
+        <div class="{{ 'input-group' if spec.button_directory or spec.secret }}">
             <input id="{{ field_id }}" data-setting-key="{{ key }}" category="{{ section }}" class="form-control" value="{{ value }}" aria-describedby="{{ field_id }}-help"
-                type="{{ 'number' if spec.type in ['integer','float'] else 'password' if spec.mask else 'text' }}"
+                type="{{ 'number' if spec.type in ['integer','float'] else 'password' if spec.mask or spec.secret else 'text' }}"
+                {% if spec.secret %}data-secret="true" data-has-secret="{{ 'true' if secret_settings[(section, key)] else 'false' }}" autocomplete="off" placeholder="{{ _('Cookies saved') if secret_settings[(section, key)] else _('No cookies saved') }}"{% endif %}
                 {% if spec.type in ['integer','float'] %}step="{{ '1' if spec.type == 'integer' else 'any' }}"{% if spec.min is number %} min="{{ spec.min }}"{% endif %}{% if spec.max is number %} max="{{ spec.max }}"{% endif %}{% endif %}
                 {% if spec.pattern %}pattern="{{ spec.pattern }}"{% endif %}>
             {% if spec.button_directory %}<button type="button" class="btn btn-outline-light" data-directory-target="{{ field_id }}" aria-label="{{ _('Browse directories for') }} {{ _(spec.name) }}"><i data-lucide="folder-open" aria-hidden="true"></i></button>{% endif %}
+            {% if spec.secret %}<button type="button" class="btn btn-outline-light" data-secret-toggle="{{ field_id }}" aria-controls="{{ field_id }}" aria-pressed="false" aria-label="{{ _('Show cookies') }}" title="{{ _('Show cookies') }}"><span data-secret-icon="show" aria-hidden="true"><i data-lucide="eye"></i></span><span data-secret-icon="hide" aria-hidden="true" hidden><i data-lucide="eye-off"></i></span></button>{% endif %}
         </div>
+        {% if spec.secret %}<label class="form-check mt-2"><input type="checkbox" class="form-check-input" data-clear-secret="{{ section }}|{{ key }}"> {{ _('Clear saved cookies') }}</label>{% endif %}
         {% endif %}
     </div>
 </div>

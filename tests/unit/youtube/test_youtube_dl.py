@@ -1,4 +1,4 @@
-"""yt-dlp extraction is tested with a fake extractor and a real temporary cookie file."""
+"""yt-dlp extraction uses mocked network calls and in-memory cookies."""
 
 # standard imports
 from contextlib import nullcontext
@@ -11,6 +11,7 @@ from unittest.mock import Mock
 import pytest
 
 # local imports
+from common import config, credentials
 from youtube import youtube_dl
 
 
@@ -20,7 +21,7 @@ def extractor(monkeypatch, result=None, error=None, seen=None, payload=b'audio',
     class FakeYDL:
         def __init__(self, params):
             seen['params'] = params
-            seen['cookies'] = Path(params['cookiefile']).read_text(encoding='utf-8')
+            seen['cookies'] = params['cookiefile'].getvalue()
 
         def __enter__(self):
             return self
@@ -66,7 +67,8 @@ def test_select_audio(configured, monkeypatch, prefer_mp4a, expected):
     assert audio.codec == ('mp4a' if prefer_mp4a else 'opus')
     assert audio.mp4a_available is True
     assert seen['extract'] == {'url': 'https://youtube.example/watch', 'download': False}
-    assert list((Path(configured.filename).parent / 'cookies').iterdir()) == []
+    assert not (Path(configured.filename).parent / 'cookies').exists()
+    assert seen['params']['cookiefile'].closed
 
 
 @pytest.mark.parametrize('expiry_field, expiry, expected', [
@@ -79,6 +81,7 @@ def test_cookies_and_bitrate_fallback(configured, monkeypatch, expiry_field, exp
         'domain': '.youtube.com', 'path': '/', 'secure': True,
         'name': 'PREF', 'value': 'abc', expiry_field: expiry,
     }])
+    assert config.save_config(config=configured)
     seen = extractor(monkeypatch, {'formats': [
         {'format': 'audio only', 'acodec': 'opus', 'abr': 128, 'url': 'https://opus'},
     ]})
@@ -95,12 +98,13 @@ def test_no_audio(configured, monkeypatch, result):
 
 def test_extractor_error_and_invalid_cookies(configured, monkeypatch):
     configured['Themerr']['STR_YOUTUBE_COOKIES'] = 'not json'
+    assert config.save_config(config=configured)
     seen = extractor(
         monkeypatch, error=youtube_dl.yt_dlp.utils.ExtractorError('unavailable', expected=True),
     )
     assert youtube_dl.process_youtube('https://youtube.example') is None
     assert seen['cookies'].startswith('# Netscape HTTP Cookie File')
-    assert not Path(seen['params']['cookiefile']).exists()
+    assert seen['params']['cookiefile'].closed
 
 
 def test_download_error_is_nonfatal(configured, monkeypatch):
@@ -167,12 +171,12 @@ def test_complete_download_context_and_cleanup(configured, monkeypatch):
         assert audio.codec == 'mp4a'
         assert audio.size == 5
         assert len(audio.sha256) == 64
-        assert Path(seen['params']['cookiefile']).exists()
+        assert not seen['params']['cookiefile'].closed
         assert seen['params']['skip_unavailable_fragments'] is False
         assert seen['params']['fixup'] == 'never'
         assert seen['download_info']['http_headers'] == {'Referer': 'https://youtube.example'}
     assert not path.parent.exists()
-    assert not Path(seen['params']['cookiefile']).exists()
+    assert seen['params']['cookiefile'].closed
 
 
 def test_empty_decoded_audio_is_rejected(monkeypatch):
@@ -199,4 +203,31 @@ def test_failed_download_is_not_usable_and_is_cleaned(configured, monkeypatch, f
     assert len(errors) == 1
     path = Path(seen['params']['outtmpl']).parent
     assert not path.exists()
-    assert not Path(seen['params']['cookiefile']).exists()
+    assert seen['params']['cookiefile'].closed
+
+
+def test_real_cookie_jar_can_load_and_rewrite_without_a_file(configured):
+    configured['Themerr']['STR_YOUTUBE_COOKIES'] = json.dumps([{
+        'domain': '.youtube.com',
+        'path': '/',
+        'secure': True,
+        'name': 'SESSION',
+        'value': 'private-session',
+    }])
+    assert config.save_config(config=configured)
+    with youtube_dl._youtube_options() as params:
+        for _ in range(2):
+            params['cookiefile'].seek(0)
+            with youtube_dl.yt_dlp.YoutubeDL(params) as ydl:
+                assert ydl.cookiejar.get_cookie_header('https://www.youtube.com/') == 'SESSION=private-session'
+            assert '\0' not in params['cookiefile'].getvalue()
+    assert params['cookiefile'].closed
+    assert not (Path(configured.filename).parent / 'cookies').exists()
+
+
+def test_unavailable_cookie_key_does_not_escape_or_leak(configured, monkeypatch):
+    configured['Themerr']['STR_YOUTUBE_COOKIES'] = credentials.SETTING_PREFIX + 'unreadable'
+    seen = extractor(monkeypatch, {'formats': []})
+    assert youtube_dl.process_youtube('https://youtube.example') is None
+    assert seen['cookies'] == '# Netscape HTTP Cookie File\n'
+    assert seen['params']['cookiefile'].closed

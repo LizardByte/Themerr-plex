@@ -13,474 +13,476 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: src/common/config.py:84
+#: src/common/config.py:85
 msgid "Info"
 msgstr ""
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "For information purposes only."
 msgstr ""
 
-#: src/common/config.py:89
+#: src/common/config.py:90
 msgid "Config version"
 msgstr ""
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "The configuration version."
 msgstr ""
 
-#: src/common/config.py:99
+#: src/common/config.py:100
 msgid "First run complete"
 msgstr ""
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr ""
 
-#: src/common/config.py:107
+#: src/common/config.py:108
 msgid "General"
 msgstr ""
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General settings."
 msgstr ""
 
-#: src/common/config.py:112
+#: src/common/config.py:113
 msgid "Locale"
 msgstr ""
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "The localization setting to use."
 msgstr ""
 
-#: src/common/config.py:122
+#: src/common/config.py:123
 msgid "Launch Browser on Startup "
 msgstr ""
 
-#: src/common/config.py:128
+#: src/common/config.py:129
 msgid "Enable System Tray Icon"
 msgstr ""
 
-#: src/common/config.py:136
+#: src/common/config.py:137
 msgid "Notifications"
 msgstr ""
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid ""
 "Desktop notifications appear on the computer running Themerr. Docker and "
 "headless installations do not display them."
 msgstr ""
 
-#: src/common/config.py:142 src/common/notifications.py:138
+#: src/common/config.py:143 src/common/notifications.py:138
 msgid "New release available"
 msgstr ""
 
-#: src/common/config.py:143
+#: src/common/config.py:144
 msgid ""
 "Notify when a newer Themerr release is available. Checks run once per "
 "hour."
 msgstr ""
 
-#: src/common/config.py:148
+#: src/common/config.py:149
 msgid "Follow pre-releases"
 msgstr ""
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Include pre-releases in new release notifications."
 msgstr ""
 
-#: src/common/config.py:154
+#: src/common/config.py:155
 msgid "Theme coverage increased"
 msgstr ""
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid ""
 "Notify after a successful refresh when total theme coverage increases. "
 "Refreshes with no increase stay quiet."
 msgstr ""
 
-#: src/common/config.py:162
+#: src/common/config.py:163
 msgid "Logging"
 msgstr ""
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging settings."
 msgstr ""
 
-#: src/common/config.py:167
+#: src/common/config.py:168
 msgid "Log directory"
 msgstr ""
 
-#: src/common/config.py:169
+#: src/common/config.py:170
 msgid "The directory where to store the log files."
 msgstr ""
 
-#: src/common/config.py:176
+#: src/common/config.py:177
 msgid "Debug logging"
 msgstr ""
 
-#: src/common/config.py:178
+#: src/common/config.py:179
 msgid "Enable debug logging."
 msgstr ""
 
-#: src/common/config.py:184
+#: src/common/config.py:185
 msgid "Network"
 msgstr ""
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network settings."
 msgstr ""
 
-#: src/common/config.py:189
+#: src/common/config.py:190
 msgid "HTTP host address"
 msgstr ""
 
-#: src/common/config.py:191
+#: src/common/config.py:192
 msgid "The HTTP address to bind to."
 msgstr ""
 
-#: src/common/config.py:200
+#: src/common/config.py:201
 msgid "HTTP port"
 msgstr ""
 
-#: src/common/config.py:202
+#: src/common/config.py:203
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr ""
 
-#: src/common/config.py:210
+#: src/common/config.py:211
 msgid "HTTP root"
 msgstr ""
 
-#: src/common/config.py:212
+#: src/common/config.py:213
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr ""
 
-#: src/common/config.py:217
+#: src/common/config.py:218
 msgid "SSL"
 msgstr ""
 
-#: src/common/config.py:219
+#: src/common/config.py:220
 msgid ""
 "Run the web server with HTTPS. Disabling this can be a security risk, do "
 "so at your own risk."
 msgstr ""
 
-#: src/common/config.py:225
+#: src/common/config.py:226
 msgid "Updater"
 msgstr ""
 
-#: src/common/config.py:226
+#: src/common/config.py:227
 msgid "Updater settings."
 msgstr ""
 
-#: src/common/config.py:230
+#: src/common/config.py:231
 msgid "Auto update"
 msgstr ""
 
-#: src/common/config.py:238
+#: src/common/config.py:239
 msgid "Jellyfin"
 msgstr ""
 
-#: src/common/config.py:239
+#: src/common/config.py:240
 msgid ""
 "Jellyfin theme processing settings. Connections are managed on the "
 "Servers page."
 msgstr ""
 
-#: src/common/config.py:242 src/common/config.py:343
+#: src/common/config.py:243 src/common/config.py:344
 msgid "Movie support"
 msgstr ""
 
-#: src/common/config.py:243
+#: src/common/config.py:244
 msgid "Add themes to Jellyfin movies."
 msgstr ""
 
-#: src/common/config.py:246 src/common/config.py:349
+#: src/common/config.py:247 src/common/config.py:350
 msgid "Series support"
 msgstr ""
 
-#: src/common/config.py:247
+#: src/common/config.py:248
 msgid "Add themes to Jellyfin series."
 msgstr ""
 
-#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
 msgid "Collections"
 msgstr ""
 
-#: src/common/config.py:251
+#: src/common/config.py:252
 msgid ""
 "Add themes inside Jellyfin’s collection directories. Media files can "
 "remain elsewhere."
 msgstr ""
 
-#: src/common/config.py:254
+#: src/common/config.py:255
 msgid "Overwrite user themes"
 msgstr ""
 
-#: src/common/config.py:255
+#: src/common/config.py:256
 msgid ""
 "Replace existing theme files, including themes created by the older "
 "Themerr-jellyfin plugin."
 msgstr ""
 
-#: src/common/config.py:259
+#: src/common/config.py:260
 msgid "Back up replaced user themes"
 msgstr ""
 
-#: src/common/config.py:260
+#: src/common/config.py:261
 msgid ""
 "Keep existing user themes in a backup folder when replacing them. Disable"
 " to permanently remove replaced themes."
 msgstr ""
 
-#: src/common/config.py:264
+#: src/common/config.py:265
 msgid "Import older Themerr-jellyfin ownership"
 msgstr ""
 
-#: src/common/config.py:265
+#: src/common/config.py:266
 msgid ""
 "Recognize themes recorded in the older plugin’s database only when their "
 "SHA-256 still matches. Changed files stay protected. The old database is "
 "left untouched."
 msgstr ""
 
-#: src/common/config.py:269
+#: src/common/config.py:270
 msgid "Ignore locked metadata"
 msgstr ""
 
-#: src/common/config.py:270
+#: src/common/config.py:271
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr ""
 
-#: src/common/config.py:273
+#: src/common/config.py:274
 msgid "Update connector automatically"
 msgstr ""
 
-#: src/common/config.py:274
+#: src/common/config.py:275
 msgid ""
 "Install the matching connector when Themerr starts or detects a version "
 "mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr ""
 
-#: src/common/config.py:278
+#: src/common/config.py:279
 msgid "Restart Jellyfin automatically"
 msgstr ""
 
-#: src/common/config.py:279
+#: src/common/config.py:280
 msgid ""
 "Restart Jellyfin after installing or updating the connector. A pending "
 "restart is shown on the Servers page before it happens."
 msgstr ""
 
-#: src/common/config.py:283
+#: src/common/config.py:284
 msgid "Wait for playback to finish"
 msgstr ""
 
-#: src/common/config.py:284
+#: src/common/config.py:285
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr ""
 
-#: src/common/config.py:287
+#: src/common/config.py:288
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr ""
 
-#: src/common/config.py:288
+#: src/common/config.py:289
 msgid ""
 "After installing the connector, uninstall the older Themerr plugin and "
 "remove only its dedicated repository. Existing theme files are kept."
 msgstr ""
 
-#: src/common/config.py:292
+#: src/common/config.py:293
 msgid "Connector HTTP port"
 msgstr ""
 
-#: src/common/config.py:293
+#: src/common/config.py:294
 msgid ""
 "Serve only connector downloads over HTTP when Themerr uses a self-signed "
 "certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart "
 "Themerr after changing this port."
 msgstr ""
 
-#: src/common/config.py:300
+#: src/common/config.py:301
 msgid "Plex"
 msgstr ""
 
-#: src/common/config.py:301
+#: src/common/config.py:302
 msgid "Plex settings."
 msgstr ""
 
-#: src/common/config.py:305
+#: src/common/config.py:306
 msgid "Plex URL"
 msgstr ""
 
-#: src/common/config.py:306
+#: src/common/config.py:307
 msgid "The URL to the Plex server."
 msgstr ""
 
-#: src/common/config.py:315 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:37
 msgid "Plex data directory"
 msgstr ""
 
-#: src/common/config.py:316
+#: src/common/config.py:317
 msgid ""
 "https://support.plex.tv/articles/202915258-where-is-the-plex-media-"
 "server-data-directory-located/"
 msgstr ""
 
-#: src/common/config.py:326
+#: src/common/config.py:327
 msgid "Themerr"
 msgstr ""
 
-#: src/common/config.py:327
+#: src/common/config.py:328
 msgid "Themerr settings."
 msgstr ""
 
-#: src/common/config.py:331
+#: src/common/config.py:332
 msgid "Themerr Enabled"
 msgstr ""
 
-#: src/common/config.py:332
+#: src/common/config.py:333
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr ""
 
-#: src/common/config.py:338
+#: src/common/config.py:339
 msgid "Add themes to collections."
 msgstr ""
 
-#: src/common/config.py:344
+#: src/common/config.py:345
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr ""
 
-#: src/common/config.py:350
+#: src/common/config.py:351
 msgid "Add themes to series using the Plex Series agent."
 msgstr ""
 
-#: src/common/config.py:355
+#: src/common/config.py:356
 msgid "Overwrite Plex themes"
 msgstr ""
 
-#: src/common/config.py:356
+#: src/common/config.py:357
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr ""
 
-#: src/common/config.py:361
+#: src/common/config.py:362
 msgid "Prefer MP4A AAC Codec"
 msgstr ""
 
-#: src/common/config.py:362
+#: src/common/config.py:363
 msgid "This can improve theme compatibility with Apple devices."
 msgstr ""
 
-#: src/common/config.py:367
+#: src/common/config.py:368
 msgid "Remove unused themes"
 msgstr ""
 
-#: src/common/config.py:368
+#: src/common/config.py:369
 msgid ""
 "Frees up space in your Plex metadata directory. This option requires that"
 " the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:374
+#: src/common/config.py:375
 msgid "Remove unused art"
 msgstr ""
 
-#: src/common/config.py:375 src/common/config.py:383
+#: src/common/config.py:376 src/common/config.py:384
 msgid ""
 "Applies to collection. Frees up space in your Plex metadata directory. "
 "This option requires that the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:382
+#: src/common/config.py:383
 msgid "Remove unused posters"
 msgstr ""
 
-#: src/common/config.py:390
+#: src/common/config.py:391
 msgid "Collection metadata"
 msgstr ""
 
-#: src/common/config.py:391
+#: src/common/config.py:392
 msgid ""
 "Update collection metadata (poster, art, and summary) during scheduled "
 "update."
 msgstr ""
 
-#: src/common/config.py:396
+#: src/common/config.py:397
 msgid "Ignore locked fields."
 msgstr ""
 
-#: src/common/config.py:397
+#: src/common/config.py:398
 msgid ""
 "If you used Themerr v2024.813.13709 or lower, you may need to enable this"
 " to update items."
 msgstr ""
 
-#: src/common/config.py:403
+#: src/common/config.py:404
 msgid "Ignored library IDs"
 msgstr ""
 
-#: src/common/config.py:404
+#: src/common/config.py:405
 msgid ""
 "Comma-separated library IDs to exclude from scheduled updates. IDs appear"
 " on Home."
 msgstr ""
 
-#: src/common/config.py:410
+#: src/common/config.py:411
 msgid "Update themes interval"
 msgstr ""
 
-#: src/common/config.py:411
+#: src/common/config.py:412
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:418
+#: src/common/config.py:419
 msgid "Update database cache interval"
 msgstr ""
 
-#: src/common/config.py:419
+#: src/common/config.py:420
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:426
+#: src/common/config.py:427
 msgid "PlexAPI timeout"
 msgstr ""
 
-#: src/common/config.py:427
+#: src/common/config.py:428
 msgid ""
 "Increase this slightly if you experience timeouts when adding themes. "
 "(min: 1)"
 msgstr ""
 
-#: src/common/config.py:434
+#: src/common/config.py:435
 msgid "Theme upload retries"
 msgstr ""
 
-#: src/common/config.py:435
+#: src/common/config.py:436
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr ""
 
-#: src/common/config.py:442
+#: src/common/config.py:443
 msgid "Multiprocessing thread count"
 msgstr ""
 
-#: src/common/config.py:443
+#: src/common/config.py:444
 msgid ""
 "The number of threads to use when adding themes. Restart required. (min: "
 "1)"
 msgstr ""
 
-#: src/common/config.py:450
+#: src/common/config.py:452
 msgid "YouTube Cookies"
 msgstr ""
 
-#: src/common/config.py:452
+#: src/common/config.py:454
 msgid ""
 "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using "
-"its JSON format, then paste the entire JSON array here and save. Cookies "
-"contain your browser session; keep them private."
+"its JSON format, then paste the entire JSON array here and save. Saved "
+"cookies are encrypted and masked. Select the eye icon to reveal them. "
+"Leave this blank to keep them, or select Clear saved cookies to remove "
+"them."
 msgstr ""
 
-#: src/common/config.py:457
+#: src/common/config.py:461
 msgid "Cookie export instructions"
 msgstr ""
 
@@ -569,12 +571,12 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: src/common/webapp.py:80 web/templates/logs.html:4
+#: src/common/webapp.py:81 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr ""
 
-#: src/common/webapp.py:478 web/templates/config.html:23
+#: src/common/webapp.py:479 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr ""
@@ -633,27 +635,43 @@ msgstr ""
 msgid "Dismiss message"
 msgstr ""
 
-#: web/js/config.js:18 web/js/config.js:44
+#: web/js/config.js:6
+msgid "Hide cookies"
+msgstr ""
+
+#: web/js/config.js:6 web/templates/config.html:18
+msgid "Show cookies"
+msgstr ""
+
+#: web/js/config.js:18 web/templates/config.html:14
+msgid "Cookies saved"
+msgstr ""
+
+#: web/js/config.js:34 web/templates/config.html:14
+msgid "No cookies saved"
+msgstr ""
+
+#: web/js/config.js:81 web/js/config.js:123
 msgid "Unsaved changes"
 msgstr ""
 
-#: web/js/config.js:26
+#: web/js/config.js:89
 msgid "Discard unsaved settings changes?"
 msgstr ""
 
-#: web/js/config.js:44 web/templates/config.html:37
+#: web/js/config.js:123 web/templates/config.html:40
 msgid "All changes saved."
 msgstr ""
 
-#: web/js/config.js:46
+#: web/js/config.js:125
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr ""
 
-#: web/js/config.js:50
+#: web/js/config.js:129
 msgid "Unable to save changes."
 msgstr ""
 
-#: web/js/config.js:58
+#: web/js/config.js:137
 msgid "Save your settings changes before changing your password."
 msgstr ""
 
@@ -926,59 +944,63 @@ msgstr ""
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr ""
 
-#: web/templates/config.html:16
+#: web/templates/config.html:17
 msgid "Browse directories for"
 msgstr ""
 
-#: web/templates/config.html:23
+#: web/templates/config.html:20
+msgid "Clear saved cookies"
+msgstr ""
+
+#: web/templates/config.html:26
 msgid "TUNE YOUR WORKSPACE"
 msgstr ""
 
-#: web/templates/config.html:23
+#: web/templates/config.html:26
 msgid "Make Themerr work the way your library does."
 msgstr ""
 
-#: web/templates/config.html:25
+#: web/templates/config.html:28
 msgid "Settings sections"
 msgstr ""
 
-#: web/templates/config.html:25 web/templates/config.html:34
+#: web/templates/config.html:28 web/templates/config.html:37
 msgid "Security"
 msgstr ""
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid ""
 "Server connections, data directories, and ignored libraries are managed "
 "on the Servers page."
 msgstr ""
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr ""
 
-#: web/templates/config.html:34
+#: web/templates/config.html:37
 msgid ""
 "One administrator for this installation. Change your password and sign "
 "out other sessions."
 msgstr ""
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Current password"
 msgstr ""
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "New password"
 msgstr ""
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Confirm new password"
 msgstr ""
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Change password"
 msgstr ""
 
-#: web/templates/config.html:37
+#: web/templates/config.html:40
 msgid "Save changes"
 msgstr ""
 

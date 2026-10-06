@@ -5,7 +5,7 @@
     width="256"
   />
   <h1 align="center">Themerr</h1>
-  <h4 align="center">Standalone theme song manager for Plex and Jellyfin using ThemerrDB.</h4>
+  <h4 align="center">Theme song manager for Plex and Jellyfin using ThemerrDB.</h4>
 </div>
 
 <div align="center">

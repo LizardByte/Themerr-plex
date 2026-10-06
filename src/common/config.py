@@ -15,6 +15,7 @@ from validate import Validator, ValidateError
 
 # local imports
 from common import definitions
+from common import credentials
 from common import logger
 from common import locales
 
@@ -447,11 +448,14 @@ _CONFIG_SPEC_DICT = {
         },
         'STR_YOUTUBE_COOKIES': {
             'type': 'string',
+            'secret': True,
             'name': _('YouTube Cookies'),
             'description': _(
                 'Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, '
                 'then paste the entire JSON array here and save. '
-                'Cookies contain your browser session; keep them private.'
+                'Saved cookies are encrypted and masked. Select the eye icon to reveal them. '
+                'Leave this blank to keep them, '
+                'or select Clear saved cookies to remove them.'
             ),
             'help_url': f'{definitions.DOCUMENTATION_URL}docs/about/usage.html#youtube-cookies',
             'help_label': _('Cookie export instructions'),
@@ -576,9 +580,9 @@ def decode_value(value: str) -> str:
 
 def decode_config(config: ConfigObj) -> dict:
     """
-    Decode masked fields in the config.
+    Prepare configuration fields for display, redacting encrypted secrets.
 
-    This function will create a decoded copy of the config object, and decode any masked fields.
+    Create a decoded copy of the config object while keeping secret settings empty.
 
     Parameters
     ----------
@@ -600,9 +604,31 @@ def decode_config(config: ConfigObj) -> dict:
 
     for section, options in _config.items():
         for key, value in options.items():
-            if is_masked_field(section=section, key=key):
+            if _CONFIG_SPEC_DICT.get(section, {}).get(key, {}).get('secret'):
+                _config[section][key] = ''
+            elif is_masked_field(section=section, key=key):
                 _config[section][key] = decode_value(value)
     return _config
+
+
+def youtube_cookies() -> str:
+    """Decrypt the configured YouTube cookies on demand.
+
+    Keep the setting encrypted until the downloader or an explicit settings
+    reveal needs the browser session.
+
+    Returns
+    -------
+    str
+        JSON cookie export, or an empty string when unconfigured.
+
+    Examples
+    --------
+    >>> configuration = create_config(config_file='config.ini')
+    >>> youtube_cookies()
+    ''
+    """
+    return credentials.decrypt_setting(CONFIG['Themerr']['STR_YOUTUBE_COOKIES'])
 
 
 def _format_config_checks(spec: dict) -> str:
@@ -764,7 +790,8 @@ def create_config(config_file: str, config_spec: dict = _CONFIG_SPEC_DICT) -> Co
         validate_config(config=config)
 
     config.filename = config_file
-    save_config(config=config)
+    if not save_config(config=config):
+        raise OSError('Unable to securely save the configuration. Check the credential store or external key file.')
 
     if config_spec == _CONFIG_SPEC_DICT:  # set CONFIG dictionary
         global CONFIG
@@ -796,7 +823,18 @@ def save_config(config: ConfigObj = CONFIG) -> bool:
     True
     """
     try:
-        config.write()
+        saved = copy.deepcopy(config)
+        for section, options in saved.items():
+            for key, value in options.items():
+                if not _CONFIG_SPEC_DICT.get(section, {}).get(key, {}).get('secret') or not value:
+                    continue
+                if not value.startswith(credentials.SETTING_PREFIX):
+                    saved[section][key] = credentials.encrypt_setting(value)
+        saved.write()
+        config.merge(saved)
+    except credentials.TokenStorageError as exc:
+        log.error('Unable to securely save settings: %s', exc)
+        return False
     except Exception:
         return False
     else:

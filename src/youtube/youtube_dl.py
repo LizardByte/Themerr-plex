@@ -4,6 +4,7 @@
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 import hashlib
+from io import StringIO
 import json
 import math
 import os
@@ -19,6 +20,7 @@ import yt_dlp
 
 # local imports
 from common import config
+from common import credentials
 from common import definitions
 from common import logger
 
@@ -119,21 +121,33 @@ def ns_bool(value: bool) -> str:
     return 'TRUE' if value else 'FALSE'
 
 
+class _CookieBuffer(StringIO):
+    """Keep yt-dlp cookie reads and rewrites in memory."""
+
+    def truncate(self, size=None):
+        """Rewind when yt-dlp clears the stream before writing updated cookies."""
+        if size == 0:
+            self.seek(0)
+        return super().truncate(size)
+
+
 def _write_cookies(cookie_file: TextIO, raw_cookies: str) -> None:
     """Write configured cookies in Netscape format.
 
     Parameters
     ----------
     cookie_file : TextIO
-        Open temporary cookie file.
+        Open in-memory cookie stream.
     raw_cookies : str
         JSON encoded browser cookies.
     """
     cookie_file.write('# Netscape HTTP Cookie File\n')
     if not raw_cookies:
         return
+    logger.blacklist_config({'Themerr': {'STR_YOUTUBE_COOKIES': raw_cookies}})
     try:
         for cookie in json.loads(raw_cookies):
+            logger.blacklist_config({'YouTube': {'COOKIE_TOKEN': cookie.get('value', '')}})
             values = [
                 cookie['domain'],
                 ns_bool(cookie['domain'].startswith('.')),
@@ -143,9 +157,16 @@ def _write_cookies(cookie_file: TextIO, raw_cookies: str) -> None:
                 cookie['name'],
                 cookie['value'],
             ]
-            cookie_file.write('\t'.join(values) + '\n')
-    except (ValueError, KeyError, TypeError) as exc:
-        log.warning('Failed to write YouTube cookies; continuing without them: %s', exc)
+            if any(not isinstance(value, str) or any(char in value for char in '\r\n\t\0') for value in values):
+                raise ValueError('Invalid cookie fields')
+            cookie_file.write(f"{'\t'.join(values)}\n")
+    except (
+        ValueError,
+        KeyError,
+        TypeError,
+        AttributeError,
+    ):
+        log.warning('Failed to read YouTube cookies; continuing without them.')
 
 
 def _error_reason(error: Exception) -> str:
@@ -260,8 +281,8 @@ def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> 
     Return the best audio stream and its codec information from a YouTube video.
 
     Extract audio formats with yt-dlp and choose the largest supported stream,
-    honoring the configured MP4A preference. Cookies are written to a temporary
-    Netscape file for the extractor and removed afterward.
+    honoring the configured MP4A preference. Cookies are decrypted into an
+    in-memory Netscape stream for the extractor and discarded afterward.
 
     Parameters
     ----------
@@ -287,19 +308,17 @@ def process_youtube(url: str, on_error: Callable[[str], None] | None = None) -> 
 
 @contextmanager
 def _youtube_options():
-    """Keep temporary cookies available until extraction and downloading finish."""
-    cookie_dir = os.path.join(definitions.Paths.CONFIG_DIR, 'cookies')
-    os.makedirs(cookie_dir, exist_ok=True)
-
-    with tempfile.NamedTemporaryFile(
-        mode='w', encoding='utf-8', newline='\n', dir=cookie_dir, delete=False,
-    ) as cookie_file:
-        cookie_path = cookie_file.name
-        _write_cookies(cookie_file, config.CONFIG['Themerr']['STR_YOUTUBE_COOKIES'])
-
-    try:
+    """Keep decrypted cookies in memory until extraction and downloading finish."""
+    with _CookieBuffer() as cookie_file:
+        try:
+            raw_cookies = config.youtube_cookies()
+        except credentials.TokenStorageError:
+            log.warning('Unable to read saved YouTube cookies; check the credential store or external key file.')
+            raw_cookies = ''
+        _write_cookies(cookie_file, raw_cookies)
+        cookie_file.seek(0)
         params = {
-            'cookiefile': cookie_path,
+            'cookiefile': cookie_file,
             'format': 'bestaudio',
             'logger': logger.YtDlpLogger(),
             'socket_timeout': 10,
@@ -309,11 +328,6 @@ def _youtube_options():
         if runtime:
             params['js_runtimes'] = runtime
         yield params
-    finally:
-        try:
-            os.remove(cookie_path)
-        except OSError:
-            log.exception('Failed to delete YouTube cookie file: %s', cookie_path)
 
 
 def validate_audio(path: str, expected_duration: float, codec: str) -> float:
@@ -386,6 +400,7 @@ def download_youtube(url: str, on_error: Callable[[str], None] | None = None):
                     'fixup': 'never', 'quiet': True, 'noprogress': True,
                 })
                 info = {**video, **audio.format_info}
+                params['cookiefile'].seek(0)
                 with yt_dlp.YoutubeDL(params=params) as ydl:
                     ydl.process_info(info)
                     path = ydl.prepare_filename(info)
