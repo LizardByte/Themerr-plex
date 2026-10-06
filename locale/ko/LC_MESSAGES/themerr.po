@@ -14,429 +14,429 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: ko_KR\n"
-"PO-Revision-Date: 2026-10-06 03:08\n"
+"PO-Revision-Date: 2026-10-06 22:33\n"
 
-#: src/common/config.py:84
+#: src/common/config.py:85
 msgid "Info"
 msgstr "정보"
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "For information purposes only."
 msgstr "단순히 참고용으로만 제공됩니다."
 
-#: src/common/config.py:89
+#: src/common/config.py:90
 msgid "Config version"
 msgstr "구성 버전"
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "The configuration version."
 msgstr "구성 버전."
 
-#: src/common/config.py:99
+#: src/common/config.py:100
 msgid "First run complete"
 msgstr "첫 실행 완료"
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "Todo: 사용자가 초기 설정을 완료했는지 여부를 나타냅니다."
 
-#: src/common/config.py:107
+#: src/common/config.py:108
 msgid "General"
 msgstr "일반"
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General settings."
 msgstr "일반 설정."
 
-#: src/common/config.py:112
+#: src/common/config.py:113
 msgid "Locale"
 msgstr "지역 설정"
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "The localization setting to use."
 msgstr "사용할 현지화 설정."
 
-#: src/common/config.py:122
+#: src/common/config.py:123
 msgid "Launch Browser on Startup "
 msgstr "시작 시 브라우저 실행 "
 
-#: src/common/config.py:128
+#: src/common/config.py:129
 msgid "Enable System Tray Icon"
 msgstr "시스템 트레이 아이콘 활성화"
 
-#: src/common/config.py:136
+#: src/common/config.py:137
 msgid "Notifications"
 msgstr "알림"
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "Themerr이 실행 중인 컴퓨터에 데스크톱 알림이 표시됩니다. Docker 및 헤드리스 설치 환경에서는 알림이 표시되지 않습니다."
 
-#: src/common/config.py:142 src/common/notifications.py:138
+#: src/common/config.py:143 src/common/notifications.py:138
 msgid "New release available"
 msgstr "신규 출시 상품"
 
-#: src/common/config.py:143
+#: src/common/config.py:144
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "Themerr의 최신 버전이 출시되면 알림을 보내주세요. 확인 작업은 매시간 한 번씩 수행됩니다."
 
-#: src/common/config.py:148
+#: src/common/config.py:149
 msgid "Follow pre-releases"
 msgstr "사전 출시 소식 팔로우하기"
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Include pre-releases in new release notifications."
 msgstr "새로운 릴리스 알림에 사전 릴리스를 포함합니다."
 
-#: src/common/config.py:154
+#: src/common/config.py:155
 msgid "Theme coverage increased"
 msgstr "주제별 다루는 범위가 확대되었습니다"
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "테마 적용 범위가 증가한 경우, 새로고침이 성공적으로 완료된 후 알림을 표시합니다. 적용 범위가 증가하지 않은 새로고침의 경우 알림을 표시하지 않습니다."
 
-#: src/common/config.py:162
+#: src/common/config.py:163
 msgid "Logging"
 msgstr "로그 기록"
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging settings."
 msgstr "로그 기록 설정."
 
-#: src/common/config.py:167
+#: src/common/config.py:168
 msgid "Log directory"
 msgstr "로그 디렉터리"
 
-#: src/common/config.py:169
+#: src/common/config.py:170
 msgid "The directory where to store the log files."
 msgstr "로그 파일을 저장할 디렉터리입니다."
 
-#: src/common/config.py:176
+#: src/common/config.py:177
 msgid "Debug logging"
 msgstr "디버그 로깅"
 
-#: src/common/config.py:178
+#: src/common/config.py:179
 msgid "Enable debug logging."
 msgstr "디버그 로깅을 활성화합니다."
 
-#: src/common/config.py:184
+#: src/common/config.py:185
 msgid "Network"
 msgstr "네트워크"
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network settings."
 msgstr "네트워크 설정."
 
-#: src/common/config.py:189
+#: src/common/config.py:190
 msgid "HTTP host address"
 msgstr "HTTP 호스트 주소"
 
-#: src/common/config.py:191
+#: src/common/config.py:192
 msgid "The HTTP address to bind to."
 msgstr "바인딩할 HTTP 주소."
 
-#: src/common/config.py:200
+#: src/common/config.py:201
 msgid "HTTP port"
 msgstr "HTTP 포트"
 
-#: src/common/config.py:202
+#: src/common/config.py:203
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "웹 서버를 연결할 포트입니다. 1024 미만의 포트를 사용할 경우 루트 권한이 필요할 수 있으니 유의하십시오."
 
-#: src/common/config.py:210
+#: src/common/config.py:211
 msgid "HTTP root"
 msgstr "HTTP 루트"
 
-#: src/common/config.py:212
+#: src/common/config.py:213
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Todo: 웹 서버의 기본 URL입니다. 리버스 프록시에 사용됩니다."
 
-#: src/common/config.py:217
+#: src/common/config.py:218
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:219
+#: src/common/config.py:220
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "웹 서버를 HTTPS로 실행하십시오. 이 기능을 비활성화하면 보안 위험이 발생할 수 있으므로, 이를 적용할 경우 모든 책임은 사용자에게 있습니다."
 
-#: src/common/config.py:225
+#: src/common/config.py:226
 msgid "Updater"
 msgstr "업데이터"
 
-#: src/common/config.py:226
+#: src/common/config.py:227
 msgid "Updater settings."
 msgstr "업데이터 설정."
 
-#: src/common/config.py:230
+#: src/common/config.py:231
 msgid "Auto update"
 msgstr "자동 업데이트"
 
-#: src/common/config.py:238
+#: src/common/config.py:239
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/common/config.py:239
+#: src/common/config.py:240
 msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
 msgstr "Jellyfin 테마 처리 설정. 연결 설정은 ‘서버’ 페이지에서 관리됩니다."
 
-#: src/common/config.py:242 src/common/config.py:343
+#: src/common/config.py:243 src/common/config.py:344
 msgid "Movie support"
 msgstr "영화 지원"
 
-#: src/common/config.py:243
+#: src/common/config.py:244
 msgid "Add themes to Jellyfin movies."
 msgstr "Jellyfin 영화에 테마를 추가하세요."
 
-#: src/common/config.py:246 src/common/config.py:349
+#: src/common/config.py:247 src/common/config.py:350
 msgid "Series support"
 msgstr "시리즈 지원"
 
-#: src/common/config.py:247
+#: src/common/config.py:248
 msgid "Add themes to Jellyfin series."
 msgstr "Jellyfin 시리즈에 테마 추가하기."
 
-#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
 msgid "Collections"
 msgstr "컬렉션"
 
-#: src/common/config.py:251
+#: src/common/config.py:252
 msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
 msgstr "Jellyfin의 컬렉션 디렉토리 내에 테마를 추가하세요. 미디어 파일은 다른 곳에 그대로 두어도 됩니다."
 
-#: src/common/config.py:254
+#: src/common/config.py:255
 msgid "Overwrite user themes"
 msgstr "사용자 테마 덮어쓰기"
 
-#: src/common/config.py:255
+#: src/common/config.py:256
 msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
 msgstr "기존 테마 파일(구 버전의 Themerr-jellyfin 플러그인으로 생성된 테마 포함)을 교체합니다."
 
-#: src/common/config.py:259
+#: src/common/config.py:260
 msgid "Back up replaced user themes"
 msgstr "교체된 사용자 테마 백업하기"
 
-#: src/common/config.py:260
+#: src/common/config.py:261
 msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
 msgstr "사용자 테마를 교체할 때는 기존 테마를 백업 폴더에 보관하십시오. 이 기능을 비활성화하면 교체된 테마가 영구적으로 삭제됩니다."
 
-#: src/common/config.py:264
+#: src/common/config.py:265
 msgid "Import older Themerr-jellyfin ownership"
 msgstr "기존 Themerr-jellyfin 소유권 가져오기"
 
-#: src/common/config.py:265
+#: src/common/config.py:266
 msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
 msgstr "이전 플러그인의 데이터베이스에 기록된 테마는 SHA-256 해시값이 여전히 일치하는 경우에만 인식합니다. 변경된 파일은 계속 보호됩니다. 기존 데이터베이스는 그대로 유지됩니다."
 
-#: src/common/config.py:269
+#: src/common/config.py:270
 msgid "Ignore locked metadata"
 msgstr "잠긴 메타데이터 무시"
 
-#: src/common/config.py:270
+#: src/common/config.py:271
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr "메타데이터가 잠겨 있는 항목에 대해서도 Jellyfin 테마 업데이트를 허용합니다."
 
-#: src/common/config.py:273
+#: src/common/config.py:274
 msgid "Update connector automatically"
 msgstr "커넥터를 자동으로 업데이트합니다"
 
-#: src/common/config.py:274
+#: src/common/config.py:275
 msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr "Themerr가 시작되거나 버전 불일치를 감지하면 해당 커넥터를 설치하십시오. 먼저 ‘서버’ 페이지에서 연결 가능한 Themerr 주소를 설정하십시오."
 
-#: src/common/config.py:278
+#: src/common/config.py:279
 msgid "Restart Jellyfin automatically"
 msgstr "Jellyfin을 자동으로 다시 시작하기"
 
-#: src/common/config.py:279
+#: src/common/config.py:280
 msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
 msgstr "커넥터를 설치하거나 업데이트한 후 Jellyfin을 다시 시작하세요. 서버 페이지에는 재시작이 실행되기 전에 ‘재시작 대기 중’ 상태가 표시됩니다."
 
-#: src/common/config.py:283
+#: src/common/config.py:284
 msgid "Wait for playback to finish"
 msgstr "재생이 끝날 때까지 기다리세요"
 
-#: src/common/config.py:284
+#: src/common/config.py:285
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr "재생 중이거나 일시 정지된 스트림이 하나도 없어질 때까지 커넥터 재시작을 연기합니다."
 
-#: src/common/config.py:287
+#: src/common/config.py:288
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr "구버전의 Themerr-jellyfin 플러그인을 제거하세요"
 
-#: src/common/config.py:288
+#: src/common/config.py:289
 msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
 msgstr "커넥터를 설치한 후, 기존 Themerr 플러그인을 제거하고 해당 플러그인 전용 저장소만 삭제하십시오. 기존 테마 파일은 그대로 유지됩니다."
 
-#: src/common/config.py:292
+#: src/common/config.py:293
 msgid "Connector HTTP port"
 msgstr "커넥터 HTTP 포트"
 
-#: src/common/config.py:293
+#: src/common/config.py:294
 msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
 msgstr "Themerr가 자체 서명 인증서를 사용할 경우, 커넥터 다운로드는 HTTP를 통해서만 제공됩니다. 관리자 UI는 HTTPS를 계속 사용합니다. 비활성화하려면 0을 입력하세요. 이 설정을 변경한 후 Themerr를 다시 시작하세요."
 
-#: src/common/config.py:300
+#: src/common/config.py:301
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:301
+#: src/common/config.py:302
 msgid "Plex settings."
 msgstr "Plex 설정."
 
-#: src/common/config.py:305
+#: src/common/config.py:306
 msgid "Plex URL"
 msgstr "Plex URL"
 
-#: src/common/config.py:306
+#: src/common/config.py:307
 msgid "The URL to the Plex server."
 msgstr "Plex 서버의 URL입니다."
 
-#: src/common/config.py:315 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:37
 msgid "Plex data directory"
 msgstr "Plex 데이터 디렉터리"
 
-#: src/common/config.py:316
+#: src/common/config.py:317
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
-#: src/common/config.py:326
+#: src/common/config.py:327
 msgid "Themerr"
 msgstr "Themerr"
 
-#: src/common/config.py:327
+#: src/common/config.py:328
 msgid "Themerr settings."
 msgstr "Themerr 설정."
 
-#: src/common/config.py:331
+#: src/common/config.py:332
 msgid "Themerr Enabled"
 msgstr "Themerr 활성화됨"
 
-#: src/common/config.py:332
+#: src/common/config.py:333
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "이 기능이 활성화되면 Themerr는 테마를 업데이트하려고 시도합니다."
 
-#: src/common/config.py:338
+#: src/common/config.py:339
 msgid "Add themes to collections."
 msgstr "컬렉션에 테마를 추가하세요."
 
-#: src/common/config.py:344
+#: src/common/config.py:345
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "Plex Movie 에이전트를 사용하여 영화에 테마를 추가하세요."
 
-#: src/common/config.py:350
+#: src/common/config.py:351
 msgid "Add themes to series using the Plex Series agent."
 msgstr "Plex 시리즈 에이전트를 사용하여 시리즈에 테마를 추가하세요."
 
-#: src/common/config.py:355
+#: src/common/config.py:356
 msgid "Overwrite Plex themes"
 msgstr "Plex 테마 덮어쓰기"
 
-#: src/common/config.py:356
+#: src/common/config.py:357
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "이 기능이 활성화되면 Themerr는 Plex에서 제공하는 테마를 덮어씁니다."
 
-#: src/common/config.py:361
+#: src/common/config.py:362
 msgid "Prefer MP4A AAC Codec"
 msgstr "MP4A AAC 코덱을 선호합니다"
 
-#: src/common/config.py:362
+#: src/common/config.py:363
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "이를 통해 Apple 기기와의 테마 호환성을 높일 수 있습니다."
 
-#: src/common/config.py:367
+#: src/common/config.py:368
 msgid "Remove unused themes"
 msgstr "사용하지 않는 테마 삭제하기"
 
-#: src/common/config.py:368
+#: src/common/config.py:369
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Plex 메타데이터 디렉터리의 공간을 확보합니다. 이 옵션을 사용하려면 “Plex 데이터 디렉터리” 경로가 설정되어 있어야 합니다."
 
-#: src/common/config.py:374
+#: src/common/config.py:375
 msgid "Remove unused art"
 msgstr "사용하지 않는 아트 제거하기"
 
-#: src/common/config.py:375 src/common/config.py:383
+#: src/common/config.py:376 src/common/config.py:384
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "컬렉션에 적용됩니다. Plex 메타데이터 디렉터리의 공간을 확보합니다. 이 옵션을 사용하려면 “Plex 데이터 디렉터리” 경로가 설정되어 있어야 합니다."
 
-#: src/common/config.py:382
+#: src/common/config.py:383
 msgid "Remove unused posters"
 msgstr "사용하지 않는 포스터를 치우세요"
 
-#: src/common/config.py:390
+#: src/common/config.py:391
 msgid "Collection metadata"
 msgstr "컬렉션 메타데이터"
 
-#: src/common/config.py:391
+#: src/common/config.py:392
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "예정된 업데이트 시점에 컬렉션 메타데이터(포스터, 삽화, 요약)를 업데이트합니다."
 
-#: src/common/config.py:396
+#: src/common/config.py:397
 msgid "Ignore locked fields."
 msgstr "잠긴 필드는 무시합니다."
 
-#: src/common/config.py:397
+#: src/common/config.py:398
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Themerr v2024.813.13709 이하 버전을 사용 중이라면, 항목을 업데이트하기 위해 이 기능을 활성화해야 할 수도 있습니다."
 
-#: src/common/config.py:403
+#: src/common/config.py:404
 msgid "Ignored library IDs"
 msgstr "무시된 라이브러리 ID"
 
-#: src/common/config.py:404
+#: src/common/config.py:405
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "예정된 업데이트에서 제외할 라이브러리 ID를 쉼표로 구분하여 나열합니다. ID는 ‘홈’ 화면에 표시됩니다."
 
-#: src/common/config.py:410
+#: src/common/config.py:411
 msgid "Update themes interval"
 msgstr "테마 업데이트 주기"
 
-#: src/common/config.py:411
+#: src/common/config.py:412
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "자동 업데이트 작업의 간격(분 단위, 최소 15분)."
 
-#: src/common/config.py:418
+#: src/common/config.py:419
 msgid "Update database cache interval"
 msgstr "데이터베이스 캐시 간격 업데이트"
 
-#: src/common/config.py:419
+#: src/common/config.py:420
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "데이터베이스 캐시 업데이트 작업의 간격(분 단위, 최소 15분)."
 
-#: src/common/config.py:426
+#: src/common/config.py:427
 msgid "PlexAPI timeout"
 msgstr "PlexAPI 시간 초과"
 
-#: src/common/config.py:427
+#: src/common/config.py:428
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "테마를 추가할 때 타임아웃이 발생하면 이 값을 약간 늘리세요. (최소: 1)"
 
-#: src/common/config.py:434
+#: src/common/config.py:435
 msgid "Theme upload retries"
 msgstr "테마 업로드 재시도"
 
-#: src/common/config.py:435
+#: src/common/config.py:436
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "테마 업로드에 실패할 경우, 이 횟수만큼 다시 시도합니다. (최소: 0)"
 
-#: src/common/config.py:442
+#: src/common/config.py:443
 msgid "Multiprocessing thread count"
 msgstr "멀티프로세싱 스레드 수"
 
-#: src/common/config.py:443
+#: src/common/config.py:444
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "테마를 추가할 때 사용할 스레드 수입니다. 재시작이 필요합니다. (최소: 1)"
 
-#: src/common/config.py:450
+#: src/common/config.py:452
 msgid "YouTube Cookies"
 msgstr "YouTube 쿠키"
 
-#: src/common/config.py:452
-msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "선택 사항: ‘Get cookies.txt’ 기능을 사용하여 youtube.com 쿠키를 JSON 형식으로 로컬에 내보낸 다음, 전체 JSON 배열을 여기에 붙여넣고 저장하세요. 쿠키에는 브라우저 세션 정보가 포함되어 있으므로, 비공개로 관리해야 합니다."
+#: src/common/config.py:454
+msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Saved cookies are encrypted and masked. Select the eye icon to reveal them. Leave this blank to keep them, or select Clear saved cookies to remove them."
+msgstr "선택 사항: ‘Get cookies.txt’ 기능을 사용하여 youtube.com 쿠키를 JSON 형식으로 로컬에 내보낸 다음, 전체 JSON 배열을 여기에 붙여넣고 저장하세요. 저장된 쿠키는 암호화 및 마스킹 처리되어 있습니다. 눈 모양 아이콘을 선택하면 내용을 확인할 수 있습니다. 쿠키를 유지하려면 이 항목을 비워 두거나, ‘저장된 쿠키 지우기’를 선택하여 삭제하세요."
 
-#: src/common/config.py:457
+#: src/common/config.py:461
 msgid "Cookie export instructions"
 msgstr "쿠키 내보내기 방법"
 
@@ -523,12 +523,12 @@ msgstr "다시 시작"
 msgid "Quit"
 msgstr "종료"
 
-#: src/common/webapp.py:80 web/templates/logs.html:4
+#: src/common/webapp.py:81 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "로그"
 
-#: src/common/webapp.py:478 web/templates/config.html:23
+#: src/common/webapp.py:479 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "설정"
@@ -587,27 +587,43 @@ msgstr "세션이 만료되었습니다. 계속하려면 로그인하세요."
 msgid "Dismiss message"
 msgstr "메시지 닫기"
 
-#: web/js/config.js:18 web/js/config.js:44
+#: web/js/config.js:6
+msgid "Hide cookies"
+msgstr "쿠키 숨기기"
+
+#: web/js/config.js:6 web/templates/config.html:18
+msgid "Show cookies"
+msgstr "쿠키 보기"
+
+#: web/js/config.js:18 web/templates/config.html:14
+msgid "Cookies saved"
+msgstr "저장된 쿠키"
+
+#: web/js/config.js:34 web/templates/config.html:14
+msgid "No cookies saved"
+msgstr "쿠키가 저장되지 않았습니다"
+
+#: web/js/config.js:81 web/js/config.js:123
 msgid "Unsaved changes"
 msgstr "저장되지 않은 변경 사항"
 
-#: web/js/config.js:26
+#: web/js/config.js:89
 msgid "Discard unsaved settings changes?"
 msgstr "저장되지 않은 설정 변경 사항을 취소하시겠습니까?"
 
-#: web/js/config.js:44 web/templates/config.html:37
+#: web/js/config.js:123 web/templates/config.html:40
 msgid "All changes saved."
 msgstr "모든 변경 사항이 저장되었습니다."
 
-#: web/js/config.js:46
+#: web/js/config.js:125
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "설정이 저장되었습니다. 네트워크 변경 사항은 Themerr를 다시 시작한 후에 적용됩니다."
 
-#: web/js/config.js:50
+#: web/js/config.js:129
 msgid "Unable to save changes."
 msgstr "변경 사항을 저장할 수 없습니다."
 
-#: web/js/config.js:58
+#: web/js/config.js:137
 msgid "Save your settings changes before changing your password."
 msgstr "비밀번호를 변경하기 전에 설정 변경 사항을 저장하세요."
 
@@ -862,55 +878,59 @@ msgstr "테마: 밝은 모드. 어두운 모드로 전환."
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr "테마: 다크. 자동 모드로 전환하세요."
 
-#: web/templates/config.html:16
+#: web/templates/config.html:17
 msgid "Browse directories for"
 msgstr "다음 항목에 대한 디렉터리를 찾아보세요"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:20
+msgid "Clear saved cookies"
+msgstr "저장된 쿠키 삭제하기"
+
+#: web/templates/config.html:26
 msgid "TUNE YOUR WORKSPACE"
 msgstr "작업 공간 꾸미기"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:26
 msgid "Make Themerr work the way your library does."
 msgstr "Themerr가 여러분의 라이브러리와 동일한 방식으로 작동하도록 만드세요."
 
-#: web/templates/config.html:25
+#: web/templates/config.html:28
 msgid "Settings sections"
 msgstr "설정 항목"
 
-#: web/templates/config.html:25 web/templates/config.html:34
+#: web/templates/config.html:28 web/templates/config.html:37
 msgid "Security"
 msgstr "보안"
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "서버 연결, 데이터 디렉터리 및 제외된 라이브러리는 ‘서버’ 페이지에서 관리됩니다."
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr "네트워크 설정 변경 사항은 Themerr를 다시 시작한 후에 적용됩니다."
 
-#: web/templates/config.html:34
+#: web/templates/config.html:37
 msgid "One administrator for this installation. Change your password and sign out other sessions."
 msgstr "이 설치 환경의 관리자 한 명입니다. 비밀번호를 변경하고 다른 세션에서 로그아웃하십시오."
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Current password"
 msgstr "현재 비밀번호"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "New password"
 msgstr "새 비밀번호"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Confirm new password"
 msgstr "새 비밀번호 확인"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Change password"
 msgstr "비밀번호 변경"
 
-#: web/templates/config.html:37
+#: web/templates/config.html:40
 msgid "Save changes"
 msgstr "변경 사항 저장"
 
