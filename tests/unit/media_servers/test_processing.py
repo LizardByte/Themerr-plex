@@ -1,11 +1,14 @@
 """Shared workers accept opaque IDs and do not depend on native SDK objects."""
 
+# standard imports
 from unittest.mock import Mock
 
+# lib imports
 import pytest
 
+# local imports
 from media_servers import processing
-from media_servers.base import MediaServer, MediaServerBackend
+from media_servers.base import MediaServer, MediaServerBackend, MediaServerError
 from themerr import storage
 
 
@@ -84,3 +87,31 @@ def test_scan_uses_the_contract_and_keeps_other_servers_running(configured, monk
     backend.reset_mock()
     processing.scheduled_update()
     backend.list_servers.assert_not_called()
+
+
+def test_scan_preserves_actionable_connector_error_and_continues(configured, monkeypatch):
+    backend = Mock(spec=MediaServerBackend)
+    backend.name = 'media server'
+    backend.list_servers.return_value = [
+        {
+            'id': 'jellyfin:a',
+            'name': 'A',
+        },
+        {
+            'id': 'jellyfin:b',
+            'name': 'B',
+        },
+    ]
+    first, second = Mock(spec=MediaServer), Mock(spec=MediaServer)
+    message = 'Install the matching Themerr connector and restart Jellyfin.'
+    first.scan.side_effect = MediaServerError(message, 409)
+    backend.server.side_effect = [first, second]
+    log = Mock()
+    monkeypatch.setattr(processing, 'get_backend', lambda: backend)
+    monkeypatch.setattr(processing, 'log', log)
+    processing.scheduled_update()
+    backend.record_refresh.assert_called_once_with('jellyfin:a', message)
+    second.scan.assert_called_once_with(processing.enqueue)
+    log.warning.assert_called_once_with('Theme scan deferred for server %s: %s', 'jellyfin:a', message)
+    log.exception.assert_not_called()
+    assert storage.current_server_id() == 'default'

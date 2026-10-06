@@ -139,6 +139,8 @@ def verify(connection):
     try:
         actual = connection.json('GET', '/Themerr/Connector')
     except MediaServerError as exc:
+        if exc.status_code != 404:
+            raise
         raise MediaServerError('Install the matching Themerr connector and restart Jellyfin.', 409) from exc
     if (
         not isinstance(actual, dict)
@@ -148,6 +150,29 @@ def verify(connection):
     ):
         raise MediaServerError('Install the matching Themerr connector and restart Jellyfin.', 409)
     return expected
+
+
+def verify_removed(connection, version):
+    """Require the conflicting connector version to disappear before overwriting its DLL.
+
+    Parameters
+    ----------
+    connection : jellyfin.client.Client
+        Authenticated connection to the Jellyfin server being maintained.
+    version : str
+        Bundled assembly version whose previous installation must be removed.
+
+    Raises
+    ------
+    MediaServerError
+        The version is still installed, or Jellyfin did not return a valid plugin list.
+    """
+    if any(plugin.get('Version') == version for plugin in _connector_plugins(connection)):
+        raise MediaServerError(
+            'Jellyfin has not removed the previous connector. '
+            'Stop Jellyfin completely and start it again before installation can continue.',
+            409,
+        )
 
 
 def install(connection, themerr_url):
@@ -163,7 +188,9 @@ def install(connection, themerr_url):
         try:
             verify(connection)
             active = True
-        except MediaServerError:
+        except MediaServerError as exc:
+            if exc.status_code != 409:
+                raise
             active = False
         _register_repository(connection, url, manifest_url)
         if active:
@@ -224,15 +251,26 @@ def _register_repository(connection, url, manifest_url):
     connection.request('POST', _REPOSITORIES, json=repositories).close()
 
 
-def _prepare_installation(connection, version):
-    """Preserve pending installs and remove only this connector's older loaded assemblies."""
+def _connector_plugins(connection):
+    """Read this connector's plugin records without accepting malformed responses."""
     plugins = connection.json('GET', '/Plugins')
     if not isinstance(plugins, list) or any(not isinstance(plugin, dict) for plugin in plugins):
         raise MediaServerError('Jellyfin returned an invalid plugin list.', 502)
-    owned = [
+    return [
         plugin for plugin in plugins if str(plugin.get('Id', '')).replace('-', '').lower() == PLUGIN_ID.replace('-', '')
     ]
-    pending = any(plugin.get('Version') == version and plugin.get('Status') == 'Restart' for plugin in owned)
+
+
+def _prepare_installation(connection, version):
+    """Preserve pending installs and remove only this connector's older loaded assemblies."""
+    owned = _connector_plugins(connection)
+    # A loaded plugin being removed can also report Restart; it is not a fresh pending install.
+    pending = any(
+        plugin.get('Version') == version
+        and plugin.get('Status') == 'Restart'
+        and not plugin.get('ConfigurationFileName')
+        for plugin in owned
+    )
     if pending:
         return (
             True,

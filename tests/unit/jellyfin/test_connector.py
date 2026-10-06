@@ -1,11 +1,14 @@
 """Exact artifact selection, repository preservation, and build identity validation."""
 
+# standard imports
 import json
 from unittest.mock import Mock
 
+# lib imports
 import pytest
 import requests
 
+# local imports
 from common import definitions, version
 from jellyfin import connector
 from media_servers.base import MediaServerError
@@ -103,6 +106,123 @@ def test_older_connector_versions_are_removed_on_a_downgrade(configured, connect
     assert connection.request.call_args_list[1].args == (
         'DELETE', '/Plugins/' + connector.PLUGIN_ID + '/2026.1005.9999.0')
     assert connection.request.call_args_list[2].args == ('POST', '/Packages/Installed/' + connector.PLUGIN_NAME)
+
+
+def test_loaded_connector_marked_restart_is_not_mistaken_for_a_pending_install(configured, connector_bundle):
+    release = connector_bundle['artifacts']['12.1']['version']
+    connection = Mock(server_version='12.1.0')
+    connection.json.side_effect = [
+        {'Version': '12.1.0'},
+        MediaServerError('Mismatch', 409),
+        [],
+        {'versions': [
+            {
+                'version': release,
+                'repositoryUrl': f'http://themerr.example{connector.PROFILE_MANIFESTS["12.1"]}',
+            },
+        ]},
+        [{
+            'Id': connector.PLUGIN_ID,
+            'Version': release,
+            'Status': 'Restart',
+            'ConfigurationFileName': 'Themerr.Connector.xml',
+        }],
+    ]
+    result = connector.install(connection, 'http://themerr.example')
+    assert result['reinstall_required'] is True
+    assert connection.request.call_args_list[1].args == ('DELETE', f'/Plugins/{connector.PLUGIN_ID}/{release}')
+    assert not any(call.args[1].startswith('/Packages/Installed') for call in connection.request.call_args_list)
+
+
+@pytest.mark.parametrize('status', [
+    'Active',
+    'Disabled',
+    'Malfunctioned',
+    'Deleted',
+    'Restart',
+])
+def test_removal_requires_the_conflicting_version_to_disappear(status):
+    connection = Mock()
+    connection.json.return_value = [{
+        'Id': connector.PLUGIN_ID.replace('-', ''),
+        'Version': '0.0.0.0',
+        'Status': status,
+    }]
+    with pytest.raises(MediaServerError, match='Stop Jellyfin completely') as error:
+        connector.verify_removed(connection, '0.0.0.0')
+    assert error.value.status_code == 409
+    connection.request.assert_not_called()
+
+
+def test_removed_version_allows_reinstallation_with_unrelated_plugins_present():
+    connection = Mock()
+    connection.json.return_value = [
+        {
+            'Id': connector.LEGACY_PLUGIN_ID,
+            'Version': '0.0.0.0',
+        },
+        {
+            'Id': connector.PLUGIN_ID,
+            'Version': '1.0.0.0',
+        },
+    ]
+    connector.verify_removed(connection, '0.0.0.0')
+    connection.json.assert_called_once_with('GET', '/Plugins')
+    connection.request.assert_not_called()
+
+
+@pytest.mark.parametrize('plugins', [
+    None,
+    {},
+    ['invalid'],
+])
+def test_invalid_plugin_lists_do_not_confirm_removal(plugins):
+    connection = Mock()
+    connection.json.return_value = plugins
+    with pytest.raises(MediaServerError, match='invalid plugin list'):
+        connector.verify_removed(connection, '0.0.0.0')
+
+
+@pytest.mark.parametrize('status', [
+    401,
+    403,
+    409,
+    502,
+])
+def test_verification_preserves_access_and_connection_errors(configured, connector_bundle, status):
+    connection = Mock(server_version='12.1.0')
+    failure = MediaServerError('Jellyfin access failed.', status)
+    connection.json.side_effect = failure
+    with pytest.raises(MediaServerError) as error:
+        connector.verify(connection)
+    assert error.value is failure
+
+
+@pytest.mark.parametrize('status', [
+    401,
+    403,
+    502,
+])
+def test_install_does_not_change_server_on_verification_access_failure(configured, connector_bundle, status):
+    connection = Mock(server_version='12.1.0')
+    failure = MediaServerError('Jellyfin access failed.', status)
+    connection.json.side_effect = [
+        {'Version': '12.1.0'},
+        failure,
+    ]
+    with pytest.raises(MediaServerError) as error:
+        connector.install(connection, 'http://themerr.example')
+    assert error.value is failure
+    connection.request.assert_not_called()
+    assert connector.repository_url(required=False) is None
+
+
+def test_verification_reports_missing_connector_as_a_setup_requirement(configured, connector_bundle):
+    connection = Mock(server_version='12.1.0')
+    connection.json.side_effect = MediaServerError('Unavailable', 404)
+    with pytest.raises(MediaServerError, match='matching Themerr connector') as error:
+        connector.verify(connection)
+    assert error.value.status_code == 409
 
 
 @pytest.mark.parametrize('field, value', [('protocol', 2), ('build', 'b' * 64), ('targetAbi', '10.11.0')])
