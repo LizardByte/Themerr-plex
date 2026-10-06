@@ -14,429 +14,429 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: zh_TW\n"
-"PO-Revision-Date: 2026-10-06 03:08\n"
+"PO-Revision-Date: 2026-10-06 22:33\n"
 
-#: src/common/config.py:84
+#: src/common/config.py:85
 msgid "Info"
 msgstr "資訊"
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "For information purposes only."
 msgstr "僅供參考。"
 
-#: src/common/config.py:89
+#: src/common/config.py:90
 msgid "Config version"
 msgstr "設定版本"
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "The configuration version."
 msgstr "配置版本。"
 
-#: src/common/config.py:99
+#: src/common/config.py:100
 msgid "First run complete"
 msgstr "首次執行完成"
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "待辦事項：顯示使用者是否已完成初始設定。"
 
-#: src/common/config.py:107
+#: src/common/config.py:108
 msgid "General"
 msgstr "概述"
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General settings."
 msgstr "一般設定。"
 
-#: src/common/config.py:112
+#: src/common/config.py:113
 msgid "Locale"
 msgstr "地區設定"
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "The localization setting to use."
 msgstr "要使用的本地化設定。"
 
-#: src/common/config.py:122
+#: src/common/config.py:123
 msgid "Launch Browser on Startup "
 msgstr "開機時啟動瀏覽器 "
 
-#: src/common/config.py:128
+#: src/common/config.py:129
 msgid "Enable System Tray Icon"
 msgstr "啟用系統托盤圖示"
 
-#: src/common/config.py:136
+#: src/common/config.py:137
 msgid "Notifications"
 msgstr "通知"
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "桌面通知會出現在執行 Themerr 的電腦上。Docker 環境及無圖形介面的安裝方式則不會顯示這些通知。"
 
-#: src/common/config.py:142 src/common/notifications.py:138
+#: src/common/config.py:143 src/common/notifications.py:138
 msgid "New release available"
 msgstr "新版本已推出"
 
-#: src/common/config.py:143
+#: src/common/config.py:144
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "當有較新版本的 Themerr 釋出時，請通知我。系統每小時檢查一次。"
 
-#: src/common/config.py:148
+#: src/common/config.py:149
 msgid "Follow pre-releases"
 msgstr "追蹤預發布版本"
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Include pre-releases in new release notifications."
 msgstr "在新版發布通知中納入預發布版本。"
 
-#: src/common/config.py:154
+#: src/common/config.py:155
 msgid "Theme coverage increased"
 msgstr "主題涵蓋範圍擴大"
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "當總主題覆蓋率增加時，於刷新成功後發出通知。若刷新後未增加，則不發出通知。"
 
-#: src/common/config.py:162
+#: src/common/config.py:163
 msgid "Logging"
 msgstr "登錄"
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging settings."
 msgstr "記錄設定。"
 
-#: src/common/config.py:167
+#: src/common/config.py:168
 msgid "Log directory"
 msgstr "日誌目錄"
 
-#: src/common/config.py:169
+#: src/common/config.py:170
 msgid "The directory where to store the log files."
 msgstr "用來儲存日誌檔案的目錄。"
 
-#: src/common/config.py:176
+#: src/common/config.py:177
 msgid "Debug logging"
 msgstr "除錯記錄"
 
-#: src/common/config.py:178
+#: src/common/config.py:179
 msgid "Enable debug logging."
 msgstr "啟用除錯記錄。"
 
-#: src/common/config.py:184
+#: src/common/config.py:185
 msgid "Network"
 msgstr "網路"
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network settings."
 msgstr "網路設定。"
 
-#: src/common/config.py:189
+#: src/common/config.py:190
 msgid "HTTP host address"
 msgstr "HTTP 主機位址"
 
-#: src/common/config.py:191
+#: src/common/config.py:192
 msgid "The HTTP address to bind to."
 msgstr "要綁定的 HTTP 位址。"
 
-#: src/common/config.py:200
+#: src/common/config.py:201
 msgid "HTTP port"
 msgstr "HTTP 埠"
 
-#: src/common/config.py:202
+#: src/common/config.py:203
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "要將網頁伺服器綁定的埠號。請注意，1024 以下的埠號可能需要 root 權限。"
 
-#: src/common/config.py:210
+#: src/common/config.py:211
 msgid "HTTP root"
 msgstr "HTTP 根目錄"
 
-#: src/common/config.py:212
+#: src/common/config.py:213
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "待辦事項：Web 伺服器的基礎 URL。用於反向代理。"
 
-#: src/common/config.py:217
+#: src/common/config.py:218
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:219
+#: src/common/config.py:220
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "請以 HTTPS 模式執行網頁伺服器。停用此功能可能造成安全風險，請自行承擔風險後再進行此操作。"
 
-#: src/common/config.py:225
+#: src/common/config.py:226
 msgid "Updater"
 msgstr "更新程式"
 
-#: src/common/config.py:226
+#: src/common/config.py:227
 msgid "Updater settings."
 msgstr "更新程式設定。"
 
-#: src/common/config.py:230
+#: src/common/config.py:231
 msgid "Auto update"
 msgstr "自動更新"
 
-#: src/common/config.py:238
+#: src/common/config.py:239
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/common/config.py:239
+#: src/common/config.py:240
 msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
 msgstr "Jellyfin 佈景主題處理設定。連線管理請至「伺服器」頁面進行。"
 
-#: src/common/config.py:242 src/common/config.py:343
+#: src/common/config.py:243 src/common/config.py:344
 msgid "Movie support"
 msgstr "電影支援"
 
-#: src/common/config.py:243
+#: src/common/config.py:244
 msgid "Add themes to Jellyfin movies."
 msgstr "為 Jellyfin 影片新增主題。"
 
-#: src/common/config.py:246 src/common/config.py:349
+#: src/common/config.py:247 src/common/config.py:350
 msgid "Series support"
 msgstr "系列支援"
 
-#: src/common/config.py:247
+#: src/common/config.py:248
 msgid "Add themes to Jellyfin series."
 msgstr "為 Jellyfin 系列新增主題。"
 
-#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
 msgid "Collections"
 msgstr "收藏集"
 
-#: src/common/config.py:251
+#: src/common/config.py:252
 msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
 msgstr "請將主題新增至 Jellyfin 的收藏目錄中。媒體檔案可保留在其他位置。"
 
-#: src/common/config.py:254
+#: src/common/config.py:255
 msgid "Overwrite user themes"
 msgstr "覆寫使用者主題"
 
-#: src/common/config.py:255
+#: src/common/config.py:256
 msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
 msgstr "覆寫現有的主題檔案，包括由舊版 Themerr-jellyfin 外掛所建立的主題。"
 
-#: src/common/config.py:259
+#: src/common/config.py:260
 msgid "Back up replaced user themes"
 msgstr "備份已替換的使用者主題"
 
-#: src/common/config.py:260
+#: src/common/config.py:261
 msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
 msgstr "替換現有使用者主題時，請將其保留在備份資料夾中。若要永久刪除已被替換的主題，請關閉此功能。"
 
-#: src/common/config.py:264
+#: src/common/config.py:265
 msgid "Import older Themerr-jellyfin ownership"
 msgstr "匯入舊版 Themerr-jellyfin 的所有權資訊"
 
-#: src/common/config.py:265
+#: src/common/config.py:266
 msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
 msgstr "僅當 SHA-256 值仍與舊版外掛程式資料庫中記錄的主題相符時，才會識別該主題。已修改的檔案仍受保護。舊資料庫則保持不變。"
 
-#: src/common/config.py:269
+#: src/common/config.py:270
 msgid "Ignore locked metadata"
 msgstr "忽略已鎖定的元資料"
 
-#: src/common/config.py:270
+#: src/common/config.py:271
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr "允許 Jellyfin 主題更新具有鎖定元資料的項目。"
 
-#: src/common/config.py:273
+#: src/common/config.py:274
 msgid "Update connector automatically"
 msgstr "自動更新連接器"
 
-#: src/common/config.py:274
+#: src/common/config.py:275
 msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr "當 Themerr 啟動或偵測到版本不符時，請安裝對應的連接器。請先在「伺服器」頁面設定可連線的 Themerr 位址。"
 
-#: src/common/config.py:278
+#: src/common/config.py:279
 msgid "Restart Jellyfin automatically"
 msgstr "自動重新啟動 Jellyfin"
 
-#: src/common/config.py:279
+#: src/common/config.py:280
 msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
 msgstr "安裝或更新連接器後，請重新啟動 Jellyfin。在實際重新啟動之前，「伺服器」頁面會顯示一則待處理的重新啟動通知。"
 
-#: src/common/config.py:283
+#: src/common/config.py:284
 msgid "Wait for playback to finish"
 msgstr "請等待播放完成"
 
-#: src/common/config.py:284
+#: src/common/config.py:285
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr "在所有串流皆已停止播放或暫停之前，暫不重新啟動連接器。"
 
-#: src/common/config.py:287
+#: src/common/config.py:288
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr "移除舊版的 Themerr-jellyfin 外掛程式"
 
-#: src/common/config.py:288
+#: src/common/config.py:289
 msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
 msgstr "安裝此擴充功能後，請先移除舊版的 Themerr 外掛，並僅刪除其專屬的儲存庫。現有的佈景主題檔案將予以保留。"
 
-#: src/common/config.py:292
+#: src/common/config.py:293
 msgid "Connector HTTP port"
 msgstr "連接器 HTTP 埠"
 
-#: src/common/config.py:293
+#: src/common/config.py:294
 msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
 msgstr "當 Themerr 使用自簽名憑證時，僅透過 HTTP 提供連接器下載服務。管理介面仍維持在 HTTPS 上。設定為 0 可停用此功能。變更此設定後，請重新啟動 Themerr。"
 
-#: src/common/config.py:300
+#: src/common/config.py:301
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:301
+#: src/common/config.py:302
 msgid "Plex settings."
 msgstr "Plex 設定。"
 
-#: src/common/config.py:305
+#: src/common/config.py:306
 msgid "Plex URL"
 msgstr "Plex URL"
 
-#: src/common/config.py:306
+#: src/common/config.py:307
 msgid "The URL to the Plex server."
 msgstr "Plex 伺服器的 URL。"
 
-#: src/common/config.py:315 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:37
 msgid "Plex data directory"
 msgstr "Plex 資料目錄"
 
-#: src/common/config.py:316
+#: src/common/config.py:317
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
-#: src/common/config.py:326
+#: src/common/config.py:327
 msgid "Themerr"
 msgstr "Themerr"
 
-#: src/common/config.py:327
+#: src/common/config.py:328
 msgid "Themerr settings."
 msgstr "Themerr 設定。"
 
-#: src/common/config.py:331
+#: src/common/config.py:332
 msgid "Themerr Enabled"
 msgstr "已啟用 Themerr"
 
-#: src/common/config.py:332
+#: src/common/config.py:333
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "啟用後，Themerr 將嘗試更新主題。"
 
-#: src/common/config.py:338
+#: src/common/config.py:339
 msgid "Add themes to collections."
 msgstr "將主題新增至收藏集。"
 
-#: src/common/config.py:344
+#: src/common/config.py:345
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "使用 Plex Movie 代理程式為電影新增主題。"
 
-#: src/common/config.py:350
+#: src/common/config.py:351
 msgid "Add themes to series using the Plex Series agent."
 msgstr "使用 Plex 影集代理程式為影集新增主題。"
 
-#: src/common/config.py:355
+#: src/common/config.py:356
 msgid "Overwrite Plex themes"
 msgstr "覆寫 Plex 主題"
 
-#: src/common/config.py:356
+#: src/common/config.py:357
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "啟用後，Themerr 將覆寫 Plex 提供的主題。"
 
-#: src/common/config.py:361
+#: src/common/config.py:362
 msgid "Prefer MP4A AAC Codec"
 msgstr "建議使用 MP4A AAC 編解碼器"
 
-#: src/common/config.py:362
+#: src/common/config.py:363
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "此舉可提升該主題與 Apple 裝置的相容性。"
 
-#: src/common/config.py:367
+#: src/common/config.py:368
 msgid "Remove unused themes"
 msgstr "移除未使用的佈景主題"
 
-#: src/common/config.py:368
+#: src/common/config.py:369
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "釋放 Plex 元資料目錄中的空間。此選項需要先設定「Plex 資料目錄」的路徑"
 
-#: src/common/config.py:374
+#: src/common/config.py:375
 msgid "Remove unused art"
 msgstr "移除未使用的圖像"
 
-#: src/common/config.py:375 src/common/config.py:383
+#: src/common/config.py:376 src/common/config.py:384
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "適用於收藏集。可釋放 Plex 元資料目錄中的空間。此選項需要先設定「Plex 資料目錄」的路徑"
 
-#: src/common/config.py:382
+#: src/common/config.py:383
 msgid "Remove unused posters"
 msgstr "移除未使用的海報"
 
-#: src/common/config.py:390
+#: src/common/config.py:391
 msgid "Collection metadata"
 msgstr "收藏集元資料"
 
-#: src/common/config.py:391
+#: src/common/config.py:392
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "在排程更新期間，更新收藏集的元資料（海報、藝術作品及摘要）。"
 
-#: src/common/config.py:396
+#: src/common/config.py:397
 msgid "Ignore locked fields."
 msgstr "忽略已鎖定的欄位。"
 
-#: src/common/config.py:397
+#: src/common/config.py:398
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "如果您使用的是 Themerr v2024.813.13709 或更早版本，可能需要啟用此功能才能更新項目。"
 
-#: src/common/config.py:403
+#: src/common/config.py:404
 msgid "Ignored library IDs"
 msgstr "被忽略的函式庫識別碼"
 
-#: src/common/config.py:404
+#: src/common/config.py:405
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "以逗號分隔的庫 ID，這些庫將被排除在排程更新之外。這些 ID 會顯示在「首頁」上。"
 
-#: src/common/config.py:410
+#: src/common/config.py:411
 msgid "Update themes interval"
 msgstr "更新主題的間隔"
 
-#: src/common/config.py:411
+#: src/common/config.py:412
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "自動更新任務的間隔，單位為分鐘（最小值：15）。"
 
-#: src/common/config.py:418
+#: src/common/config.py:419
 msgid "Update database cache interval"
 msgstr "更新資料庫快取間隔"
 
-#: src/common/config.py:419
+#: src/common/config.py:420
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "資料庫快取更新任務的間隔時間，單位為分鐘（最小值：15）。"
 
-#: src/common/config.py:426
+#: src/common/config.py:427
 msgid "PlexAPI timeout"
 msgstr "PlexAPI 超時"
 
-#: src/common/config.py:427
+#: src/common/config.py:428
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "若在新增主題時發生超時情況，請將此數值稍微調高一些。（最小值：1）"
 
-#: src/common/config.py:434
+#: src/common/config.py:435
 msgid "Theme upload retries"
 msgstr "佈景主題上傳重試"
 
-#: src/common/config.py:435
+#: src/common/config.py:436
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "若上傳主題失敗，請重試此次數。（最小值：0）"
 
-#: src/common/config.py:442
+#: src/common/config.py:443
 msgid "Multiprocessing thread count"
 msgstr "多處理程的執行緒數"
 
-#: src/common/config.py:443
+#: src/common/config.py:444
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "新增主題時使用的執行緒數。需重新啟動。（最小值：1）"
 
-#: src/common/config.py:450
+#: src/common/config.py:452
 msgid "YouTube Cookies"
 msgstr "YouTube 的 Cookie"
 
-#: src/common/config.py:452
-msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "可選步驟：使用「Get cookies.txt」將 youtube.com 的 Cookie 以 JSON 格式匯出至本機，然後將整個 JSON 陣列貼在此處並儲存。Cookie 包含您的瀏覽器會話資訊；請務必妥善保管，避免洩露。"
+#: src/common/config.py:454
+msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Saved cookies are encrypted and masked. Select the eye icon to reveal them. Leave this blank to keep them, or select Clear saved cookies to remove them."
+msgstr "可選：使用「Get cookies.txt」將 youtube.com 的 Cookie 以 JSON 格式匯出至本機，然後將整個 JSON 陣列貼在此處並儲存。已儲存的 Cookie 均經過加密與遮罩處理。點選眼睛圖示即可顯示其內容。若要保留這些 Cookie，請將此處留空；若要刪除，請點選「清除已儲存的 Cookie」。"
 
-#: src/common/config.py:457
+#: src/common/config.py:461
 msgid "Cookie export instructions"
 msgstr "Cookie 匯出說明"
 
@@ -523,12 +523,12 @@ msgstr "重新啟動"
 msgid "Quit"
 msgstr "退出"
 
-#: src/common/webapp.py:80 web/templates/logs.html:4
+#: src/common/webapp.py:81 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "日誌"
 
-#: src/common/webapp.py:478 web/templates/config.html:23
+#: src/common/webapp.py:479 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "設定"
@@ -587,27 +587,43 @@ msgstr "您的登入會話已過期。請登入以繼續。"
 msgid "Dismiss message"
 msgstr "關閉訊息"
 
-#: web/js/config.js:18 web/js/config.js:44
+#: web/js/config.js:6
+msgid "Hide cookies"
+msgstr "隱藏 Cookie"
+
+#: web/js/config.js:6 web/templates/config.html:18
+msgid "Show cookies"
+msgstr "顯示 Cookie"
+
+#: web/js/config.js:18 web/templates/config.html:14
+msgid "Cookies saved"
+msgstr "已儲存的 Cookie"
+
+#: web/js/config.js:34 web/templates/config.html:14
+msgid "No cookies saved"
+msgstr "未儲存任何 Cookie"
+
+#: web/js/config.js:81 web/js/config.js:123
 msgid "Unsaved changes"
 msgstr "未儲存的變更"
 
-#: web/js/config.js:26
+#: web/js/config.js:89
 msgid "Discard unsaved settings changes?"
 msgstr "要刪除未儲存的設定變更嗎？"
 
-#: web/js/config.js:44 web/templates/config.html:37
+#: web/js/config.js:123 web/templates/config.html:40
 msgid "All changes saved."
 msgstr "所有變更已儲存。"
 
-#: web/js/config.js:46
+#: web/js/config.js:125
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "設定已儲存。網路變更將在重新啟動 Themerr 後生效。"
 
-#: web/js/config.js:50
+#: web/js/config.js:129
 msgid "Unable to save changes."
 msgstr "無法儲存變更。"
 
-#: web/js/config.js:58
+#: web/js/config.js:137
 msgid "Save your settings changes before changing your password."
 msgstr "在變更密碼之前，請先儲存設定變更。"
 
@@ -862,55 +878,59 @@ msgstr "主題：淺色。切換至深色模式。"
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr "主題：深色。切換至自動模式。"
 
-#: web/templates/config.html:16
+#: web/templates/config.html:17
 msgid "Browse directories for"
 msgstr "瀏覽目錄以尋找"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:20
+msgid "Clear saved cookies"
+msgstr "清除已儲存的 Cookie"
+
+#: web/templates/config.html:26
 msgid "TUNE YOUR WORKSPACE"
 msgstr "打造理想的工作空間"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:26
 msgid "Make Themerr work the way your library does."
 msgstr "讓 Themerr 按照您的函式庫的方式運作。"
 
-#: web/templates/config.html:25
+#: web/templates/config.html:28
 msgid "Settings sections"
 msgstr "「設定」區段"
 
-#: web/templates/config.html:25 web/templates/config.html:34
+#: web/templates/config.html:28 web/templates/config.html:37
 msgid "Security"
 msgstr "安全"
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "伺服器連線、資料目錄及被忽略的函式庫皆在「伺服器」頁面中進行管理。"
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr "網路設定的變更將在重新啟動 Themerr 後生效。"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:37
 msgid "One administrator for this installation. Change your password and sign out other sessions."
 msgstr "此安裝環境僅有一位管理員。請變更您的密碼，並登出其他工作階段。"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Current password"
 msgstr "目前密碼"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "New password"
 msgstr "新密碼"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Confirm new password"
 msgstr "確認新密碼"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Change password"
 msgstr "變更密碼"
 
-#: web/templates/config.html:37
+#: web/templates/config.html:40
 msgid "Save changes"
 msgstr "儲存變更"
 
