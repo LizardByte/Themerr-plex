@@ -26,6 +26,7 @@ from common import admin, api_docs, log_viewer, server_ui
 from common.http import csrf_token as _csrf_token
 from common.http import SafeStaticFiles, error_response, file_response, read_form, read_json, render_template
 from common import config
+from common import credentials
 from common import crypto
 from common.definitions import Paths
 from common import locales
@@ -477,6 +478,12 @@ def settings(request: Request) -> Response:
         'config.html',
         title=_('Settings'),
         config_settings=config_settings,
+        secret_settings={
+            (section, key): bool(value)
+            for section, options in common.CONFIG.items()
+            for key, value in options.items()
+            if config._CONFIG_SPEC_DICT.get(section, {}).get(key, {}).get('secret')
+        },
         config_spec=config._CONFIG_SPEC_DICT,
         settings_groups=config.settings_groups(),
     )
@@ -668,16 +675,33 @@ def _candidate_settings(form) -> tuple[dict, list[tuple[str, str]], Response | N
     decoded = config.decode_config(common.CONFIG)
     changed = []
     for option, value in form.items():
+        clear_secret = option.endswith('|clear')
+        if clear_secret:
+            option = option.removesuffix('|clear')
         try:
             key, setting, value = _parse_setting(option, value)
+            secret = config._CONFIG_SPEC_DICT[key][setting].get('secret')
+            if clear_secret:
+                if not secret or value != 'true':
+                    raise ValueError(option)
+                value = ''
+            elif secret and not value:
+                continue
+            elif secret:
+                # Always encrypt submitted text, even if it resembles ciphertext.
+                value = credentials.encrypt_setting(value)
         except KeyError:
             error = JSONResponse({'status': 'ERROR', 'message': 'Unknown or locked setting.'}, status_code=400)
             return candidate, changed, error
         except ValueError:
             error = JSONResponse({'status': 'ERROR', 'message': 'Invalid setting value.'}, status_code=400)
             return candidate, changed, error
+        except credentials.TokenStorageError:
+            error = JSONResponse({'status': 'ERROR', 'message': 'Secure cookie storage is unavailable. '
+                                  'Check the OS credential store or THEMERR_TOKEN_KEY_FILE.'}, status_code=500)
+            return candidate, changed, error
 
-        if decoded[key][setting] != value:
+        if (candidate[key][setting] if secret else decoded[key][setting]) != value:
             changed.append((key, setting))
         if config.is_masked_field(section=key, key=setting):
             value = config.encode_value(value)
@@ -745,7 +769,7 @@ def api_settings(request: Request, form=Depends(read_form)) -> Response:
     <Response ... bytes [200 OK]>
     """
     if request.method in ('GET', 'HEAD'):
-        return JSONResponse(config.CONFIG)
+        return JSONResponse(config.decode_config(config.CONFIG))
 
     candidate, changed, error = _candidate_settings(form)
     if error is not None:
@@ -753,6 +777,34 @@ def api_settings(request: Request, form=Depends(read_form)) -> Response:
     if not config.validate_config(config=candidate):
         return JSONResponse({'status': 'ERROR', 'message': 'Selected settings are not valid.'}, status_code=400)
     return _save_settings(candidate, changed)
+
+
+@router.post('/api/settings/youtube-cookies', name='reveal_youtube_cookies', response_model=None)
+def reveal_youtube_cookies() -> Response:
+    """Return saved cookies only after an authenticated, CSRF-protected reveal.
+
+    The settings page calls this endpoint when the administrator selects Show.
+    Disable response caching so the decrypted export is not cached by the browser.
+
+    Returns
+    -------
+    Response
+        Decrypted cookie JSON or a fixed storage error, with caching disabled.
+
+    Examples
+    --------
+    >>> reveal_youtube_cookies()
+    <Response ... bytes [200 OK]>
+    """
+    headers = {'Cache-Control': 'no-store'}
+    try:
+        return JSONResponse({'value': config.youtube_cookies()}, headers=headers)
+    except credentials.TokenStorageError:
+        return JSONResponse(
+            {'message': 'Unable to read saved cookies. Check the OS credential store or THEMERR_TOKEN_KEY_FILE.'},
+            status_code=500,
+            headers=headers,
+        )
 
 
 @router.api_route('/translations', methods=['GET', 'HEAD'], name='translations', response_model=None)

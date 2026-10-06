@@ -239,8 +239,8 @@ Cookies cannot make a deleted or unavailable video accessible.
 
 Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr
 configuration private, and never include cookie values in screenshots, logs, or issue reports.
-Themerr converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
-each extraction; the JSON remains in the configuration until you clear the setting and save.
+For Docker and headless installations, complete the credential-storage setup described in :doc:`docker`
+before saving cookies.
 
 Theme format
 ------------

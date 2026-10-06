@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 # local imports
 from tests.http_helpers import get_session, set_session
-from common import admin, webapp
+from common import admin, config, credentials, webapp
 from plex import servers
 from plex import auth, plexapi, web as plex_web
 from themerr import storage
@@ -664,6 +664,69 @@ def test_save_failure_restores_config(client, configured, monkeypatch):
     response = client.post('/api/settings', data={'General|LAUNCH_BROWSER': 'false'})
     assert response.status_code == 500
     assert configured['General']['LAUNCH_BROWSER'] == original
+
+
+def test_saved_cookies_are_hidden_preserved_replaced_and_cleared(client, configured):
+    raw = '[{"value":"private-cookie"}]'
+    response = client.post('/api/settings', data={'Themerr|STR_YOUTUBE_COOKIES': raw})
+    assert response.status_code == 200
+    assert config.youtube_cookies() == raw
+    assert 'private-cookie' not in str(response.json())
+    assert client.get('/api/settings').json()['Themerr']['STR_YOUTUBE_COOKIES'] == ''
+    page = client.get('/settings/').text
+    assert raw not in page
+    assert configured['Themerr']['STR_YOUTUBE_COOKIES'] not in page
+    assert 'data-secret-toggle="Themerr-STR_YOUTUBE_COOKIES"' in page
+    assert 'data-has-secret="true"' in page
+    assert re.search(r'id="Themerr-STR_YOUTUBE_COOKIES"[^>]*type="password"', page)
+    assert client.post('/api/settings', data={
+        'General|LAUNCH_BROWSER': 'false',
+        'Themerr|STR_YOUTUBE_COOKIES': '',
+    }).status_code == 200
+    assert config.youtube_cookies() == raw
+    assert client.post('/api/settings', data={'Themerr|STR_YOUTUBE_COOKIES': 'replacement'}).status_code == 200
+    assert config.youtube_cookies() == 'replacement'
+    assert client.post('/api/settings', data={'Themerr|STR_YOUTUBE_COOKIES|clear': 'true'}).status_code == 200
+    assert configured['Themerr']['STR_YOUTUBE_COOKIES'] == ''
+    assert config.youtube_cookies() == ''
+    assert 'data-has-secret="false"' in client.get('/settings/').text
+
+
+def test_cookie_reveal_requires_authentication_and_csrf_and_disables_caching(client, configured):
+    raw = '[{"value":"private-cookie"}]'
+    assert client.post('/api/settings', data={'Themerr|STR_YOUTUBE_COOKIES': raw}).status_code == 200
+    client.app.state.csrf_enabled = True
+    assert client.post('/api/settings/youtube-cookies').status_code == 400
+    page = client.get('/settings/')
+    token = re.search(rb'data-csrf-token="([^"]+)"', page.content).group(1).decode()
+    response = client.post('/api/settings/youtube-cookies', headers={'X-CSRFToken': token})
+    assert response.status_code == 200
+    assert response.json() == {'value': raw}
+    assert response.headers['Cache-Control'] == 'no-store'
+    assert client.get('/api/settings/youtube-cookies').status_code == 405
+    client.cookies.clear()
+    assert client.post('/api/settings/youtube-cookies', headers={'X-CSRFToken': token}).status_code == 401
+
+
+@pytest.mark.parametrize('save_failure', (
+    True,
+    False,
+))
+def test_failed_cookie_update_preserves_existing_settings(client, configured, monkeypatch, save_failure):
+    assert client.post('/api/settings', data={'Themerr|STR_YOUTUBE_COOKIES': 'old-cookie'}).status_code == 200
+    previous = configured['Themerr']['STR_YOUTUBE_COOKIES']
+    if save_failure:
+        monkeypatch.setattr(config, 'save_config', lambda **_: False)
+    else:
+        monkeypatch.setattr(credentials.keyring, 'get_password', Mock(side_effect=RuntimeError('private-cookie')))
+    response = client.post('/api/settings', data={
+        'General|LAUNCH_BROWSER': 'false',
+        'Themerr|STR_YOUTUBE_COOKIES': 'new-cookie',
+    })
+    assert response.status_code == 500
+    assert 'private-cookie' not in response.text
+    assert configured['Themerr']['STR_YOUTUBE_COOKIES'] == previous
+    assert configured['General']['LAUNCH_BROWSER'] is True
 
 
 def test_translations_and_logging(client):
