@@ -12,339 +12,431 @@ msgstr ""
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: tr\n"
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
-"X-Crowdin-File-ID: 5784\n"
+"X-Crowdin-File-ID: 6533\n"
 "Language: tr_TR\n"
-"PO-Revision-Date: 2026-10-04 15:02\n"
+"PO-Revision-Date: 2026-10-06 03:08\n"
 
-#: src/common/config.py:90
+#: src/common/config.py:84
 msgid "Info"
 msgstr "Bilgi"
 
-#: src/common/config.py:91
+#: src/common/config.py:85
 msgid "For information purposes only."
 msgstr "Yalnızca bilgilendirme amaçlıdır."
 
-#: src/common/config.py:95
+#: src/common/config.py:89
 msgid "Config version"
 msgstr "Yapılandırma sürümü"
 
-#: src/common/config.py:96
+#: src/common/config.py:90
 msgid "The configuration version."
 msgstr "Yapılandırma sürümü."
 
-#: src/common/config.py:105
+#: src/common/config.py:99
 msgid "First run complete"
 msgstr "İlk çalıştırma tamamlandı"
 
-#: src/common/config.py:106
+#: src/common/config.py:100
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "Yapılacaklar: Kullanıcının ilk kurulumu tamamlayıp tamamlamadığını gösterir."
 
-#: src/common/config.py:113
+#: src/common/config.py:107
 msgid "General"
 msgstr "Genel"
 
-#: src/common/config.py:114
+#: src/common/config.py:108
 msgid "General settings."
 msgstr "Genel ayarlar."
 
-#: src/common/config.py:118
+#: src/common/config.py:112
 msgid "Locale"
 msgstr "Yerel ayar"
 
-#: src/common/config.py:119
+#: src/common/config.py:113
 msgid "The localization setting to use."
 msgstr "Kullanılacak yerelleştirme ayarı."
 
-#: src/common/config.py:128
+#: src/common/config.py:122
 msgid "Launch Browser on Startup "
 msgstr "Başlangıçta Tarayıcıyı Aç "
 
-#: src/common/config.py:134
+#: src/common/config.py:128
 msgid "Enable System Tray Icon"
 msgstr "Sistem Tepsisi Simgesini Etkinleştir"
 
-#: src/common/config.py:142
+#: src/common/config.py:136
 msgid "Notifications"
 msgstr "Bildirimler"
 
-#: src/common/config.py:143
+#: src/common/config.py:137
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "Masaüstü bildirimleri, Themerr’in çalıştığı bilgisayarda görünür. Docker ve başsız kurulumlarda bu bildirimler görüntülenmez."
 
-#: src/common/config.py:148 src/common/notifications.py:138
+#: src/common/config.py:142 src/common/notifications.py:138
 msgid "New release available"
 msgstr "Yeni sürüm çıktı"
 
-#: src/common/config.py:149
+#: src/common/config.py:143
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "Themerr’ın daha yeni bir sürümü çıktığında bildirim gönder. Kontroller saatte bir kez yapılır."
 
-#: src/common/config.py:154
+#: src/common/config.py:148
 msgid "Follow pre-releases"
 msgstr "Ön sürümleri takip edin"
 
-#: src/common/config.py:155
+#: src/common/config.py:149
 msgid "Include pre-releases in new release notifications."
 msgstr "Yeni sürüm bildirimlerine ön sürümleri de dahil edin."
 
-#: src/common/config.py:160
+#: src/common/config.py:154
 msgid "Theme coverage increased"
 msgstr "Tema kapsamı genişledi"
 
-#: src/common/config.py:161
+#: src/common/config.py:155
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "Toplam tema kapsamı arttığında, yenileme işlemi başarıyla tamamlandıktan sonra bildirim gönderilir. Kapsamda artış olmayan yenileme işlemlerinde bildirim yapılmaz."
 
-#: src/common/config.py:168
+#: src/common/config.py:162
 msgid "Logging"
 msgstr "Günlük kaydı"
 
-#: src/common/config.py:169
+#: src/common/config.py:163
 msgid "Logging settings."
 msgstr "Günlük kaydı ayarları."
 
-#: src/common/config.py:173
+#: src/common/config.py:167
 msgid "Log directory"
 msgstr "Günlük dizini"
 
-#: src/common/config.py:175
+#: src/common/config.py:169
 msgid "The directory where to store the log files."
 msgstr "Günlük dosyalarının depolanacağı dizin."
 
-#: src/common/config.py:182
+#: src/common/config.py:176
 msgid "Debug logging"
 msgstr "Hata ayıklama günlüğü"
 
-#: src/common/config.py:184
+#: src/common/config.py:178
 msgid "Enable debug logging."
 msgstr "Hata ayıklama günlüğünü etkinleştirin."
 
-#: src/common/config.py:190
+#: src/common/config.py:184
 msgid "Network"
 msgstr "Ağ"
 
-#: src/common/config.py:191
+#: src/common/config.py:185
 msgid "Network settings."
 msgstr "Ağ ayarları."
 
-#: src/common/config.py:195
+#: src/common/config.py:189
 msgid "HTTP host address"
 msgstr "HTTP ana bilgisayar adresi"
 
-#: src/common/config.py:197
+#: src/common/config.py:191
 msgid "The HTTP address to bind to."
 msgstr "Bağlanılacak HTTP adresi."
 
-#: src/common/config.py:206
+#: src/common/config.py:200
 msgid "HTTP port"
 msgstr "HTTP bağlantı noktası"
 
-#: src/common/config.py:208
+#: src/common/config.py:202
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "Web sunucusunun bağlanacağı bağlantı noktası. 1024'ün altındaki bağlantı noktaları için root yetkisi gerekebileceğini unutmayın."
 
-#: src/common/config.py:216
+#: src/common/config.py:210
 msgid "HTTP root"
 msgstr "HTTP kökü"
 
-#: src/common/config.py:218
+#: src/common/config.py:212
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Yapılacaklar: Web sunucusunun temel URL’si. Ters proxy’ler için kullanılır."
 
-#: src/common/config.py:223
+#: src/common/config.py:217
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:225
+#: src/common/config.py:219
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Web sunucusunu HTTPS ile çalıştırın. Bu ayarın devre dışı bırakılması bir güvenlik riski oluşturabilir; bu işlemi kendi sorumluluğunuzda gerçekleştirin."
 
-#: src/common/config.py:231
+#: src/common/config.py:225
 msgid "Updater"
 msgstr "Güncelleyici"
 
-#: src/common/config.py:232
+#: src/common/config.py:226
 msgid "Updater settings."
 msgstr "Güncelleyici ayarları."
 
-#: src/common/config.py:236
+#: src/common/config.py:230
 msgid "Auto update"
 msgstr "Otomatik güncelleme"
 
-#: src/common/config.py:244
-msgid "Plex"
-msgstr "Plex"
+#: src/common/config.py:238
+msgid "Jellyfin"
+msgstr "Jellyfin"
 
-#: src/common/config.py:245
-msgid "Plex settings."
-msgstr "Plex ayarları."
+#: src/common/config.py:239
+msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
+msgstr "Jellyfin tema işleme ayarları. Bağlantılar, “Sunucular” sayfasında yönetilir."
 
-#: src/common/config.py:249
-msgid "Plex URL"
-msgstr "Plex URL'si"
-
-#: src/common/config.py:250
-msgid "The URL to the Plex server."
-msgstr "Plex sunucusunun URL'si."
-
-#: src/common/config.py:259 web/templates/servers.html:20
-msgid "Plex data directory"
-msgstr "Plex veri dizini"
-
-#: src/common/config.py:260
-msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-
-#: src/common/config.py:270
-msgid "Themerr"
-msgstr "Themerr"
-
-#: src/common/config.py:271
-msgid "Themerr settings."
-msgstr "Themerr ayarları."
-
-#: src/common/config.py:275
-msgid "Themerr Enabled"
-msgstr "Themerr Etkin"
-
-#: src/common/config.py:276
-msgid "When enabled, Themerr will attempt to update themes."
-msgstr "Etkinleştirildiğinde, Themerr temaları güncellemeye çalışacaktır."
-
-#: src/common/config.py:281 web/templates/home.html:30
-msgid "Collections"
-msgstr "Koleksiyonlar"
-
-#: src/common/config.py:282
-msgid "Add themes to collections."
-msgstr "Temaları koleksiyonlara ekleyin."
-
-#: src/common/config.py:287
+#: src/common/config.py:242 src/common/config.py:343
 msgid "Movie support"
 msgstr "Film desteği"
 
-#: src/common/config.py:288
-msgid "Add themes to movies using the Plex Movie agent."
-msgstr "Plex Movie ajanı kullanarak filmlere temalar ekleyin."
+#: src/common/config.py:243
+msgid "Add themes to Jellyfin movies."
+msgstr "Jellyfin filmlerine temalar ekleyin."
 
-#: src/common/config.py:293
+#: src/common/config.py:246 src/common/config.py:349
 msgid "Series support"
 msgstr "Seri desteği"
 
-#: src/common/config.py:294
+#: src/common/config.py:247
+msgid "Add themes to Jellyfin series."
+msgstr "Jellyfin dizilerine temalar ekleyin."
+
+#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+msgid "Collections"
+msgstr "Koleksiyonlar"
+
+#: src/common/config.py:251
+msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
+msgstr "Temaları Jellyfin’in koleksiyon dizinlerine ekleyin. Medya dosyaları başka bir yerde kalabilir."
+
+#: src/common/config.py:254
+msgid "Overwrite user themes"
+msgstr "Kullanıcı temalarını üzerine yaz"
+
+#: src/common/config.py:255
+msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
+msgstr "Eski Themerr-jellyfin eklentisiyle oluşturulan temalar da dahil olmak üzere mevcut tema dosyalarını değiştirin."
+
+#: src/common/config.py:259
+msgid "Back up replaced user themes"
+msgstr "Değiştirilen kullanıcı temalarını yedekleyin"
+
+#: src/common/config.py:260
+msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
+msgstr "Mevcut kullanıcı temalarını değiştirirken bunları bir yedekleme klasöründe saklayın. Değiştirilen temaları kalıcı olarak silmek için bu seçeneği devre dışı bırakın."
+
+#: src/common/config.py:264
+msgid "Import older Themerr-jellyfin ownership"
+msgstr "Eski Themerr-jellyfin sahiplik bilgilerini içe aktar"
+
+#: src/common/config.py:265
+msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
+msgstr "Eski eklentinin veritabanında kayıtlı temaları, yalnızca SHA-256 değerleri hala eşleşiyorsa tanıyın. Değiştirilen dosyalar korunmaya devam eder. Eski veritabanında herhangi bir değişiklik yapılmaz."
+
+#: src/common/config.py:269
+msgid "Ignore locked metadata"
+msgstr "Kilitli meta verileri yok say"
+
+#: src/common/config.py:270
+msgid "Allow Jellyfin theme updates for items with locked metadata."
+msgstr "Meta verileri kilitli öğeler için Jellyfin tema güncellemelerine izin ver."
+
+#: src/common/config.py:273
+msgid "Update connector automatically"
+msgstr "Bağlantı elemanını otomatik olarak güncelle"
+
+#: src/common/config.py:274
+msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
+msgstr "Themerr başlatıldığında veya sürüm uyuşmazlığı tespit edildiğinde, uygun konektörü kurun. Öncelikle “Sunucular” sayfasında erişilebilir Themerr adresini ayarlayın."
+
+#: src/common/config.py:278
+msgid "Restart Jellyfin automatically"
+msgstr "Jellyfin'i otomatik olarak yeniden başlat"
+
+#: src/common/config.py:279
+msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
+msgstr "Bağlayıcıyı yükledikten veya güncelledikten sonra Jellyfin’i yeniden başlatın. Yeniden başlatma işlemi gerçekleşmeden önce, “Sunucular” sayfasında bekleyen bir yeniden başlatma gösterilir."
+
+#: src/common/config.py:283
+msgid "Wait for playback to finish"
+msgstr "Oynatmanın bitmesini bekleyin"
+
+#: src/common/config.py:284
+msgid "Defer connector restarts until there are no playing or paused streams."
+msgstr "Çalınan veya duraklatılmış akış kalmayana kadar konektörün yeniden başlatılmasını ertele."
+
+#: src/common/config.py:287
+msgid "Remove the older Themerr-jellyfin plugin"
+msgstr "Eski Themerr-jellyfin eklentisini kaldırın"
+
+#: src/common/config.py:288
+msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
+msgstr "Bağlayıcıyı yükledikten sonra, eski Themerr eklentisini kaldırın ve yalnızca ona ait depoyu silin. Mevcut tema dosyaları korunur."
+
+#: src/common/config.py:292
+msgid "Connector HTTP port"
+msgstr "Bağlayıcı HTTP bağlantı noktası"
+
+#: src/common/config.py:293
+msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
+msgstr "Themerr kendi imzaladığı bir sertifika kullandığında, eklenti indirmelerini yalnızca HTTP üzerinden sunun. Yönetici kullanıcı arayüzü HTTPS üzerinde kalır. Devre dışı bırakmak için 0 değerini kullanın. Bu bağlantı noktasını değiştirdikten sonra Themerr’ı yeniden başlatın."
+
+#: src/common/config.py:300
+msgid "Plex"
+msgstr "Plex"
+
+#: src/common/config.py:301
+msgid "Plex settings."
+msgstr "Plex ayarları."
+
+#: src/common/config.py:305
+msgid "Plex URL"
+msgstr "Plex URL'si"
+
+#: src/common/config.py:306
+msgid "The URL to the Plex server."
+msgstr "Plex sunucusunun URL'si."
+
+#: src/common/config.py:315 web/templates/servers.html:37
+msgid "Plex data directory"
+msgstr "Plex veri dizini"
+
+#: src/common/config.py:316
+msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+
+#: src/common/config.py:326
+msgid "Themerr"
+msgstr "Themerr"
+
+#: src/common/config.py:327
+msgid "Themerr settings."
+msgstr "Themerr ayarları."
+
+#: src/common/config.py:331
+msgid "Themerr Enabled"
+msgstr "Themerr Etkin"
+
+#: src/common/config.py:332
+msgid "When enabled, Themerr will attempt to update themes."
+msgstr "Etkinleştirildiğinde, Themerr temaları güncellemeye çalışacaktır."
+
+#: src/common/config.py:338
+msgid "Add themes to collections."
+msgstr "Temaları koleksiyonlara ekleyin."
+
+#: src/common/config.py:344
+msgid "Add themes to movies using the Plex Movie agent."
+msgstr "Plex Movie ajanı kullanarak filmlere temalar ekleyin."
+
+#: src/common/config.py:350
 msgid "Add themes to series using the Plex Series agent."
 msgstr "Plex Series ajanı kullanarak dizilere temalar ekleyin."
 
-#: src/common/config.py:299
+#: src/common/config.py:355
 msgid "Overwrite Plex themes"
 msgstr "Plex temalarını üzerine yaz"
 
-#: src/common/config.py:300
+#: src/common/config.py:356
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Etkinleştirildiğinde, Themerr, Plex tarafından sağlanan temaların üzerine yazacaktır."
 
-#: src/common/config.py:305
+#: src/common/config.py:361
 msgid "Prefer MP4A AAC Codec"
 msgstr "MP4A AAC kodekini tercih edin"
 
-#: src/common/config.py:306
+#: src/common/config.py:362
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Bu, temanın Apple cihazlarıyla uyumluluğunu artırabilir."
 
-#: src/common/config.py:311
+#: src/common/config.py:367
 msgid "Remove unused themes"
 msgstr "Kullanılmayan temaları kaldırın"
 
-#: src/common/config.py:312
+#: src/common/config.py:368
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Plex meta veri dizininizde yer açar. Bu seçeneğin kullanılabilmesi için “Plex veri dizini” yolunun ayarlanmış olması gerekir"
 
-#: src/common/config.py:318
+#: src/common/config.py:374
 msgid "Remove unused art"
 msgstr "Kullanılmayan görselleri kaldırın"
 
-#: src/common/config.py:319 src/common/config.py:327
+#: src/common/config.py:375 src/common/config.py:383
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Koleksiyon için geçerlidir. Plex meta veri dizininde yer açar. Bu seçeneğin kullanılabilmesi için “Plex veri dizini” yolunun ayarlanmış olması gerekir"
 
-#: src/common/config.py:326
+#: src/common/config.py:382
 msgid "Remove unused posters"
 msgstr "Kullanılmayan posterleri kaldırın"
 
-#: src/common/config.py:334
+#: src/common/config.py:390
 msgid "Collection metadata"
 msgstr "Koleksiyon meta verileri"
 
-#: src/common/config.py:335
+#: src/common/config.py:391
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "Zamanlanmış güncelleme sırasında koleksiyon meta verilerini (afiş, görsel ve özet) güncelleyin."
 
-#: src/common/config.py:340
+#: src/common/config.py:396
 msgid "Ignore locked fields."
 msgstr "Kilitli alanları göz ardı et."
 
-#: src/common/config.py:341
+#: src/common/config.py:397
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Themerr v2024.813.13709 veya daha eski bir sürümünü kullandıysanız, öğeleri güncellemek için bu özelliği etkinleştirmeniz gerekebilir."
 
-#: src/common/config.py:347
+#: src/common/config.py:403
 msgid "Ignored library IDs"
 msgstr "Yoksayılan kütüphane kimlikleri"
 
-#: src/common/config.py:348
+#: src/common/config.py:404
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "Zamanlanmış güncellemelerden hariç tutulacak, virgülle ayrılmış kütüphane kimlikleri. Kimlikler Ana Sayfa’da görüntülenir."
 
-#: src/common/config.py:354
+#: src/common/config.py:410
 msgid "Update themes interval"
 msgstr "Tema güncelleme aralığı"
 
-#: src/common/config.py:355
+#: src/common/config.py:411
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Otomatik güncelleme görevinin aralığı, dakika cinsinden (min: 15)."
 
-#: src/common/config.py:362
+#: src/common/config.py:418
 msgid "Update database cache interval"
 msgstr "Veritabanı önbellek aralığını güncelle"
 
-#: src/common/config.py:363
+#: src/common/config.py:419
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Veritabanı önbelleği güncelleme görevinin aralığı, dakika cinsinden (min: 15)."
 
-#: src/common/config.py:370
+#: src/common/config.py:426
 msgid "PlexAPI timeout"
 msgstr "PlexAPI zaman aşımı"
 
-#: src/common/config.py:371
+#: src/common/config.py:427
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Tema eklerken zaman aşımı hatalarıyla karşılaşırsanız bu değeri biraz artırın. (min: 1)"
 
-#: src/common/config.py:378
+#: src/common/config.py:434
 msgid "Theme upload retries"
 msgstr "Tema yükleme yeniden denemeleri"
 
-#: src/common/config.py:379
+#: src/common/config.py:435
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Tema yükleme işlemi başarısız olursa, bu kadar kez yeniden dene. (en az: 0)"
 
-#: src/common/config.py:386
+#: src/common/config.py:442
 msgid "Multiprocessing thread count"
 msgstr "Çoklu işleme iş parçacığı sayısı"
 
-#: src/common/config.py:387
+#: src/common/config.py:443
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "Tema eklenirken kullanılacak iş parçacığı sayısı. Yeniden başlatma gereklidir. (min: 1)"
 
-#: src/common/config.py:394
+#: src/common/config.py:450
 msgid "YouTube Cookies"
 msgstr "YouTube Çerezleri"
 
-#: src/common/config.py:396
+#: src/common/config.py:452
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
 msgstr "İsteğe bağlı: youtube.com çerezlerini “Get cookies.txt” komutuyla JSON biçiminde YEREL OLARAK dışa aktarın, ardından JSON dizisinin tamamını buraya yapıştırın ve kaydedin. Çerezler tarayıcınızın oturum bilgilerini içerir; bunları gizli tutun."
 
-#: src/common/config.py:401
+#: src/common/config.py:457
 msgid "Cookie export instructions"
 msgstr "Çerez aktarım talimatları"
 
@@ -364,8 +456,8 @@ msgstr "Yenileme işlemi tamamlandı"
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
 msgstr "Tema kapsamı %(increase)s yüzde puanı kadar arttı: %(before)s%% → %(after)s%%. %(total)s öğesinin %(installed)s ’si tema içeriyor."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
-#. translate "%(app_name)s".
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not translate
+#. "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
@@ -431,22 +523,22 @@ msgstr "Yeniden başlat"
 msgid "Quit"
 msgstr "Çık"
 
-#: src/common/webapp.py:84 web/templates/logs.html:4
+#: src/common/webapp.py:80 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "Günlükler"
 
-#: src/common/webapp.py:463 web/templates/config.html:22
+#: src/common/webapp.py:478 web/templates/config.html:23
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Ayarlar"
 
 #: src/main.py:171
 #, python-format
-msgid "%(app_name)s manages theme songs for Plex.\n"
+msgid "%(app_name)s manages theme songs for Plex and Jellyfin.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s Plex için tema şarkılarını yönetir.\n"
-"Buraya girilen argümanlar geçici niteliktedir."
+msgstr "%(app_name)s Plex ve Jellyfin için tema şarkılarını yönetir.\n"
+"Buraya girilen argümanlar geçici olarak düşünülmüştür."
 
 #: src/main.py:175
 msgid "Show this help message and exit"
@@ -503,7 +595,7 @@ msgstr "Kaydedilmemiş değişiklikler"
 msgid "Discard unsaved settings changes?"
 msgstr "Kaydedilmemiş ayar değişikliklerini silmek ister misiniz?"
 
-#: web/js/config.js:44 web/templates/config.html:36
+#: web/js/config.js:44 web/templates/config.html:37
 msgid "All changes saved."
 msgstr "Tüm değişiklikler kaydedildi."
 
@@ -543,8 +635,8 @@ msgstr "Oturum günlüğünün yüklenmesi durdu."
 msgid "Live"
 msgstr "Canlı"
 
-#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
-#: web/templates/servers.html:13
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
+#: web/templates/servers.html:14
 msgid "Paused"
 msgstr "Duraklatıldı"
 
@@ -552,25 +644,62 @@ msgstr "Duraklatıldı"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "Yenileme işlemi başarısız oldu. En son yüklenen kayıtlar gösteriliyor."
 
-#: web/js/servers.js:13 web/templates/servers.html:25
+#: web/js/servers.js:45 web/templates/servers.html:42
 msgid "Select libraries to ignore"
 msgstr "Yoksayılacak kütüphaneleri seçin"
 
-#: web/js/servers.js:22
+#: web/js/servers.js:54
 msgid "Loading libraries…"
 msgstr "Kütüphaneler yükleniyor…"
 
-#: web/js/servers.js:46
+#: web/js/servers.js:78
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "Önbelleğe alınmış kütüphaneler gösteriliyor. Bu sunucuyu etkinleştirin veya yeniden bağlayın, böylece güncel kütüphaneleri yüklenebilir."
 
-#: web/js/servers.js:48
+#: web/js/servers.js:80
 msgid "This server has no libraries."
 msgstr "Bu sunucuda kütüphane bulunmamaktadır."
 
-#: web/js/servers.js:54
+#: web/js/servers.js:86
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "Kütüphaneler yüklenemedi. Seçimleriniz kaydedildi. Tekrar denemek için listeyi kapatıp yeniden açın."
+
+#: web/js/servers.js:130 web/js/servers.js:296
+msgid "Connected"
+msgstr "Bağlı"
+
+#: web/js/servers.js:130 web/templates/servers.html:71
+#: web/templates/servers.html:83
+msgid "Connect"
+msgstr "Bağlan"
+
+#: web/js/servers.js:278
+msgid "Looking for Jellyfin servers…"
+msgstr "… 'da Jellyfin sunucuları aranıyor"
+
+#: web/js/servers.js:284
+msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
+msgstr "Hiçbir Jellyfin sunucusu yanıt vermedi. UDP 7359 numaralı bağlantı noktasını ve yerel ağ keşif özelliğini kontrol edin ya da bir adresi manuel olarak girin."
+
+#: web/js/servers.js:296
+msgid "Use this address"
+msgstr "Bu adresi kullanın"
+
+#: web/js/servers.js:325 web/templates/servers.html:26
+msgid "Save connector address"
+msgstr "Bağlayıcı adresini kaydet"
+
+#: web/js/servers.js:325 web/templates/servers.html:27
+msgid "Install matching connector"
+msgstr "Uygun konektörü takın"
+
+#: web/js/servers.js:330
+msgid "This server cannot restart itself. Restart its service or container."
+msgstr "Bu sunucu kendi kendine yeniden başlatılamaz. Hizmetini veya kapsayıcısını yeniden başlatın."
+
+#: web/js/servers.js:362
+msgid "Restart Jellyfin now? Active playback will be interrupted."
+msgstr "Jellyfin’i şimdi yeniden başlatmak ister misiniz? O anda devam eden oynatma işlemi kesilecektir."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
@@ -604,8 +733,8 @@ msgstr "Son görevler"
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
 msgstr "Henüz hiçbir görev çalıştırılmadı. Bir tarama talebinde bulunun ya da bir sonraki planlanmış güncellemeyi bekleyin."
 
-#: web/templates/activity.html:7 web/templates/home.html:14
-#: web/templates/home.html:31 web/templates/servers.html:13
+#: web/templates/activity.html:7 web/templates/home.html:15
+#: web/templates/home.html:32 web/templates/servers.html:14
 msgid "Needs attention"
 msgstr "Dikkat edilmesi gereken husus"
 
@@ -613,17 +742,21 @@ msgstr "Dikkat edilmesi gereken husus"
 msgid "No processing failures recorded. All quiet here."
 msgstr "Herhangi bir işleme hatası kaydedilmedi. Burada her şey yolunda."
 
-#: web/templates/activity.html:8 web/templates/home.html:64
-msgid "Plex ID"
-msgstr "Plex Kimliği"
+#: web/templates/activity.html:8 web/templates/home.html:66
+msgid "ID"
+msgstr "Kimlik"
 
-#: web/templates/activity.html:8 web/templates/home.html:78
+#: web/templates/activity.html:8 web/templates/home.html:80
 msgid "Outdated from ThemerrDB"
 msgstr "ThemerrDB'den kaldırıldı"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
 msgstr "Oturum açtığınız hesapla API’yi keşfedin."
+
+#: web/templates/auth.html:5 web/templates/navbar.html:3
+msgid "YOUR LIBRARY’S SOUNDTRACK"
+msgstr "KÜTÜPHANENİZİN MÜZİK ALBÜMÜ"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -638,8 +771,8 @@ msgid "has a soundtrack."
 msgstr "bir film müziği var."
 
 #: web/templates/auth.html:9
-msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "Plex kütüphanelerinize hayat verin. Sunucularınız, temalarınız ve bunların arasındaki her şey için tek bir düzenli çalışma alanı."
+msgid "Bring your libraries to life. One calm workspace for your servers, your themes, and everything in between."
+msgstr "Kütüphanelerinize hayat verin. Sunucularınız, temalarınız ve bunların arasındaki her şey için tek bir düzenli çalışma alanı."
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
@@ -702,8 +835,8 @@ msgid "Sign in"
 msgstr "Giriş yap"
 
 #: web/templates/auth.html:39
-msgid "Plex account linking happens inside your workspace."
-msgstr "Plex hesabının bağlanması, çalışma alanınızın içinde gerçekleşir."
+msgid "Connect your media servers inside your workspace."
+msgstr "Çalışma alanınız içindeki medya sunucularınızı birbirine bağlayın."
 
 #: web/templates/base.html:21
 msgid "Skip to content"
@@ -729,55 +862,55 @@ msgstr "Tema: Açık. Koyu moda geç."
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr "Tema: Karanlık. Otomatik moda geç."
 
-#: web/templates/config.html:15
+#: web/templates/config.html:16
 msgid "Browse directories for"
 msgstr "Şu dizinlere göz atın:"
 
-#: web/templates/config.html:22
+#: web/templates/config.html:23
 msgid "TUNE YOUR WORKSPACE"
 msgstr "ÇALIŞMA ALANINIZI DÜZENLEYİN"
 
-#: web/templates/config.html:22
+#: web/templates/config.html:23
 msgid "Make Themerr work the way your library does."
 msgstr "Themerr’ı kütüphanenizin çalışma şekline uygun hale getirin."
 
-#: web/templates/config.html:24
+#: web/templates/config.html:25
 msgid "Settings sections"
 msgstr "Ayarlar bölümleri"
 
-#: web/templates/config.html:24 web/templates/config.html:33
+#: web/templates/config.html:25 web/templates/config.html:34
 msgid "Security"
 msgstr "Güvenlik"
 
-#: web/templates/config.html:28
+#: web/templates/config.html:29
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "Sunucu bağlantıları, veri dizinleri ve göz ardı edilen kütüphaneler, “Sunucular” sayfasında yönetilir."
 
-#: web/templates/config.html:28
+#: web/templates/config.html:29
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr "Ağ ayarlarında yapılan değişiklikler, Themerr yeniden başlatıldıktan sonra yürürlüğe girer."
 
-#: web/templates/config.html:33
+#: web/templates/config.html:34
 msgid "One administrator for this installation. Change your password and sign out other sessions."
 msgstr "Bu kurulum için bir yönetici. Şifrenizi değiştirin ve diğer oturumlardan çıkış yapın."
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "Current password"
 msgstr "Mevcut şifre"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "New password"
 msgstr "Yeni şifre"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "Confirm new password"
 msgstr "Yeni şifreyi onaylayın"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "Change password"
 msgstr "Şifreyi değiştir"
 
-#: web/templates/config.html:36
+#: web/templates/config.html:37
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
@@ -809,247 +942,248 @@ msgstr "Hadi bunu bir daha deneyelim"
 msgid "Back to workspace"
 msgstr "Çalışma alanına geri dön"
 
-#: web/templates/home.html:4
+#: web/templates/home.html:5
 msgid "YOUR LIBRARY, IN HARMONY"
 msgstr "KÜTÜPHANENİZ, UYUM İÇİNDE"
 
-#: web/templates/home.html:4
+#: web/templates/home.html:5
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
 msgstr "Her hikâyeye uygun bir müzik. Şu anda çalanları ve biraz ilgiye ihtiyaç duyanları görün."
 
-#: web/templates/home.html:4 web/templates/navbar.html:6
+#: web/templates/home.html:5 web/templates/navbar.html:6
 msgid "Overview"
 msgstr "Genel Bakış"
 
-#: web/templates/home.html:5
+#: web/templates/home.html:6
 msgid "Refresh libraries"
 msgstr "Kütüphaneleri yenileme"
 
-#: web/templates/home.html:7
+#: web/templates/home.html:8
 msgid "Unknown"
 msgstr "Bilinmiyor"
 
-#: web/templates/home.html:7
+#: web/templates/home.html:8
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
 msgstr "GitHub denetimi başarısız oldu. Bilinen en son dağıtım gösteriliyor; denetimler en fazla saat başı gerçekleştirilir."
 
-#: web/templates/home.html:8
+#: web/templates/home.html:9
 msgid "Last deployed"
 msgstr "En son konuşlandırılma tarihi"
 
-#: web/templates/home.html:8
+#: web/templates/home.html:9
 msgid "Checking…"
 msgstr "… adresini kontrol etme"
 
-#: web/templates/home.html:8
+#: web/templates/home.html:9
 msgid "Check unavailable"
 msgstr "Kullanılabilir değil"
 
-#: web/templates/home.html:11
+#: web/templates/home.html:12
 msgid "Library items"
 msgstr "Kütüphane materyalleri"
 
-#: web/templates/home.html:11
+#: web/templates/home.html:12
 msgid "libraries across"
 msgstr "çeşitli kütüphaneler"
 
-#: web/templates/home.html:11
+#: web/templates/home.html:12
 msgid "servers"
 msgstr "sunucular"
 
-#: web/templates/home.html:12
+#: web/templates/home.html:13
 msgid "Themes installed"
 msgstr "Yüklü temalar"
 
-#: web/templates/home.html:12
+#: web/templates/home.html:13
 msgid "Your library sounds better already."
 msgstr "Kütüphanen şimdiden daha iyi görünüyor."
 
-#: web/templates/home.html:13
+#: web/templates/home.html:14
 msgid "Theme coverage"
 msgstr "Tema kapsamı"
 
-#: web/templates/home.html:14
+#: web/templates/home.html:15
 msgid "Review activity"
 msgstr "İnceleme faaliyeti"
 
-#: web/templates/home.html:19
+#: web/templates/home.html:20
 msgid "LET’S SET THE TONE"
 msgstr "HADİ TONU BELİRLİYELİM"
 
-#: web/templates/home.html:20
+#: web/templates/home.html:21
 msgid "Your library deserves a soundtrack."
 msgstr "Kütüphanenizin bir fon müziği hak ediyor."
 
-#: web/templates/home.html:20
+#: web/templates/home.html:21
 msgid "Getting to know your library."
 msgstr "Kütüphanenizi tanımak."
 
-#: web/templates/home.html:21
-msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "Plex hesabınızı bağlayın, sunucularınızı seçin ve müziği Themerr’e bırakın."
+#: web/templates/home.html:22
+msgid "Connect Plex or Jellyfin, choose your servers, and let Themerr take care of the music."
+msgstr "Plex veya Jellyfin’i bağlayın, sunucularınızı seçin ve müziği Themerr’e bırakın."
 
-#: web/templates/home.html:21
+#: web/templates/home.html:22
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
 msgstr "İlk yenileme işlemi, kütüphane görünümünü oluşturuyor. İlerleme durumunu Activity bölümünden kontrol edebilir veya yukarıdan yenileme talebinde bulunabilirsiniz."
 
-#: web/templates/home.html:22
+#: web/templates/home.html:23
 msgid "Connect a server"
 msgstr "Bir sunucuya bağlan"
 
-#: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
+#: web/templates/home.html:23 web/templates/home_db_not_cached.html:3
 msgid "View activity"
 msgstr "Etkinliği görüntüle"
 
-#: web/templates/home.html:26
+#: web/templates/home.html:27
 msgid "Your libraries"
 msgstr "Kütüphaneleriniz"
 
-#: web/templates/home.html:26
+#: web/templates/home.html:27
 msgid "items"
 msgstr "ürünler"
 
-#: web/templates/home.html:28
+#: web/templates/home.html:29
 msgid "Search library items"
 msgstr "Kütüphane materyallerini ara"
 
-#: web/templates/home.html:28
+#: web/templates/home.html:29
 msgid "Search titles…"
 msgstr "Başlıklarda arama yap…"
 
-#: web/templates/home.html:28 web/templates/logs.html:9
+#: web/templates/home.html:29 web/templates/logs.html:9
 msgid "Clear search"
 msgstr "Aramayı temizle"
 
-#: web/templates/home.html:29
+#: web/templates/home.html:30
 msgid "Server"
 msgstr "Sunucu"
 
-#: web/templates/home.html:29
+#: web/templates/home.html:30
 msgid "All servers"
 msgstr "Tüm sunucular"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "Type"
 msgstr "Tip"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "All types"
 msgstr "Tüm türler"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "Movies"
 msgstr "Filmler"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "TV shows"
 msgstr "TV dizileri"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "Theme status"
 msgstr "Tema durumu"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "All statuses"
 msgstr "Tüm durumlar"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "Has a theme"
 msgstr "Bir teması var"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "No theme"
 msgstr "Tema yok"
 
-#: web/templates/home.html:32
+#: web/templates/home.html:33
 msgid "Reset filters"
 msgstr "Filtreleri sıfırla"
 
-#: web/templates/home.html:38
+#: web/templates/home.html:39
 msgid "Library ID"
 msgstr "Kütüphane Kimliği"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "Title"
 msgstr "Başlık"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "Metadata ID"
 msgstr "Meta veri kimliği"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "Theme"
 msgstr "Tema"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "ThemerrDB"
 msgstr "ThemerrDB"
 
-#: web/templates/home.html:56
+#: web/templates/home.html:58
 msgid "Pause theme for"
 msgstr "Şu tema için duraklatma:"
 
-#: web/templates/home.html:56 web/templates/home.html:58
+#: web/templates/home.html:58 web/templates/home.html:60
 msgid "Play theme for"
 msgstr "[Tema] için çal"
 
-#: web/templates/home.html:57 web/templates/theme_player.html:2
-msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "Bu tema oynatılamıyor. Plex bağlantısını ve tarayıcının ses desteğini kontrol edin."
+#: web/templates/home.html:59 web/templates/theme_player.html:2
+msgid "Unable to play this theme. Check the server connection and browser audio support."
+msgstr "Bu tema çalınamıyor. Sunucu bağlantısını ve tarayıcınızın ses desteğini kontrol edin."
 
-#: web/templates/home.html:64
-msgid "Open in Plex"
-msgstr "Plex'te aç"
+#: web/templates/home.html:66
+#, python-format
+msgid "Open in %(server)s"
+msgstr "Şurada aç %(server)s"
 
-#: web/templates/home.html:68 web/templates/home.html:76
+#: web/templates/home.html:70 web/templates/home.html:78
 msgid "External ID unavailable"
 msgstr "Dış kimlik mevcut değil"
 
-#: web/templates/home.html:70
+#: web/templates/home.html:72
 msgid "Failed to add theme"
 msgstr "Tema eklenemedi"
 
-#: web/templates/home.html:71
+#: web/templates/home.html:73
 msgid "Plex provided"
 msgstr "Plex tarafından sağlanan"
 
-#: web/templates/home.html:72
+#: web/templates/home.html:74
 msgid "User provided"
 msgstr "Kullanıcı tarafından sağlanan"
 
-#: web/templates/home.html:73
+#: web/templates/home.html:75
 msgid "Themerr provided"
 msgstr "Themerr tarafından sağlanan"
 
-#: web/templates/home.html:74
+#: web/templates/home.html:76
 msgid "Unknown provider"
 msgstr "Bilinmeyen sağlayıcı"
 
-#: web/templates/home.html:75
+#: web/templates/home.html:77
 msgid "Missing from ThemerrDB"
 msgstr "ThemerrDB'de eksik"
 
-#: web/templates/home.html:76
+#: web/templates/home.html:78
 msgid "TMDB ID unavailable"
 msgstr "TMDB kimliği mevcut değil"
 
-#: web/templates/home.html:77
+#: web/templates/home.html:79
 msgid "Theme not installed yet"
 msgstr "Tema henüz yüklenmemiş"
 
-#: web/templates/home.html:80
+#: web/templates/home.html:82
 msgid "Edit"
 msgstr "Düzenle"
 
-#: web/templates/home.html:80
+#: web/templates/home.html:82
 msgid "Add"
 msgstr "Ekle"
 
-#: web/templates/home.html:87
+#: web/templates/home.html:89
 msgid "No titles match."
 msgstr "Eşleşen başlık bulunamadı."
 
-#: web/templates/home.html:87
+#: web/templates/home.html:89
 msgid "Try another search or reset your filters."
 msgstr "Başka bir arama deneyin veya filtrelerinizi sıfırlayın."
 
@@ -1185,7 +1319,7 @@ msgstr "ÇALIŞMA ALANINIZ"
 msgid "Workspace pages"
 msgstr "Çalışma alanı sayfaları"
 
-#: web/templates/navbar.html:6 web/templates/servers.html:3
+#: web/templates/navbar.html:6 web/templates/servers.html:4
 msgid "Servers"
 msgstr "Sunucular"
 
@@ -1213,157 +1347,217 @@ msgstr "LizardByte'ı Destekleyin"
 msgid "Sign out"
 msgstr "Çıkış yap"
 
-#: web/templates/servers.html:3
+#: web/templates/servers.html:4
 msgid "ONE WORKSPACE. EVERY SERVER."
 msgstr "TEK ÇALIŞMA ALANI. HER SUNUCU."
 
-#: web/templates/servers.html:3
-msgid "Connect your Plex account, then choose where the music goes."
-msgstr "Plex hesabınızı bağlayın, ardından müziğin nereye aktarılacağını seçin."
+#: web/templates/servers.html:4
+msgid "Connect Plex or Jellyfin, then choose where the music goes."
+msgstr "Plex veya Jellyfin’i bağlayın, ardından müziğin nereye aktarılacağını seçin."
 
-#: web/templates/servers.html:3
+#: web/templates/servers.html:4
 msgid "saved"
 msgstr "kaydedildi"
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Your Plex account"
 msgstr "Plex hesabınız"
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Account linked. Choose a server below."
 msgstr "Hesap bağlandı. Aşağıdan bir sunucu seçin."
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Link your account securely through Plex to access your servers."
 msgstr "Sunucularınıza erişmek için hesabınızı Plex üzerinden güvenli bir şekilde bağlayın."
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Continue Plex sign-in"
 msgstr "Plex oturum açma işlemine devam et"
 
-#: web/templates/servers.html:7
+#: web/templates/servers.html:8
 msgid "Reconnect account"
 msgstr "Hesabı yeniden bağla"
 
-#: web/templates/servers.html:7
+#: web/templates/servers.html:8
 msgid "Connect Plex account"
 msgstr "Plex hesabını bağla"
 
-#: web/templates/servers.html:7
+#: web/templates/servers.html:8
 msgid "Disconnect"
 msgstr "Bağlantıyı kes"
 
-#: web/templates/servers.html:9
+#: web/templates/servers.html:10
 msgid "Connected servers"
 msgstr "Bağlı sunucular"
 
-#: web/templates/servers.html:9
+#: web/templates/servers.html:10
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "Tema geçmişi ve kütüphane ayarları her sunucu için ayrı ayrı tutulur."
 
-#: web/templates/servers.html:13
+#: web/templates/servers.html:14
 msgid "Enabled"
 msgstr "Etkinleştirildi"
 
-#: web/templates/servers.html:16
+#: web/templates/servers.html:20
+msgid "Themerr address reachable from Jellyfin"
+msgstr "Jellyfin üzerinden erişilebilen Themerr adresi"
+
+#: web/templates/servers.html:22
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "Themerr’in kendi imzaladığı sertifika için yalnızca konektör içeren HTTP adresini veya Jellyfin’in güvendiği bir sertifikaya sahip bir HTTPS adresini kullanın. Uzak Jellyfin veya Docker için, localhost ifadesini Jellyfin’den erişilebilen bir adresle değiştirin."
+
+#: web/templates/servers.html:23
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "Jellyfin, kurulum tamamlandıktan ve oynatma bittiğinde yeniden başlayacaktır."
+
+#: web/templates/servers.html:23
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "Jellyfin, kurulumun ardından yeniden başlatılacaktır. O anda devam eden oynatma işlemi kesintiye uğrayabilir."
+
+#: web/templates/servers.html:23
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "Otomatik yeniden başlatma özelliği devre dışı bırakılmıştır. Kurulumun ardından Jellyfin’i yeniden başlatın."
+
+#: web/templates/servers.html:24
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "Eski Themerr-jellyfin eklentisi ve ilgili depo kaldırılacaktır. Mevcut temalar korunacaktır."
+
+#: web/templates/servers.html:28
+msgid "Force restart"
+msgstr "Zorla yeniden başlat"
+
+#: web/templates/servers.html:32
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "Her bir Jellyfin istemcisinin Ekran ayarlarından Tema şarkılarını etkinleştirin. Jellyfin bu tercihi istemcide saklar; bu nedenle Themerr, sunucu API’si aracılığıyla bunu değiştiremez."
+
+#: web/templates/servers.html:32
+msgid "Open Jellyfin display settings"
+msgstr "Jellyfin ekran ayarlarını aç"
+
+#: web/templates/servers.html:33
 msgid "Last library refresh"
 msgstr "Kütüphanenin en son güncellenme tarihi"
 
-#: web/templates/servers.html:16
+#: web/templates/servers.html:33
 msgid "Not yet refreshed"
 msgstr "Henüz güncellenmedi"
 
-#: web/templates/servers.html:17
+#: web/templates/servers.html:34
 msgid "Processing settings"
 msgstr "İşleme ayarları"
 
-#: web/templates/servers.html:19
+#: web/templates/servers.html:36
 msgid "Process this server"
 msgstr "Bu sunucuyu işleme al"
 
-#: web/templates/servers.html:20
+#: web/templates/servers.html:37
 msgid "optional"
 msgstr "isteğe bağlı"
 
-#: web/templates/servers.html:21
+#: web/templates/servers.html:38
 msgid "Browse Plex data directory"
 msgstr "Plex veri dizinine göz at"
 
-#: web/templates/servers.html:22
+#: web/templates/servers.html:39
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
 msgstr "Yerel veya Plex verisi dizinine bağlanmış bir dizin, yalnızca daha eski yüklü dosyaları silmek için gereklidir. Uzak sunucular için bu alanı boş bırakın."
 
-#: web/templates/servers.html:23
+#: web/templates/servers.html:40
 msgid "Ignored libraries"
 msgstr "Yoksayılan kütüphaneler"
 
-#: web/templates/servers.html:29
+#: web/templates/servers.html:46
 msgid "Library"
 msgstr "Kütüphane"
 
-#: web/templates/servers.html:32
+#: web/templates/servers.html:49
 msgid "Open the list to load this server’s libraries."
 msgstr "Bu sunucunun kütüphanelerini yüklemek için listeyi açın."
 
-#: web/templates/servers.html:35
+#: web/templates/servers.html:52
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "Tema güncellemelerinden hariç tutulacak kütüphaneleri seçin. Tüm kütüphaneleri işlemek için hiçbir seçeneği işaretlemeyin."
 
-#: web/templates/servers.html:36
+#: web/templates/servers.html:53
 msgid "Save settings"
 msgstr "Ayarları kaydet"
 
-#: web/templates/servers.html:36
+#: web/templates/servers.html:53
 msgid "Remove server"
 msgstr "Sunucuyu kaldır"
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:57
 msgid "Your first server starts here."
 msgstr "İlk sunucunuzun yolculuğu burada başlıyor."
 
-#: web/templates/servers.html:40
-msgid "Link Plex above, then discover or add an address below."
-msgstr "Yukarıdaki Plex bağlantısını ekleyin, ardından aşağıdan bir adres bulun veya ekleyin."
+#: web/templates/servers.html:57
+msgid "Link Plex above or add a Jellyfin server below."
+msgstr "Yukarıdaki Plex bağlantısını kullanın veya aşağıya bir Jellyfin sunucusu ekleyin."
 
-#: web/templates/servers.html:43
+#: web/templates/servers.html:60
 msgid "Add a server"
 msgstr "Sunucu ekle"
 
-#: web/templates/servers.html:43
+#: web/templates/servers.html:61
+msgid "Server type"
+msgstr "Sunucu türü"
+
+#: web/templates/servers.html:66
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Plex hesabınızdan bir sunucu seçin, yakınınızdaki bir sunucuyu bulun ya da bildiğiniz bir adresi kullanın."
 
-#: web/templates/servers.html:44
+#: web/templates/servers.html:67
 msgid "Find account servers"
 msgstr "Hesap sunucularını bul"
 
-#: web/templates/servers.html:44
+#: web/templates/servers.html:67
 msgid "Discover on LAN"
 msgstr "LAN'da keşfet"
 
-#: web/templates/servers.html:44
+#: web/templates/servers.html:67
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "LAN keşfi, uygulamanızın ağında Plex GDM’yi kullanır."
 
-#: web/templates/servers.html:45
+#: web/templates/servers.html:68
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "Hesap adresleri Plex tarafından duyurulur ve erişilemeyebilir. HTTPS plex.direct adresleri, Plex’in sertifikasını kullanır. Themerr’in çalıştığı makineden erişilebilen bir adres seçin veya bilinen bir adresi manuel olarak girin."
 
-#: web/templates/servers.html:47
+#: web/templates/servers.html:70
 msgid "Enter an address manually"
 msgstr "Bir adresi manuel olarak girin"
 
-#: web/templates/servers.html:48
+#: web/templates/servers.html:71
 msgid "Plex server address"
 msgstr "Plex sunucu adresi"
 
-#: web/templates/servers.html:48
-msgid "Connect server"
-msgstr "Sunucuya bağlan"
-
-#: web/templates/servers.html:48
+#: web/templates/servers.html:71
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Bir LAN adresi veya geçerli bir HTTPS Plex adresi kullanın. Bağlı Plex hesabınızın erişim izni olmalıdır. Mevcut bir sunucu eklendiğinde, sunucunun adresi güncellenir."
+
+#: web/templates/servers.html:75
+msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
+msgstr "Jellyfin 10.11 ve 12.1 sürümleri desteklenmektedir. Jellyfin Kontrol Paneli’ndeki “API Anahtarları” bölümünden bir yönetici API anahtarı oluşturun."
+
+#: web/templates/servers.html:77
+msgid "Jellyfin server address"
+msgstr "Jellyfin sunucu adresi"
+
+#: web/templates/servers.html:79
+msgid "Jellyfin API key"
+msgstr "Jellyfin API anahtarı"
+
+#: web/templates/servers.html:81
+msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
+msgstr "Anahtarlar güvenli kimlik bilgisi deposunda saklanır. Bağlantı kurulduktan sonra, yukarıdaki sunucu kartında erişilebilir Themerr adresini ayarlayın."
+
+#: web/templates/servers.html:84
+msgid "Discover Jellyfin on LAN"
+msgstr "LAN üzerinden Jellyfin’i keşfedin"
+
+#: web/templates/servers.html:86
+msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
+msgstr "Themerr’in ağında 7359 numaralı UDP bağlantı noktasını kullanır. Hâlâ bir API anahtarı gereklidir."
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
