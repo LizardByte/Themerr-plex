@@ -171,15 +171,23 @@ jobs:
         with:
           deno-version: 2.9.7
 
-      - name: Build OpenSSL for Windows ARM64
+      - name: Configure OpenSSL for Windows ARM64
         if: runner.os == 'Windows' && matrix.arch == 'ARM64'
         shell: pwsh
         run: |
-          & "$env:VCPKG_INSTALLATION_ROOT/vcpkg.exe" install openssl:arm64-windows-static-md --classic
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # The runner includes Shining Light's ARM64 OpenSSL development package.
+          $opensslDir = "$env:ProgramFiles/OpenSSL"
+          $opensslLibDir = "$opensslDir/lib/VC/arm64/MD"
 
-          $opensslDir = "$env:VCPKG_INSTALLATION_ROOT/installed/arm64-windows-static-md"
+          if (-not (Test-Path -LiteralPath "$opensslDir/include/openssl/ssl.h") -or
+              -not (Test-Path -LiteralPath "$opensslLibDir/libssl_static.lib") -or
+              -not (Test-Path -LiteralPath "$opensslLibDir/libcrypto_static.lib")) {
+            throw 'The runner is missing the ARM64 OpenSSL headers or static libraries.'
+          }
+
           "OPENSSL_DIR=$opensslDir" >> $env:GITHUB_ENV
+          "OPENSSL_LIB_DIR=$opensslLibDir" >> $env:GITHUB_ENV
+          "OPENSSL_LIBS=libssl_static:libcrypto_static" >> $env:GITHUB_ENV
           "OPENSSL_STATIC=1" >> $env:GITHUB_ENV
 
       - name: Setup Python Dependencies
