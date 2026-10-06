@@ -73,6 +73,7 @@ def install(server_id, url):
                 restart_required=True,
                 restart_after=time.time() + 30,
                 build=connector.bundle()['build'],
+                version=result['version'],
                 force_restart=legacy_removed,
                 legacy_checked=legacy_checked,
                 reinstall_required=result.get('reinstall_required', False),
@@ -180,7 +181,9 @@ def maintain(server_id):
             return
         try:
             connector.verify(connection)
-        except MediaServerError:
+        except MediaServerError as exc:
+            if exc.status_code != 409:
+                raise
             if not _stop.is_set():
                 install(server_id, url)
         else:
@@ -202,8 +205,13 @@ def _maintain_restart(server_id, connection, current, restarting):
                 _save(
                     server_id,
                     phase='manual',
-                    message='Jellyfin has not loaded the connector after restarting. '
-                    'Check its service or container and restart it manually.',
+                    message=(
+                        'Jellyfin has not removed the previous connector after restarting. '
+                        'Stop Jellyfin completely and start it again before installation can continue.'
+                        if current.get('reinstall_required')
+                        else 'Jellyfin has not loaded the connector after restarting. '
+                        'Check its service or container and restart it manually.'
+                    ),
                 )
         elif current.get('phase') != 'manual':
             _restart(server_id, connection, current)
@@ -227,6 +235,10 @@ def _verify_loaded(connection, current):
         info = connection.json('GET', _SYSTEM_INFO)
         if not isinstance(info, dict) or info.get('HasPendingRestart') is not False:
             raise MediaServerError('Restart Jellyfin before replacing the loaded connector.', 409)
+        replacement_version = current.get('version') or connector.bundle()['artifacts'][
+            connector.profile(connection.server_version)
+        ]['version']
+        connector.verify_removed(connection, replacement_version)
         return
     if current.get('manual_restart') and not current.get('restart_required'):
         connection.json('GET', _SYSTEM_INFO)

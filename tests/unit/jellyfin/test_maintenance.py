@@ -1,10 +1,13 @@
 """Connector lifecycle decisions with mocked Jellyfin APIs and a real temporary state store."""
 
+# standard imports
 from unittest.mock import Mock
 from threading import Event
 
+# lib imports
 import pytest
 
+# local imports
 from jellyfin import connector, maintenance, servers
 from media_servers.base import MediaServerError
 
@@ -82,6 +85,17 @@ def test_startup_installs_a_mismatch_only_when_configured(connection, configured
     configured['Jellyfin']['AUTO_UPDATE_CONNECTOR'] = True
     maintenance.maintain(SERVER)
     connector.install.assert_called_once_with(connection, 'http://themerr.example')
+
+
+def test_maintenance_does_not_install_on_verification_connection_failure(connection, monkeypatch):
+    connector.repository_url('http://themerr.example')
+    failure = MediaServerError('Could not reach Jellyfin.', 502)
+    monkeypatch.setattr(connector, 'verify', Mock(side_effect=failure))
+    with pytest.raises(MediaServerError) as error:
+        maintenance.maintain(SERVER)
+    assert error.value is failure
+    connector.install.assert_not_called()
+    connection.request.assert_not_called()
 
 
 def test_loaded_connector_refreshes_libraries_after_restart(connection, monkeypatch):
@@ -223,7 +237,10 @@ def test_same_version_replacement_waits_for_unload_then_installs(connection, mon
     maintenance.maintain(SERVER)
     assert connector.install.call_count == 1
     assert maintenance.state(SERVER)['reinstall_required']
-    connection.json.return_value = {'HasPendingRestart': False}
+    connection.json.side_effect = [
+        {'HasPendingRestart': False},
+        [],
+    ]
     connector.install.return_value.pop('reinstall_required')
     maintenance.maintain(SERVER)
     assert connector.install.call_count == 2
@@ -231,3 +248,49 @@ def test_same_version_replacement_waits_for_unload_then_installs(connection, mon
     assert maintenance.state(SERVER)['restart_required']
     assert maintenance.state(SERVER)['phase'] == 'pending'
     verify.assert_not_called()
+
+
+@pytest.mark.parametrize('saved_version', [
+    True,
+    False,
+])
+def test_locked_connector_after_soft_restart_does_not_loop(connection, monkeypatch, saved_version):
+    connector.install.return_value['reinstall_required'] = True
+    maintenance.install(SERVER, 'http://themerr.example')
+    current = maintenance.state(SERVER)
+    assert current['version'] == connector.install.return_value['version']
+    if not saved_version:
+        maintenance._save(SERVER, version=None)
+    release = connector.bundle()['artifacts']['12.1']['version']
+    if saved_version:
+        release = current['version']
+    maintenance._save(SERVER, phase='restarting', restart_started=999)
+    remaining = [{
+        'Id': connector.PLUGIN_ID,
+        'Version': release,
+        'Status': 'Deleted',
+    }]
+
+    def response(method, route):
+        assert method == 'GET'
+        return remaining if route == '/Plugins' else {'HasPendingRestart': False}
+
+    connection.json.side_effect = response
+    maintenance.maintain(SERVER)
+    assert maintenance.state(SERVER)['phase'] == 'restarting'
+    monkeypatch.setattr(maintenance.time, 'time', lambda: 1180)
+    for _ in range(3):
+        maintenance.maintain(SERVER)
+    current = maintenance.state(SERVER)
+    assert current['phase'] == 'manual'
+    assert 'Stop Jellyfin completely' in current['message']
+    assert current['reinstall_required'] is True
+    assert connector.install.call_count == 1
+    connection.request.assert_not_called()
+
+    remaining.clear()
+    connector.install.return_value.pop('reinstall_required')
+    maintenance.maintain(SERVER)
+    assert connector.install.call_count == 2
+    assert maintenance.state(SERVER)['phase'] == 'pending'
+    assert maintenance.state(SERVER)['reinstall_required'] is False

@@ -7,6 +7,7 @@ import threading
 # local imports
 from common import config, logger
 from media_servers import get_backend
+from media_servers.base import MediaServerError
 from themerr import storage
 
 log = logger.get_logger(__name__)
@@ -94,6 +95,9 @@ def scheduled_update() -> None:
             with storage.server_scope(record['id']):
                 log.info('Scanning server %r (%s)', record['name'], record['id'])
                 backend.server(record['id']).scan(enqueue)
+        except MediaServerError as exc:
+            log.warning('Theme scan deferred for server %s: %s', record['id'], str(exc))
+            backend.record_refresh(record['id'], str(exc))
         except Exception:
             log.exception('Theme scan failed for server %s', record['id'])
             backend.record_refresh(
