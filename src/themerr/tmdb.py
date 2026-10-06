@@ -1,78 +1,17 @@
-"""Resolve TMDB IDs from ThemerrDB, Plex's TMDB proxy, or TMDB."""
+"""Resolve TMDB IDs from ThemerrDB, the media server, or TMDB."""
 
 # standard imports
 import os
-from threading import Lock
-from time import monotonic
-from urllib.parse import quote, urlencode
-
-# lib imports
-import requests
+from urllib.parse import quote
 
 # local imports
-from common import config, helpers, logger
-from plex import auth, servers, token_store
+from common import helpers, logger
+from media_servers import get_backend
 from themerr import storage, themerr_db
 
 
 TMDB_API_URL = 'https://api.themoviedb.org/3'
-PROXY_TIMEOUT = 10
-PROXY_CACHE_SECONDS = 86400
-_proxy_cache: dict[tuple[str, ...], tuple[float, dict]] = {}
-_proxy_lock = Lock()
 log = logger.get_logger(__name__)
-
-
-def _plex_get(path: str, params: dict) -> dict:
-    """Query the Plex server's TMDB service without persisting its token.
-
-    Parameters
-    ----------
-    path : str
-        TMDB service path.
-    params : dict
-        TMDB service query parameters.
-
-    Returns
-    -------
-    dict
-        JSON response, or an empty dictionary if the proxy is unavailable.
-    """
-    try:
-        server_id = storage.current_server_id()
-        record = servers.get_server(server_id) if server_id != 'default' else None
-        if server_id != 'default' and (record is None or not record['enabled']):
-            return {}
-        base_url = (record['url'] if record else config.CONFIG['Plex']['PLEX_URL']).rstrip('/')
-    except (KeyError, TypeError, AttributeError):
-        return {}
-    if not base_url:
-        return {}
-    uri = f'/{path}?{urlencode(params, quote_via=quote)}'
-    key = (server_id, base_url, uri)
-    with _proxy_lock:
-        cached = _proxy_cache.get(key)
-        if cached and cached[0] > monotonic():
-            return cached[1]
-    token = token_store.get_token(servers.credential_id(server_id)) if record else auth.get_token()
-    if not token:
-        return {}
-    try:
-        response = requests.get(f'{base_url}/services/tmdb', params={'uri': uri},
-                                headers={'X-Plex-Token': token, 'Accept': 'application/json'},
-                                timeout=PROXY_TIMEOUT)
-        response.raise_for_status()
-        data = response.json()
-    except (requests.RequestException, ValueError) as exc:
-        log.debug('Plex TMDB lookup failed: %s', exc)
-        return {}
-    if not isinstance(data, dict):
-        return {}
-    with _proxy_lock:
-        if len(_proxy_cache) >= 2048:
-            _proxy_cache.clear()
-        _proxy_cache[key] = (monotonic() + PROXY_CACHE_SECONDS, data)
-    return data
 
 
 def _api_get(path: str, params: dict) -> dict:
@@ -105,19 +44,19 @@ def get_tmdb_id_from_external_id(external_id: int | str, database: str, item_typ
                                  title: str | None = None) -> int | None:
     """Resolve an external movie or show identifier to a TMDB ID.
 
-    ThemerrDB publishes IMDb IDs for movies and titles for TV shows. The Plex
-    proxy or an optional TMDB API token can resolve other items.
+    ThemerrDB publishes IMDb IDs for movies and titles for TV shows. A server
+    metadata service or an optional TMDB API token can resolve other items.
 
     Parameters
     ----------
     external_id : int or str
-        IMDb or TVDB identifier from Plex.
+        IMDb or TVDB identifier from the media server.
     database : str
         ``imdb`` or ``tvdb``.
     item_type : str
         ``movie`` or ``tv``.
     title : str or None
-        Plex show title, used when ThemerrDB has no external ID mapping.
+        Show title, used when ThemerrDB has no external ID mapping.
 
     Returns
     -------
@@ -138,7 +77,8 @@ def get_tmdb_id_from_external_id(external_id: int | str, database: str, item_typ
     if item_type == 'movie' and database == 'tvdb':
         return None  # TMDB's find endpoint does not support TVDB IDs for movies.
     params = {'external_source': f'{database}_id'}
-    data = _plex_get(f'find/{quote(str(external_id), safe="")}', params)
+    server = get_backend().server(storage.current_server_id())
+    data = server.query_tmdb(f'find/{quote(str(external_id), safe="")}', params)
     try:
         return int(data[f'{item_type}_results'][0]['id'])
     except (IndexError, KeyError, TypeError, ValueError):
@@ -151,14 +91,14 @@ def get_tmdb_id_from_external_id(external_id: int | str, database: str, item_typ
 
 
 def get_tmdb_id_from_collection(search_query: str, language: str | None = None) -> int | None:
-    """Find a collection by title in ThemerrDB, Plex, or TMDB.
+    """Find a collection by title in ThemerrDB, the media server, or TMDB.
 
     Parameters
     ----------
     search_query : str
-        Plex collection title, with or without the ``Collection`` suffix.
+        Collection title, with or without the ``Collection`` suffix.
     language : str or None
-        Plex library language for the TMDB API fallback.
+        Library language for the TMDB API fallback.
 
     Returns
     -------
@@ -173,9 +113,7 @@ def get_tmdb_id_from_collection(search_query: str, language: str | None = None) 
     if language:
         params['language'] = language
     search_key = themerr_db._title_key(search_query)
-    # Plex's proxy rejects spaces in collection searches; hyphens work.
-    proxy_params = {**params, 'query': search_query.replace(' ', '-')}
-    data = _plex_get('search/collection', proxy_params)
+    data = get_backend().server(storage.current_server_id()).query_tmdb('search/collection', params)
     for result in data.get('results', []):
         try:
             result_key = themerr_db._title_key(result['name'])

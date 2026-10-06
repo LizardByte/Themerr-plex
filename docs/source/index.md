@@ -20,6 +20,7 @@ about/changelog
 
 contributing/contributing
 contributing/database
+contributing/media_servers
 contributing/build
 contributing/testing
 ```
@@ -30,7 +31,7 @@ contributing/testing
 :caption: Source Code
 :titlesonly:
 
-src/themerr_plex
+src/main
 src/common/common
 src/common/config
 src/common/crypto
@@ -41,4 +42,5 @@ src/common/logger
 src/common/threads
 src/common/tray_icon
 src/common/webapp
+src/jellyfin_connector
 ```

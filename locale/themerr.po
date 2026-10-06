@@ -1,0 +1,1739 @@
+# Translations template for Themerr.
+# Copyright (C) 2026 Themerr
+# This file is distributed under the same license as the Themerr project.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Themerr v0\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: src/common/config.py:84
+msgid "Info"
+msgstr ""
+
+#: src/common/config.py:85
+msgid "For information purposes only."
+msgstr ""
+
+#: src/common/config.py:89
+msgid "Config version"
+msgstr ""
+
+#: src/common/config.py:90
+msgid "The configuration version."
+msgstr ""
+
+#: src/common/config.py:99
+msgid "First run complete"
+msgstr ""
+
+#: src/common/config.py:100
+msgid "Todo: Indicates if the user has completed the initial setup."
+msgstr ""
+
+#: src/common/config.py:107
+msgid "General"
+msgstr ""
+
+#: src/common/config.py:108
+msgid "General settings."
+msgstr ""
+
+#: src/common/config.py:112
+msgid "Locale"
+msgstr ""
+
+#: src/common/config.py:113
+msgid "The localization setting to use."
+msgstr ""
+
+#: src/common/config.py:122
+msgid "Launch Browser on Startup "
+msgstr ""
+
+#: src/common/config.py:128
+msgid "Enable System Tray Icon"
+msgstr ""
+
+#: src/common/config.py:136
+msgid "Notifications"
+msgstr ""
+
+#: src/common/config.py:137
+msgid ""
+"Desktop notifications appear on the computer running Themerr. Docker and "
+"headless installations do not display them."
+msgstr ""
+
+#: src/common/config.py:142 src/common/notifications.py:138
+msgid "New release available"
+msgstr ""
+
+#: src/common/config.py:143
+msgid ""
+"Notify when a newer Themerr release is available. Checks run once per "
+"hour."
+msgstr ""
+
+#: src/common/config.py:148
+msgid "Follow pre-releases"
+msgstr ""
+
+#: src/common/config.py:149
+msgid "Include pre-releases in new release notifications."
+msgstr ""
+
+#: src/common/config.py:154
+msgid "Theme coverage increased"
+msgstr ""
+
+#: src/common/config.py:155
+msgid ""
+"Notify after a successful refresh when total theme coverage increases. "
+"Refreshes with no increase stay quiet."
+msgstr ""
+
+#: src/common/config.py:162
+msgid "Logging"
+msgstr ""
+
+#: src/common/config.py:163
+msgid "Logging settings."
+msgstr ""
+
+#: src/common/config.py:167
+msgid "Log directory"
+msgstr ""
+
+#: src/common/config.py:169
+msgid "The directory where to store the log files."
+msgstr ""
+
+#: src/common/config.py:176
+msgid "Debug logging"
+msgstr ""
+
+#: src/common/config.py:178
+msgid "Enable debug logging."
+msgstr ""
+
+#: src/common/config.py:184
+msgid "Network"
+msgstr ""
+
+#: src/common/config.py:185
+msgid "Network settings."
+msgstr ""
+
+#: src/common/config.py:189
+msgid "HTTP host address"
+msgstr ""
+
+#: src/common/config.py:191
+msgid "The HTTP address to bind to."
+msgstr ""
+
+#: src/common/config.py:200
+msgid "HTTP port"
+msgstr ""
+
+#: src/common/config.py:202
+msgid "Port to bind web server to. Note that ports below 1024 may require root."
+msgstr ""
+
+#: src/common/config.py:210
+msgid "HTTP root"
+msgstr ""
+
+#: src/common/config.py:212
+msgid "Todo: The base URL of the web server. Used for reverse proxies."
+msgstr ""
+
+#: src/common/config.py:217
+msgid "SSL"
+msgstr ""
+
+#: src/common/config.py:219
+msgid ""
+"Run the web server with HTTPS. Disabling this can be a security risk, do "
+"so at your own risk."
+msgstr ""
+
+#: src/common/config.py:225
+msgid "Updater"
+msgstr ""
+
+#: src/common/config.py:226
+msgid "Updater settings."
+msgstr ""
+
+#: src/common/config.py:230
+msgid "Auto update"
+msgstr ""
+
+#: src/common/config.py:238
+msgid "Jellyfin"
+msgstr ""
+
+#: src/common/config.py:239
+msgid ""
+"Jellyfin theme processing settings. Connections are managed on the "
+"Servers page."
+msgstr ""
+
+#: src/common/config.py:242 src/common/config.py:343
+msgid "Movie support"
+msgstr ""
+
+#: src/common/config.py:243
+msgid "Add themes to Jellyfin movies."
+msgstr ""
+
+#: src/common/config.py:246 src/common/config.py:349
+msgid "Series support"
+msgstr ""
+
+#: src/common/config.py:247
+msgid "Add themes to Jellyfin series."
+msgstr ""
+
+#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+msgid "Collections"
+msgstr ""
+
+#: src/common/config.py:251
+msgid ""
+"Add themes inside Jellyfin’s collection directories. Media files can "
+"remain elsewhere."
+msgstr ""
+
+#: src/common/config.py:254
+msgid "Overwrite user themes"
+msgstr ""
+
+#: src/common/config.py:255
+msgid ""
+"Replace existing theme files, including themes created by the older "
+"Themerr-jellyfin plugin."
+msgstr ""
+
+#: src/common/config.py:259
+msgid "Back up replaced user themes"
+msgstr ""
+
+#: src/common/config.py:260
+msgid ""
+"Keep existing user themes in a backup folder when replacing them. Disable"
+" to permanently remove replaced themes."
+msgstr ""
+
+#: src/common/config.py:264
+msgid "Import older Themerr-jellyfin ownership"
+msgstr ""
+
+#: src/common/config.py:265
+msgid ""
+"Recognize themes recorded in the older plugin’s database only when their "
+"SHA-256 still matches. Changed files stay protected. The old database is "
+"left untouched."
+msgstr ""
+
+#: src/common/config.py:269
+msgid "Ignore locked metadata"
+msgstr ""
+
+#: src/common/config.py:270
+msgid "Allow Jellyfin theme updates for items with locked metadata."
+msgstr ""
+
+#: src/common/config.py:273
+msgid "Update connector automatically"
+msgstr ""
+
+#: src/common/config.py:274
+msgid ""
+"Install the matching connector when Themerr starts or detects a version "
+"mismatch. Set the reachable Themerr address on the Servers page first."
+msgstr ""
+
+#: src/common/config.py:278
+msgid "Restart Jellyfin automatically"
+msgstr ""
+
+#: src/common/config.py:279
+msgid ""
+"Restart Jellyfin after installing or updating the connector. A pending "
+"restart is shown on the Servers page before it happens."
+msgstr ""
+
+#: src/common/config.py:283
+msgid "Wait for playback to finish"
+msgstr ""
+
+#: src/common/config.py:284
+msgid "Defer connector restarts until there are no playing or paused streams."
+msgstr ""
+
+#: src/common/config.py:287
+msgid "Remove the older Themerr-jellyfin plugin"
+msgstr ""
+
+#: src/common/config.py:288
+msgid ""
+"After installing the connector, uninstall the older Themerr plugin and "
+"remove only its dedicated repository. Existing theme files are kept."
+msgstr ""
+
+#: src/common/config.py:292
+msgid "Connector HTTP port"
+msgstr ""
+
+#: src/common/config.py:293
+msgid ""
+"Serve only connector downloads over HTTP when Themerr uses a self-signed "
+"certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart "
+"Themerr after changing this port."
+msgstr ""
+
+#: src/common/config.py:300
+msgid "Plex"
+msgstr ""
+
+#: src/common/config.py:301
+msgid "Plex settings."
+msgstr ""
+
+#: src/common/config.py:305
+msgid "Plex URL"
+msgstr ""
+
+#: src/common/config.py:306
+msgid "The URL to the Plex server."
+msgstr ""
+
+#: src/common/config.py:315 web/templates/servers.html:37
+msgid "Plex data directory"
+msgstr ""
+
+#: src/common/config.py:316
+msgid ""
+"https://support.plex.tv/articles/202915258-where-is-the-plex-media-"
+"server-data-directory-located/"
+msgstr ""
+
+#: src/common/config.py:326
+msgid "Themerr"
+msgstr ""
+
+#: src/common/config.py:327
+msgid "Themerr settings."
+msgstr ""
+
+#: src/common/config.py:331
+msgid "Themerr Enabled"
+msgstr ""
+
+#: src/common/config.py:332
+msgid "When enabled, Themerr will attempt to update themes."
+msgstr ""
+
+#: src/common/config.py:338
+msgid "Add themes to collections."
+msgstr ""
+
+#: src/common/config.py:344
+msgid "Add themes to movies using the Plex Movie agent."
+msgstr ""
+
+#: src/common/config.py:350
+msgid "Add themes to series using the Plex Series agent."
+msgstr ""
+
+#: src/common/config.py:355
+msgid "Overwrite Plex themes"
+msgstr ""
+
+#: src/common/config.py:356
+msgid "When enabled, Themerr will overwrite themes provided by Plex."
+msgstr ""
+
+#: src/common/config.py:361
+msgid "Prefer MP4A AAC Codec"
+msgstr ""
+
+#: src/common/config.py:362
+msgid "This can improve theme compatibility with Apple devices."
+msgstr ""
+
+#: src/common/config.py:367
+msgid "Remove unused themes"
+msgstr ""
+
+#: src/common/config.py:368
+msgid ""
+"Frees up space in your Plex metadata directory. This option requires that"
+" the \"Plex data directory\" path is set"
+msgstr ""
+
+#: src/common/config.py:374
+msgid "Remove unused art"
+msgstr ""
+
+#: src/common/config.py:375 src/common/config.py:383
+msgid ""
+"Applies to collection. Frees up space in your Plex metadata directory. "
+"This option requires that the \"Plex data directory\" path is set"
+msgstr ""
+
+#: src/common/config.py:382
+msgid "Remove unused posters"
+msgstr ""
+
+#: src/common/config.py:390
+msgid "Collection metadata"
+msgstr ""
+
+#: src/common/config.py:391
+msgid ""
+"Update collection metadata (poster, art, and summary) during scheduled "
+"update."
+msgstr ""
+
+#: src/common/config.py:396
+msgid "Ignore locked fields."
+msgstr ""
+
+#: src/common/config.py:397
+msgid ""
+"If you used Themerr v2024.813.13709 or lower, you may need to enable this"
+" to update items."
+msgstr ""
+
+#: src/common/config.py:403
+msgid "Ignored library IDs"
+msgstr ""
+
+#: src/common/config.py:404
+msgid ""
+"Comma-separated library IDs to exclude from scheduled updates. IDs appear"
+" on Home."
+msgstr ""
+
+#: src/common/config.py:410
+msgid "Update themes interval"
+msgstr ""
+
+#: src/common/config.py:411
+msgid "Interval for automatic update task, in minutes (min: 15)."
+msgstr ""
+
+#: src/common/config.py:418
+msgid "Update database cache interval"
+msgstr ""
+
+#: src/common/config.py:419
+msgid "Interval for database cache update task, in minutes (min: 15)."
+msgstr ""
+
+#: src/common/config.py:426
+msgid "PlexAPI timeout"
+msgstr ""
+
+#: src/common/config.py:427
+msgid ""
+"Increase this slightly if you experience timeouts when adding themes. "
+"(min: 1)"
+msgstr ""
+
+#: src/common/config.py:434
+msgid "Theme upload retries"
+msgstr ""
+
+#: src/common/config.py:435
+msgid "If uploading themes fail, retry this many times. (min: 0)"
+msgstr ""
+
+#: src/common/config.py:442
+msgid "Multiprocessing thread count"
+msgstr ""
+
+#: src/common/config.py:443
+msgid ""
+"The number of threads to use when adding themes. Restart required. (min: "
+"1)"
+msgstr ""
+
+#: src/common/config.py:450
+msgid "YouTube Cookies"
+msgstr ""
+
+#: src/common/config.py:452
+msgid ""
+"Optional: export youtube.com cookies with Get cookies.txt LOCALLY using "
+"its JSON format, then paste the entire JSON array here and save. Cookies "
+"contain your browser session; keep them private."
+msgstr ""
+
+#: src/common/config.py:457
+msgid "Cookie export instructions"
+msgstr ""
+
+#: src/common/notifications.py:138
+#, python-format
+msgid ""
+"%(app)s %(version)s is available.\n"
+"%(url)s"
+msgstr ""
+
+#: src/common/notifications.py:176
+msgid "Refresh completed"
+msgstr ""
+
+#: src/common/notifications.py:177
+#, python-format
+msgid ""
+"Theme coverage increased by %(increase)s percentage points: %(before)s%% "
+"→ %(after)s%%. %(installed)s of %(total)s items have themes."
+msgstr ""
+
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not translate
+#. "%(app_name)s".
+#: src/common/tray_icon.py:103
+#, python-format
+msgid "Open %(app_name)s"
+msgstr ""
+
+#: src/common/tray_icon.py:110
+msgid "About"
+msgstr ""
+
+#: src/common/tray_icon.py:111 web/templates/navbar.html:22
+#, python-format
+msgid "Version %(version)s"
+msgstr ""
+
+#: src/common/tray_icon.py:113
+msgid "Repository"
+msgstr ""
+
+#. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
+#. "%(github)s".
+#: src/common/tray_icon.py:116
+#, python-format
+msgid "%(github)s Releases"
+msgstr ""
+
+#: src/common/tray_icon.py:119 web/templates/navbar.html:14
+msgid "Documentation"
+msgstr ""
+
+#: src/common/tray_icon.py:120 web/templates/api_docs.html:6
+#: web/templates/api_docs.html:7 web/templates/navbar.html:13
+msgid "API documentation"
+msgstr ""
+
+#. NOTE: Donate to LizardByte.
+#: src/common/tray_icon.py:126
+msgid "Donate"
+msgstr ""
+
+#: src/common/tray_icon.py:127
+msgid "GitHub Sponsors"
+msgstr ""
+
+#. NOTE: Open web browser when application starts. Do not translate
+#. "%(app_name)s".
+#: src/common/tray_icon.py:136
+#, python-format
+msgid "Open browser when %(app_name)s starts"
+msgstr ""
+
+#. NOTE: Disable or turn off icon.
+#: src/common/tray_icon.py:139
+msgid "Disable icon"
+msgstr ""
+
+#. NOTE: Restart the program.
+#: src/common/tray_icon.py:142
+msgid "Restart"
+msgstr ""
+
+#. NOTE: Quit, Stop, End, or Shutdown the program.
+#: src/common/tray_icon.py:144
+msgid "Quit"
+msgstr ""
+
+#: src/common/webapp.py:80 web/templates/logs.html:4
+#: web/templates/navbar.html:6
+msgid "Logs"
+msgstr ""
+
+#: src/common/webapp.py:478 web/templates/config.html:23
+#: web/templates/navbar.html:6
+msgid "Settings"
+msgstr ""
+
+#: src/main.py:171
+#, python-format
+msgid ""
+"%(app_name)s manages theme songs for Plex and Jellyfin.\n"
+"Arguments supplied here are meant to be temporary."
+msgstr ""
+
+#: src/main.py:175
+msgid "Show this help message and exit"
+msgstr ""
+
+#: src/main.py:177
+msgid "Specify a config file to use"
+msgstr ""
+
+#: src/main.py:178
+msgid "Use debug logging level"
+msgstr ""
+
+#: src/main.py:179
+#, python-format
+msgid "Start %(app_name)s in the development environment"
+msgstr ""
+
+#: src/main.py:181
+msgid "Health check the container and exit"
+msgstr ""
+
+#: src/main.py:184
+#, python-format
+msgid "Do not open %(app_name)s in browser"
+msgstr ""
+
+#: src/main.py:187
+#, python-format
+msgid "Force %(app_name)s to run on a specified port, default=9494"
+msgstr ""
+
+#: src/main.py:190
+msgid "Turn off console logging"
+msgstr ""
+
+#: src/main.py:191
+msgid "Print the version details and exit"
+msgstr ""
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr ""
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr ""
+
+#: web/js/config.js:18 web/js/config.js:44
+msgid "Unsaved changes"
+msgstr ""
+
+#: web/js/config.js:26
+msgid "Discard unsaved settings changes?"
+msgstr ""
+
+#: web/js/config.js:44 web/templates/config.html:37
+msgid "All changes saved."
+msgstr ""
+
+#: web/js/config.js:46
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr ""
+
+#: web/js/config.js:50
+msgid "Unable to save changes."
+msgstr ""
+
+#: web/js/config.js:58
+msgid "Save your settings changes before changing your password."
+msgstr ""
+
+#: web/js/logs.js:117
+msgid "No records match your filters."
+msgstr ""
+
+#: web/js/logs.js:117 web/templates/logs.html:37
+msgid "No log records yet."
+msgstr ""
+
+#: web/js/logs.js:125
+msgid ""
+"Search, filters, warning navigation, and download cover all loaded "
+"records since startup."
+msgstr ""
+
+#: web/js/logs.js:126 web/templates/logs.html:28
+msgid ""
+"Filters and search apply to the loaded records. Older history remains in "
+"the log directory."
+msgstr ""
+
+#: web/js/logs.js:144
+msgid "Session log loading stalled."
+msgstr ""
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
+msgid "Live"
+msgstr ""
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
+#: web/templates/servers.html:14
+msgid "Paused"
+msgstr ""
+
+#: web/js/logs.js:185
+msgid "Refresh failed. Showing the last loaded records."
+msgstr ""
+
+#: web/js/servers.js:45 web/templates/servers.html:42
+msgid "Select libraries to ignore"
+msgstr ""
+
+#: web/js/servers.js:54
+msgid "Loading libraries…"
+msgstr ""
+
+#: web/js/servers.js:78
+msgid ""
+"Showing cached libraries. Enable or reconnect this server to load its "
+"current libraries."
+msgstr ""
+
+#: web/js/servers.js:80
+msgid "This server has no libraries."
+msgstr ""
+
+#: web/js/servers.js:86
+msgid ""
+"Unable to load libraries. Your selections are kept. Close and reopen the "
+"list to retry."
+msgstr ""
+
+#: web/js/servers.js:130 web/js/servers.js:296
+msgid "Connected"
+msgstr ""
+
+#: web/js/servers.js:130 web/templates/servers.html:71
+#: web/templates/servers.html:83
+msgid "Connect"
+msgstr ""
+
+#: web/js/servers.js:278
+msgid "Looking for Jellyfin servers…"
+msgstr ""
+
+#: web/js/servers.js:284
+msgid ""
+"No Jellyfin servers responded. Check UDP port 7359 and local network "
+"discovery, or enter an address manually."
+msgstr ""
+
+#: web/js/servers.js:296
+msgid "Use this address"
+msgstr ""
+
+#: web/js/servers.js:325 web/templates/servers.html:26
+msgid "Save connector address"
+msgstr ""
+
+#: web/js/servers.js:325 web/templates/servers.html:27
+msgid "Install matching connector"
+msgstr ""
+
+#: web/js/servers.js:330
+msgid "This server cannot restart itself. Restart its service or container."
+msgstr ""
+
+#: web/js/servers.js:362
+msgid "Restart Jellyfin now? Active playback will be interrupted."
+msgstr ""
+
+#: web/templates/activity.html:3
+msgid "See what Themerr is working on, and why an item might need your attention."
+msgstr ""
+
+#: web/templates/activity.html:3
+msgid "Scan for themes"
+msgstr ""
+
+#: web/templates/activity.html:3 web/templates/logs.html:4
+msgid "BEHIND THE MUSIC"
+msgstr ""
+
+#: web/templates/activity.html:3 web/templates/navbar.html:6
+msgid "Activity"
+msgstr ""
+
+#: web/templates/activity.html:4
+msgid "items waiting in the processing queue"
+msgstr ""
+
+#: web/templates/activity.html:4
+msgid "Task history covers the current application session."
+msgstr ""
+
+#: web/templates/activity.html:5
+msgid "Recent tasks"
+msgstr ""
+
+#: web/templates/activity.html:6
+msgid ""
+"No tasks have run yet. Request a scan, or wait for the next scheduled "
+"refresh."
+msgstr ""
+
+#: web/templates/activity.html:7 web/templates/home.html:15
+#: web/templates/home.html:32 web/templates/servers.html:14
+msgid "Needs attention"
+msgstr ""
+
+#: web/templates/activity.html:8
+msgid "No processing failures recorded. All quiet here."
+msgstr ""
+
+#: web/templates/activity.html:8 web/templates/home.html:66
+msgid "ID"
+msgstr ""
+
+#: web/templates/activity.html:8 web/templates/home.html:80
+msgid "Outdated from ThemerrDB"
+msgstr ""
+
+#: web/templates/api_docs.html:6
+msgid "Explore the API using your signed-in session."
+msgstr ""
+
+#: web/templates/auth.html:5 web/templates/navbar.html:3
+msgid "YOUR LIBRARY’S SOUNDTRACK"
+msgstr ""
+
+#: web/templates/auth.html:7
+msgid "THE SOUND OF YOUR LIBRARY"
+msgstr ""
+
+#: web/templates/auth.html:8
+msgid "Every story"
+msgstr ""
+
+#: web/templates/auth.html:8
+msgid "has a soundtrack."
+msgstr ""
+
+#: web/templates/auth.html:9
+msgid ""
+"Bring your libraries to life. One calm workspace for your servers, your "
+"themes, and everything in between."
+msgstr ""
+
+#: web/templates/auth.html:18
+msgid "Your workspace, secured."
+msgstr ""
+
+#: web/templates/auth.html:19
+msgid ""
+"Open the one-time setup link printed in the application console to create"
+" your admin account."
+msgstr ""
+
+#: web/templates/auth.html:20
+msgid ""
+"The link is generated each time the application starts, until setup is "
+"complete."
+msgstr ""
+
+#: web/templates/auth.html:22
+msgid "GET STARTED"
+msgstr ""
+
+#: web/templates/auth.html:22
+msgid "WELCOME BACK"
+msgstr ""
+
+#: web/templates/auth.html:23
+msgid "Make it yours."
+msgstr ""
+
+#: web/templates/auth.html:23
+msgid "Sign in to Themerr."
+msgstr ""
+
+#: web/templates/auth.html:24
+msgid "Create the administrator account for this installation."
+msgstr ""
+
+#: web/templates/auth.html:24
+msgid "Your libraries are waiting for their next soundtrack."
+msgstr ""
+
+#: web/templates/auth.html:28
+msgid "Username"
+msgstr ""
+
+#: web/templates/auth.html:30
+msgid "Password"
+msgstr ""
+
+#: web/templates/auth.html:33
+msgid "Use at least 12 characters. A long, unique passphrase works well."
+msgstr ""
+
+#: web/templates/auth.html:34
+msgid "Confirm password"
+msgstr ""
+
+#: web/templates/auth.html:37
+msgid "Create workspace"
+msgstr ""
+
+#: web/templates/auth.html:37
+msgid "Sign in"
+msgstr ""
+
+#: web/templates/auth.html:39
+msgid "Connect your media servers inside your workspace."
+msgstr ""
+
+#: web/templates/base.html:21
+msgid "Skip to content"
+msgstr ""
+
+#: web/templates/base.html:27
+msgid "Toggle navigation"
+msgstr ""
+
+#: web/templates/base.html:28
+msgid "Workspace"
+msgstr ""
+
+#: web/templates/color_theme.html:2 web/templates/color_theme.html:5
+msgid "Theme: Automatic. Switch to light mode."
+msgstr ""
+
+#: web/templates/color_theme.html:3
+msgid "Theme: Light. Switch to dark mode."
+msgstr ""
+
+#: web/templates/color_theme.html:4
+msgid "Theme: Dark. Switch to automatic mode."
+msgstr ""
+
+#: web/templates/config.html:16
+msgid "Browse directories for"
+msgstr ""
+
+#: web/templates/config.html:23
+msgid "TUNE YOUR WORKSPACE"
+msgstr ""
+
+#: web/templates/config.html:23
+msgid "Make Themerr work the way your library does."
+msgstr ""
+
+#: web/templates/config.html:25
+msgid "Settings sections"
+msgstr ""
+
+#: web/templates/config.html:25 web/templates/config.html:34
+msgid "Security"
+msgstr ""
+
+#: web/templates/config.html:29
+msgid ""
+"Server connections, data directories, and ignored libraries are managed "
+"on the Servers page."
+msgstr ""
+
+#: web/templates/config.html:29
+msgid "Changes to network settings take effect after restarting Themerr."
+msgstr ""
+
+#: web/templates/config.html:34
+msgid ""
+"One administrator for this installation. Change your password and sign "
+"out other sessions."
+msgstr ""
+
+#: web/templates/config.html:35
+msgid "Current password"
+msgstr ""
+
+#: web/templates/config.html:35
+msgid "New password"
+msgstr ""
+
+#: web/templates/config.html:35
+msgid "Confirm new password"
+msgstr ""
+
+#: web/templates/config.html:35
+msgid "Change password"
+msgstr ""
+
+#: web/templates/config.html:37
+msgid "Save changes"
+msgstr ""
+
+#: web/templates/directory_picker.html:2
+msgid "Choose an application directory"
+msgstr ""
+
+#: web/templates/directory_picker.html:2
+msgid "Close directory picker"
+msgstr ""
+
+#: web/templates/directory_picker.html:3
+msgid "Browse directories on the machine running Themerr."
+msgstr ""
+
+#: web/templates/directory_picker.html:4
+msgid "Parent directory"
+msgstr ""
+
+#: web/templates/directory_picker.html:6
+msgid "Select directory"
+msgstr ""
+
+#: web/templates/error.html:5
+msgid "LET’S TRY THAT AGAIN"
+msgstr ""
+
+#: web/templates/error.html:7
+msgid "Back to workspace"
+msgstr ""
+
+#: web/templates/home.html:5
+msgid "YOUR LIBRARY, IN HARMONY"
+msgstr ""
+
+#: web/templates/home.html:5
+msgid ""
+"A soundtrack for every story. See what’s playing, and what needs a little"
+" attention."
+msgstr ""
+
+#: web/templates/home.html:5 web/templates/navbar.html:6
+msgid "Overview"
+msgstr ""
+
+#: web/templates/home.html:6
+msgid "Refresh libraries"
+msgstr ""
+
+#: web/templates/home.html:8
+msgid "Unknown"
+msgstr ""
+
+#: web/templates/home.html:8
+msgid ""
+"GitHub check failed. Showing the last known deployment; checks run at "
+"most hourly."
+msgstr ""
+
+#: web/templates/home.html:9
+msgid "Last deployed"
+msgstr ""
+
+#: web/templates/home.html:9
+msgid "Checking…"
+msgstr ""
+
+#: web/templates/home.html:9
+msgid "Check unavailable"
+msgstr ""
+
+#: web/templates/home.html:12
+msgid "Library items"
+msgstr ""
+
+#: web/templates/home.html:12
+msgid "libraries across"
+msgstr ""
+
+#: web/templates/home.html:12
+msgid "servers"
+msgstr ""
+
+#: web/templates/home.html:13
+msgid "Themes installed"
+msgstr ""
+
+#: web/templates/home.html:13
+msgid "Your library sounds better already."
+msgstr ""
+
+#: web/templates/home.html:14
+msgid "Theme coverage"
+msgstr ""
+
+#: web/templates/home.html:15
+msgid "Review activity"
+msgstr ""
+
+#: web/templates/home.html:20
+msgid "LET’S SET THE TONE"
+msgstr ""
+
+#: web/templates/home.html:21
+msgid "Your library deserves a soundtrack."
+msgstr ""
+
+#: web/templates/home.html:21
+msgid "Getting to know your library."
+msgstr ""
+
+#: web/templates/home.html:22
+msgid ""
+"Connect Plex or Jellyfin, choose your servers, and let Themerr take care "
+"of the music."
+msgstr ""
+
+#: web/templates/home.html:22
+msgid ""
+"Your first refresh is building the library view. Check Activity for "
+"progress, or request a refresh above."
+msgstr ""
+
+#: web/templates/home.html:23
+msgid "Connect a server"
+msgstr ""
+
+#: web/templates/home.html:23 web/templates/home_db_not_cached.html:3
+msgid "View activity"
+msgstr ""
+
+#: web/templates/home.html:27
+msgid "Your libraries"
+msgstr ""
+
+#: web/templates/home.html:27
+msgid "items"
+msgstr ""
+
+#: web/templates/home.html:29
+msgid "Search library items"
+msgstr ""
+
+#: web/templates/home.html:29
+msgid "Search titles…"
+msgstr ""
+
+#: web/templates/home.html:29 web/templates/logs.html:9
+msgid "Clear search"
+msgstr ""
+
+#: web/templates/home.html:30
+msgid "Server"
+msgstr ""
+
+#: web/templates/home.html:30
+msgid "All servers"
+msgstr ""
+
+#: web/templates/home.html:31
+msgid "Type"
+msgstr ""
+
+#: web/templates/home.html:31
+msgid "All types"
+msgstr ""
+
+#: web/templates/home.html:31
+msgid "Movies"
+msgstr ""
+
+#: web/templates/home.html:31
+msgid "TV shows"
+msgstr ""
+
+#: web/templates/home.html:32
+msgid "Theme status"
+msgstr ""
+
+#: web/templates/home.html:32
+msgid "All statuses"
+msgstr ""
+
+#: web/templates/home.html:32
+msgid "Has a theme"
+msgstr ""
+
+#: web/templates/home.html:32
+msgid "No theme"
+msgstr ""
+
+#: web/templates/home.html:33
+msgid "Reset filters"
+msgstr ""
+
+#: web/templates/home.html:39
+msgid "Library ID"
+msgstr ""
+
+#: web/templates/home.html:45
+msgid "Title"
+msgstr ""
+
+#: web/templates/home.html:45
+msgid "Metadata ID"
+msgstr ""
+
+#: web/templates/home.html:45
+msgid "Theme"
+msgstr ""
+
+#: web/templates/home.html:45
+msgid "ThemerrDB"
+msgstr ""
+
+#: web/templates/home.html:58
+msgid "Pause theme for"
+msgstr ""
+
+#: web/templates/home.html:58 web/templates/home.html:60
+msgid "Play theme for"
+msgstr ""
+
+#: web/templates/home.html:59 web/templates/theme_player.html:2
+msgid ""
+"Unable to play this theme. Check the server connection and browser audio "
+"support."
+msgstr ""
+
+#: web/templates/home.html:66
+#, python-format
+msgid "Open in %(server)s"
+msgstr ""
+
+#: web/templates/home.html:70 web/templates/home.html:78
+msgid "External ID unavailable"
+msgstr ""
+
+#: web/templates/home.html:72
+msgid "Failed to add theme"
+msgstr ""
+
+#: web/templates/home.html:73
+msgid "Plex provided"
+msgstr ""
+
+#: web/templates/home.html:74
+msgid "User provided"
+msgstr ""
+
+#: web/templates/home.html:75
+msgid "Themerr provided"
+msgstr ""
+
+#: web/templates/home.html:76
+msgid "Unknown provider"
+msgstr ""
+
+#: web/templates/home.html:77
+msgid "Missing from ThemerrDB"
+msgstr ""
+
+#: web/templates/home.html:78
+msgid "TMDB ID unavailable"
+msgstr ""
+
+#: web/templates/home.html:79
+msgid "Theme not installed yet"
+msgstr ""
+
+#: web/templates/home.html:82
+msgid "Edit"
+msgstr ""
+
+#: web/templates/home.html:82
+msgid "Add"
+msgstr ""
+
+#: web/templates/home.html:89
+msgid "No titles match."
+msgstr ""
+
+#: web/templates/home.html:89
+msgid "Try another search or reset your filters."
+msgstr ""
+
+#: web/templates/home_db_not_cached.html:3
+msgid "Your library is on its way."
+msgstr ""
+
+#: web/templates/home_db_not_cached.html:3
+msgid ""
+"The first refresh builds your library view. You can follow progress in "
+"Activity."
+msgstr ""
+
+#: web/templates/logs.html:4
+msgid "Explore recent logs, find a message, and jump between warnings and errors."
+msgstr ""
+
+#: web/templates/logs.html:5
+msgid "Download filtered logs"
+msgstr ""
+
+#: web/templates/logs.html:7
+msgid "Log viewer"
+msgstr ""
+
+#: web/templates/logs.html:9
+msgid "Search logs"
+msgstr ""
+
+#: web/templates/logs.html:9
+msgid "Search messages, threads, or timestamps…"
+msgstr ""
+
+#: web/templates/logs.html:10
+msgid "Log source"
+msgstr ""
+
+#: web/templates/logs.html:10
+msgid "All sources"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "Log level"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "All levels"
+msgstr ""
+
+#: web/templates/logs.html:11
+msgid "Warnings and errors"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Log history"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 250"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 1,000"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Latest 2,000"
+msgstr ""
+
+#: web/templates/logs.html:12
+msgid "Since startup"
+msgstr ""
+
+#: web/templates/logs.html:13
+msgid "Clear filters"
+msgstr ""
+
+#: web/templates/logs.html:17
+msgid "Warning and error navigation"
+msgstr ""
+
+#: web/templates/logs.html:18
+msgid "Previous warning or error"
+msgstr ""
+
+#: web/templates/logs.html:19
+msgid "Next warning or error"
+msgstr ""
+
+#: web/templates/logs.html:22
+msgid "Live refresh"
+msgstr ""
+
+#: web/templates/logs.html:23
+msgid "Follow latest"
+msgstr ""
+
+#: web/templates/logs.html:24
+msgid "Refresh"
+msgstr ""
+
+#: web/templates/logs.html:26
+msgid "Loading logs…"
+msgstr ""
+
+#: web/templates/logs.html:30
+msgid "Log history pages"
+msgstr ""
+
+#: web/templates/logs.html:31
+msgid "Older records"
+msgstr ""
+
+#: web/templates/logs.html:33
+msgid "Newer records"
+msgstr ""
+
+#: web/templates/logs.html:35
+msgid "Log records"
+msgstr ""
+
+#: web/templates/navbar.html:1
+msgid "Close navigation"
+msgstr ""
+
+#: web/templates/navbar.html:2
+msgid "Main navigation"
+msgstr ""
+
+#: web/templates/navbar.html:4
+msgid "YOUR WORKSPACE"
+msgstr ""
+
+#: web/templates/navbar.html:5
+msgid "Workspace pages"
+msgstr ""
+
+#: web/templates/navbar.html:6 web/templates/servers.html:4
+msgid "Servers"
+msgstr ""
+
+#: web/templates/navbar.html:11
+msgid "A little music."
+msgstr ""
+
+#: web/templates/navbar.html:11
+msgid "A lot more atmosphere."
+msgstr ""
+
+#: web/templates/navbar.html:12
+msgid "Resources"
+msgstr ""
+
+#: web/templates/navbar.html:15
+msgid "Contribute a theme"
+msgstr ""
+
+#: web/templates/navbar.html:16
+msgid "Support LizardByte"
+msgstr ""
+
+#: web/templates/navbar.html:20
+msgid "Sign out"
+msgstr ""
+
+#: web/templates/servers.html:4
+msgid "ONE WORKSPACE. EVERY SERVER."
+msgstr ""
+
+#: web/templates/servers.html:4
+msgid "Connect Plex or Jellyfin, then choose where the music goes."
+msgstr ""
+
+#: web/templates/servers.html:4
+msgid "saved"
+msgstr ""
+
+#: web/templates/servers.html:7
+msgid "Your Plex account"
+msgstr ""
+
+#: web/templates/servers.html:7
+msgid "Account linked. Choose a server below."
+msgstr ""
+
+#: web/templates/servers.html:7
+msgid "Link your account securely through Plex to access your servers."
+msgstr ""
+
+#: web/templates/servers.html:7
+msgid "Continue Plex sign-in"
+msgstr ""
+
+#: web/templates/servers.html:8
+msgid "Reconnect account"
+msgstr ""
+
+#: web/templates/servers.html:8
+msgid "Connect Plex account"
+msgstr ""
+
+#: web/templates/servers.html:8
+msgid "Disconnect"
+msgstr ""
+
+#: web/templates/servers.html:10
+msgid "Connected servers"
+msgstr ""
+
+#: web/templates/servers.html:10
+msgid "Theme history and library settings are kept separately for each server."
+msgstr ""
+
+#: web/templates/servers.html:14
+msgid "Enabled"
+msgstr ""
+
+#: web/templates/servers.html:20
+msgid "Themerr address reachable from Jellyfin"
+msgstr ""
+
+#: web/templates/servers.html:22
+msgid ""
+"Use the connector-only HTTP address for Themerr’s self-signed "
+"certificate, or an HTTPS address with a certificate Jellyfin trusts. For "
+"remote Jellyfin or Docker, replace localhost with an address reachable "
+"from Jellyfin."
+msgstr ""
+
+#: web/templates/servers.html:23
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr ""
+
+#: web/templates/servers.html:23
+msgid ""
+"Jellyfin will restart after installation. Active playback may be "
+"interrupted."
+msgstr ""
+
+#: web/templates/servers.html:23
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr ""
+
+#: web/templates/servers.html:24
+msgid ""
+"The older Themerr-jellyfin plugin and its repository will be removed. "
+"Existing themes will be kept."
+msgstr ""
+
+#: web/templates/servers.html:28
+msgid "Force restart"
+msgstr ""
+
+#: web/templates/servers.html:32
+msgid ""
+"Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin "
+"stores this preference in the client, so Themerr cannot change it through"
+" the server API."
+msgstr ""
+
+#: web/templates/servers.html:32
+msgid "Open Jellyfin display settings"
+msgstr ""
+
+#: web/templates/servers.html:33
+msgid "Last library refresh"
+msgstr ""
+
+#: web/templates/servers.html:33
+msgid "Not yet refreshed"
+msgstr ""
+
+#: web/templates/servers.html:34
+msgid "Processing settings"
+msgstr ""
+
+#: web/templates/servers.html:36
+msgid "Process this server"
+msgstr ""
+
+#: web/templates/servers.html:37
+msgid "optional"
+msgstr ""
+
+#: web/templates/servers.html:38
+msgid "Browse Plex data directory"
+msgstr ""
+
+#: web/templates/servers.html:39
+msgid ""
+"A local or mounted Plex data directory is only needed to remove older "
+"uploaded files. Leave this empty for remote servers."
+msgstr ""
+
+#: web/templates/servers.html:40
+msgid "Ignored libraries"
+msgstr ""
+
+#: web/templates/servers.html:46
+msgid "Library"
+msgstr ""
+
+#: web/templates/servers.html:49
+msgid "Open the list to load this server’s libraries."
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid ""
+"Select the libraries to exclude from theme updates. Leave all unchecked "
+"to process every library."
+msgstr ""
+
+#: web/templates/servers.html:53
+msgid "Save settings"
+msgstr ""
+
+#: web/templates/servers.html:53
+msgid "Remove server"
+msgstr ""
+
+#: web/templates/servers.html:57
+msgid "Your first server starts here."
+msgstr ""
+
+#: web/templates/servers.html:57
+msgid "Link Plex above or add a Jellyfin server below."
+msgstr ""
+
+#: web/templates/servers.html:60
+msgid "Add a server"
+msgstr ""
+
+#: web/templates/servers.html:61
+msgid "Server type"
+msgstr ""
+
+#: web/templates/servers.html:66
+msgid ""
+"Choose a server from your Plex account, discover one nearby, or use an "
+"address you know."
+msgstr ""
+
+#: web/templates/servers.html:67
+msgid "Find account servers"
+msgstr ""
+
+#: web/templates/servers.html:67
+msgid "Discover on LAN"
+msgstr ""
+
+#: web/templates/servers.html:67
+msgid "LAN discovery uses Plex GDM on your application’s network."
+msgstr ""
+
+#: web/templates/servers.html:68
+msgid ""
+"Account addresses are advertised by Plex and may be unreachable. HTTPS "
+"plex.direct addresses use Plex’s certificate. Choose an address reachable"
+" from the machine running Themerr, or enter a known address manually."
+msgstr ""
+
+#: web/templates/servers.html:70
+msgid "Enter an address manually"
+msgstr ""
+
+#: web/templates/servers.html:71
+msgid "Plex server address"
+msgstr ""
+
+#: web/templates/servers.html:71
+msgid ""
+"Use a LAN address or a valid HTTPS Plex address. Your linked Plex account"
+" must have access. Adding an existing server updates its address."
+msgstr ""
+
+#: web/templates/servers.html:75
+msgid ""
+"Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in"
+" Jellyfin Dashboard - API Keys."
+msgstr ""
+
+#: web/templates/servers.html:77
+msgid "Jellyfin server address"
+msgstr ""
+
+#: web/templates/servers.html:79
+msgid "Jellyfin API key"
+msgstr ""
+
+#: web/templates/servers.html:81
+msgid ""
+"Keys stay in the secure credential store. After connecting, set the "
+"reachable Themerr address on the server card above."
+msgstr ""
+
+#: web/templates/servers.html:84
+msgid "Discover Jellyfin on LAN"
+msgstr ""
+
+#: web/templates/servers.html:86
+msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
+msgstr ""
+
+#: web/templates/theme_player.html:1
+msgid "Theme player"
+msgstr ""
+
+#: web/templates/theme_player.html:2 web/templates/theme_player.html:7
+msgid "Choose a theme from your library"
+msgstr ""
+
+#: web/templates/theme_player.html:3
+msgid "Unable to load themes. Try again."
+msgstr ""
+
+#: web/templates/theme_player.html:3
+msgid "No installed themes are available yet."
+msgstr ""
+
+#: web/templates/theme_player.html:7
+msgid "THEME PLAYER"
+msgstr ""
+
+#: web/templates/theme_player.html:7
+msgid "A soundtrack for every story."
+msgstr ""
+
+#: web/templates/theme_player.html:11
+msgid "Shuffle"
+msgstr ""
+
+#: web/templates/theme_player.html:12
+msgid "Previous theme"
+msgstr ""
+
+#: web/templates/theme_player.html:13
+msgid "Play theme"
+msgstr ""
+
+#: web/templates/theme_player.html:13
+msgid "Pause theme"
+msgstr ""
+
+#: web/templates/theme_player.html:14
+msgid "Next theme"
+msgstr ""
+
+#: web/templates/theme_player.html:15
+msgid "Repeat this theme"
+msgstr ""
+
+#: web/templates/theme_player.html:17
+msgid "Playback position"
+msgstr ""
+
+#: web/templates/theme_player.html:19
+msgid "Surprise me"
+msgstr ""
+
+#: web/templates/theme_player.html:19
+msgid "Volume"
+msgstr ""
+
+#: web/templates/translations.html:3
+msgid "Themerr speaks your language."
+msgstr ""
+
+#: web/templates/translations.html:3
+msgid "Choose a language in Settings, or help improve translations on Crowdin."
+msgstr ""
+
+#: web/templates/translations.html:3
+msgid "Help translate"
+msgstr ""
+

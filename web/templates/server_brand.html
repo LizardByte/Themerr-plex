@@ -1,0 +1,6 @@
+{% macro server_brand(kind) %}
+<span class="server-brand server-brand-{{ kind }}" aria-label="{{ 'Jellyfin' if kind == 'jellyfin' else 'Plex' }}">
+    {% if kind == 'jellyfin' %}<svg viewBox="0 0 32 28" aria-hidden="true"><path d="M16 2 2 25h28Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="m16 11-5 8h10Z" fill="currentColor"/></svg><span>Jellyfin</span>
+    {% else %}<span class="plex-logo">PLEX<span>›</span></span>{% endif %}
+</span>
+{% endmacro %}

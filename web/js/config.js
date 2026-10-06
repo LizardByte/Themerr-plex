@@ -7,7 +7,7 @@ export function initSettings(signal) {
     if (!form) return;
     const save = document.getElementById('save-button');
     const status = document.getElementById('settings-save-status');
-    const locale = document.getElementById('LOCALE');
+    const locale = document.getElementById('General-LOCALE') || document.getElementById('LOCALE');
     const pageLocale = locale.value;
     let dirty = false;
     let revision = 0;
@@ -30,7 +30,7 @@ export function initSettings(signal) {
         if (!form.reportValidity()) return;
         const data = new FormData();
         form.querySelectorAll('[category]').forEach(field => {
-            if (!field.disabled) data.append(`${field.getAttribute('category')}|${field.id}`,
+            if (!field.disabled) data.append(`${field.getAttribute('category')}|${field.dataset.settingKey || field.id}`,
                 field.type === 'checkbox' ? String(field.checked) : field.value);
         });
         save.disabled = true;

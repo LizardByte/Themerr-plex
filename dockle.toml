@@ -1,8 +1,8 @@
 [project]
-name = "Themerr-plex"
+name = "Themerr"
 version = "0.0.0"
-description = "Standalone theme song manager for Plex."
-repository = "https://github.com/LizardByte/Themerr-plex"
+description = "Standalone theme song manager for Plex and Jellyfin."
+repository = "https://github.com/LizardByte/Themerr"
 author = "LizardByte"
 logo = "web/images/icon-default.png"
 favicon = "web/images/favicon.ico"
@@ -14,15 +14,34 @@ strict = true
 clean = true
 
 [[targets]]
+name = "connector"
+title = "Jellyfin connector API"
+framework = "doxygen"
+source = "connectors/jellyfin"
+publish = false
+
+[targets.doxygen]
+inputs = ["connectors/jellyfin"]
+exclude_patterns = [
+  "*/bin/*",
+  "*/obj/*",
+]
+optimize_output_java = true
+separate_member_pages = true
+generate_xml = true
+warn_if_undocumented = true
+warn_no_paramdoc = true
+
+[[targets]]
 name = "docs"
-title = "Themerr-plex documentation"
+title = "Themerr documentation"
 framework = "sphinx"
 source = "docs/source"
 home = true
 
 [targets.sphinx]
 extra_config = "docs/dockle_sphinx.py"
-source_edit_link = "https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/{filename}"
+source_edit_link = "https://github.com/LizardByte/Themerr/blob/master/docs/source/{filename}"
 static_paths = ["docs/source/_static"]
 extra_stylesheets = [
   "https://cdn.jsdelivr.net/npm/@lizardbyte/shared-web@2026.930.34219/dist/crowdin-dockle-css.css",

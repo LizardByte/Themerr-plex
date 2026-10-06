@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% from 'server_brand.html' import server_brand %}
 {% block content %}
-<div class="page-heading"><div><span class="eyebrow">{{ _('ONE WORKSPACE. EVERY SERVER.') }}</span><h1>{{ _('Servers') }}<span class="heading-dot">.</span></h1><p>{{ _('Connect your Plex account, then choose where the music goes.') }}</p></div><span class="count-pill">{{ servers|length }} {{ _('saved') }}</span></div>
+<div class="page-heading"><div><span class="eyebrow">{{ _('ONE WORKSPACE. EVERY SERVER.') }}</span><h1>{{ _('Servers') }}<span class="heading-dot">.</span></h1><p>{{ _('Connect Plex or Jellyfin, then choose where the music goes.') }}</p></div><span class="count-pill">{{ servers|length }} {{ _('saved') }}</span></div>
 <section class="account-panel panel">
     <span class="plex-logo">PLEX<span>›</span></span>
     <div class="account-copy"><h2>{{ _('Your Plex account') }}</h2><p id="plex-auth-status">{{ _('Account linked. Choose a server below.') if plex_connected else _('Link your account securely through Plex to access your servers.') }}</p><a id="plex-auth-link" class="d-none" target="_blank" rel="noopener noreferrer">{{ _('Continue Plex sign-in') }}<i data-lucide="arrow-up-right"></i></a></div>
@@ -10,16 +11,32 @@
 <div class="server-grid">
 {% for server in servers %}
 <article class="server-card">
-    <header><span class="server-symbol"><i data-lucide="server"></i></span><div><h3>{{ server.name }}</h3><span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span></div></header>
+    <header><span class="server-symbol"><i data-lucide="server"></i></span><div><h3>{{ server.name }}</h3><span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span></div>{{ server_brand(server.type) }}</header>
     <p class="server-address"><i data-lucide="network"></i>{{ server.url }}</p>
     {% if server.last_error %}<p class="form-error">{{ server.last_error }}</p>{% endif %}
-    <small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
+    {% if server.type == 'jellyfin' %}
+    <span class="status-badge neutral">Jellyfin {{ server.version }}</span>
+    <form data-connector-form data-server-id="{{ server.id }}" data-auto-update="{{ 'true' if jellyfin_settings.AUTO_UPDATE_CONNECTOR else 'false' }}">
+        <label for="themerr-address-{{ loop.index }}">{{ _('Themerr address reachable from Jellyfin') }}</label>
+        <input id="themerr-address-{{ loop.index }}" class="form-control" type="url" name="themerr_url" placeholder="http://localhost:9495" required>
+        <p class="form-text">{{ _('Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin.') }}</p>
+        {% if jellyfin_settings.AUTO_RESTART %}<p class="form-text connector-notice"><i data-lucide="refresh-cw"></i>{{ _('Jellyfin will restart after installation, once playback finishes.') if jellyfin_settings.WAIT_FOR_IDLE else _('Jellyfin will restart after installation. Active playback may be interrupted.') }}</p>{% else %}<p class="form-text">{{ _('Automatic restarts are disabled. Restart Jellyfin after installation.') }}</p>{% endif %}
+        {% if jellyfin_settings.REMOVE_LEGACY_PLUGIN %}<p class="form-text">{{ _('The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept.') }}</p>{% endif %}
+        <div class="server-actions">
+            {% if jellyfin_settings.AUTO_UPDATE_CONNECTOR %}<button type="submit" class="btn btn-outline-light btn-sm">{{ _('Save connector address') }}</button>
+            {% else %}<button type="submit" class="btn btn-outline-light btn-sm" hidden>{{ _('Install matching connector') }}</button>{% endif %}
+            <button type="button" class="btn btn-quiet-danger btn-sm" data-restart-server disabled><i data-lucide="refresh-cw"></i>{{ _('Force restart') }}</button>
+        </div>
+        <output data-connector-status class="form-text"></output>
+    </form>
+    <p class="form-text">{{ _('Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API.') }} <a href="{{ server.url }}/web/index.html#!/mypreferencesdisplay.html" target="_blank" rel="noopener noreferrer">{{ _('Open Jellyfin display settings') }}<i data-lucide="arrow-up-right"></i></a></p>
+    {% endif %}<small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
     <details class="server-settings"><summary>{{ _('Processing settings') }}<i data-lucide="chevron-down"></i></summary>
         <form data-server-form data-server-id="{{ server.id }}">
             <div class="setting-switch"><label for="enabled-{{ loop.index }}">{{ _('Process this server') }}</label><input id="enabled-{{ loop.index }}" type="checkbox" name="enabled" class="form-check-input" {% if server.enabled %}checked{% endif %}></div>
-            <label for="directory-{{ loop.index }}">{{ _('Plex data directory') }} <span class="muted">{{ _('optional') }}</span></label>
+            {% if server.type == 'plex' %}<label for="directory-{{ loop.index }}">{{ _('Plex data directory') }} <span class="muted">{{ _('optional') }}</span></label>
             <div class="input-group"><input id="directory-{{ loop.index }}" class="form-control" name="data_directory" value="{{ server.data_directory }}"><button type="button" class="btn btn-outline-light" data-directory-target="directory-{{ loop.index }}" aria-label="{{ _('Browse Plex data directory') }}"><i data-lucide="folder-open"></i></button></div>
-            <p class="form-text">{{ _('A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers.') }}</p>
+            <p class="form-text">{{ _('A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers.') }}</p>{% endif %}
             <span id="ignored-label-{{ loop.index }}" class="library-picker-label">{{ _('Ignored libraries') }}</span>
             <details class="library-picker" data-library-picker>
                 <summary class="form-select" aria-labelledby="ignored-label-{{ loop.index }} ignored-summary-{{ loop.index }}" aria-describedby="ignored-help-{{ loop.index }}"><span id="ignored-summary-{{ loop.index }}" data-library-summary>{{ _('Select libraries to ignore') }}</span></summary>
@@ -37,16 +54,39 @@
         </form>
     </details>
 </article>
-{% else %}<div class="server-empty"><i data-lucide="server"></i><h3>{{ _('Your first server starts here.') }}</h3><p>{{ _('Link Plex above, then discover or add an address below.') }}</p></div>{% endfor %}
+{% else %}<div class="server-empty"><i data-lucide="server"></i><h3>{{ _('Your first server starts here.') }}</h3><p>{{ _('Link Plex above or add a Jellyfin server below.') }}</p></div>{% endfor %}
 </div>
 <section class="panel discovery-panel">
-    <div class="section-heading"><div><h2>{{ _('Add a server') }}</h2><p>{{ _('Choose a server from your Plex account, discover one nearby, or use an address you know.') }}</p></div></div>
+    <div class="section-heading"><h2>{{ _('Add a server') }}</h2></div>
+    <div id="add-server-tabs" class="add-server-tabs" role="tablist" aria-label="{{ _('Server type') }}">
+        <button id="add-plex-tab" type="button" role="tab" aria-selected="true" aria-controls="add-plex-panel">{{ server_brand('plex') }}</button>
+        <button id="add-jellyfin-tab" type="button" role="tab" aria-selected="false" aria-controls="add-jellyfin-panel" tabindex="-1">{{ server_brand('jellyfin') }}</button>
+    </div>
+    <div id="add-plex-panel" role="tabpanel" aria-labelledby="add-plex-tab">
+    <p class="muted">{{ _('Choose a server from your Plex account, discover one nearby, or use an address you know.') }}</p>
     <div class="discovery-actions"><button class="btn btn-outline-light" type="button" data-discover="account"><i data-lucide="cloud"></i>{{ _('Find account servers') }}</button><button class="btn btn-outline-light" type="button" data-discover="local"><i data-lucide="radar"></i>{{ _('Discover on LAN') }}</button><span class="muted">{{ _('LAN discovery uses Plex GDM on your application’s network.') }}</span></div>
     <p class="form-text">{{ _('Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually.') }}</p>
     <div id="discovery-results" aria-live="polite"></div>
     <details class="manual-server"><summary><i data-lucide="plus"></i>{{ _('Enter an address manually') }}<i data-lucide="chevron-down"></i></summary>
-        <form id="manual-server-form"><label for="plex-address">{{ _('Plex server address') }}</label><div class="manual-address-row"><input id="plex-address" type="url" class="form-control" name="url" placeholder="http://192.168.1.10:32400" required maxlength="2048"><button type="submit" class="btn btn-primary"><i data-lucide="plus"></i>{{ _('Connect server') }}</button></div><p class="form-text">{{ _('Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address.') }}</p></form>
+        <form id="manual-server-form"><label for="plex-address">{{ _('Plex server address') }}</label><div class="manual-address-row"><input id="plex-address" type="url" class="form-control" name="url" placeholder="http://192.168.1.10:32400" required maxlength="2048"><button type="submit" class="btn btn-primary">{{ _('Connect') }}</button></div><p class="form-text">{{ _('Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address.') }}</p></form>
     </details>
+    </div>
+    <div id="add-jellyfin-panel" role="tabpanel" aria-labelledby="add-jellyfin-tab" hidden>
+    <p class="muted">{{ _('Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys.') }}</p>
+    <form id="jellyfin-server-form">
+        <label for="jellyfin-address">{{ _('Jellyfin server address') }}</label>
+        <input id="jellyfin-address" name="url" type="url" class="form-control" placeholder="http://localhost:8096" required maxlength="2048">
+        <label for="jellyfin-key">{{ _('Jellyfin API key') }}</label>
+        <input id="jellyfin-key" name="api_key" type="password" class="form-control" autocomplete="off" required maxlength="256">
+        <p class="form-text">{{ _('Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above.') }}</p>
+        <div class="server-connect-actions">
+            <button type="submit" class="btn btn-primary">{{ _('Connect') }}</button>
+            <button id="jellyfin-discover" class="btn btn-outline-light" type="button"><i data-lucide="radar"></i>{{ _('Discover Jellyfin on LAN') }}</button>
+        </div>
+        <p class="form-text">{{ _('Uses UDP port 7359 on Themerr’s network. An API key is still required.') }}</p>
+    </form>
+    <div id="jellyfin-discovery-results" aria-live="polite"></div>
+    </div>
 </section>
 {% endblock %}
 {% block modals %}{% include 'directory_picker.html' %}{% endblock %}

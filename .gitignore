@@ -165,3 +165,9 @@ coverage/
 junit-python.xml
 http_cache.sqlite
 http_cache.sqlite-*
+
+# connectors
+jellyfin-connector/
+connectors/**/bin/
+connectors/**/obj/
+connectors/**/TestResults/

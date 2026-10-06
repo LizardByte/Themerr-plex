@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from tests.http_helpers import get_session, set_session
 from common import admin, webapp
 from plex import servers
-from plex import auth, plexapi
+from plex import auth, plexapi, web as plex_web
 from themerr import storage
 from themerr import theme_errors
 
@@ -135,9 +135,25 @@ def test_branding_uses_the_project_asset_and_links(client):
     assert b'class="brand-logo"' in page
     assert b'src="/images/icon-default.png"' in page
     assert b'href="https://app.lizardbyte.dev/" target="_blank" rel="noopener noreferrer"' in page
-    assert b'href="https://github.com/LizardByte/Themerr-plex" target="_blank" rel="noopener noreferrer"' in page
+    assert b'href="https://github.com/LizardByte/Themerr" target="_blank" rel="noopener noreferrer"' in page
+    assert b'href="https://docs.lizardbyte.dev/projects/themerr/latest/" target="_blank"' in page
     for body in re.findall(rb'<a\b[^>]*target="_blank"[^>]*>(.*?)</a>', page, re.DOTALL):
         assert b'data-lucide="arrow-up-right"' in body
+
+
+def test_cookie_help_links_to_the_hosted_usage_page(client):
+    page = client.get('/settings/').text
+    assert 'https://docs.lizardbyte.dev/projects/themerr/latest/docs/about/usage.html#youtube-cookies' in page
+
+
+@pytest.mark.parametrize('path', [
+    '/docs/',
+    '/docs/index.html',
+    '/docs/%2e%2e/private.txt',
+])
+def test_project_documentation_is_not_served_from_the_installation(client, path):
+    assert client.get(path).status_code == 404
+    assert client.head(path).status_code == 404
 
 
 def test_theme_controls_only_for_installed_themes(client):
@@ -425,9 +441,34 @@ def test_settings(client):
     assert 'PLEX_TOKEN' not in response.json()['Plex']
     assert b'Your Plex account' in client.get('/servers').content
     assert b'id="plex-auth-status"' in client.get('/servers').content
-    assert b'data-directory-target="LOG_DIR"' in client.get('/settings/').content
+    assert b'data-directory-target="Logging-LOG_DIR"' in client.get('/settings/').content
     assert b'Plex data directory' in client.get('/servers').content
     assert b'PLEX_TOKEN' not in client.get('/settings/').content
+
+
+def test_settings_separate_integrations_and_use_unique_field_identifiers(client, configured):
+    page = client.get('/settings/').text
+    ids = re.findall(r'\bid="([^"]+)"', page)
+    assert len(ids) == len(set(ids))
+    assert 'id="plex"' in page
+    assert 'href="#plex"' in page
+    assert 'id="jellyfin"' in page
+    assert 'href="#jellyfin"' in page
+    assert 'id="Themerr-BOOL_IGNORE_LOCKED_FIELDS"' in page
+    assert 'id="Jellyfin-BOOL_IGNORE_LOCKED_FIELDS"' in page
+    assert 'id="Jellyfin-BOOL_BACKUP_USER_THEMES"' in page
+    assert 'data-lucide="bell"' in page
+    assert configured['Jellyfin']['BOOL_OVERWRITE_USER_THEMES'] is False
+    assert configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] is True
+    response = client.post('/api/settings', data={
+        'Jellyfin|BOOL_OVERWRITE_USER_THEMES': 'true', 'Jellyfin|BOOL_BACKUP_USER_THEMES': 'false',
+        'Jellyfin|BOOL_IGNORE_LOCKED_FIELDS': 'true', 'Themerr|BOOL_IGNORE_LOCKED_FIELDS': 'false',
+    })
+    assert response.status_code == 200
+    assert configured['Jellyfin']['BOOL_OVERWRITE_USER_THEMES'] is True
+    assert configured['Jellyfin']['BOOL_BACKUP_USER_THEMES'] is False
+    assert configured['Jellyfin']['BOOL_IGNORE_LOCKED_FIELDS'] is True
+    assert configured['Themerr']['BOOL_IGNORE_LOCKED_FIELDS'] is False
 
 
 def test_notification_preferences_render_validate_and_persist(client, configured):
@@ -435,8 +476,8 @@ def test_notification_preferences_render_validate_and_persist(client, configured
     page = client.get('/settings/').text
     assert 'id="notifications"' in page
     assert 'href="#notifications"' in page
-    assert 'id="NEW_RELEASE"' in page
-    assert 'id="COVERAGE_INCREASE"' in page
+    assert 'id="Notifications-NEW_RELEASE"' in page
+    assert 'id="Notifications-COVERAGE_INCREASE"' in page
     assert configured['Notifications']['FOLLOW_PRERELEASES'] is False
     assert configured['Notifications']['NEW_RELEASE'] is True
     assert configured['Notifications']['COVERAGE_INCREASE'] is True
@@ -563,7 +604,7 @@ def test_plex_sign_in_expired_and_upstream_failure(client, configured, monkeypat
     monkeypatch.setattr(auth, 'check_login', Mock(side_effect=RuntimeError('not called')))
     client.post('/api/plex/auth/start')
     browser_session = get_session(client)
-    browser_session['plex_login']['started'] -= webapp.PLEX_LOGIN_LIFETIME + 1
+    browser_session['plex_login']['started'] -= plex_web.PLEX_LOGIN_LIFETIME + 1
     set_session(client, browser_session)
     assert client.post('/api/plex/auth/check').status_code == 410
     assert client.post('/api/plex/auth/check').status_code == 400

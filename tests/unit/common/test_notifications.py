@@ -10,6 +10,8 @@ from sqlalchemy.orm import Session
 from common import definitions, notifications, version
 from plex import servers
 from themerr import cache, storage
+from media_servers import get_backend
+from plex import dashboard
 
 
 @pytest.fixture
@@ -197,7 +199,7 @@ def test_coverage_no_increase_or_empty_library_stays_quiet(desktop, total, insta
 
 
 def test_small_coverage_increase_is_not_rounded_to_zero(desktop, monkeypatch):
-    monkeypatch.setattr(notifications.servers, 'list_servers', lambda: [{'id': 'a', 'enabled': True}])
+    monkeypatch.setattr(get_backend(), 'list_servers', lambda: [{'id': 'a', 'enabled': True}])
     notifications._save(notifications._COVERAGE_KEY, {
         'servers': [['a', True]], 'total': 100000, 'installed': 50000,
     })
@@ -240,12 +242,12 @@ def test_partial_refresh_preserves_baseline_and_recovery_notifies(desktop, monke
         storage.replace_dashboard(snapshot(8, 6))
         return True
 
-    monkeypatch.setattr(cache, '_cache_server', refresh)
+    monkeypatch.setattr(dashboard, '_cache_server', refresh)
     cache.cache_data()
     desktop.assert_not_called()
     assert notifications._load(notifications._COVERAGE_KEY)['installed'] == 4
     assert servers.get_server('a')['last_error']
-    monkeypatch.setattr(cache, '_cache_server', lambda: True)
+    monkeypatch.setattr(dashboard, '_cache_server', lambda: True)
     cache.cache_data()
     desktop.assert_called_once()
     assert '20 percentage points' in desktop.call_args.args[1]
@@ -275,7 +277,7 @@ def test_desktop_backend_is_lazy_serialized_and_failure_does_not_escape(monkeypa
     assert notifications._send('Title', 'Message')
     assert notifications._send('Second', 'Message')
     factory.assert_called_once()
-    assert factory.call_args.kwargs['app_name'] == 'Themerr-plex'
+    assert factory.call_args.kwargs['app_name'] == 'Themerr'
     notifier.send.side_effect = RuntimeError('backend failed')
     assert notifications._send('Failure', 'Message') is False
 

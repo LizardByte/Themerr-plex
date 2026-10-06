@@ -1,6 +1,5 @@
 # standard imports
 import hashlib
-import queue
 import os
 import time
 import threading
@@ -20,8 +19,9 @@ from common import definitions
 from common import helpers
 from common import logger
 from plex import auth, servers
-from themerr.constants import contributes_to, guid_map, media_type_dict
-from themerr import general
+from media_servers import processing
+from plex.constants import contributes_to, guid_map, media_type_dict
+from plex import media as general
 from themerr import storage
 from themerr import theme_errors
 from themerr import themerr_db
@@ -40,20 +40,6 @@ plex_server = None
 alert_listener = None
 _alert_listeners = {}
 _listener_lock = threading.RLock()
-_active_items = set()
-
-
-class _WorkQueue(queue.Queue):
-    """Track active work before releasing the queue lock to a worker."""
-
-    def _get(self):
-        work = super()._get()
-        server_id, rating_key = work if isinstance(work, tuple) else ('default', work)
-        _active_items.add((server_id, int(rating_key)))
-        return work
-
-
-q = _WorkQueue()
 _library_names: dict[tuple[str, str], str] = {}
 
 # disable auto-reload, because Themerr doesn't rely on it, so it will only slow down the app
@@ -977,58 +963,6 @@ def get_plex_item(rating_key: int) -> Optional[PlexPartialObject]:
     return item
 
 
-def process_queue() -> None:
-    """
-    Add items to the queue.
-
-    This is an endless loop to add items to the queue.
-
-    Examples
-    --------
-    >>> process_queue()
-    ...
-    """
-    while True:
-        work = q.get()
-        server_id, rating_key = work if isinstance(work, tuple) else ('default', work)
-        try:
-            with storage.server_scope(server_id):
-                if server_id == 'default' or (servers.get_server(server_id) or {}).get('enabled'):
-                    update_plex_item(rating_key=rating_key)
-        except Exception as e:
-            log.exception(f'Unexpected error processing rating key: {rating_key}, error: {e}')
-        finally:
-            with q.mutex:
-                _active_items.discard((server_id, int(rating_key)))
-            q.task_done()
-
-
-def start_queue_threads() -> None:
-    """
-    Start queue threads.
-
-    Start the queue threads based on the number of threads set in the preferences.
-
-    Examples
-    --------
-    >>> start_queue_threads()
-    ...
-    """
-    # create multiple threads for processing themes faster
-    # minimum value of 1
-    for t in range(max(1, int(config.CONFIG['Themerr']['INT_PLEXAPI_UPLOAD_THREADS']))):
-        try:
-            # for each thread, start it
-            t = threading.Thread(target=process_queue)
-            # when we set daemon to true, that thread will end when the main thread ends
-            t.daemon = True
-            # start the daemon thread
-            t.start()
-        except RuntimeError as e:
-            log.error(f'RuntimeError encountered: {e}')
-            break
-
-
 def plex_listener() -> None:
     """Start one independently scoped event listener per enabled server."""
     with _listener_lock:
@@ -1085,30 +1019,6 @@ def stop_plex_listener(server_id: str | None = None) -> None:
             alert_listener = None
 
 
-def enqueue(rating_key: int | str) -> bool:
-    """Queue a server-scoped item once, including while another worker processes it.
-
-    Parameters
-    ----------
-    rating_key : int or str
-        Plex item rating key.
-
-    Returns
-    -------
-    bool
-        Whether new work was queued.
-    """
-    key = (storage.current_server_id(), int(rating_key))
-    work = int(rating_key) if key[0] == 'default' else key
-    with q.mutex:
-        if work in q.queue or key in _active_items:
-            return False
-        q._put(work)
-        q.unfinished_tasks += 1
-        q.not_empty.notify()
-    return True
-
-
 def plex_listener_handler(data: dict) -> None:
     """
     Process events from ``plex_listener()``.
@@ -1142,7 +1052,7 @@ def plex_listener_handler(data: dict) -> None:
             continue
 
         rating_key = int(entry['itemID'])
-        enqueue(rating_key)
+        processing.enqueue(str(rating_key))
 
 
 def _items_for_section(section) -> list:
@@ -1167,20 +1077,20 @@ def _items_for_section(section) -> list:
     return []
 
 
-def _scheduled_update_server() -> None:
+def scan_items(enqueue: Callable[[str], bool]) -> None:
     """
     Update all items in the Plex Server.
 
     This is used to update all items in the Plex Server. It is called from a scheduled task.
 
+    Parameters
+    ----------
+    enqueue : callable
+        Queue an opaque item ID within the current server's storage scope.
+
     Examples
     --------
-    >>> scheduled_update()
-
-    See Also
-    --------
-    scheduled_tasks.setup_scheduling : The method where the scheduled task is configurerd.
-    scheduled_tasks.schedule_loop : The method that runs the pending scheduled tasks.
+    >>> scan_items(enqueue=...)
     """
     plex = setup_plexapi()
     if not plex:
@@ -1219,31 +1129,14 @@ def _scheduled_update_server() -> None:
 
         section_queued = 0
         for item in _items_for_section(section):
-            if enqueue(item.ratingKey):
+            if enqueue(str(item.ratingKey)):
                 section_queued += 1
         queued += section_queued
         log.info('Queued %d items from library %r (ID %s)', section_queued, section.title, section.key)
-    log.info('Theme scan finished queuing %d items; %d remain in the worker queue', queued, q.qsize())
+    log.info('Theme scan finished queuing %d items', queued)
 
 
 def _ignored_libraries() -> str:
     """Read ignored library IDs for the current server."""
     record = servers.get_server(storage.current_server_id())
     return record['ignored_libraries'] if record else config.CONFIG['Themerr']['IGNORED_LIBRARY_IDS']
-
-
-def scheduled_update() -> None:
-    """Scan every enabled server; isolate an unavailable server from the others."""
-    if not config.CONFIG['Themerr']['BOOL_THEMERR_ENABLED']:
-        return
-    registered = servers.list_servers(enabled_only=True)
-    if not registered:
-        return
-    for record in registered:
-        try:
-            with storage.server_scope(record['id']):
-                log.info('Scanning server %r (%s)', record['name'], record['id'])
-                _scheduled_update_server()
-        except Exception:
-            log.exception('Theme scan failed for server %s', record['id'])
-            servers.record_refresh(record['id'], 'Theme scan could not reach Plex. Check its address and access.')

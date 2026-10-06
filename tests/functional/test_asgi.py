@@ -230,8 +230,8 @@ def test_template_translation_follows_locale_changes(browser, monkeypatch, tmp_p
 def test_saved_locale_changes_templates_schema_labels_and_survives_restart(browser, monkeypatch, tmp_path):
     monkeypatch.setattr(Paths, 'LOCALE_DIR', str(tmp_path / 'catalogs'))
     root = tmp_path / 'catalogs'
-    write_catalog(root / 'themerr-plex.po', Settings='', Locale='')
-    path = root / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po'
+    write_catalog(root / 'themerr.po', Settings='', Locale='')
+    path = root / 'fr' / 'LC_MESSAGES' / 'themerr.po'
     write_catalog(path, Settings='Ancien').save_as_mofile(str(path.with_suffix('.mo')))
     write_catalog(path, Settings='Paramètres', Locale='Langue')
     browser.get('/settings/')
@@ -341,16 +341,6 @@ def test_documentation_supplies_session_bound_csrf_defaults(browser):
     # Session tokens never enter the installation-wide cached schema.
     parameters = browser.app.openapi()['paths']['/api/settings']['post']['parameters']
     assert all('default' not in p['schema'] for p in parameters if p['name'] == 'X-CSRFToken')
-
-
-def test_docs_reject_directory_traversal(browser, monkeypatch, tmp_path):
-    docs = tmp_path / 'docs'
-    docs.mkdir()
-    (tmp_path / 'private.txt').write_text('private file contents', encoding='utf-8')
-    monkeypatch.setattr(Paths, 'DOCS_DIR', str(docs))
-    response = browser.get('/docs/%2e%2e/private.txt')
-    assert response.status_code == 404
-    assert b'private file contents' not in response.content
 
 
 def test_unexpected_api_failure_keeps_generic_errors_and_security_headers(browser, monkeypatch):

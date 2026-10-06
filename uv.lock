@@ -119,6 +119,18 @@ wheels = [
 ]
 
 [[package]]
+name = "breathe"
+version = "5.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7d/7f/c64ce129d35f05bac6b3d044ee2d3aea24b0c819f2f57cd34020b74d5efc/breathe-5.1.0.tar.gz", hash = "sha256:ff56af8bfd0b50ebf10c81a07b8a5739787eb015d26b4ba162b6983d6e17c7c3", size = 201885, upload-time = "2026-10-02T13:42:51.164Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/7c/ff68c2846946ed17daca3355e47d49fcb8422ad373627d2b56488d6bd484/breathe-5.1.0-py3-none-any.whl", hash = "sha256:6a81b5fff50fb35b7f6bec1aa1a8621a596ee5ffec453eccd7d5e1f9e682d9a0", size = 100534, upload-time = "2026-10-02T13:42:49.767Z" },
+]
+
+[[package]]
 name = "brotli"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -777,14 +789,14 @@ wheels = [
 
 [[package]]
 name = "lizardbyte-dockle"
-version = "2026.924.215413"
+version = "2026.1006.111"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "markdown" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/46/bd6e5e605c075d6c406003b872274e79a71224933e73a539d406eb6a8bad/lizardbyte_dockle-2026.924.215413.tar.gz", hash = "sha256:80477d975015e3d053019c297d18c4502a153a3d17ccf73bfe937aa891c43aa0", size = 520224, upload-time = "2026-09-24T22:39:01.496Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/99/a7483e5f7f4c2a5d2a35daf6e2b1ed9d587f0e6ebf06b65d5858419bec93/lizardbyte_dockle-2026.1006.111.tar.gz", hash = "sha256:532024375cfcc79be68092c93c489e98a674fb5413711f50fbbe9b004e8da368", size = 521286, upload-time = "2026-10-06T00:55:32.958Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/bd/a21e1070da1f8049cf9ed65fd21650b69c89647731ab19fa01704e1cdcf8/lizardbyte_dockle-2026.924.215413-py3-none-any.whl", hash = "sha256:14d9b3fb6288c19a1d568b8e74333145b7108a58bed70b8284ca8441d8ddd142", size = 534137, upload-time = "2026-09-24T22:39:00.151Z" },
+    { url = "https://files.pythonhosted.org/packages/f8/31/b60fa6ac823a5f3d92ded76b8e07511d1368f83baf5f3013c57c62a40173/lizardbyte_dockle-2026.1006.111-py3-none-any.whl", hash = "sha256:c13fa7491a0e286b0dc017c87a997e9a05b2ea5afa6dabaa63e8cd999711f50f", size = 535149, upload-time = "2026-10-06T00:55:31.033Z" },
 ]
 
 [package.optional-dependencies]
@@ -1747,7 +1759,7 @@ wheels = [
 ]
 
 [[package]]
-name = "themerr-plex"
+name = "themerr"
 version = "0.0.0"
 source = { virtual = "." }
 dependencies = [
@@ -1791,6 +1803,7 @@ dev = [
     { name = "pytest-cov" },
 ]
 docs = [
+    { name = "breathe" },
     { name = "lizardbyte-dockle", extra = ["sphinx"] },
     { name = "numpydoc" },
     { name = "rstcheck", extra = ["sphinx"] },
@@ -1802,6 +1815,7 @@ requires-dist = [
     { name = "anyio", specifier = "==4.15.1" },
     { name = "av", specifier = "==19.0.1" },
     { name = "babel", specifier = "==2.18.0" },
+    { name = "breathe", marker = "extra == 'docs'", specifier = "==5.1.0" },
     { name = "configobj", specifier = "==5.0.9" },
     { name = "cryptography", specifier = "==50.0.2" },
     { name = "desktop-notifier", specifier = "==6.2.0" },
@@ -1811,7 +1825,7 @@ requires-dist = [
     { name = "itsdangerous", specifier = "==2.2.0" },
     { name = "jinja2", specifier = "==3.1.6" },
     { name = "keyring", specifier = "==25.7.0" },
-    { name = "lizardbyte-dockle", extras = ["sphinx"], marker = "extra == 'docs'", specifier = "==2026.924.215413" },
+    { name = "lizardbyte-dockle", extras = ["sphinx"], marker = "extra == 'docs'", specifier = "==2026.1006.111" },
     { name = "numpydoc", marker = "extra == 'docs'", specifier = "==1.11.0" },
     { name = "packaging", specifier = "==26.3" },
     { name = "pillow", specifier = "==12.3.0" },

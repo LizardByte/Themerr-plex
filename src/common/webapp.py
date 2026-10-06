@@ -6,9 +6,7 @@ Responsible for serving the webapp.
 # standard imports
 import copy
 import os
-import re
 import secrets
-import time
 from threading import Event
 
 # lib imports
@@ -20,7 +18,6 @@ from starlette.concurrency import run_in_threadpool
 from starlette.exceptions import HTTPException
 import uvicorn
 import anyio
-from plexapi import exceptions as plex_exceptions
 import requests
 
 # local imports
@@ -33,8 +30,8 @@ from common import crypto
 from common.definitions import Paths
 from common import locales
 from common import logger
-from plex import auth as plex_auth
-from themerr import storage
+from media_servers import get_backend
+from media_servers.base import MediaServerError
 
 # variables
 URL_SCHEME = None
@@ -57,7 +54,6 @@ mime_type_map = {
 
 router = APIRouter()
 log = logger.get_logger(__name__)
-PLEX_LOGIN_LIFETIME = 600
 
 
 @router.api_route('/logs', methods=['GET', 'HEAD'], name='logs', response_model=None)
@@ -128,7 +124,7 @@ def home(request: Request) -> Response:
     """
     Serve the webapp home page.
 
-    Show cached Plex library data once it is available. Until then, show a progress page.
+    Show cached library data once it is available. Until then, show a progress page.
 
     Parameters
     ----------
@@ -169,16 +165,14 @@ def home(request: Request) -> Response:
         items=items,
         theme_errors=errors,
         stats=stats,
-        servers=server_ui.servers.list_servers(),
+        servers=get_backend().list_servers(),
     )
 
 
-@router.api_route('/api/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
-                  name='theme_poster_default', response_model=None)
-@router.api_route('/api/servers/{server_id}/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
+@router.api_route('/api/servers/{server_id}/themes/{rating_key}/poster', methods=['GET', 'HEAD'],
                   name='theme_poster', response_model=None)
-def theme_poster(request: Request, rating_key: int, server_id: str = 'default') -> Response:
-    """Serve a bounded Plex poster without exposing server credentials.
+def theme_poster(request: Request, rating_key: str, server_id: str = 'default') -> Response:
+    """Serve a bounded media-server poster without exposing server credentials.
 
     Resolve artwork from the saved server's current item metadata. Only raster images
     are returned, with redirects disabled and a five-megabyte response limit.
@@ -187,10 +181,10 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
     ----------
     request : Request
         Authenticated browser request.
-    rating_key : int
-        Plex item identifier.
+    rating_key : str
+        Media-server item identifier.
     server_id : str, optional
-        Saved Plex server identifier.
+        Saved server identifier.
 
     Returns
     -------
@@ -202,21 +196,10 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
     >>> theme_poster(request, 42)
     <Response ...>
     """
-    from plex import plexapi
-
     try:
-        with storage.server_scope(server_id):
-            server = plexapi.setup_plexapi()
-        if server is None:
+        upstream = get_backend().server(server_id).open_poster(str(rating_key))
+        if upstream is None:
             return Response(status_code=404)
-        item = server.fetchItem(rating_key)
-        thumbnail = getattr(item, 'thumb', None)
-        if not isinstance(thumbnail, str) or not re.fullmatch(r'/library/metadata/\d+/thumb(?:/\d+)?', thumbnail):
-            return Response(status_code=404)
-        upstream = server._session.get(
-            server.url(thumbnail, includeToken=False), headers=server._headers(),
-            stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
-        )
         try:
             media_type = upstream.headers.get('Content-Type', '').split(';', 1)[0].lower()
             if upstream.status_code != 200 or media_type not in (
@@ -234,22 +217,49 @@ def theme_poster(request: Request, rating_key: int, server_id: str = 'default') 
             return Response(b''.join(chunks), media_type=media_type, headers={'Cache-Control': 'no-store'})
         finally:
             upstream.close()
-    except plex_exceptions.NotFound:
-        return Response(status_code=404)
-    except (plex_exceptions.PlexApiException, OSError, ValueError) as error:
+    except MediaServerError as error:
+        return Response(status_code=error.status_code)
+    except (OSError, ValueError) as error:
         log.warning('Unable to load poster for rating_key=%s (%s)', rating_key, type(error).__name__)
         return Response(status_code=502)
 
 
-async def _stream_theme_audio(upstream: requests.Response, rating_key: int):
-    """Stream Plex audio and release the connection when playback stops.
+@router.api_route('/api/themes/{rating_key:int}/poster', methods=['GET', 'HEAD'],
+                  name='theme_poster_default', response_model=None)
+def theme_poster_default(request: Request, rating_key: int) -> Response:
+    """Serve posters through the legacy integer Plex route.
+
+    Convert the legacy path parameter before using the shared poster handler.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser request.
+    rating_key : int
+        Plex item identifier.
+
+    Returns
+    -------
+    Response
+        Bounded poster or a sanitized error.
+
+    Examples
+    --------
+    >>> theme_poster_default(request, 42)
+    <Response ...>
+    """
+    return theme_poster(request, str(rating_key))
+
+
+async def _stream_theme_audio(upstream: requests.Response, rating_key: str):
+    """Stream theme audio and release the connection when playback stops.
 
     Parameters
     ----------
     upstream : requests.Response
-        Open streaming response from the configured Plex server.
-    rating_key : int
-        Plex item identifier for diagnostic logging.
+        Open streaming response from the media server.
+    rating_key : str
+        Media-server item identifier for diagnostic logging.
 
     Yields
     ------
@@ -270,13 +280,13 @@ async def _stream_theme_audio(upstream: requests.Response, rating_key: int):
 class ThemeAudioResponse(StreamingResponse):
     """Stream theme audio with guaranteed upstream cleanup.
 
-    Close the Plex connection even when sending headers or chunks is cancelled.
+    Close the upstream connection even when sending headers or chunks is cancelled.
 
     Parameters
     ----------
     upstream : requests.Response
-        Open audio response from Plex.
-    rating_key : int
+        Open audio response from the media server.
+    rating_key : str
         Item identifier used for playback diagnostics.
     headers : dict
         Validated media headers for the browser response.
@@ -286,7 +296,7 @@ class ThemeAudioResponse(StreamingResponse):
     >>> response = ThemeAudioResponse(upstream, 42, {'Content-Type': 'audio/mpeg'})
     """
 
-    def __init__(self, upstream: requests.Response, rating_key: int, headers: dict):
+    def __init__(self, upstream: requests.Response, rating_key: str, headers: dict):
         """Stream the open upstream response without buffering its audio."""
         self.upstream = upstream
         super().__init__(_stream_theme_audio(upstream, rating_key), status_code=upstream.status_code,
@@ -320,31 +330,25 @@ class ThemeAudioResponse(StreamingResponse):
 
 
 @router.api_route(
-    '/api/themes/{rating_key:int}',
-    methods=['GET', 'HEAD'],
-    name='play_theme_default',
-    response_model=None,
-)
-@router.api_route(
-    '/api/servers/{server_id}/themes/{rating_key:int}',
+    '/api/servers/{server_id}/themes/{rating_key}',
     methods=['GET', 'HEAD'],
     name='play_theme',
     response_model=None,
 )
-def play_theme(request: Request, rating_key: int, server_id: str = 'default') -> Response:
-    """Serve the item's current Plex theme without exposing the Plex token.
+def play_theme(request: Request, rating_key: str, server_id: str = 'default') -> Response:
+    """Serve the item's current server theme without exposing server credentials.
 
-    Resolve the selected audio from fresh Plex metadata and forward byte range requests
+    Resolve the selected audio from fresh server metadata and forward byte range requests
     so browsers can determine the duration. Only media response headers reach the browser.
 
     Parameters
     ----------
     request : Request
         Incoming browser or API request.
-    rating_key : int
+    rating_key : str
         Item whose selected theme should be played, regardless of its provider.
     server_id : str
-        Plex machine identifier.
+        Server identifier.
 
     Returns
     -------
@@ -356,49 +360,56 @@ def play_theme(request: Request, rating_key: int, server_id: str = 'default') ->
     >>> play_theme(request, rating_key=42)  # FastAPI invokes this for GET /api/themes/42
     <Response ...>
     """
-    from plex import plexapi
-
+    headers = {'Accept-Encoding': 'identity'}
+    for header in ('Range', 'If-Range'):
+        value = request.headers.get(header)
+        if value is not None:
+            headers[header] = value
     try:
-        with storage.server_scope(server_id):
-            server = plexapi.setup_plexapi()
-        if server is None:
-            return JSONResponse({'message': 'Connect to Plex before playing themes.'}, status_code=503)
-        item = server.fetchItem(rating_key)
-        theme_path = getattr(item, 'theme', None)
-        if not theme_path:
-            return JSONResponse({'message': 'This item has no theme.'}, status_code=404)
-        if not theme_path.startswith('/library/metadata/') or '/theme/' not in theme_path:
-            return JSONResponse({'message': 'Plex returned an unsupported theme path.'}, status_code=502)
-
-        headers = {'Accept-Encoding': 'identity'}
-        for header in ('Range', 'If-Range'):
-            value = request.headers.get(header)
-            if value is not None:
-                headers[header] = value
-        upstream = server._session.get(
-            server.url(theme_path, includeToken=False), headers=server._headers(**headers),
-            stream=True, allow_redirects=False, timeout=config.CONFIG['Themerr']['INT_PLEXAPI_PLEXAPI_TIMEOUT'],
-        )
-    except plex_exceptions.NotFound:
-        return JSONResponse({'message': 'This Plex item is no longer available.'}, status_code=404)
-    except (plex_exceptions.PlexApiException, OSError, ValueError) as error:
-        log.warning('Unable to load theme for rating_key=%s (%s)', rating_key, type(error).__name__)
-        return JSONResponse({'message': 'Unable to load theme audio from Plex.'}, status_code=502)
-
+        upstream = get_backend().server(server_id).open_theme(str(rating_key), headers)
+    except MediaServerError as error:
+        return JSONResponse({'message': str(error)}, status_code=error.status_code)
     return _theme_audio_response(request, upstream, rating_key)
 
 
-def _theme_audio_response(request: Request, upstream: requests.Response, rating_key: int) -> Response:
-    """Build a browser response and close rejected Plex audio streams.
+@router.api_route('/api/themes/{rating_key:int}', methods=['GET', 'HEAD'],
+                  name='play_theme_default', response_model=None)
+def play_theme_default(request: Request, rating_key: int) -> Response:
+    """Serve audio through the legacy integer Plex route.
+
+    Convert the legacy path parameter before using the shared streaming handler.
+
+    Parameters
+    ----------
+    request : Request
+        Incoming browser request.
+    rating_key : int
+        Plex item identifier.
+
+    Returns
+    -------
+    Response
+        Audio stream or a sanitized playback error.
+
+    Examples
+    --------
+    >>> play_theme_default(request, 42)
+    <Response ...>
+    """
+    return play_theme(request, str(rating_key))
+
+
+def _theme_audio_response(request: Request, upstream: requests.Response, rating_key: str) -> Response:
+    """Build a browser response and close rejected theme audio streams.
 
     Parameters
     ----------
     request : Request
         Incoming browser or API request.
     upstream : requests.Response
-        Stream returned by Plex.
-    rating_key : int
-        Plex item identifier for playback diagnostics.
+        Stream returned by the media server.
+    rating_key : str
+        Media-server item identifier for playback diagnostics.
 
     Returns
     -------
@@ -415,12 +426,16 @@ def _theme_audio_response(request: Request, upstream: requests.Response, rating_
             headers['Content-Length'] = '0'
             return Response(status_code=416, headers=headers)
         status = 404 if upstream.status_code == 404 else 502
-        log.warning('Plex rejected theme playback for rating_key=%s (HTTP %s)', rating_key, upstream.status_code)
-        return JSONResponse({'message': 'Plex could not provide theme audio.'}, status_code=status)
+        log.warning('Media server rejected theme playback for rating_key=%s (HTTP %s)',
+                    rating_key, upstream.status_code)
+        name = get_backend().display_name(request.path_params.get('server_id', 'default'))
+        return JSONResponse({'message': f'{name} could not provide theme audio.'}, status_code=status)
     content_type = upstream.headers.get('Content-Type', 'application/octet-stream').split(';', 1)[0].lower()
     if not content_type.startswith('audio/') and content_type not in ('video/mp4', 'application/octet-stream'):
         upstream.close()
-        return JSONResponse({'message': 'Plex returned an unsupported audio format.'}, status_code=502)
+        name = get_backend().display_name(request.path_params.get('server_id', 'default'))
+        return JSONResponse({'message': f'{name} returned an unsupported audio format.'},
+                            status_code=502)
     headers['Content-Type'] = content_type
     if request.method == 'HEAD':
         upstream.close()
@@ -463,6 +478,7 @@ def settings(request: Request) -> Response:
         title=_('Settings'),
         config_settings=config_settings,
         config_spec=config._CONFIG_SPEC_DICT,
+        settings_groups=config.settings_groups(),
     )
 
 
@@ -509,39 +525,6 @@ def browse_directories(payload=Depends(read_json)) -> Response:
     return JSONResponse({'path': directory, 'parent': parent if parent != directory else None, 'directories': children})
 
 
-@router.api_route('/docs/', methods=['GET', 'HEAD'], name='docs', response_model=None)
-@router.api_route('/docs/{filename:path}', methods=['GET', 'HEAD'], name='docs_file', response_model=None)
-def docs(filename: str = 'index.html') -> Response:
-    """
-    Serve the Sphinx html documentation.
-
-    Resolve the requested page from the built documentation directory.
-
-    Parameters
-    ----------
-    filename : str
-        Path to an HTML documentation file relative to the built documentation directory.
-
-    Returns
-    -------
-    FileResponse
-        The requested documentation page, or a 404 response when the file is absent.
-
-    Notes
-    -----
-    The following routes trigger this function.
-
-        `/docs/`
-        `/docs/<page.html>`
-
-    Examples
-    --------
-    >>> docs(filename='index.html')
-    """
-
-    return file_response(Paths.DOCS_DIR, filename or 'index.html')
-
-
 @router.api_route('/favicon.ico', methods=['GET', 'HEAD'], name='favicon', response_model=None)
 @router.api_route('/images/{img:path}', methods=['GET', 'HEAD'], name='image', response_model=None)
 def image(img: str = 'favicon.ico') -> Response:
@@ -585,7 +568,7 @@ def image(img: str = 'favicon.ico') -> Response:
 @router.api_route('/status', methods=['GET', 'HEAD'], name='status', response_model=None)
 def status() -> dict:
     """
-    Check the status of Themerr-plex.
+    Check the status of Themerr.
 
     This is useful for a healthcheck from Docker, and may have many other uses in the future for third party
     applications.
@@ -772,143 +755,6 @@ def api_settings(request: Request, form=Depends(read_form)) -> Response:
     return _save_settings(candidate, changed)
 
 
-@router.api_route('/api/plex/auth', methods=['GET', 'HEAD'], name='plex_auth_status', response_model=None)
-def plex_auth_status() -> Response:
-    """Report whether this installation has a token from Plex sign-in.
-
-    The response contains only a connection flag and never includes the token.
-
-    Returns
-    -------
-    Response
-        Authentication status without exposing the token.
-
-    Examples
-    --------
-    >>> plex_auth_status()
-    <Response ...>
-    """
-    return JSONResponse({'connected': bool(plex_auth.get_token())})
-
-
-@router.api_route('/api/plex/auth/start', methods=['POST'], name='plex_auth_start', response_model=None)
-def plex_auth_start(request: Request) -> Response:
-    """Start a Plex browser sign-in for this web session.
-
-    Store the PIN in the browser session so it can be checked later.
-
-    Parameters
-    ----------
-    request : Request
-        Incoming browser or API request.
-
-    Returns
-    -------
-    Response
-        Plex authorization URL or a sanitized error.
-
-    Examples
-    --------
-    >>> plex_auth_start(request)
-    <Response ...>
-    """
-    try:
-        login = plex_auth.start_login()
-    except (OSError, KeyError, TypeError, ValueError):
-        log.exception('Unable to start Plex sign-in')
-        return JSONResponse({'message': 'Unable to start Plex sign-in. Please try again.'}, status_code=502)
-
-    request.session['plex_login'] = {'pin_id': login['pin_id'], 'code': login['code'], 'started': time.time()}
-    return JSONResponse({'auth_url': login['auth_url']})
-
-
-@router.api_route('/api/plex/auth/check', methods=['POST'], name='plex_auth_check', response_model=None)
-def plex_auth_check(request: Request) -> Response:
-    """Finish a Plex sign-in once its PIN has been claimed.
-
-    Keep the previous connection until the new token reaches the selected server.
-
-    Parameters
-    ----------
-    request : Request
-        Incoming browser or API request.
-
-    Returns
-    -------
-    Response
-        Pending, connected, expired, or error status.
-
-    Examples
-    --------
-    >>> plex_auth_check(request)
-    <Response ...>
-    """
-    login = request.session.get('plex_login')
-    if not login:
-        return JSONResponse({'message': 'Start Plex sign-in first.'}, status_code=400)
-    if time.time() - login['started'] > PLEX_LOGIN_LIFETIME:
-        request.session.pop('plex_login', None)
-        return JSONResponse({'message': 'Plex sign-in expired. Please try again.'}, status_code=410)
-
-    try:
-        token = plex_auth.check_login(pin_id=login['pin_id'], code=login['code'])
-    except requests.HTTPError as error:
-        if error.response is not None and error.response.status_code in (404, 410):
-            request.session.pop('plex_login', None)
-            return JSONResponse({'message': 'Plex sign-in expired. Please try again.'}, status_code=410)
-        log.warning('Unable to check Plex sign-in: %s', error)
-        return JSONResponse({'message': 'Unable to check Plex sign-in. Please try again.'}, status_code=502)
-    except (requests.RequestException, KeyError, TypeError, ValueError):
-        log.exception('Unable to check Plex sign-in')
-        return JSONResponse({'message': 'Unable to check Plex sign-in. Please try again.'}, status_code=502)
-
-    if not token:
-        return JSONResponse({'connected': False}, status_code=202)
-
-    try:
-        plex_auth.set_token(token)
-    except OSError:
-        log.exception('Unable to save Plex sign-in')
-        return JSONResponse({'message': 'Unable to save Plex sign-in.'}, status_code=500)
-    request.session.pop('plex_login', None)
-    return JSONResponse({'connected': True})
-
-
-@router.api_route('/api/plex/auth/disconnect', methods=['POST'], name='plex_auth_disconnect', response_model=None)
-def plex_auth_disconnect(request: Request) -> Response:
-    """Remove the local Plex connection.
-
-    Clear the saved token and stop the active event listener.
-
-    Parameters
-    ----------
-    request : Request
-        Incoming browser or API request.
-
-    Returns
-    -------
-    Response
-        Disconnected status.
-
-    Examples
-    --------
-    >>> plex_auth_disconnect(request)
-    <Response ...>
-    """
-    try:
-        server_ui.servers.disconnect_account()
-    except OSError:
-        log.exception('Unable to disconnect Plex')
-        return JSONResponse({'message': 'Unable to disconnect Plex.'}, status_code=500)
-
-    from plex import plexapi
-    plexapi.stop_plex_listener()
-    server_ui.servers.clear_connections()
-    plexapi.plex_server = None
-    request.session.pop('plex_login', None)
-    return JSONResponse({'connected': False})
-
-
 @router.api_route('/translations', methods=['GET', 'HEAD'], name='translations', response_model=None)
 def translations() -> Response:
     """
@@ -1042,7 +888,7 @@ async def unexpected_error(request: Request, error: Exception) -> Response:
 def create_app(*, https_only: bool | None = None) -> FastAPI:
     """Build an ASGI application with private routes and signed browser sessions.
 
-    Retain the browser interface, bounded requests, and bundled documentation routes.
+    Retain the browser interface, bounded requests, and authenticated API documentation.
 
     Parameters
     ----------
@@ -1068,12 +914,14 @@ def create_app(*, https_only: bool | None = None) -> FastAPI:
     application.add_middleware(SessionMiddleware, secret_key=application.state.secret_key,
                                max_age=12 * 60 * 60, same_site='lax', https_only=https_only)
     application.include_router(admin.router)
+    integration_router = get_backend().web_router()
+    application.include_router(integration_router)
     application.include_router(server_ui.router)
     application.include_router(router)
 
     def openapi():
         if application.openapi_schema is None:
-            routes = [*admin.router.routes, *server_ui.router.routes, *router.routes]
+            routes = [*admin.router.routes, *server_ui.router.routes, *integration_router.routes, *router.routes]
             application.openapi_schema = api_docs.schema(routes)
         return application.openapi_schema
 
@@ -1117,8 +965,11 @@ def start_webapp() -> None:
     _server = uvicorn.Server(server_config)
     _server_stopped.clear()
     try:
+        from jellyfin import repository
+        repository.start(cert_file)
         _server.run()
     finally:
+        repository.stop()
         _server = None
         _server_stopped.set()
 

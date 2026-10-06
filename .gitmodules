@@ -1,0 +1,8 @@
+[submodule "third-party/dockle"]
+	path = third-party/dockle
+	url = https://github.com/LizardByte/Dockle.git
+	branch = master
+[submodule "third-party/sphinx-csharp"]
+	path = third-party/sphinx-csharp
+	url = https://github.com/rogerbarton/sphinx-csharp.git
+	branch = master

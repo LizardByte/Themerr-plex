@@ -1,0 +1,1439 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardbyte\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: Czech\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
+"X-Crowdin-Project: lizardbyte\n"
+"X-Crowdin-Project-ID: 606145\n"
+"X-Crowdin-Language: cs\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
+"X-Crowdin-File-ID: 5784\n"
+"Language: cs_CZ\n"
+"PO-Revision-Date: 2026-10-04 15:02\n"
+
+#: src/common/config.py:90
+msgid "Info"
+msgstr "Info"
+
+#: src/common/config.py:91
+msgid "For information purposes only."
+msgstr "Pouze pro informační účely."
+
+#: src/common/config.py:95
+msgid "Config version"
+msgstr "Konfigurační verze"
+
+#: src/common/config.py:96
+msgid "The configuration version."
+msgstr "Konfigurační verze."
+
+#: src/common/config.py:105
+msgid "First run complete"
+msgstr "První běh dokončen"
+
+#: src/common/config.py:106
+msgid "Todo: Indicates if the user has completed the initial setup."
+msgstr "Dnes: Označuje, zda uživatel dokončil původní nastavení."
+
+#: src/common/config.py:113
+msgid "General"
+msgstr "Obecná ustanovení"
+
+#: src/common/config.py:114
+msgid "General settings."
+msgstr "Obecná nastavení."
+
+#: src/common/config.py:118
+msgid "Locale"
+msgstr "Místní prostředí"
+
+#: src/common/config.py:119
+msgid "The localization setting to use."
+msgstr "Nastavení lokalizace, které chcete použít."
+
+#: src/common/config.py:128
+msgid "Launch Browser on Startup "
+msgstr "Spustit prohlížeč při spuštění "
+
+#: src/common/config.py:134
+msgid "Enable System Tray Icon"
+msgstr "Povolit ikonu systémové lišty"
+
+#: src/common/config.py:142
+msgid "Notifications"
+msgstr "Oznámení"
+
+#: src/common/config.py:143
+msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
+msgstr "Oznámení na ploše se zobrazí na počítači, který běží na Themerr. Docker a bezhlavá instalace je nezobrazují."
+
+#: src/common/config.py:148 src/common/notifications.py:138
+msgid "New release available"
+msgstr "K dispozici je nová verze"
+
+#: src/common/config.py:149
+msgid "Notify when a newer Themerr release is available. Checks run once per hour."
+msgstr "Upozornit, když je k dispozici novější verze Themerr. Kontroluje běží jednou za hodinu."
+
+#: src/common/config.py:154
+msgid "Follow pre-releases"
+msgstr "Sledovat předběžné vydání"
+
+#: src/common/config.py:155
+msgid "Include pre-releases in new release notifications."
+msgstr "Zahrnout předběžné vydání do nových oznámení."
+
+#: src/common/config.py:160
+msgid "Theme coverage increased"
+msgstr "Rozšíření témat zvýšeno"
+
+#: src/common/config.py:161
+msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
+msgstr "Upozornit po úspěšném obnovení, když se zvýší celkové pokrytí tématu. Obnovuje se bez navýšení zůstane v klidu."
+
+#: src/common/config.py:168
+msgid "Logging"
+msgstr "Logování"
+
+#: src/common/config.py:169
+msgid "Logging settings."
+msgstr "Nastavení protokolování."
+
+#: src/common/config.py:173
+msgid "Log directory"
+msgstr "Adresář protokolů"
+
+#: src/common/config.py:175
+msgid "The directory where to store the log files."
+msgstr "Adresář, kde se mají soubory protokolů uložit."
+
+#: src/common/config.py:182
+msgid "Debug logging"
+msgstr "Protokolování ladění"
+
+#: src/common/config.py:184
+msgid "Enable debug logging."
+msgstr "Povolit protokolování ladění."
+
+#: src/common/config.py:190
+msgid "Network"
+msgstr "Síť"
+
+#: src/common/config.py:191
+msgid "Network settings."
+msgstr "Nastavení sítě."
+
+#: src/common/config.py:195
+msgid "HTTP host address"
+msgstr "HTTP adresa hostitele"
+
+#: src/common/config.py:197
+msgid "The HTTP address to bind to."
+msgstr "HTTP adresa, na kterou se má vztahovat."
+
+#: src/common/config.py:206
+msgid "HTTP port"
+msgstr "HTTP port"
+
+#: src/common/config.py:208
+msgid "Port to bind web server to. Note that ports below 1024 may require root."
+msgstr "Port pro navázání webového serveru na vědomí, že porty pod 1024 mohou vyžadovat root."
+
+#: src/common/config.py:216
+msgid "HTTP root"
+msgstr "Hlavní HTTP kanál"
+
+#: src/common/config.py:218
+msgid "Todo: The base URL of the web server. Used for reverse proxies."
+msgstr "Dnes: Základní URL webového serveru. Používá se pro reverzní proxy servery."
+
+#: src/common/config.py:223
+msgid "SSL"
+msgstr "SSL"
+
+#: src/common/config.py:225
+msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
+msgstr "Spusťte webový server s HTTPS. Zakázáním této funkce může být bezpečnostní riziko, udělejte tak na vlastní riziko."
+
+#: src/common/config.py:231
+msgid "Updater"
+msgstr "Aktualizátor"
+
+#: src/common/config.py:232
+msgid "Updater settings."
+msgstr "Nastavení aktualizace."
+
+#: src/common/config.py:236
+msgid "Auto update"
+msgstr "Automatická aktualizace"
+
+#: src/common/config.py:244
+msgid "Plex"
+msgstr "Plex"
+
+#: src/common/config.py:245
+msgid "Plex settings."
+msgstr "Nastavení Plexu."
+
+#: src/common/config.py:249
+msgid "Plex URL"
+msgstr "URL Plexu"
+
+#: src/common/config.py:250
+msgid "The URL to the Plex server."
+msgstr "Adresa URL serveru Plex."
+
+#: src/common/config.py:259 web/templates/servers.html:20
+msgid "Plex data directory"
+msgstr "Datový adresář Plexu"
+
+#: src/common/config.py:260
+msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+
+#: src/common/config.py:270
+msgid "Themerr"
+msgstr "Themerr"
+
+#: src/common/config.py:271
+msgid "Themerr settings."
+msgstr "Nastavení Themerr."
+
+#: src/common/config.py:275
+msgid "Themerr Enabled"
+msgstr "Themerr povolen"
+
+#: src/common/config.py:276
+msgid "When enabled, Themerr will attempt to update themes."
+msgstr "Pokud je povoleno, Themerr se pokusí aktualizovat motivy."
+
+#: src/common/config.py:281 web/templates/home.html:30
+msgid "Collections"
+msgstr "Sbírky"
+
+#: src/common/config.py:282
+msgid "Add themes to collections."
+msgstr "Přidat témata do kolekcí."
+
+#: src/common/config.py:287
+msgid "Movie support"
+msgstr "Podpora filmů"
+
+#: src/common/config.py:288
+msgid "Add themes to movies using the Plex Movie agent."
+msgstr "Přidejte motivy do filmů pomocí Plex Movie agenta."
+
+#: src/common/config.py:293
+msgid "Series support"
+msgstr "Podpora série"
+
+#: src/common/config.py:294
+msgid "Add themes to series using the Plex Series agent."
+msgstr "Přidejte témata do série pomocí Plex Series agenta."
+
+#: src/common/config.py:299
+msgid "Overwrite Plex themes"
+msgstr "Přepsat vzhled Plexu"
+
+#: src/common/config.py:300
+msgid "When enabled, Themerr will overwrite themes provided by Plex."
+msgstr "Pokud je povoleno, Themerr přepíše motivy poskytované Plexem."
+
+#: src/common/config.py:305
+msgid "Prefer MP4A AAC Codec"
+msgstr "Preferovat kodek MP4A AAC"
+
+#: src/common/config.py:306
+msgid "This can improve theme compatibility with Apple devices."
+msgstr "Toto může zlepšit kompatibilitu motivu se zařízeními Apple."
+
+#: src/common/config.py:311
+msgid "Remove unused themes"
+msgstr "Odstranit nepoužité motivy"
+
+#: src/common/config.py:312
+msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
+msgstr "Uvolní místo ve vašem adresáři metadat Plex. Tato volba vyžaduje, aby byla nastavena cesta k \"datovému adresáři Plex\"."
+
+#: src/common/config.py:318
+msgid "Remove unused art"
+msgstr "Odstranit nepoužité umění"
+
+#: src/common/config.py:319 src/common/config.py:327
+msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
+msgstr "Aplikuje se na kolekci. Uvolňuje místo ve vašem adresáři metadat Plex. Tato volba vyžaduje, aby byla nastavena cesta k \"datovému adresáři Plex\"."
+
+#: src/common/config.py:326
+msgid "Remove unused posters"
+msgstr "Odstranit nepoužité plakáty"
+
+#: src/common/config.py:334
+msgid "Collection metadata"
+msgstr "Metadata kolekce"
+
+#: src/common/config.py:335
+msgid "Update collection metadata (poster, art, and summary) during scheduled update."
+msgstr "Aktualizovat metadata kolekce (plakát, umění a shrnutí) během plánované aktualizace."
+
+#: src/common/config.py:340
+msgid "Ignore locked fields."
+msgstr "Ignorovat uzamčená pole."
+
+#: src/common/config.py:341
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "Pokud používáte Themerr v2024.813.13709 nebo nižší, možná budete muset povolit aktualizaci položek."
+
+#: src/common/config.py:347
+msgid "Ignored library IDs"
+msgstr "Ignorované ID knihovny"
+
+#: src/common/config.py:348
+msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
+msgstr "ID knihovny oddělené čárkami pro vyloučení z plánovaných aktualizací. ID se zobrazí na domovské obrazovce."
+
+#: src/common/config.py:354
+msgid "Update themes interval"
+msgstr "Interval aktualizace motivů"
+
+#: src/common/config.py:355
+msgid "Interval for automatic update task, in minutes (min: 15)."
+msgstr "Interval pro automatickou aktualizaci (min: 15)."
+
+#: src/common/config.py:362
+msgid "Update database cache interval"
+msgstr "Interval aktualizace databázové mezipaměti"
+
+#: src/common/config.py:363
+msgid "Interval for database cache update task, in minutes (min: 15)."
+msgstr "Interval pro úkol aktualizace databáze mezipaměti v minutách (min: 15)."
+
+#: src/common/config.py:370
+msgid "PlexAPI timeout"
+msgstr "Časový limit PlexAPI"
+
+#: src/common/config.py:371
+msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
+msgstr "Zvyšte to lehce pokud máte časový limit při přidávání motivů. (min: 1)"
+
+#: src/common/config.py:378
+msgid "Theme upload retries"
+msgstr "Opakování nahrávání motivů"
+
+#: src/common/config.py:379
+msgid "If uploading themes fail, retry this many times. (min: 0)"
+msgstr "Pokud nahrávání motivů selhalo, opakujte tuto akci mnohokrát. (min: 0)"
+
+#: src/common/config.py:386
+msgid "Multiprocessing thread count"
+msgstr "Víceúčelový počet vláken"
+
+#: src/common/config.py:387
+msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
+msgstr "Počet vláken, která mají být použita při přidávání motivů. Vyžadován restart (min: 1)"
+
+#: src/common/config.py:394
+msgid "YouTube Cookies"
+msgstr "YouTube Cookies"
+
+#: src/common/config.py:396
+msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
+msgstr "Volitelné: exportujte cookies youtube.com pomocí Get cookies.txt LOCALLY ve formátu JSON a vložte do něj celé JSON pole a uložte. Soubory cookie obsahují relaci prohlížeče; uchovávají je soukromé."
+
+#: src/common/config.py:401
+msgid "Cookie export instructions"
+msgstr "Pokyny pro export cookie"
+
+#: src/common/notifications.py:138
+#, python-format
+msgid "%(app)s %(version)s is available.\n"
+"%(url)s"
+msgstr "%(app)s %(version)s je k dispozici.\n"
+"%(url)s"
+
+#: src/common/notifications.py:176
+msgid "Refresh completed"
+msgstr "Aktualizace dokončena"
+
+#: src/common/notifications.py:177
+#, python-format
+msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
+msgstr "Zahrnutí šablony se zvýšilo o %(increase)s procentní body: %(before)s%% → %(after)s%%. %(installed)s z %(total)s položek má motivy."
+
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
+#. translate "%(app_name)s".
+#: src/common/tray_icon.py:103
+#, python-format
+msgid "Open %(app_name)s"
+msgstr "Otevřít %(app_name)s"
+
+#: src/common/tray_icon.py:110
+msgid "About"
+msgstr "O aplikaci"
+
+#: src/common/tray_icon.py:111 web/templates/navbar.html:22
+#, python-format
+msgid "Version %(version)s"
+msgstr "Verze %(version)s"
+
+#: src/common/tray_icon.py:113
+msgid "Repository"
+msgstr "Repozitář"
+
+#. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
+#. "%(github)s".
+#: src/common/tray_icon.py:116
+#, python-format
+msgid "%(github)s Releases"
+msgstr "%(github)s Vydání"
+
+#: src/common/tray_icon.py:119 web/templates/navbar.html:14
+msgid "Documentation"
+msgstr "Dokumentace"
+
+#: src/common/tray_icon.py:120 web/templates/api_docs.html:6
+#: web/templates/api_docs.html:7 web/templates/navbar.html:13
+msgid "API documentation"
+msgstr "API dokumentace"
+
+#. NOTE: Donate to LizardByte.
+#: src/common/tray_icon.py:126
+msgid "Donate"
+msgstr "Přispět"
+
+#: src/common/tray_icon.py:127
+msgid "GitHub Sponsors"
+msgstr "Sponzoři z GitHubu"
+
+#. NOTE: Open web browser when application starts. Do not translate
+#. "%(app_name)s".
+#: src/common/tray_icon.py:136
+#, python-format
+msgid "Open browser when %(app_name)s starts"
+msgstr "Otevřít prohlížeč při startu %(app_name)s"
+
+#. NOTE: Disable or turn off icon.
+#: src/common/tray_icon.py:139
+msgid "Disable icon"
+msgstr "Zakázat ikonu"
+
+#. NOTE: Restart the program.
+#: src/common/tray_icon.py:142
+msgid "Restart"
+msgstr "Restartovat"
+
+#. NOTE: Quit, Stop, End, or Shutdown the program.
+#: src/common/tray_icon.py:144
+msgid "Quit"
+msgstr "Ukončit"
+
+#: src/common/webapp.py:84 web/templates/logs.html:4
+#: web/templates/navbar.html:6
+msgid "Logs"
+msgstr "Logy"
+
+#: src/common/webapp.py:463 web/templates/config.html:22
+#: web/templates/navbar.html:6
+msgid "Settings"
+msgstr "Nastavení"
+
+#: src/main.py:171
+#, python-format
+msgid "%(app_name)s manages theme songs for Plex.\n"
+"Arguments supplied here are meant to be temporary."
+msgstr "%(app_name)s spravuje skladby motivů pro Plex.\n"
+"Zde zadané argumenty jsou určeny jako dočasné."
+
+#: src/main.py:175
+msgid "Show this help message and exit"
+msgstr "Zobrazit tuto zprávu nápovědy a ukončit"
+
+#: src/main.py:177
+msgid "Specify a config file to use"
+msgstr "Zadejte konfigurační soubor, který chcete použít"
+
+#: src/main.py:178
+msgid "Use debug logging level"
+msgstr "Použít úroveň ladění"
+
+#: src/main.py:179
+#, python-format
+msgid "Start %(app_name)s in the development environment"
+msgstr "Spustit %(app_name)s ve vývojovém prostředí"
+
+#: src/main.py:181
+msgid "Health check the container and exit"
+msgstr "Kontrola stavu kontejneru a výstupu"
+
+#: src/main.py:184
+#, python-format
+msgid "Do not open %(app_name)s in browser"
+msgstr "Neotevírat %(app_name)s v prohlížeči"
+
+#: src/main.py:187
+#, python-format
+msgid "Force %(app_name)s to run on a specified port, default=9494"
+msgstr "Nutit %(app_name)s běžet na zadaném portu, výchozí =9494"
+
+#: src/main.py:190
+msgid "Turn off console logging"
+msgstr "Vypnout logování konzole"
+
+#: src/main.py:191
+msgid "Print the version details and exit"
+msgstr "Vytisknout podrobnosti o verzi a ukončit"
+
+#: web/js/api.js:9
+msgid "Your session expired. Sign in to continue."
+msgstr "Vaše relace vypršela. Chcete-li pokračovat, přihlaste se."
+
+#: web/js/api.js:25
+msgid "Dismiss message"
+msgstr "Zrušit zprávu"
+
+#: web/js/config.js:18 web/js/config.js:44
+msgid "Unsaved changes"
+msgstr "Neuložené změny"
+
+#: web/js/config.js:26
+msgid "Discard unsaved settings changes?"
+msgstr "Zahodit neuložené změny nastavení?"
+
+#: web/js/config.js:44 web/templates/config.html:36
+msgid "All changes saved."
+msgstr "Všechny změny byly uloženy."
+
+#: web/js/config.js:46
+msgid "Settings saved. Network changes take effect after restarting Themerr."
+msgstr "Nastavení uloženo. Změny sítě se projeví po restartování Themerr."
+
+#: web/js/config.js:50
+msgid "Unable to save changes."
+msgstr "Změny nelze uložit."
+
+#: web/js/config.js:58
+msgid "Save your settings changes before changing your password."
+msgstr "Před změnou hesla uložte změny nastavení."
+
+#: web/js/logs.js:117
+msgid "No records match your filters."
+msgstr "Žádné záznamy neodpovídají vašim filtrům."
+
+#: web/js/logs.js:117 web/templates/logs.html:37
+msgid "No log records yet."
+msgstr "Zatím žádné záznamy."
+
+#: web/js/logs.js:125
+msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
+msgstr "Vyhledávat, filtry, varovat navigaci a stáhnout všechny načtené záznamy od spuštění."
+
+#: web/js/logs.js:126 web/templates/logs.html:28
+msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
+msgstr "Filtry a hledání se vztahuje na nahrané záznamy. Starší historie zůstává v adresáři se záznamy."
+
+#: web/js/logs.js:144
+msgid "Session log loading stalled."
+msgstr "Načítání protokolu relace zastaveno."
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
+msgid "Live"
+msgstr "Živé"
+
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
+#: web/templates/servers.html:13
+msgid "Paused"
+msgstr "Pozastaveno"
+
+#: web/js/logs.js:185
+msgid "Refresh failed. Showing the last loaded records."
+msgstr "Obnovení se nezdařilo. Zobrazení naposledy načtených záznamů."
+
+#: web/js/servers.js:13 web/templates/servers.html:25
+msgid "Select libraries to ignore"
+msgstr "Vyberte knihovny, které chcete ignorovat"
+
+#: web/js/servers.js:22
+msgid "Loading libraries…"
+msgstr "Načítání knihoven…"
+
+#: web/js/servers.js:46
+msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
+msgstr "Zobrazení knihoven v mezipaměti. Povolte nebo připojte tento server k načtení jeho aktuálních knihoven."
+
+#: web/js/servers.js:48
+msgid "This server has no libraries."
+msgstr "Tento server nemá žádné knihovny."
+
+#: web/js/servers.js:54
+msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
+msgstr "Nelze načíst knihovny. Váš výběr je zachován. Zavřete a znovu otevřete seznam pro opakování."
+
+#: web/templates/activity.html:3
+msgid "See what Themerr is working on, and why an item might need your attention."
+msgstr "Podívejte se, na čem pracuje Themerr a proč může potřebovat vaši pozornost."
+
+#: web/templates/activity.html:3
+msgid "Scan for themes"
+msgstr "Vyhledat motivy"
+
+#: web/templates/activity.html:3 web/templates/logs.html:4
+msgid "BEHIND THE MUSIC"
+msgstr "VOZIDLO MUSÍ"
+
+#: web/templates/activity.html:3 web/templates/navbar.html:6
+msgid "Activity"
+msgstr "Aktivita"
+
+#: web/templates/activity.html:4
+msgid "items waiting in the processing queue"
+msgstr "položky čekající ve frontě zpracování"
+
+#: web/templates/activity.html:4
+msgid "Task history covers the current application session."
+msgstr "Historie úloh zahrnuje aktuální relaci aplikace."
+
+#: web/templates/activity.html:5
+msgid "Recent tasks"
+msgstr "Nedávné úkoly"
+
+#: web/templates/activity.html:6
+msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
+msgstr "Zatím nebyly spuštěny žádné úkoly. Požádejte o skenování nebo počkejte na další naplánované aktualizace."
+
+#: web/templates/activity.html:7 web/templates/home.html:14
+#: web/templates/home.html:31 web/templates/servers.html:13
+msgid "Needs attention"
+msgstr "Potřebuje pozornost"
+
+#: web/templates/activity.html:8
+msgid "No processing failures recorded. All quiet here."
+msgstr "Nebyly zaznamenány žádné chyby zpracování. Zde je vše tiché."
+
+#: web/templates/activity.html:8 web/templates/home.html:64
+msgid "Plex ID"
+msgstr "Plex ID"
+
+#: web/templates/activity.html:8 web/templates/home.html:78
+msgid "Outdated from ThemerrDB"
+msgstr "Zastaralé od ThemerrDB"
+
+#: web/templates/api_docs.html:6
+msgid "Explore the API using your signed-in session."
+msgstr "Prozkoumejte API pomocí Vaší relace."
+
+#: web/templates/auth.html:7
+msgid "THE SOUND OF YOUR LIBRARY"
+msgstr "SPOLEČNOST VAŠE LIBRÁRNY"
+
+#: web/templates/auth.html:8
+msgid "Every story"
+msgstr "Každý příběh"
+
+#: web/templates/auth.html:8
+msgid "has a soundtrack."
+msgstr "má zvukovou stopu."
+
+#: web/templates/auth.html:9
+msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
+msgstr "Přineste své knihovny Plex. Jeden klidný pracovní prostor pro vaše servery, vaše témata a vše mezi nimi."
+
+#: web/templates/auth.html:18
+msgid "Your workspace, secured."
+msgstr "Váš pracovní prostor je zabezpečený."
+
+#: web/templates/auth.html:19
+msgid "Open the one-time setup link printed in the application console to create your admin account."
+msgstr "Otevřete jednorázový instalační odkaz vytištěný v konzoli aplikace pro vytvoření správce účtu."
+
+#: web/templates/auth.html:20
+msgid "The link is generated each time the application starts, until setup is complete."
+msgstr "Odkaz je generován pokaždé, když se aplikace spustí, dokud nebude dokončeno nastavení."
+
+#: web/templates/auth.html:22
+msgid "GET STARTED"
+msgstr "ZÍSKAT ZAHÁJENÍ"
+
+#: web/templates/auth.html:22
+msgid "WELCOME BACK"
+msgstr "ZPĚT ZPĚT"
+
+#: web/templates/auth.html:23
+msgid "Make it yours."
+msgstr "Udělejte si to."
+
+#: web/templates/auth.html:23
+msgid "Sign in to Themerr."
+msgstr "Přihlaste se k Themerr."
+
+#: web/templates/auth.html:24
+msgid "Create the administrator account for this installation."
+msgstr "Vytvořit účet administrátora pro tuto instalaci."
+
+#: web/templates/auth.html:24
+msgid "Your libraries are waiting for their next soundtrack."
+msgstr "Vaše knihovny čekají na další zvukovou stopu."
+
+#: web/templates/auth.html:28
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: web/templates/auth.html:30
+msgid "Password"
+msgstr "Heslo"
+
+#: web/templates/auth.html:33
+msgid "Use at least 12 characters. A long, unique passphrase works well."
+msgstr "Použijte alespoň 12 znaků. Dobře funguje dlouhá a unikátní přístupová fráze."
+
+#: web/templates/auth.html:34
+msgid "Confirm password"
+msgstr "Potvrdit heslo"
+
+#: web/templates/auth.html:37
+msgid "Create workspace"
+msgstr "Vytvořit pracovní prostor"
+
+#: web/templates/auth.html:37
+msgid "Sign in"
+msgstr "Přihlásit se"
+
+#: web/templates/auth.html:39
+msgid "Plex account linking happens inside your workspace."
+msgstr "Propojení účtu Plex se děje ve vašem pracovním prostoru."
+
+#: web/templates/base.html:21
+msgid "Skip to content"
+msgstr "Přeskočit na obsah"
+
+#: web/templates/base.html:27
+msgid "Toggle navigation"
+msgstr "Přepnout navigaci"
+
+#: web/templates/base.html:28
+msgid "Workspace"
+msgstr "Pracovní prostor"
+
+#: web/templates/color_theme.html:2 web/templates/color_theme.html:5
+msgid "Theme: Automatic. Switch to light mode."
+msgstr "Motiv: Automaticky. Přepněte do světlého režimu."
+
+#: web/templates/color_theme.html:3
+msgid "Theme: Light. Switch to dark mode."
+msgstr "Motiv: Světlo. Přepněte do tmavého režimu."
+
+#: web/templates/color_theme.html:4
+msgid "Theme: Dark. Switch to automatic mode."
+msgstr "Motiv: Tmavé. Přepněte do automatického režimu."
+
+#: web/templates/config.html:15
+msgid "Browse directories for"
+msgstr "Procházet adresáře pro"
+
+#: web/templates/config.html:22
+msgid "TUNE YOUR WORKSPACE"
+msgstr "VYTVOŘIT VAŠE PRACOVNÍ MÍSTO"
+
+#: web/templates/config.html:22
+msgid "Make Themerr work the way your library does."
+msgstr "Aby Themerr fungoval tak, jak to dělá vaše knihovna."
+
+#: web/templates/config.html:24
+msgid "Settings sections"
+msgstr "Nastavení sekcí"
+
+#: web/templates/config.html:24 web/templates/config.html:33
+msgid "Security"
+msgstr "Zabezpečení"
+
+#: web/templates/config.html:28
+msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
+msgstr "Připojení k serveru, datové adresáře a ignorované knihovny jsou spravovány na stránce serverů."
+
+#: web/templates/config.html:28
+msgid "Changes to network settings take effect after restarting Themerr."
+msgstr "Změny v nastavení sítě se projeví po restartování Themerr."
+
+#: web/templates/config.html:33
+msgid "One administrator for this installation. Change your password and sign out other sessions."
+msgstr "Jeden administrátor pro tuto instalaci. Změňte své heslo a odhlásit další relace."
+
+#: web/templates/config.html:34
+msgid "Current password"
+msgstr "Aktuální heslo"
+
+#: web/templates/config.html:34
+msgid "New password"
+msgstr "Nové heslo"
+
+#: web/templates/config.html:34
+msgid "Confirm new password"
+msgstr "Potvrdit nové heslo"
+
+#: web/templates/config.html:34
+msgid "Change password"
+msgstr "Změnit heslo"
+
+#: web/templates/config.html:36
+msgid "Save changes"
+msgstr "Uložit změny"
+
+#: web/templates/directory_picker.html:2
+msgid "Choose an application directory"
+msgstr "Vyberte adresář aplikace"
+
+#: web/templates/directory_picker.html:2
+msgid "Close directory picker"
+msgstr "Zavřít výběr adresáře"
+
+#: web/templates/directory_picker.html:3
+msgid "Browse directories on the machine running Themerr."
+msgstr "Procházet adresáře na počítači, který běží na Themerr."
+
+#: web/templates/directory_picker.html:4
+msgid "Parent directory"
+msgstr "Nadřazený adresář"
+
+#: web/templates/directory_picker.html:6
+msgid "Select directory"
+msgstr "Vyberte adresář"
+
+#: web/templates/error.html:5
+msgid "LET’S TRY THAT AGAIN"
+msgstr "TRVAJÍCE, ŽE BYLO"
+
+#: web/templates/error.html:7
+msgid "Back to workspace"
+msgstr "Zpět do pracovního prostoru"
+
+#: web/templates/home.html:4
+msgid "YOUR LIBRARY, IN HARMONY"
+msgstr "VAŠE LIBRÁT V HARMONii"
+
+#: web/templates/home.html:4
+msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
+msgstr "Zvuková stopa pro každý příběh. Podívej se, co hraje, a co potřebuje trochu pozornosti."
+
+#: web/templates/home.html:4 web/templates/navbar.html:6
+msgid "Overview"
+msgstr "Přehled"
+
+#: web/templates/home.html:5
+msgid "Refresh libraries"
+msgstr "Aktualizovat knihovny"
+
+#: web/templates/home.html:7
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: web/templates/home.html:7
+msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
+msgstr "Kontrola GitHub se nezdařila. Zobrazení posledního známého nasazení; kontroly běží nanejvýš každou hodinu."
+
+#: web/templates/home.html:8
+msgid "Last deployed"
+msgstr "Naposledy nasazeno"
+
+#: web/templates/home.html:8
+msgid "Checking…"
+msgstr "Kontrola…"
+
+#: web/templates/home.html:8
+msgid "Check unavailable"
+msgstr "Zkontrolovat nedostupné"
+
+#: web/templates/home.html:11
+msgid "Library items"
+msgstr "Položky knihovny"
+
+#: web/templates/home.html:11
+msgid "libraries across"
+msgstr "knihovny napříč"
+
+#: web/templates/home.html:11
+msgid "servers"
+msgstr "servery"
+
+#: web/templates/home.html:12
+msgid "Themes installed"
+msgstr "Motivy nainstalovány"
+
+#: web/templates/home.html:12
+msgid "Your library sounds better already."
+msgstr "Vaše knihovna již zní lépe."
+
+#: web/templates/home.html:13
+msgid "Theme coverage"
+msgstr "Pokrytí šablony"
+
+#: web/templates/home.html:14
+msgid "Review activity"
+msgstr "Zkontrolovat aktivitu"
+
+#: web/templates/home.html:19
+msgid "LET’S SET THE TONE"
+msgstr "NASTAVIT TONE"
+
+#: web/templates/home.html:20
+msgid "Your library deserves a soundtrack."
+msgstr "Vaše knihovna si zaslouží zvukovou stopu."
+
+#: web/templates/home.html:20
+msgid "Getting to know your library."
+msgstr "Jak poznat tvou knihovnu."
+
+#: web/templates/home.html:21
+msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
+msgstr "Připojte svůj Plex účet, vyberte si své servery a nechte Themerr pečovat o hudbu."
+
+#: web/templates/home.html:21
+msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
+msgstr "Vaše první obnova vytváří zobrazení knihovny. Zkontrolujte průběh činnosti nebo požádejte o aktualizaci výše."
+
+#: web/templates/home.html:22
+msgid "Connect a server"
+msgstr "Připojit server"
+
+#: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
+msgid "View activity"
+msgstr "Zobrazit aktivitu"
+
+#: web/templates/home.html:26
+msgid "Your libraries"
+msgstr "Vaše knihovny"
+
+#: web/templates/home.html:26
+msgid "items"
+msgstr "položky"
+
+#: web/templates/home.html:28
+msgid "Search library items"
+msgstr "Hledat položky knihovny"
+
+#: web/templates/home.html:28
+msgid "Search titles…"
+msgstr "Hledat názvy…"
+
+#: web/templates/home.html:28 web/templates/logs.html:9
+msgid "Clear search"
+msgstr "Vymazat hledání"
+
+#: web/templates/home.html:29
+msgid "Server"
+msgstr "Server"
+
+#: web/templates/home.html:29
+msgid "All servers"
+msgstr "Všechny servery"
+
+#: web/templates/home.html:30
+msgid "Type"
+msgstr "Typ"
+
+#: web/templates/home.html:30
+msgid "All types"
+msgstr "Všechny typy"
+
+#: web/templates/home.html:30
+msgid "Movies"
+msgstr "Filmy"
+
+#: web/templates/home.html:30
+msgid "TV shows"
+msgstr "Televizní seriály"
+
+#: web/templates/home.html:31
+msgid "Theme status"
+msgstr "Stav motivu"
+
+#: web/templates/home.html:31
+msgid "All statuses"
+msgstr "Všechny stavy"
+
+#: web/templates/home.html:31
+msgid "Has a theme"
+msgstr "Má motiv"
+
+#: web/templates/home.html:31
+msgid "No theme"
+msgstr "Žádný motiv"
+
+#: web/templates/home.html:32
+msgid "Reset filters"
+msgstr "Obnovit filtry"
+
+#: web/templates/home.html:38
+msgid "Library ID"
+msgstr "ID knihovny"
+
+#: web/templates/home.html:43
+msgid "Title"
+msgstr "Název"
+
+#: web/templates/home.html:43
+msgid "Metadata ID"
+msgstr "ID metadat"
+
+#: web/templates/home.html:43
+msgid "Theme"
+msgstr "Téma"
+
+#: web/templates/home.html:43
+msgid "ThemerrDB"
+msgstr "ThemerrDB"
+
+#: web/templates/home.html:56
+msgid "Pause theme for"
+msgstr "Pozastavit motiv pro"
+
+#: web/templates/home.html:56 web/templates/home.html:58
+msgid "Play theme for"
+msgstr "Přehrát motiv pro"
+
+#: web/templates/home.html:57 web/templates/theme_player.html:2
+msgid "Unable to play this theme. Check the Plex connection and browser audio support."
+msgstr "Nelze přehrát tento motiv. Zkontrolujte podporu připojení Plexu a prohlížeče."
+
+#: web/templates/home.html:64
+msgid "Open in Plex"
+msgstr "Otevřít v Plex"
+
+#: web/templates/home.html:68 web/templates/home.html:76
+msgid "External ID unavailable"
+msgstr "Externí ID není k dispozici"
+
+#: web/templates/home.html:70
+msgid "Failed to add theme"
+msgstr "Nepodařilo se přidat motiv"
+
+#: web/templates/home.html:71
+msgid "Plex provided"
+msgstr "Poskytnutý Plex"
+
+#: web/templates/home.html:72
+msgid "User provided"
+msgstr "Uživatel zadán"
+
+#: web/templates/home.html:73
+msgid "Themerr provided"
+msgstr "Themerr poskytl"
+
+#: web/templates/home.html:74
+msgid "Unknown provider"
+msgstr "Neznámý poskytovatel"
+
+#: web/templates/home.html:75
+msgid "Missing from ThemerrDB"
+msgstr "Chybí v ThemerrDB"
+
+#: web/templates/home.html:76
+msgid "TMDB ID unavailable"
+msgstr "TMDB ID unavailable"
+
+#: web/templates/home.html:77
+msgid "Theme not installed yet"
+msgstr "Šablona zatím není nainstalována"
+
+#: web/templates/home.html:80
+msgid "Edit"
+msgstr "Upravit"
+
+#: web/templates/home.html:80
+msgid "Add"
+msgstr "Přidat"
+
+#: web/templates/home.html:87
+msgid "No titles match."
+msgstr "Žádné názvy neodpovídají."
+
+#: web/templates/home.html:87
+msgid "Try another search or reset your filters."
+msgstr "Zkuste jiné vyhledávání nebo resetujte filtry."
+
+#: web/templates/home_db_not_cached.html:3
+msgid "Your library is on its way."
+msgstr "Vaše knihovna je na cestě."
+
+#: web/templates/home_db_not_cached.html:3
+msgid "The first refresh builds your library view. You can follow progress in Activity."
+msgstr "První obnova vytvoří tvé zobrazení knihovny. Můžeš sledovat postup v aktivitě."
+
+#: web/templates/logs.html:4
+msgid "Explore recent logs, find a message, and jump between warnings and errors."
+msgstr "Prozkoumejte nedávné logy, najděte zprávu a přeskočte mezi varováním a chybami."
+
+#: web/templates/logs.html:5
+msgid "Download filtered logs"
+msgstr "Stáhnout filtrované logy"
+
+#: web/templates/logs.html:7
+msgid "Log viewer"
+msgstr "Prohlížeč protokolů"
+
+#: web/templates/logs.html:9
+msgid "Search logs"
+msgstr "Hledat logy"
+
+#: web/templates/logs.html:9
+msgid "Search messages, threads, or timestamps…"
+msgstr "Hledat zprávy, vlákna nebo časová razítka…"
+
+#: web/templates/logs.html:10
+msgid "Log source"
+msgstr "Zdroj protokolu"
+
+#: web/templates/logs.html:10
+msgid "All sources"
+msgstr "Všechny zdroje"
+
+#: web/templates/logs.html:11
+msgid "Log level"
+msgstr "Úroveň záznamu"
+
+#: web/templates/logs.html:11
+msgid "All levels"
+msgstr "Všechny úrovně"
+
+#: web/templates/logs.html:11
+msgid "Warnings and errors"
+msgstr "Upozornění a chyby"
+
+#: web/templates/logs.html:12
+msgid "Log history"
+msgstr "Historie protokolů"
+
+#: web/templates/logs.html:12
+msgid "Latest 250"
+msgstr "Posledních 250"
+
+#: web/templates/logs.html:12
+msgid "Latest 1,000"
+msgstr "Poslední 1 000"
+
+#: web/templates/logs.html:12
+msgid "Latest 2,000"
+msgstr "Poslední 2 000"
+
+#: web/templates/logs.html:12
+msgid "Since startup"
+msgstr "Od spuštění"
+
+#: web/templates/logs.html:13
+msgid "Clear filters"
+msgstr "Vymazat filtry"
+
+#: web/templates/logs.html:17
+msgid "Warning and error navigation"
+msgstr "Varování a navigace s chybami"
+
+#: web/templates/logs.html:18
+msgid "Previous warning or error"
+msgstr "Předchozí varování nebo chyba"
+
+#: web/templates/logs.html:19
+msgid "Next warning or error"
+msgstr "Další varování nebo chyba"
+
+#: web/templates/logs.html:22
+msgid "Live refresh"
+msgstr "Živá obnova"
+
+#: web/templates/logs.html:23
+msgid "Follow latest"
+msgstr "Sledujte nejnovější"
+
+#: web/templates/logs.html:24
+msgid "Refresh"
+msgstr "Aktualizovat"
+
+#: web/templates/logs.html:26
+msgid "Loading logs…"
+msgstr "Načítání logů…"
+
+#: web/templates/logs.html:30
+msgid "Log history pages"
+msgstr "Zaznamenávat stránky historie"
+
+#: web/templates/logs.html:31
+msgid "Older records"
+msgstr "Starší záznamy"
+
+#: web/templates/logs.html:33
+msgid "Newer records"
+msgstr "Novější záznamy"
+
+#: web/templates/logs.html:35
+msgid "Log records"
+msgstr "Protokolovat záznamy"
+
+#: web/templates/navbar.html:1
+msgid "Close navigation"
+msgstr "Zavřít navigaci"
+
+#: web/templates/navbar.html:2
+msgid "Main navigation"
+msgstr "Hlavní navigace"
+
+#: web/templates/navbar.html:4
+msgid "YOUR WORKSPACE"
+msgstr "VAŠE PRACOVNÍ PROSTŘEDÍ"
+
+#: web/templates/navbar.html:5
+msgid "Workspace pages"
+msgstr "Pracovní prostor stránky"
+
+#: web/templates/navbar.html:6 web/templates/servers.html:3
+msgid "Servers"
+msgstr "Servery"
+
+#: web/templates/navbar.html:11
+msgid "A little music."
+msgstr "Malá hudba."
+
+#: web/templates/navbar.html:11
+msgid "A lot more atmosphere."
+msgstr "Mnohem více ovzduší."
+
+#: web/templates/navbar.html:12
+msgid "Resources"
+msgstr "Zdroje"
+
+#: web/templates/navbar.html:15
+msgid "Contribute a theme"
+msgstr "Přispějte k tématu"
+
+#: web/templates/navbar.html:16
+msgid "Support LizardByte"
+msgstr "Podpora LizardByte"
+
+#: web/templates/navbar.html:20
+msgid "Sign out"
+msgstr "Odhlásit se"
+
+#: web/templates/servers.html:3
+msgid "ONE WORKSPACE. EVERY SERVER."
+msgstr "JEDEN WORKSPACE. KAŽDÝ SERVER."
+
+#: web/templates/servers.html:3
+msgid "Connect your Plex account, then choose where the music goes."
+msgstr "Připojte svůj Plex účet a poté zvolte kam hudba jde."
+
+#: web/templates/servers.html:3
+msgid "saved"
+msgstr "uloženo"
+
+#: web/templates/servers.html:6
+msgid "Your Plex account"
+msgstr "Váš Plex účet"
+
+#: web/templates/servers.html:6
+msgid "Account linked. Choose a server below."
+msgstr "Účet je propojen. Vyberte server níže."
+
+#: web/templates/servers.html:6
+msgid "Link your account securely through Plex to access your servers."
+msgstr "Propojte svůj účet bezpečně prostřednictvím Plex pro přístup k vašim serverům."
+
+#: web/templates/servers.html:6
+msgid "Continue Plex sign-in"
+msgstr "Pokračovat v přihlášení Plex"
+
+#: web/templates/servers.html:7
+msgid "Reconnect account"
+msgstr "Znovu připojit účet"
+
+#: web/templates/servers.html:7
+msgid "Connect Plex account"
+msgstr "Připojit Plex účet"
+
+#: web/templates/servers.html:7
+msgid "Disconnect"
+msgstr "Odpojit"
+
+#: web/templates/servers.html:9
+msgid "Connected servers"
+msgstr "Připojené servery"
+
+#: web/templates/servers.html:9
+msgid "Theme history and library settings are kept separately for each server."
+msgstr "Historie témat a nastavení knihovny jsou vedena zvlášť pro každý server."
+
+#: web/templates/servers.html:13
+msgid "Enabled"
+msgstr "Povoleno"
+
+#: web/templates/servers.html:16
+msgid "Last library refresh"
+msgstr "Poslední aktualizace knihovny"
+
+#: web/templates/servers.html:16
+msgid "Not yet refreshed"
+msgstr "Dosud neobnoveno"
+
+#: web/templates/servers.html:17
+msgid "Processing settings"
+msgstr "Zpracování nastavení"
+
+#: web/templates/servers.html:19
+msgid "Process this server"
+msgstr "Zpracovat tento server"
+
+#: web/templates/servers.html:20
+msgid "optional"
+msgstr "volitelné"
+
+#: web/templates/servers.html:21
+msgid "Browse Plex data directory"
+msgstr "Procházet datový adresář Plexu"
+
+#: web/templates/servers.html:22
+msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
+msgstr "Místní nebo připojený datový adresář Plexu je potřeba pouze pro odstranění starších nahraných souborů. Ponechte prázdné pro vzdálené servery."
+
+#: web/templates/servers.html:23
+msgid "Ignored libraries"
+msgstr "Ignorované knihovny"
+
+#: web/templates/servers.html:29
+msgid "Library"
+msgstr "Knihovna"
+
+#: web/templates/servers.html:32
+msgid "Open the list to load this server’s libraries."
+msgstr "Otevřete seznam pro načtení knihoven tohoto serveru."
+
+#: web/templates/servers.html:35
+msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
+msgstr "Vyberte knihovny, které chcete vyloučit z aktualizací motivů. Ponechte všechny nezaškrtnuté pro zpracování každé knihovny."
+
+#: web/templates/servers.html:36
+msgid "Save settings"
+msgstr "Uložit nastavení"
+
+#: web/templates/servers.html:36
+msgid "Remove server"
+msgstr "Odstranit server"
+
+#: web/templates/servers.html:40
+msgid "Your first server starts here."
+msgstr "Váš první server začíná zde."
+
+#: web/templates/servers.html:40
+msgid "Link Plex above, then discover or add an address below."
+msgstr "Odkaz na Plex výše, pak objevte nebo přidejte níže uvedenou adresu."
+
+#: web/templates/servers.html:43
+msgid "Add a server"
+msgstr "Přidat server"
+
+#: web/templates/servers.html:43
+msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
+msgstr "Vyberte server ze svého účtu Plex, objevte ho v okolí nebo použijte adresu, kterou znáte."
+
+#: web/templates/servers.html:44
+msgid "Find account servers"
+msgstr "Najít servery účtu"
+
+#: web/templates/servers.html:44
+msgid "Discover on LAN"
+msgstr "Objevte na LAN"
+
+#: web/templates/servers.html:44
+msgid "LAN discovery uses Plex GDM on your application’s network."
+msgstr "LAN objevování používá Plex GDM v síti vaší aplikace."
+
+#: web/templates/servers.html:45
+msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
+msgstr "Adresy účtu jsou Plex inzerovány a mohou být nedostupné. HTTPS plex.direct adresy používají certifikát Plexu. Vyberte adresu dostupnou ze stroje běží Themerr, nebo zadejte známou adresu ručně."
+
+#: web/templates/servers.html:47
+msgid "Enter an address manually"
+msgstr "Zadejte adresu ručně"
+
+#: web/templates/servers.html:48
+msgid "Plex server address"
+msgstr "Adresa serveru Plex"
+
+#: web/templates/servers.html:48
+msgid "Connect server"
+msgstr "Připojit server"
+
+#: web/templates/servers.html:48
+msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
+msgstr "Použít LAN adresu nebo platnou HTTPS Plex adresu. Připojený účet Plex musí mít přístup. Přidáním existující adresy serveru."
+
+#: web/templates/theme_player.html:1
+msgid "Theme player"
+msgstr "Přehrávač motivů"
+
+#: web/templates/theme_player.html:2 web/templates/theme_player.html:7
+msgid "Choose a theme from your library"
+msgstr "Vyberte si šablonu z vaší knihovny"
+
+#: web/templates/theme_player.html:3
+msgid "Unable to load themes. Try again."
+msgstr "Nelze načíst motivy. Zkuste to znovu."
+
+#: web/templates/theme_player.html:3
+msgid "No installed themes are available yet."
+msgstr "Zatím nejsou k dispozici žádné nainstalované motivy."
+
+#: web/templates/theme_player.html:7
+msgid "THEME PLAYER"
+msgstr "HODNOCENÍ HRÁČE"
+
+#: web/templates/theme_player.html:7
+msgid "A soundtrack for every story."
+msgstr "Zvuková stopa pro každý příběh."
+
+#: web/templates/theme_player.html:11
+msgid "Shuffle"
+msgstr "Zamíchat"
+
+#: web/templates/theme_player.html:12
+msgid "Previous theme"
+msgstr "Předchozí téma"
+
+#: web/templates/theme_player.html:13
+msgid "Play theme"
+msgstr "Přehrát motiv"
+
+#: web/templates/theme_player.html:13
+msgid "Pause theme"
+msgstr "Pozastavit motiv"
+
+#: web/templates/theme_player.html:14
+msgid "Next theme"
+msgstr "Další téma"
+
+#: web/templates/theme_player.html:15
+msgid "Repeat this theme"
+msgstr "Opakovat toto téma"
+
+#: web/templates/theme_player.html:17
+msgid "Playback position"
+msgstr "Pozice přehrávání"
+
+#: web/templates/theme_player.html:19
+msgid "Surprise me"
+msgstr "Překvapte mě"
+
+#: web/templates/theme_player.html:19
+msgid "Volume"
+msgstr "Objem"
+
+#: web/templates/translations.html:3
+msgid "Themerr speaks your language."
+msgstr "Themerr mluví vaším jazykem."
+
+#: web/templates/translations.html:3
+msgid "Choose a language in Settings, or help improve translations on Crowdin."
+msgstr "Vyberte jazyk v Nastavení, nebo pomozte zlepšit překlady na Crowdinu."
+
+#: web/templates/translations.html:3
+msgid "Help translate"
+msgstr "Pomozte s překladem"
+

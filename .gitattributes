@@ -1,1 +1,4 @@
 Dockerfile text eol=lf
+
+# Match the C# line endings required by .editorconfig on every platform.
+*.cs text eol=crlf

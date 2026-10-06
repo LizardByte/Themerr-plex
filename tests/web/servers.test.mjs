@@ -10,10 +10,12 @@ class Element {
     disabled = false;
     textContent = '';
     value = '';
+    attributes = {};
     isConnected = true;
     addEventListener(name, listener) { this.listeners[name] = listener; }
-    setAttribute() {}
-    removeAttribute() {}
+    setAttribute(name, value) { this.attributes[name] = value; }
+    getAttribute(name) { return this.attributes[name]; }
+    removeAttribute(name) { delete this.attributes[name]; }
     replaceChildren() { this.children = []; this.textContent = ''; }
     append(...elements) {
         elements.forEach((element, index) => { element.nextElementSibling = elements[index + 1]; });
@@ -55,28 +57,67 @@ function serverForm(id, selected) {
     return { form, picker, options, summary, status };
 }
 
-function page(context, responses, savedServers = []) {
+function page(context, responses, savedServers = [], jellyfin = {}) {
     const previous = { document: globalThis.document, window: globalThis.window, FormData: globalThis.FormData };
     context.after(() => Object.assign(globalThis, previous));
     const elements = Object.fromEntries(['plex-auth-start', 'plex-auth-status', 'plex-auth-link', 'plex-auth-disconnect',
         'discovery-results', 'manual-server-form', 'toast-region'].map(id => [id, new Element()]));
     const buttons = ['account', 'local'].map(source => Object.assign(new Element('button'), { dataset: { discover: source } }));
     const forms = savedServers.map(({ id, selected = [] }) => serverForm(id, selected));
+    if (jellyfin.connect) {
+        const form = new Element('form');
+        form.values = { url: 'http://jellyfin.example:8096', api_key: 'private-key' };
+        form.elements = { url: new Element('input'), api_key: new Element('input') };
+        form.querySelector = () => new Element('button');
+        form.reset = context.mock.fn(() => { form.values.api_key = ''; });
+        elements['jellyfin-server-form'] = form;
+    }
+    if (jellyfin.discover) {
+        elements['jellyfin-discover'] = new Element('button');
+        elements['jellyfin-discovery-results'] = new Element('div');
+    }
+    if (jellyfin.tabs) {
+        const tabs = ['plex', 'jellyfin'].map(kind => {
+            const tab = new Element('button');
+            tab.id = `add-${kind}-tab`;
+            tab.setAttribute('aria-controls', `add-${kind}-panel`);
+            elements[tab.id] = tab;
+            elements[`add-${kind}-panel`] = new Element();
+            return tab;
+        });
+        const tablist = new Element();
+        tablist.querySelectorAll = () => tabs;
+        elements['add-server-tabs'] = tablist;
+    }
+    const connectors = (jellyfin.servers || []).map(id => {
+        const form = new Element('form');
+        const status = new Element('output');
+        const button = new Element('button');
+        const restart = new Element('button');
+        form.dataset.serverId = id;
+        form.dataset.autoUpdate = String(Boolean(jellyfin.automatic));
+        form.elements = { themerr_url: { value: '' } };
+        form.querySelector = selector => ({ '[data-connector-status]': status,
+            '[data-restart-server]': restart, 'button[type="submit"]': button })[selector];
+        return { form, status, button, restart };
+    });
     const events = new EventTarget();
     globalThis.document = {
         getElementById: id => elements[id], createElement: tag => new Element(tag),
         querySelectorAll: selector => ({ '[data-discover]': buttons,
-            '[data-server-form]': forms.map(({ form }) => form) })[selector] || [],
+            '[data-server-form]': forms.map(({ form }) => form),
+            '[data-connector-form]': connectors.map(({ form }) => form) })[selector] || [],
         querySelector: () => ({ content: 'csrf-token' }),
         addEventListener: events.addEventListener.bind(events), dispatchEvent: events.dispatchEvent.bind(events),
     };
     globalThis.FormData = class {
         constructor(form) { this.form = form; }
-        get() { return ''; }
+        get(name) { return this.form.values?.[name] || this.form.elements?.[name]?.value || ''; }
         getAll() { return this.form.querySelectorAll('input:checked').map(input => input.value); }
     };
     const reload = context.mock.fn();
-    globalThis.window = { addEventListener() {}, location: { reload } };
+    globalThis.window = { addEventListener() {}, confirm: context.mock.fn(() => true),
+        location: { reload, origin: 'http://themerr.example:9494' } };
     const fetch = context.mock.method(globalThis, 'fetch', async () => {
         const response = responses.shift();
         return { ok: !response.error, status: response.error ? 502 : 200, json: async () => response.body };
@@ -84,8 +125,91 @@ function page(context, responses, savedServers = []) {
     context.mock.method(globalThis, 'setTimeout', () => 0);
     const controller = new AbortController();
     initServers(controller.signal);
-    return { elements, buttons, fetch, reload, forms, controller };
+    return { elements, buttons, fetch, reload, forms, controller, connectors };
 }
+
+test('Jellyfin connection submits its key with CSRF and clears it after success', async context => {
+    const { elements, fetch, reload } = page(context, [{ body: { message: 'Connected' } }], [], { connect: true });
+    const form = elements['jellyfin-server-form'];
+    form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/jellyfin/servers');
+    assert.deepEqual(JSON.parse(fetch.mock.calls[0].arguments[1].body), {
+        url: 'http://jellyfin.example:8096', api_key: 'private-key',
+    });
+    assert.equal(fetch.mock.calls[0].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+    assert.equal(form.values.api_key, '');
+    assert.equal(form.reset.mock.callCount(), 1);
+    assert.equal(reload.mock.callCount(), 1);
+});
+
+test('server tabs support clicks and keyboard navigation while retaining the form and selected tab', context => {
+    const { elements, controller } = page(context, [], [], { connect: true, tabs: true });
+    const plex = elements['add-plex-tab'];
+    const jellyfin = elements['add-jellyfin-tab'];
+    const form = elements['jellyfin-server-form'];
+    assert.equal(plex.getAttribute('aria-selected'), 'true');
+    assert.equal(elements['add-jellyfin-panel'].hidden, true);
+    jellyfin.click();
+    assert.equal(elements['add-plex-panel'].hidden, true);
+    assert.equal(elements['add-jellyfin-panel'].hidden, false);
+    assert.equal(jellyfin.tabIndex, 0);
+    assert.equal(plex.tabIndex, -1);
+    const preventDefault = context.mock.fn();
+    jellyfin.listeners.keydown({ key: 'ArrowRight', preventDefault });
+    assert.equal(plex.focused, true);
+    assert.equal(plex.getAttribute('aria-selected'), 'true');
+    plex.listeners.keydown({ key: 'ArrowLeft', preventDefault });
+    assert.equal(jellyfin.getAttribute('aria-selected'), 'true');
+    jellyfin.listeners.keydown({ key: 'Home', preventDefault });
+    plex.listeners.keydown({ key: 'End', preventDefault });
+    assert.equal(preventDefault.mock.callCount(), 4);
+    assert.equal(form.values.api_key, 'private-key');
+    assert.equal(form.reset.mock.callCount(), 0);
+    initServers(controller.signal);
+    assert.equal(jellyfin.getAttribute('aria-selected'), 'true');
+    plex.click();
+});
+
+test('connector status and installation stay scoped to the selected Jellyfin server', async context => {
+    const { connectors, fetch } = page(context, [{ body: { message: 'Install the matching connector.' } },
+        { body: { message: 'Restart Jellyfin.' } }], [], { servers: ['jellyfin:abc'] });
+    await new Promise(setImmediate);
+    const { form, status } = connectors[0];
+    assert.equal(status.textContent, 'Install the matching connector.');
+    assert.equal(form.elements.themerr_url.value, 'http://themerr.example:9494');
+    form.elements.themerr_url.value = 'https://trusted.example/themerr';
+    form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[1].arguments[0], '/api/jellyfin/servers/jellyfin%3Aabc/connector');
+    assert.deepEqual(JSON.parse(fetch.mock.calls[1].arguments[1].body), { themerr_url: 'https://trusted.example/themerr' });
+    assert.equal(status.textContent, 'Restart Jellyfin.');
+});
+
+test('connector suggestions preserve reverse proxy paths and use the HTTP fallback for local TLS', async context => {
+    const { connectors } = page(context, [
+        { body: { repository_url: 'https://trusted.example/themerr', http_port: 9495 } },
+        { body: { http_port: 9495 } },
+    ], [], { servers: ['jellyfin:a', 'jellyfin:b'] });
+    await new Promise(setImmediate);
+    assert.equal(connectors[0].form.elements.themerr_url.value, 'https://trusted.example/themerr');
+    assert.equal(connectors[1].form.elements.themerr_url.value, 'http://themerr.example:9495');
+});
+
+test('Jellyfin discovery selects an address safely without transmitting credentials', async context => {
+    const { elements, fetch } = page(context, [{ body: { servers: [{
+        name: '<script>untrusted</script>', url: 'http://jellyfin.example:8096',
+    }] } }], [], { connect: true, discover: true });
+    await elements['jellyfin-discover'].click();
+    const [name, address, choose] = elements['jellyfin-discovery-results'].children[0].children;
+    assert.equal(name.textContent, '<script>untrusted</script>');
+    assert.equal(address.textContent, 'http://jellyfin.example:8096');
+    await choose.click();
+    assert.equal(elements['jellyfin-server-form'].elements.url.value, address.textContent);
+    assert.equal(elements['jellyfin-server-form'].elements.api_key.focused, true);
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/jellyfin/discover');
+    assert.equal(fetch.mock.calls[0].arguments[1].body, undefined);
+});
 
 test('empty LAN discovery explains GDM and offers account or manual connections', async context => {
     const { elements, buttons } = page(context, [{ body: { servers: [] } }]);
@@ -95,6 +219,52 @@ test('empty LAN discovery explains GDM and offers account or manual connections'
     assert.match(elements['discovery-results'].textContent, /account or manual address/);
     assert.equal(buttons[1].disabled, false);
 });
+
+test('Jellyfin discovery retains connected addresses but prevents selecting them', async context => {
+    const { elements, fetch } = page(context, [{ body: { servers: [
+        { id: 'one', name: 'Saved', url: 'http://127.0.0.1:8096', connected: true },
+        { id: 'one', name: 'Saved', url: 'http://192.168.1.205:8096', connected: true },
+        { id: 'two', name: 'Saved', url: 'http://new.example:8096', connected: false },
+    ] } }], [], { connect: true, discover: true });
+    await elements['jellyfin-discover'].click();
+    const form = elements['jellyfin-server-form'];
+    const buttons = elements['jellyfin-discovery-results'].children.map(row => row.children[2]);
+    for (const button of buttons.slice(0, 2)) {
+        assert.equal(button.textContent, 'Connected');
+        assert.equal(button.disabled, true);
+        await button.click();
+        assert.equal(form.elements.url.value, '');
+        assert.equal(form.elements.api_key.focused, undefined);
+    }
+    assert.equal(buttons[2].disabled, false);
+    await buttons[2].click();
+    assert.equal(form.elements.url.value, 'http://new.example:8096');
+    assert.equal(form.elements.api_key.focused, true);
+    assert.equal(fetch.mock.callCount(), 1);
+});
+
+for (const [index, source] of ['account', 'local'].entries()) {
+    test(`Plex ${source} discovery disables connected servers while allowing new connections`, async context => {
+        const connections = [{ url: 'http://plex.example:32400', local: true, relay: false }];
+        const { elements, buttons, fetch } = page(context, [{ body: { servers: [
+            { id: 'one', name: 'Same name', connections, connected: true },
+            { id: 'two', name: 'Same name', connections, connected: false },
+        ] } }, { body: { message: 'Connected' } }]);
+        await buttons[index].click();
+        const [saved, fresh] = elements['discovery-results'].children.map(row => row.children[2]);
+        assert.equal(saved.textContent, 'Connected');
+        assert.equal(saved.disabled, true);
+        await saved.click();
+        assert.equal(saved.disabled, true);
+        assert.equal(fetch.mock.callCount(), 1);
+        assert.equal(fresh.textContent, 'Connect');
+        assert.equal(fresh.disabled, false);
+        await fresh.click();
+        const payload = JSON.parse(fetch.mock.calls[1].arguments[1].body);
+        assert.equal(payload.url, 'http://plex.example:32400');
+        assert.equal(payload.resource_id, source === 'account' ? 'two' : undefined);
+    });
+}
 
 test('failed discovery clears its loading state and shows the failure', async context => {
     const { elements, buttons } = page(context, [{ error: true, body: { message: 'Discovery failed.' } }]);
@@ -225,4 +395,56 @@ test('library loading does not replace controls after page navigation', async co
     await pending;
     assert.equal(summary.textContent, 'Library 1');
     assert.equal(options.children[0].children[1].textContent, 'Library 1');
+});
+
+for (const [automatic, installed, hidden] of [[true, false, false], [true, true, false],
+    [false, true, true], [false, false, false]]) {
+    test(`connector controls honor automatic=${automatic} and installed=${installed}`, async context => {
+        const { connectors } = page(context, [{ body: { auto_update: automatic, installed,
+            can_restart: true, message: 'Checked' } }], [], { servers: ['jellyfin:a'] });
+        await new Promise(setImmediate);
+        assert.equal(connectors[0].button.hidden, hidden);
+        assert.equal(connectors[0].button.textContent, automatic ? 'Save connector address' : 'Install matching connector');
+        assert.equal(connectors[0].restart.disabled, false);
+    });
+}
+
+test('automatic connector mode saves the address without manually installing', async context => {
+    const { connectors, fetch } = page(context, [{ body: { auto_update: true } },
+        { body: { message: 'Saved' } }], [], { servers: ['jellyfin:a'] });
+    await new Promise(setImmediate);
+    connectors[0].form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[1].arguments[1].method, 'PUT');
+    assert.equal(fetch.mock.calls[1].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+});
+
+test('automatic mode also saves safely before the initial status response', async context => {
+    const { connectors, fetch } = page(context, [{ body: { auto_update: true } },
+        { body: { message: 'Saved' } }], [], { servers: ['jellyfin:a'], automatic: true });
+    connectors[0].form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[1].arguments[1].method, 'PUT');
+});
+
+test('force restart warns about playback and targets the selected server', async context => {
+    const { connectors, fetch } = page(context, [{ body: { can_restart: true } },
+        { body: { message: 'Restarting' } }], [], { servers: ['jellyfin:a'] });
+    await new Promise(setImmediate);
+    connectors[0].restart.click();
+    await new Promise(setImmediate);
+    assert.match(window.confirm.mock.calls[0].arguments[0], /Active playback will be interrupted/);
+    assert.equal(fetch.mock.calls[1].arguments[0], '/api/jellyfin/servers/jellyfin%3Aa/restart');
+    assert.equal(fetch.mock.calls[1].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+});
+
+test('unsupported servers disable restart and cancellation sends no request', async context => {
+    const { connectors, fetch } = page(context, [{ body: { can_restart: false } }], [], { servers: ['jellyfin:a'] });
+    await new Promise(setImmediate);
+    assert.equal(connectors[0].restart.disabled, true);
+    assert.match(connectors[0].restart.title, /service or container/);
+    window.confirm = () => false;
+    connectors[0].restart.click();
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.callCount(), 1);
 });

@@ -1,5 +1,21 @@
 # Repository guidance
 
+## Code style
+
+- Prefer Python f-strings, C# interpolated strings, and JavaScript template literals over
+  runtime string concatenation.
+  Keep parameterized logging so log templates remain structured and formatting stays lazy.
+- Write collection literals and initializers with more than one item on multiple lines, with
+  one item per line and a trailing comma after the final item. This applies to lists, tuples,
+  sets, dictionaries, and C# collection and object initializers. Keep comprehensions readable.
+- Group file-level Python imports in this order, omitting empty groups and separating groups
+  with a blank line: `# standard imports` for the standard library, `# lib imports` for external
+  dependencies, and `# local imports` for repository code. These labels apply only at file level;
+  do not add them to imports inside functions.
+- Document C# types and members with XML documentation comments, including parameters, return
+  values, and relevant exceptions. Use `see`/`seealso` references to link related types in the
+  public documentation. Keep the strict Dockle build and C# analyzer checks passing.
+
 ## Filesystem paths and web endpoints
 
 - Trace request data through to filesystem operations before adding or changing an endpoint.

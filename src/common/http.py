@@ -18,7 +18,7 @@ from starlette.templating import Jinja2Templates
 
 # local imports
 from common import locales, version
-from common.definitions import Paths
+from common.definitions import DOCUMENTATION_URL, Paths
 from common.path_policy import resolve_file_path, validate_relative_path
 
 templates = Jinja2Templates(directory=os.path.join(Paths.ROOT_DIR, 'web', 'templates'))
@@ -190,6 +190,7 @@ def render_template(request: Request, template_name: str, *, status_code: int = 
         'admin_username': getattr(request.state, 'admin_username', None),
         'current_endpoint': getattr(request.scope.get('route'), 'name', None),
         'app_version': version.VERSION,
+        'documentation_url': DOCUMENTATION_URL,
         'url_for': lambda name, **values: str(request.app.url_path_for(name, **values)),
         'asset_url': lambda filename: asset_url(request, filename),
         'csrf_token': lambda: csrf_token(request),
@@ -267,7 +268,7 @@ def file_response(directory: str, filename: str, media_type: str | None = None) 
 
     Examples
     --------
-    >>> response = file_response(Paths.DOCS_DIR, 'index.html')
+    >>> response = file_response(os.path.join(Paths.ROOT_DIR, 'web', 'images'), 'icon-default.png')
     """
     try:
         path = resolve_file_path(directory, filename)

@@ -54,7 +54,7 @@ def test_stop_and_restart(monkeypatch):
     calls.attach_mock(launch, 'launch_replacement')
     monkeypatch.setattr(common.os, '_exit', exit_process)
     monkeypatch.setattr(common.definitions.Modes, 'FROZEN', False)
-    monkeypatch.setattr(common.sys, 'argv', ['themerr_plex.py', '--quiet'])
+    monkeypatch.setattr(common.sys, 'argv', ['main.py', '--quiet'])
 
     with pytest.raises(SystemExit) as exit_info:
         common.stop(exit_code=3, restart=True)

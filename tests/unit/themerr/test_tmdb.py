@@ -8,6 +8,7 @@ import requests
 
 # local imports
 from themerr import tmdb
+from plex import tmdb as proxy
 
 
 def test_external_lookup(monkeypatch):
@@ -26,7 +27,7 @@ def test_external_lookup(monkeypatch):
 
 
 def test_collection_lookup(monkeypatch):
-    monkeypatch.setattr(tmdb, '_plex_get', lambda *_: {})
+    monkeypatch.setattr(proxy, 'query', lambda *_: {})
     monkeypatch.setattr(tmdb.themerr_db, 'find_id_by_title',
                         lambda database_type, title: 645 if title == 'James Bond' else None)
 
@@ -38,7 +39,7 @@ def test_external_api_fallback(monkeypatch):
     calls = []
     monkeypatch.setattr(tmdb.themerr_db, 'find_movie_id_by_imdb', lambda _: None)
     monkeypatch.setattr(tmdb.themerr_db, 'find_id_by_title', lambda *_: None)
-    monkeypatch.setattr(tmdb, '_plex_get', lambda *_: {})
+    monkeypatch.setattr(proxy, 'query', lambda *_: {})
     monkeypatch.delenv('TMDB_API_READ_ACCESS_TOKEN', raising=False)
     monkeypatch.setattr(tmdb.helpers, 'json_get', lambda **kwargs: calls.append(kwargs) or {
         'movie_results': [{'id': 123}], 'tv_results': [{'id': 456}],
@@ -61,7 +62,7 @@ def test_external_api_fallback(monkeypatch):
 def test_collection_api_fallback(monkeypatch):
     calls = []
     monkeypatch.setattr(tmdb.themerr_db, 'find_id_by_title', lambda *_: None)
-    monkeypatch.setattr(tmdb, '_plex_get', lambda *_: {})
+    monkeypatch.setattr(proxy, 'query', lambda *_: {})
     monkeypatch.setenv('TMDB_API_READ_ACCESS_TOKEN', 'test-token')
     monkeypatch.setattr(tmdb.helpers, 'json_get', lambda **kwargs: calls.append(kwargs) or {
         'results': [{'name': 'Other Collection', 'id': 1},
@@ -77,11 +78,11 @@ def test_collection_api_fallback(monkeypatch):
 
 def test_plex_proxy_resolves_imdb_tvdb_and_collection(configured, monkeypatch):
     configured['Plex']['PLEX_URL'] = 'http://plex.example:32400/'
-    tmdb._proxy_cache.clear()
+    proxy._proxy_cache.clear()
     monkeypatch.setattr(tmdb.themerr_db, 'find_movie_id_by_imdb', lambda *_: None)
     monkeypatch.setattr(tmdb.themerr_db, 'find_id_by_title', lambda *_: None)
     monkeypatch.delenv('TMDB_API_READ_ACCESS_TOKEN', raising=False)
-    tmdb.auth.set_token('secret-plex-token')
+    proxy.auth.set_token('secret-plex-token')
     calls = []
 
     def proxy_response(url, **kwargs):
@@ -93,14 +94,14 @@ def test_plex_proxy_resolves_imdb_tvdb_and_collection(configured, monkeypatch):
                                       else {'results': [{'name': 'James Bond Collection', 'id': 645}]})
         return response
 
-    monkeypatch.setattr(tmdb.requests, 'get', proxy_response)
+    monkeypatch.setattr(proxy.requests, 'get', proxy_response)
     assert tmdb.get_tmdb_id_from_external_id('tt0497329', 'imdb', 'movie') == 10005
     assert tmdb.get_tmdb_id_from_external_id(268592, 'tvdb', 'tv') == 48866
     assert tmdb.get_tmdb_id_from_collection('James Bond', language='en-US') == 645
     assert len(calls) == 3
     assert all(url == 'http://plex.example:32400/services/tmdb' for url, _ in calls)
     assert all(kwargs['headers']['X-Plex-Token'] == 'secret-plex-token' for _, kwargs in calls)
-    assert all(kwargs['timeout'] == tmdb.PROXY_TIMEOUT for _, kwargs in calls)
+    assert all(kwargs['timeout'] == proxy.PROXY_TIMEOUT for _, kwargs in calls)
     assert calls[0][1]['params']['uri'] == '/find/tt0497329?external_source=imdb_id'
     assert calls[1][1]['params']['uri'] == '/find/268592?external_source=tvdb_id'
     assert calls[2][1]['params']['uri'] == '/search/collection?query=James-Bond&language=en-US'
@@ -110,12 +111,12 @@ def test_plex_proxy_resolves_imdb_tvdb_and_collection(configured, monkeypatch):
 
 def test_plex_proxy_failure_falls_back_to_tmdb(configured, monkeypatch):
     configured['Plex']['PLEX_URL'] = 'http://plex.example:32400'
-    tmdb._proxy_cache.clear()
-    tmdb.auth.set_token('secret-plex-token')
+    proxy._proxy_cache.clear()
+    proxy.auth.set_token('secret-plex-token')
     monkeypatch.setattr(tmdb.themerr_db, 'find_movie_id_by_imdb', lambda *_: None)
     monkeypatch.setenv('TMDB_API_READ_ACCESS_TOKEN', 'tmdb-token')
-    monkeypatch.setattr(tmdb.requests, 'get', Mock(side_effect=requests.Timeout('timed out')))
+    monkeypatch.setattr(proxy.requests, 'get', Mock(side_effect=requests.Timeout('timed out')))
     monkeypatch.setattr(tmdb.helpers, 'json_get', lambda **_: {'movie_results': [{'id': 10005}]})
 
     assert tmdb.get_tmdb_id_from_external_id('tt0497329', 'imdb', 'movie') == 10005
-    assert tmdb._proxy_cache == {}
+    assert proxy._proxy_cache == {}

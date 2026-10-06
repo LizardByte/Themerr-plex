@@ -1,12 +1,10 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/about/usage.rst
-
 Usage
 =====
 
-Start Themerr-plex, then open its web UI at https://localhost:9494 (or the host and port you configured).
+Start Themerr, then open its web UI at https://localhost:9494 (or the host and port you configured).
 
 The web sidebar footer shows the installed version. In the system tray, open **About** to see the version and
-links to the repository, releases, bundled documentation, API documentation, and ThemerrDB. The API documentation
+links to the repository, releases, online documentation, API documentation, and ThemerrDB. The API documentation
 requires signing in to the web UI.
 
 Notifications
@@ -26,19 +24,19 @@ no increase, does not send an alert. Theme uploads are included in the next succ
 
 Notifications appear on the computer running Themerr, even when the web UI is open on another device.
 Docker and headless installations do not display desktop notifications. Linux requires a desktop notification
-service and a session D-Bus connection. On macOS, launch the signed ``themerr_plex.app`` bundle and allow
+service and a session D-Bus connection. On macOS, launch the signed ``themerr.app`` bundle and allow
 notifications when prompted. Operating system notification settings, including Do Not Disturb, still apply.
 
 Admin account
 -------------
 
-On first start, Themerr-plex prints a one-time setup link in the console and opens it if browser launching is enabled.
+On first start, Themerr prints a one-time setup link in the console and opens it if browser launching is enabled.
 Use this link to create the installation's single admin account with a password of at least 12 characters.
 For a remote or Docker installation, replace ``127.0.0.1`` in the link with the reachable hostname, retaining the setup
 token. Opening the normal address before setup shows instructions for obtaining this link.
 
 The admin password is stored as a salted scrypt hash in SQLite. Sign in with this account to access libraries,
-settings, server connections, theme playback, and bundled documentation. Sessions expire after 12 hours of inactivity and
+settings, server connections, and theme playback. Sessions expire after 12 hours of inactivity and
 restarting the application signs them out. Every form and modifying API request requires a CSRF token, and the
 web UI cannot be embedded in an iframe.
 
@@ -47,7 +45,7 @@ application and run its executable with ``--reset-admin-password`` from a local 
 
 .. code-block:: shell
 
-   uv run --locked python src/themerr_plex.py --reset-admin-password
+   uv run --locked python src/main.py --reset-admin-password
 
 Supply ``--config`` if you normally use a different configuration file. The command prompts for a new password
 without echoing it and exits without starting the server.
@@ -80,22 +78,22 @@ server address.
 Each saved server has its own processing toggle, ignored library IDs, data directory, dashboard snapshot,
 upload history, and errors. Pausing a server prevents new work; an upload already in progress can finish.
 Removing a server erases its saved connection and local records, while themes already uploaded to Plex remain there.
-Select **Disconnect Plex** to erase Plex credentials and pause saved servers. After signing in again, reconnect
+Select **Disconnect Plex** to erase Plex credentials and pause saved Plex servers. After signing in again, reconnect
 each server to resume processing with its retained upload history.
 
 On desktop systems, account and server tokens are saved in the operating system's credential store.
-For Docker or headless systems, provide ``THEMERR_PLEX_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
-the configuration directory. Themerr-plex uses that key to encrypt tokens stored in SQLite. Keep the key file private;
+For Docker or headless systems, provide ``THEMERR_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
+the configuration directory. Themerr uses that key to encrypt tokens stored in SQLite. Keep the key file private;
 losing it requires signing in again. Docker sign-in requires this key file.
 
-Expand **Processing settings** on a server card to set its Plex data directory if you want Themerr-plex to remove
+Expand **Processing settings** on a server card to set its Plex data directory if you want Themerr to remove
 older uploaded media from Plex's metadata directory. Use the folder button to browse directories on the machine
-running Themerr-plex. The same button is available for the log directory in Settings.
+running Themerr. The same button is available for the log directory in Settings.
 
-When Themerr-plex runs on another machine, use the Plex server's reachable URL and mount its data directory if you
+When Themerr runs on another machine, use the Plex server's reachable URL and mount its data directory if you
 want this cleanup. Otherwise, disable the three **Remove unused** settings.
 
-Enable movie, series, and collection updates as needed. Themerr-plex listens for supported Plex library
+Enable movie, series, and collection updates as needed. Themerr listens for supported Plex library
 events and also scans on the configured schedule. The home page reports theme status for each supported
 library item and links to ThemerrDB contribution forms when a TMDB ID is known. It shows an IMDb or TVDB ID when Plex
 supplies one but a TMDB ID cannot be resolved. A Plex ID is shown for collections without a verified external ID;
@@ -134,12 +132,12 @@ open the item on Plex or its metadata provider in a new tab. Media type icons re
 regional failures do not by themselves require replacing the ThemerrDB video. ThemerrDB checks US availability
 when accepting themes; a regional failure elsewhere cannot establish that it is currently unavailable in the US.
 
-Select the play button beside an item's title to listen to its currently selected Plex theme, regardless of provider.
+Select the play button beside an item's title to listen to its currently selected media-server theme, regardless of provider.
 The button changes to pause during playback, and the ring around it shows playback progress. Pausing retains your
 position; selecting another item stops the previous theme. Items without an installed theme have no play button.
 
 The player at the bottom of the workspace shows the item's poster, title, year, media type, and server.
-Select the title to open the item in Plex. If its poster is unavailable, a music icon appears instead.
+Select the title to open the item in its media server. If its poster is unavailable, a music icon appears instead.
 Use the playback slider to seek, the volume slider to adjust sound, and the previous and next buttons to
 browse installed themes. **Surprise me** picks a random installed theme across your servers.
 **Shuffle** plays themes in random order without repeats until the library has played; **Repeat this theme**
@@ -156,21 +154,60 @@ To exclude a library from updates, enter its ID in **Ignored library IDs** in it
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 
 TMDB IDs for titles already in ThemerrDB are resolved from ThemerrDB's index. Movie collections can also be resolved
-from matching collection metadata on their member movies. Themerr-plex asks the item's Plex server's TMDB proxy to
+from matching collection metadata on their member movies. Themerr asks the item's Plex server's TMDB proxy to
 resolve other IMDb or TVDB IDs and collection names. If the Plex proxy is unavailable, you can set the optional
 ``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
 web settings and configuration file.
 
+Jellyfin servers
+----------------
+
+Themerr supports Jellyfin 10.11 and 12.1. Open **Servers**, select the **Jellyfin** tab, and enter the
+server address, such as `http://localhost:8096`. Create an API key under **Jellyfin Dashboard > Advanced >
+API Keys**, paste it into Themerr, and select **Connect**. Use **Discover Jellyfin on LAN** to find nearby
+servers; you still need an API key. If discovery finds nothing, enter the address manually.
+
+On the connected server card, save a Themerr address that the Jellyfin server can reach. For a local
+installation using Themerr's default certificate, use `http://localhost:9495`. If Jellyfin runs on
+another computer, replace `localhost` with Themerr's hostname or IP address. Docker installations
+must expose port 9495. A trusted HTTPS address also works.
+
+Themerr automatically installs and updates its **Themerr Connector**. The server card shows its progress.
+By default, Themerr waits for playback to finish before restarting Jellyfin and refreshing its libraries.
+If your installation needs a manual restart, follow the message on the card. Change these preferences
+under **Settings > Jellyfin**. When automatic updates are disabled, use **Install matching connector**
+when the button appears. **Force restart** interrupts playback and should only be used when you are
+ready to restart the server.
+
+Enable movie, series, and collection support under **Settings > Jellyfin**, then choose the libraries to
+process on each server card. Jellyfin TV libraries can use TMDB or TheTVDB metadata. Collections created
+by Jellyfin's TMDb Box Sets plugin appear in its **Collections** library. Include that library to add
+collection themes. Jellyfin must be able to write to your media folders, and each movie needs its own folder.
+
+Existing user themes are protected by default. Under **Settings > Jellyfin**, enable **Overwrite user themes**
+if you want Themerr to replace them. **Back up replaced user themes** controls whether replaced themes are kept.
+If you used the older Themerr-jellyfin plugin, Themerr recognizes its unchanged themes by default and
+removes the old plugin and its repository after connecting. You can disable either choice in the same
+settings section before connecting the server.
+
+For playback in Jellyfin, open **Jellyfin user settings > Display** and enable **Theme songs** under
+**Library**. The server card links to this page. Repeat this setting in each browser or app you use.
+
+Removing a server from Themerr removes its saved connection; themes already installed in Jellyfin remain.
+For Docker and headless installations, set up the persistent credential encryption key described in
+:doc:`docker` before connecting.
+
 Local data
 ----------
 
-Themerr-plex stores its server registry, admin password hash, dashboard snapshots, upload records, processing errors,
-and non-secret Plex client ID in
-``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
-``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted Plex tokens there.
+Themerr stores its server registry, admin password hash, dashboard snapshots, upload records, processing errors,
+and non-secret client IDs in
+``themerr.db`` beside the active configuration file (``config/themerr.db`` by default, or
+``/config/themerr.db`` in Docker). Docker and headless installs also store encrypted tokens and API keys there.
+Existing installations keep using their previous database and saved credentials.
 
-The /status endpoint returns a JSON health response. The /docs/ endpoint serves the documentation
-bundled with packaged and Docker builds.
+The ``/status`` endpoint returns a JSON health response. Open **Documentation** in the sidebar or
+system tray to read the online project documentation.
 
 YouTube cookies
 ---------------
@@ -191,24 +228,24 @@ For Chrome or another compatible Chromium browser:
 3. In that same tab, visit https://www.youtube.com/robots.txt. Keep it as the only tab in the private window.
 4. Open the extension, set **Export Format** to **JSON**, and select **Copy** or **Export** for the current site.
    If you export a file, open it in a text editor and copy its entire contents. Avoid **Export All Cookies**;
-   Themerr-plex only needs the YouTube cookies.
+   Themerr only needs the YouTube cookies.
 5. Close the private window. These steps follow `yt-dlp's YouTube export guidance
    <https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies>`_ to reduce cookie rotation.
-6. In Themerr-plex, open **Settings** and find **YouTube Cookies** in the **Themerr** section. Paste the JSON and
+6. In Themerr, open **Settings** and find **YouTube Cookies** in the **Themerr** section. Paste the JSON and
    select **Save changes**. It will be used on the next extraction; a restart is not required.
 
 If YouTube starts asking you to sign in again, repeat the export and replace the saved JSON.
 Cookies cannot make a deleted or unavailable video accessible.
 
-Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr-plex
+Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr
 configuration private, and never include cookie values in screenshots, logs, or issue reports.
-Themerr-plex converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
+Themerr converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
 each extraction; the JSON remains in the configuration until you clear the setting and save.
 
 Theme format
 ------------
 
-Themerr-plex selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
+Themerr selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
 Plex clients that cannot play Opus theme audio. If MP4A is unavailable, Opus is used.
 
 Themes are skipped on later jobs unless the source changes or the AAC preference requires a different codec.

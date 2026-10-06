@@ -40,37 +40,22 @@ def test_ensure_assets_uses_locked_install(tmp_path, monkeypatch):
     run_dev._ensure_assets()
 
     assert [call.args[0] for call in run.call_args_list] == [
-        ['npm', 'ci', '--ignore-scripts'], ['npm', 'run', 'build'],
+        ['npm', 'ci', '--ignore-scripts'],
+        ['npm', 'run', 'build'],
     ]
     assert all(call.kwargs == {'cwd': tmp_path, 'check': True} for call in run.call_args_list)
-
-
-def test_docs_rebuild_when_source_changes(tmp_path, monkeypatch):
-    monkeypatch.setattr(run_dev, 'ROOT', tmp_path)
-    index = tmp_path / '_site' / 'index.html'
-    index.parent.mkdir()
-    index.touch()
-    source = tmp_path / 'docs' / 'source' / 'index.rst'
-    source.parent.mkdir(parents=True)
-    source.touch()
-    newer = index.stat().st_mtime_ns + 1_000_000_000
-    os.utime(source, ns=(newer, newer))
-
-    assert run_dev._docs_need_build()
 
 
 def test_main_runs_source_in_current_process(tmp_path, monkeypatch):
     monkeypatch.setattr(run_dev, 'ROOT', tmp_path)
     monkeypatch.setattr(run_dev.os, 'chdir', lambda _: None)
     monkeypatch.setattr(run_dev, '_ensure_assets', Mock())
-    monkeypatch.setattr(run_dev, '_ensure_docs', Mock())
     monkeypatch.setattr(run_dev, '_has_js_runtime', lambda: True)
-    app = ModuleType('themerr_plex')
+    app = ModuleType('main')
     app.main = Mock()
-    monkeypatch.setitem(sys.modules, 'themerr_plex', app)
+    monkeypatch.setitem(sys.modules, 'main', app)
     monkeypatch.syspath_prepend(str(tmp_path))
     run_dev.main()
 
     app.main.assert_called_once_with()
     run_dev._ensure_assets.assert_called_once_with()
-    run_dev._ensure_docs.assert_called_once_with()

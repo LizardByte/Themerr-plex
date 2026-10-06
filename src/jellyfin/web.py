@@ -1,0 +1,244 @@
+"""Authenticated Jellyfin setup and exact public routes for bundled plugin artifacts."""
+
+# standard imports
+from typing import Annotated
+
+# lib imports
+from fastapi import APIRouter, Depends, Request
+from starlette.responses import JSONResponse
+
+# local imports
+from common import config, credentials, logger
+from common.http import file_response, read_json
+from jellyfin import connector, discovery, maintenance, repository, servers
+from media_servers.base import MediaServerError
+
+router = APIRouter()
+log = logger.get_logger(__name__)
+_ARCHIVE_PATHS = {f'/jellyfin/connector/{name}': name for name in connector.ARCHIVES.values()}
+
+
+def _failure(exc):
+    """Expose fixed adapter messages and log only the failure category."""
+    if isinstance(exc, MediaServerError):
+        return JSONResponse({'message': str(exc)}, status_code=exc.status_code)
+    log.warning('Jellyfin setup failed (%s)', type(exc).__name__)
+    message = (
+        'Could not access the secure credential store.'
+        if isinstance(exc, credentials.TokenStorageError)
+        else 'Could not complete Jellyfin setup. Check the server connection and logs.'
+    )
+    return JSONResponse({'message': message}, status_code=502)
+
+
+def _payload(value):
+    """Reject arrays and scalars without echoing submitted credentials."""
+    if not isinstance(value, dict):
+        raise MediaServerError('Invalid JSON object.', 400)
+    return value
+
+
+@router.post('/api/jellyfin/servers', name='jellyfin.add_server', response_model=None)
+def add_server(payload: Annotated[object, Depends(read_json)]):
+    """Verify and securely save a Jellyfin server using an administrator API key."""
+    try:
+        payload = _payload(payload)
+        result = servers.add_server(payload.get('url'), payload.get('api_key'))
+        return JSONResponse(
+            {
+                'message': 'Jellyfin server connected.',
+                'server': result,
+            },
+            status_code=201,
+        )
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.get('/api/jellyfin/servers/{server_id}/connector', name='jellyfin.connector_status', response_model=None)
+def connector_status(server_id: str):
+    """Check the installed connector without changing Jellyfin or its repositories."""
+    try:
+        if not servers.get_server(server_id):
+            raise MediaServerError('Jellyfin server not found.', 404)
+        result = maintenance.state(server_id)
+        try:
+            connection = servers.client(server_id)
+        except MediaServerError:
+            if result.get('phase') != 'restarting':
+                raise
+            return JSONResponse(
+                {
+                    **result,
+                    'installed': False,
+                    'repository_url': connector.repository_url(required=False),
+                    'http_port': repository.http_port(),
+                    'can_restart': False,
+                    'auto_update': config.CONFIG['Jellyfin']['AUTO_UPDATE_CONNECTOR'],
+                }
+            )
+        info = connection.json('GET', '/System/Info')
+        try:
+            connector.verify(connection)
+            message = result['message'] if result.get('restart_required') else 'Matching connector is active.'
+            result = {
+                **result,
+                'installed': True,
+                'message': message,
+            }
+        except MediaServerError:
+            message = (
+                'Save the Themerr address to allow automatic connector installation.'
+                if config.CONFIG['Jellyfin']['AUTO_UPDATE_CONNECTOR']
+                else 'Install the matching Themerr connector.'
+            )
+            result = {
+                'installed': False,
+                'message': message,
+                **result,
+            }
+        return JSONResponse(
+            {
+                **result,
+                'repository_url': connector.repository_url(required=False),
+                'http_port': repository.http_port(),
+                'can_restart': isinstance(info, dict) and info.get('CanSelfRestart') is True,
+                'auto_update': config.CONFIG['Jellyfin']['AUTO_UPDATE_CONNECTOR'],
+            }
+        )
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.put('/api/jellyfin/servers/{server_id}/connector', name='jellyfin.connector_address', response_model=None)
+def connector_address(server_id: str, payload: Annotated[object, Depends(read_json)]):
+    """Save the reachable repository address for automatic connector installation."""
+    try:
+        payload = _payload(payload)
+        servers.client(server_id)
+        connector.configure_repository(payload.get('themerr_url'))
+        return JSONResponse(
+            {'message': 'Connector address saved. Automatic installation will run shortly.'}, status_code=202
+        )
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.post('/api/jellyfin/servers/{server_id}/restart', name='jellyfin.restart', response_model=None)
+def restart(server_id: str):
+    """Restart a saved Jellyfin server immediately, including when streams are active."""
+    try:
+        if not servers.get_server(server_id):
+            raise MediaServerError('Jellyfin server not found.', 404)
+        return JSONResponse(maintenance.force_restart(server_id), status_code=202)
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.post('/api/jellyfin/servers/{server_id}/connector', name='jellyfin.install_connector', response_model=None)
+def install_connector(server_id: str, payload: Annotated[object, Depends(read_json)]):
+    """Install the exact connector and schedule its restart according to Jellyfin settings."""
+    try:
+        payload = _payload(payload)
+        result = maintenance.install(server_id, payload.get('themerr_url'))
+        return JSONResponse(result, status_code=202)
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.post('/api/jellyfin/discover', name='jellyfin.discover', response_model=None)
+def discover():
+    """Discover nearby addresses; an administrator must still provide each server's API key."""
+    try:
+        connected = {server['id'] for server in servers.list_servers()}
+        resources = [
+            {
+                **resource,
+                'connected': f'jellyfin:{resource["id"]}' in connected,
+            }
+            for resource in discovery.discover()
+        ]
+        return JSONResponse({'servers': resources})
+    except Exception as exc:
+        return _failure(exc)
+
+
+@router.api_route(
+    connector.MANIFEST_PATH,
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='jellyfin.manifest',
+    response_model=None,
+)
+@router.api_route(
+    '/jellyfin/connector/manifest-10.11.json',
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='jellyfin.manifest_10_11',
+    response_model=None,
+)
+@router.api_route(
+    '/jellyfin/connector/manifest-12.1.json',
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='jellyfin.manifest_12_1',
+    response_model=None,
+)
+def manifest(request: Request):
+    """Serve only bundled connector metadata so Jellyfin can install from this Themerr instance."""
+    try:
+        profiles = {path: key for key, path in connector.PROFILE_MANIFESTS.items()}
+        return JSONResponse(connector.manifest(profiles.get(request.url.path)))
+    except MediaServerError as exc:
+        return _failure(exc)
+
+
+@router.api_route(
+    connector.THUMBNAIL_PATH,
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='jellyfin.thumbnail',
+    response_model=None,
+)
+def thumbnail():
+    """Serve the build-owned connector thumbnail for Jellyfin's catalog and installed plugin cards."""
+    try:
+        connector.bundle()
+        return file_response(str(connector.directory()), 'thumb.png', 'image/png')
+    except MediaServerError as exc:
+        return _failure(exc)
+
+
+@router.api_route(
+    '/jellyfin/connector/connector-10.11.zip',
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='jellyfin.archive_10_11',
+    response_model=None,
+)
+@router.api_route(
+    '/jellyfin/connector/connector-12.1.zip',
+    methods=[
+        'GET',
+        'HEAD',
+    ],
+    name='jellyfin.archive_12_1',
+    response_model=None,
+)
+def archive(request: Request):
+    """Serve fixed build-owned plugin filenames through the shared file policy."""
+    try:
+        connector.bundle()
+        return file_response(str(connector.directory()), _ARCHIVE_PATHS[request.url.path], 'application/zip')
+    except MediaServerError as exc:
+        return _failure(exc)

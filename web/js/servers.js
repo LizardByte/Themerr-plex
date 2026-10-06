@@ -2,6 +2,38 @@ import { api, busy, toast } from './api.js';
 import { refreshPage } from './workspace_navigation.js';
 import { _ } from './i18n.js';
 
+let selectedServerTab = 'add-plex-tab';
+
+function initServerTabs(signal) {
+    const tablist = document.getElementById('add-server-tabs');
+    if (!tablist) return;
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const select = selected => {
+        selectedServerTab = selected.id;
+        tabs.forEach(tab => {
+            const active = tab === selected;
+            tab.setAttribute('aria-selected', String(active));
+            tab.tabIndex = active ? 0 : -1;
+            document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+        });
+    };
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => select(tab), { signal });
+        tab.addEventListener('keydown', event => {
+            let next;
+            if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+            else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+            else if (event.key === 'Home') next = 0;
+            else if (event.key === 'End') next = tabs.length - 1;
+            else return;
+            event.preventDefault();
+            select(tabs[next]);
+            tabs[next].focus();
+        }, { signal });
+    });
+    select(tabs.find(tab => tab.id === selectedServerTab) || tabs[0]);
+}
+
 function initLibraryPicker(form, signal) {
     const picker = form.querySelector('[data-library-picker]');
     const options = picker.querySelector('[data-library-options]');
@@ -95,18 +127,23 @@ function discoveredServer(resource, source) {
     const connect = document.createElement('button');
     connect.type = 'button';
     connect.className = 'btn btn-primary btn-sm';
-    connect.textContent = 'Connect';
-    connect.disabled = !resource.connections.length;
-    connect.addEventListener('click', () => busy(connect, async () => {
-        await api('/api/servers', { body: { url: addresses.value,
-            resource_id: source === 'account' ? resource.id : undefined } });
-        if (connect.isConnected) await refreshPage();
-    }));
+    connect.textContent = resource.connected ? _('Connected') : _('Connect');
+    connect.disabled = Boolean(resource.connected) || !resource.connections.length;
+    connect.addEventListener('click', () => {
+        if (resource.connected) return;
+        return busy(connect, async () => {
+            await api('/api/servers', { body: { url: addresses.value,
+                resource_id: source === 'account' ? resource.id : undefined } });
+            if (connect.isConnected) await refreshPage();
+        });
+    });
     row.append(name, addresses, connect);
     return row;
 }
 
 export function initServers(signal) {
+    initServerTabs(signal);
+    initJellyfin(signal);
     const authStart = document.getElementById('plex-auth-start');
     if (!authStart) return;
     const status = document.getElementById('plex-auth-status');
@@ -156,7 +193,7 @@ export function initServers(signal) {
     });
     const disconnect = document.getElementById('plex-auth-disconnect');
     disconnect.addEventListener('click', () => {
-        if (!window.confirm('Disconnect Plex and pause all saved servers? Your local theme history will be kept.')) return;
+        if (!window.confirm('Disconnect Plex and pause all saved Plex servers? Your local theme history will be kept.')) return;
         void busy(disconnect, async () => {
             await api('/api/plex/auth/disconnect');
             if (active) await refreshPage();
@@ -175,8 +212,7 @@ export function initServers(signal) {
         results.replaceChildren();
         if (!response.servers.length) {
             results.textContent = button.dataset.discover === 'local'
-                ? 'No Plex servers responded on LAN. Check that local network discovery (GDM) is enabled in Plex ' +
-                  'and multicast can reach this machine. You can use an account or manual address instead.'
+                ? 'No Plex servers responded on LAN. Check that local network discovery (GDM) is enabled in Plex and multicast can reach this machine. You can use an account or manual address instead.'
                 : 'No servers are advertised for this Plex account. Check account access or enter an address manually.';
             return;
         }
@@ -206,10 +242,134 @@ export function initServers(signal) {
         });
     });
     document.querySelectorAll('[data-remove-server]').forEach(button => button.addEventListener('click', () => {
-        if (!window.confirm('Remove this server and its local theme history? Plex media will stay on the server.')) return;
+        if (!window.confirm('Remove this server and its local theme history? Media will stay on the server.')) return;
         void busy(button, async () => {
             await api(`/api/servers/${encodeURIComponent(button.dataset.removeServer)}`, { method: 'DELETE' });
             if (active) await refreshPage();
         });
     }));
+}
+
+function connectorAddress(result) {
+    const address = new URL(result.repository_url || window.location.origin);
+    if (result.http_port && (!result.repository_url ||
+        (address.hostname === window.location.hostname && address.port === window.location.port))) {
+        address.protocol = 'http:';
+        address.port = String(result.http_port);
+        address.pathname = '/';
+    }
+    return address.href.replace(/\/$/, '');
+}
+
+function initJellyfin(signal) {
+    const form = document.getElementById('jellyfin-server-form');
+    form?.addEventListener('submit', event => {
+        event.preventDefault();
+        void busy(form.querySelector('button[type="submit"]'), async () => {
+            const data = new FormData(form);
+            await api('/api/jellyfin/servers', { body: { url: data.get('url'), api_key: data.get('api_key') } });
+            form.reset();
+            if (!signal?.aborted && form.isConnected) await refreshPage();
+        });
+    }, { signal });
+    const discover = document.getElementById('jellyfin-discover');
+    discover?.addEventListener('click', () => busy(discover, async () => {
+        const results = document.getElementById('jellyfin-discovery-results');
+        results.textContent = _('Looking for Jellyfin servers…');
+        try {
+            const result = await api('/api/jellyfin/discover');
+            if (signal?.aborted || !results.isConnected) return;
+            results.replaceChildren();
+            if (!result.servers.length) {
+                results.textContent = _('No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually.');
+            }
+            result.servers.forEach(server => {
+                const row = document.createElement('div');
+                row.className = 'discovered-server';
+                const name = document.createElement('strong');
+                name.textContent = server.name;
+                const address = document.createElement('span');
+                address.textContent = server.url;
+                const choose = document.createElement('button');
+                choose.type = 'button';
+                choose.className = 'btn btn-outline-light btn-sm';
+                choose.textContent = server.connected ? _('Connected') : _('Use this address');
+                choose.disabled = Boolean(server.connected);
+                choose.addEventListener('click', () => {
+                    if (server.connected) return;
+                    form.elements.url.value = server.url;
+                    form.elements.api_key.focus();
+                }, { signal });
+                row.append(name, address, choose);
+                results.append(row);
+            });
+        } catch (error) {
+            if (!signal?.aborted && results.isConnected) results.textContent = error.message;
+            throw error;
+        }
+    }), { signal });
+    document.querySelectorAll('[data-connector-form]').forEach(connectorForm => {
+        const status = connectorForm.querySelector('[data-connector-status]');
+        const button = connectorForm.querySelector('button[type="submit"]');
+        const restartButton = connectorForm.querySelector('[data-restart-server]');
+        const url = `/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/connector`;
+        let timer;
+        let suggested = false;
+        let automatic = connectorForm.dataset.autoUpdate === 'true';
+        async function check() {
+            try {
+                const result = await api(url, { method: 'GET' });
+                if (signal?.aborted || !status.isConnected) return;
+                status.textContent = result.message;
+                automatic = Boolean(result.auto_update);
+                button.textContent = automatic ? _('Save connector address') : _('Install matching connector');
+                button.hidden = !automatic && Boolean(result.installed || result.restart_required || result.phase === 'restarting');
+                if (restartButton) {
+                    restartButton.disabled = !result.can_restart || result.phase === 'restarting';
+                    restartButton.title = result.can_restart ? '' :
+                        _('This server cannot restart itself. Restart its service or container.');
+                }
+                if (!suggested) {
+                    if (!connectorForm.elements.themerr_url.value) {
+                        connectorForm.elements.themerr_url.value = connectorAddress(result);
+                    }
+                    suggested = true;
+                }
+                timer = setTimeout(check, result.restart_required ? 5000 : 30000);
+            } catch (error) {
+                if (!signal?.aborted && status.isConnected) {
+                    status.textContent = error.message;
+                    timer = setTimeout(check, 10000);
+                }
+            }
+        }
+        signal?.addEventListener('abort', () => clearTimeout(timer), { once: true });
+        void check();
+        connectorForm.addEventListener('submit', event => {
+            event.preventDefault();
+            void busy(button, async () => {
+                const result = await api(url, { method: automatic ? 'PUT' : 'POST',
+                    body: { themerr_url: new FormData(connectorForm).get('themerr_url') } });
+                if (!signal?.aborted && status.isConnected) {
+                    status.textContent = result.message;
+                    toast(result.message);
+                    clearTimeout(timer);
+                    timer = setTimeout(check, 5000);
+                }
+            });
+        }, { signal });
+        restartButton?.addEventListener('click', () => {
+            if (!window.confirm(_('Restart Jellyfin now? Active playback will be interrupted.'))) return;
+            void busy(restartButton, async () => {
+                const result = await api(`/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/restart`,
+                    { body: {} });
+                if (!signal?.aborted && status.isConnected) {
+                    status.textContent = result.message;
+                    toast(result.message);
+                    clearTimeout(timer);
+                    timer = setTimeout(check, 5000);
+                }
+            });
+        }, { signal });
+    });
 }

@@ -9,6 +9,9 @@ import platform
 import sys
 
 
+DOCUMENTATION_URL = 'https://docs.lizardbyte.dev/projects/themerr/latest/'
+
+
 class Names:
     """
     Class representing common names.
@@ -16,14 +19,17 @@ class Names:
     The purpose of this class is to ensure consistency when using these names.
 
     name : str
-        The application's name. i.e. `Themerr-plex`.
+        The application's name. i.e. `Themerr`.
+    legacy_name : str
+        Previous name used only to find existing application data and credentials.
 
     Examples
     --------
     >>> Names.name
-    'Themerr-plex'
+    'Themerr'
     """
-    name = 'Themerr-plex'
+    name = 'Themerr'
+    legacy_name = 'Themerr-plex'
 
 
 class Platform:
@@ -134,8 +140,6 @@ class Paths:
         The root directory of the application. This is where the source files exist.
     DATA_DIR : str
         The data directory of the application.
-    DOCS_DIR : str
-        The directory containing html documentation.
     LOCALE_DIR : str
         The directory containing localization files.
     LOG_DIR : str
@@ -150,13 +154,16 @@ class Paths:
     SRC_DIR = os.path.dirname(COMMON_DIR)
     ROOT_DIR = os.path.dirname(SRC_DIR)
     DATA_DIR = ROOT_DIR
-    BINARY_PATH = os.path.abspath(os.path.join(SRC_DIR, 'themerr_plex.py'))
+    BINARY_PATH = os.path.abspath(os.path.join(SRC_DIR, 'main.py'))
 
     if Modes.FROZEN:  # pyinstaller build
         ROOT_DIR = sys._MEIPASS
         DATA_DIR = os.path.dirname(sys.executable)
         if Platform.os_platform == 'darwin':
             DATA_DIR = os.path.expanduser(os.path.join('~', 'Library', 'Application Support', Names.name))
+            legacy_data_dir = os.path.join(os.path.dirname(DATA_DIR), Names.legacy_name)
+            if not os.path.exists(DATA_DIR) and os.path.isdir(legacy_data_dir):
+                DATA_DIR = legacy_data_dir
         BINARY_PATH = os.path.abspath(sys.executable)
     if Modes.DOCKER:  # docker install
         DATA_DIR = '/config'  # overwrite the value that was already set
@@ -164,6 +171,5 @@ class Paths:
     else:
         CONFIG_DIR = os.path.join(DATA_DIR, 'config')
 
-    DOCS_DIR = os.path.join(ROOT_DIR, '_site')
     LOCALE_DIR = os.path.join(ROOT_DIR, 'locale')
     LOG_DIR = os.path.join(CONFIG_DIR, 'logs')

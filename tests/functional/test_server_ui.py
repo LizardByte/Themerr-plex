@@ -18,6 +18,7 @@ from tests.http_helpers import set_session
 from common import admin, server_ui, webapp
 from common.validation import ValidationError, ValidationMessage
 from plex import auth, plexapi, servers, token_store
+from media_servers import processing
 from themerr import storage
 
 
@@ -133,6 +134,19 @@ def test_server_page_preselects_saved_ids_in_separate_dropdowns(client):
     assert 'Comma-separated library IDs' not in page
 
 
+def test_collection_library_header_uses_collection_coverage(client):
+    save_server('one')
+    data = snapshot('Top Gun', 'themerr')
+    data['1'].update(type='collection', media_count=0, media_percent_complete=0,
+                     collection_count=1, collection_percent_complete=100, collections_enabled=True)
+    data['1']['items'][0]['type'] = 'collection'
+    with storage.server_scope('one'):
+        storage.replace_dashboard(data)
+    page = client.get('/').text
+    assert '<strong>100%</strong><span class="mini-progress"><span style="width: 100%">' in page
+    assert '<strong>0%</strong><span class="mini-progress">' not in page
+
+
 def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(client):
     for identifier, provider in [('a', 'themerr'), ('b', 'plex')]:
         save_server(identifier)
@@ -213,6 +227,27 @@ def test_discovery_and_server_settings_require_csrf(client, monkeypatch):
                           ('/api/tasks/refresh', {'scan': True})]:
         assert client.post(path, json=payload).status_code == 400
     assert client.delete('/api/servers/one').status_code == 400
+
+
+@pytest.mark.parametrize('source', ['account', 'local'])
+@pytest.mark.parametrize('enabled', [True, False])
+def test_discovery_marks_saved_plex_servers_connected_by_identity(client, monkeypatch, source, enabled):
+    save_server('one')
+    servers.update_server('one', {'enabled': enabled})
+    connections = [{'url': 'http://192.168.1.205:32400', 'local': True, 'relay': False},
+                   {'url': 'https://alternate.plex.direct:32400', 'local': False, 'relay': False}]
+    resources = [{'id': 'one', 'name': 'Same name', 'connections': connections},
+                 {'id': 'two', 'name': 'Same name', 'connections': connections}]
+    monkeypatch.setattr(servers, 'discover_' + source, Mock(return_value=resources))
+    request_headers = headers(client)
+    response = client.post('/api/servers/discover', json={'source': source}, headers=request_headers)
+    assert response.status_code == 200
+    assert response.json()['servers'] == [{**resources[0], 'connected': True}, {**resources[1], 'connected': False}]
+    with Session(storage.engine()) as session:
+        session.delete(session.get(servers.ServerRecord, 'one'))
+        session.commit()
+    assert all(not resource['connected'] for resource in
+               client.post('/api/servers/discover', json={'source': source}, headers=request_headers).json()['servers'])
 
 
 def test_add_update_and_remove_server(client, monkeypatch):
@@ -339,7 +374,7 @@ def test_refresh_dispatch_and_task_status(client, configured, monkeypatch):
     response = client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client))
     assert response.status_code == 202
     assert response.json()['job_id'] == 'dashboard-job'
-    run.assert_called_once_with(target=plexapi.scheduled_update, task_name='Theme scan and queue')
+    run.assert_called_once_with(target=processing.scheduled_update, task_name='Theme scan and queue')
     server_ui._refresh.assert_called_once()
     configured['Themerr']['BOOL_THEMERR_ENABLED'] = False
     assert client.post('/api/tasks/refresh', json={'scan': True}, headers=headers(client)).status_code == 400

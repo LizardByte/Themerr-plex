@@ -8,7 +8,7 @@ import argparse
 import os
 import subprocess
 
-project_name = 'Themerr-plex'
+project_name = 'Themerr'
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.dirname(script_dir)
@@ -29,7 +29,7 @@ def _clean_metadata(po_path):
         ))
     )
     with open(po_path, 'w', encoding='utf-8', newline='\n') as stream:
-        stream.write(header + separator + messages)
+        stream.write(f'{header}{separator}{messages}')
 
 
 def babel_extract():

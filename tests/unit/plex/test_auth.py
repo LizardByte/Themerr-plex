@@ -25,8 +25,8 @@ def test_credentials_persist_without_exposing_token(configured, tmp_path):
 
     auth.set_token('plex-issued-token')
     assert storage.get_credentials() == {'client_id': identifier}
-    assert (tmp_path / 'themerr-plex.db').is_file()
-    assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
+    assert (tmp_path / 'themerr.db').is_file()
+    assert b'plex-issued-token' not in (tmp_path / 'themerr.db').read_bytes()
     assert auth.get_token() == 'plex-issued-token'
     auth.disconnect()
     assert auth.get_token() == ''
@@ -43,7 +43,7 @@ def test_headless_token_uses_external_key(configured, tmp_path, monkeypatch):
     encrypted = storage.get_encrypted_token()
     assert encrypted
     assert 'plex-issued-token' not in encrypted
-    assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
+    assert b'plex-issued-token' not in (tmp_path / 'themerr.db').read_bytes()
     storage.close()
     assert auth.get_token() == 'plex-issued-token'
 
@@ -70,7 +70,7 @@ def test_unavailable_os_credential_store_does_not_save_plaintext(configured, tmp
     with pytest.raises(token_store.TokenStorageError, match='credential store'):
         auth.set_token('plex-issued-token')
     assert auth.get_token() == ''
-    assert b'plex-issued-token' not in (tmp_path / 'themerr-plex.db').read_bytes()
+    assert b'plex-issued-token' not in (tmp_path / 'themerr.db').read_bytes()
 
 
 @pytest.mark.parametrize('operation', ['get_password', 'delete_password'])
@@ -97,7 +97,7 @@ def test_start_login_uses_stable_client_and_plex_auth_url(configured, monkeypatc
     assert parse_qs(login['auth_url'].split('#?', 1)[1]) == {
         'clientID': [auth._client_identifier()],
         'code': ['strong-code'],
-        'context[device][product]': ['Themerr-plex'],
+        'context[device][product]': ['Themerr'],
     }
     assert post.call_args.kwargs['data'] == {'strong': 'true'}
     assert post.call_args.kwargs['headers']['X-Plex-Client-Identifier'] == auth._client_identifier()

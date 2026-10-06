@@ -39,6 +39,75 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+  connector:
+    name: Jellyfin Connector
+    needs: setup_release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v6.0.0
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+        with:
+          enable-cache: true
+
+      - name: Build Jellyfin connectors
+        env:
+          THEMERR_VERSION: ${{ needs.setup_release.outputs.release_version }}
+        run: uv run --no-project --python ${{ env.PYTHON_VERSION }} scripts/build_connector.py
+
+      - name: Check C# formatting
+        run: |
+          dotnet format connectors/jellyfin/Themerr.Connector.csproj --verify-no-changes --no-restore
+          dotnet format connectors/jellyfin.tests/Connector.Tests.csproj --verify-no-changes
+
+      - name: Test Jellyfin ABIs with coverage
+        id: test
+        run: uv run --no-project --python ${{ env.PYTHON_VERSION }} scripts/test_connector.py
+
+      - name: Upload connector coverage
+        if: >-
+          always() &&
+          (steps.test.outcome == 'success' || steps.test.outcome == 'failure') &&
+          startsWith(github.repository, 'LizardByte/')
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
+        with:
+          fail_ci_if_error: true
+          files: ./coverage/connector-10.11/coverage.opencover.xml,./coverage/connector-12.1/coverage.opencover.xml
+          flags: jellyfin-connector
+          report_type: coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload connector test results
+        if: >-
+          always() &&
+          (steps.test.outcome == 'success' || steps.test.outcome == 'failure') &&
+          startsWith(github.repository, 'LizardByte/')
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
+        with:
+          fail_ci_if_error: true
+          files: ./coverage/connector-10.11/junit.xml,./coverage/connector-12.1/junit.xml
+          flags: jellyfin-connector
+          report_type: test_results
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload connector artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: jellyfin-connector
+          path: jellyfin-connector/
+          if-no-files-found: error
+
   build-docker:
     name: Docker
     needs: setup_release
@@ -62,6 +131,7 @@ jobs:
   build:
     needs:
       - setup_release
+      - connector
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -116,19 +186,20 @@ jobs:
         env:
           UV_NO_BUILD: ${{ (matrix.os == 'windows-11-arm' || matrix.os == 'macos-15-intel') && 'false' || 'true' }}
         run: >-
-          uv sync --locked --all-extras --no-install-project
+          uv sync --locked --extra build --extra dev --no-install-project
           --no-python-downloads --python ${{ env.PYTHON_VERSION }}
+
+      - name: Download Jellyfin connectors
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: jellyfin-connector
+          path: jellyfin-connector/
 
       - name: Build and test web assets
         run: |
           npm ci --ignore-scripts
           npm run build
           npm test
-
-      - name: Build Docs with Dockle
-        run: |
-          uv run --locked --all-extras --no-build --no-sync python -m dockle check
-          uv run --locked --all-extras --no-build --no-sync python -m dockle build
 
       - name: Set up virtual desktop
         if: runner.os == 'Linux'
@@ -138,7 +209,7 @@ jobs:
 
       - name: Test with pytest
         id: test
-        run: uv run --locked --all-extras --no-build --no-sync python -m pytest
+        run: uv run --locked --no-build --no-sync python -m pytest
 
       - name: Upload coverage
         if: >-
@@ -184,14 +255,15 @@ jobs:
       - name: Build pyinstaller package
         env:
           THEMERR_VERSION: ${{ needs.setup_release.outputs.release_version }}
+          THEMERR_PREBUILT_CONNECTOR: '1'
           APPLE_CODESIGN_IDENTITY: >-
             ${{ runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
             && secrets.APPLE_CODESIGN_IDENTITY || '' }}
-        run: uv run --locked --all-extras --no-build --no-sync python ./scripts/build.py
+        run: uv run --locked --no-build --no-sync python ./scripts/build.py
 
       - name: Verify macOS signature
         if: runner.os == 'macOS' && needs.setup_release.outputs.publish_release == 'true'
-        run: codesign --verify --deep --strict --verbose=2 ./dist/themerr_plex.app
+        run: codesign --verify --deep --strict --verbose=2 ./dist/themerr.app
 
       - name: Sign Windows executable
         # The signing action does not support ARM64 Windows runners.
@@ -205,7 +277,7 @@ jobs:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           certificate-profile-name: ${{ vars.AZURE_SIGNING_CERT_PROFILE }}
           endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
-          files: ${{ github.workspace }}/dist/themerr_plex.exe
+          files: ${{ github.workspace }}/dist/themerr.exe
           signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
 
       - name: Verify Windows signature
@@ -214,7 +286,7 @@ jobs:
           needs.setup_release.outputs.publish_release == 'true' && vars.AZURE_SIGNING_ACCOUNT != ''
         shell: pwsh
         run: |
-          $signature = Get-AuthenticodeSignature -LiteralPath ./dist/themerr_plex.exe
+          $signature = Get-AuthenticodeSignature -LiteralPath ./dist/themerr.exe
           if ($signature.Status -ne 'Valid') {
             throw "Windows executable signature is invalid: $($signature.Status)"
           }
@@ -223,24 +295,24 @@ jobs:
         shell: bash
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            ./dist/themerr_plex.exe --help
+            ./dist/themerr.exe --help
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            ./dist/themerr_plex.app/Contents/MacOS/themerr_plex --help
+            ./dist/themerr.app/Contents/MacOS/themerr --help
           else
-            ./dist/themerr_plex --help
+            ./dist/themerr --help
           fi
 
       - name: Package Release
         run: |
-          7z a "./Themerr-plex_${{ runner.os }}_${{ matrix.arch }}.zip" "dist"
+          7z a "./Themerr_${{ runner.os }}_${{ matrix.arch }}.zip" "dist"
 
           mkdir artifacts
-          mv "./Themerr-plex_${{ runner.os }}_${{ matrix.arch }}.zip" ./artifacts/
+          mv "./Themerr_${{ runner.os }}_${{ matrix.arch }}.zip" ./artifacts/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: Themerr-plex_${{ runner.os }}_${{ matrix.arch }}
+          name: Themerr_${{ runner.os }}_${{ matrix.arch }}
           if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
           path: |
             ${{ github.workspace }}/artifacts
@@ -259,7 +331,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
-          pattern: Themerr-plex_*
+          pattern: Themerr_*
           path: artifacts
           merge-multiple: true
 

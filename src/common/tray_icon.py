@@ -99,7 +99,7 @@ def tray_initialize() -> Icon | bool:
     image = Image.open(os.path.join(definitions.Paths.ROOT_DIR, 'web', 'images', 'favicon.ico'))
     tray_icon.icon = image
 
-    # NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not translate "%(app_name)s".
+    # NOTE: Open the application. "%(app_name)s" = "Themerr". Do not translate "%(app_name)s".
     first_menu_entry = MenuItem(text=_('Open %(app_name)s') % {'app_name': definitions.Names.name},
                                 action=functools.partial(open_link, '/'))
 
@@ -111,12 +111,12 @@ def tray_initialize() -> Icon | bool:
                 MenuItem(text=_('Version %(version)s') % {'version': version.VERSION}, action=None, enabled=False),
                 Menu.SEPARATOR,
                 MenuItem(text=_('Repository'),
-                         action=functools.partial(open_link, 'https://github.com/LizardByte/Themerr-plex')),
+                         action=functools.partial(open_link, 'https://github.com/LizardByte/Themerr')),
                 # NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate "%(github)s".
                 MenuItem(text=_('%(github)s Releases') % {'github': 'GitHub'},
                          action=functools.partial(
-                             open_link, 'https://github.com/LizardByte/Themerr-plex/releases/latest')),
-                MenuItem(text=_('Documentation'), action=functools.partial(open_link, '/docs/')),
+                             open_link, 'https://github.com/LizardByte/Themerr/releases/latest')),
+                MenuItem(text=_('Documentation'), action=functools.partial(open_link, definitions.DOCUMENTATION_URL)),
                 MenuItem(text=_('API documentation'), action=functools.partial(open_link, '/api/docs')),
                 MenuItem(text='ThemerrDB',
                          action=functools.partial(open_link, 'https://github.com/LizardByte/ThemerrDB')),
@@ -280,7 +280,7 @@ def tray_toggle() -> bool:
 
 def tray_quit():
     """
-    Shutdown Themerr-plex.
+    Shutdown Themerr.
 
     Set the 'common.SIGNAL' variable to 'shutdown'.
 
@@ -293,7 +293,7 @@ def tray_quit():
 
 def tray_restart():
     """
-    Restart Themerr-plex.
+    Restart Themerr.
 
     Set the 'common.SIGNAL' variable to 'restart'.
 
@@ -349,7 +349,7 @@ def open_link(url: str, *args) -> bool:
 
     Examples
     --------
-    >>> open_link('https://github.com/LizardByte/Themerr-plex')
+    >>> open_link('https://github.com/LizardByte/Themerr')
     True
     """
     if url.startswith('/'):

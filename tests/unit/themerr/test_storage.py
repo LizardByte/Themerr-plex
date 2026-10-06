@@ -65,8 +65,8 @@ def test_initial_migration_creates_complete_model_schema(configured):
     with storage.engine().connect() as connection:
         script = ScriptDirectory.from_config(_migration_config(connection))
         revisions = list(script.walk_revisions())
-        assert len(revisions) == 1
-        assert revisions[0].down_revision is None
+        assert len(revisions) == 2
+        assert revisions[-1].down_revision is None
         assert len(revisions[0].revision) == 12
         assert int(revisions[0].revision, 16) >= 0
         revision = connection.execute(text('SELECT version_num FROM alembic_version')).scalar_one()
@@ -82,6 +82,29 @@ def test_initial_migration_can_downgrade_and_rebuild(configured):
         assert inspect(connection).get_table_names() == ['alembic_version']
         command.upgrade(migration, 'head')
         assert compare_metadata(MigrationContext.configure(connection), ServerRecord.metadata) == []
+
+
+def test_jellyfin_migration_preserves_plex_dashboard_and_theme_history(configured):
+    storage.replace_dashboard(_dashboard())
+    storage.save_tracking(42, 'movie', {'youtube_theme_url': 'source', 'audio_sha256': 'digest'})
+    with storage.engine().begin() as connection:
+        migration = _migration_config(connection)
+        command.downgrade(migration, 'c78c7a5bd3a3')
+        assert connection.execute(text('SELECT key FROM library_sections')).scalar_one() == 1
+        command.upgrade(migration, 'head')
+        assert connection.execute(text('SELECT key FROM library_sections')).scalar_one() == '1'
+        assert connection.execute(text('PRAGMA foreign_key_check')).all() == []
+    assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
+    assert storage.get_tracking(42)['audio_sha256'] == 'digest'
+
+
+def test_opaque_library_and_item_keys_remain_scoped(configured):
+    snapshot = _dashboard()['1']
+    with storage.server_scope('jellyfin:server'):
+        section = {**snapshot, 'key': 'a' * 32, 'items': [{**snapshot['items'][0], 'rating_key': 'b' * 32}]}
+        storage.replace_dashboard({'a' * 32: section})
+        assert storage.get_dashboard()['a' * 32]['items'][0]['rating_key'] == 'b' * 32
+    assert storage.get_dashboard() is None
 
 
 def test_dashboard_replacement_is_atomic(configured):
@@ -145,3 +168,26 @@ def test_database_uses_active_config_directory(configured, tmp_path, monkeypatch
     assert storage.get_errors() == {'42': 'Video unavailable'}
     assert (tmp_path / definitions.Files.DATABASE).is_file()
     assert not (tmp_path / 'inactive').exists()
+
+
+def test_repository_rename_reuses_existing_database(configured, tmp_path, monkeypatch):
+    legacy_filename = f'{definitions.Names.legacy_name.lower()}.db'
+    with monkeypatch.context() as previous:
+        previous.setattr(definitions.Files, 'DATABASE', legacy_filename)
+        storage.replace_dashboard(_dashboard())
+        storage.save_credentials({'client_id': 'existing-installation'})
+        storage.save_encrypted_token('encrypted-secret')
+        storage.close()
+
+    assert storage.get_dashboard()['1']['items'][0]['title'] == 'Example'
+    assert storage.get_credentials() == {'client_id': 'existing-installation'}
+    assert storage.get_encrypted_token() == 'encrypted-secret'
+    assert not (tmp_path / definitions.Files.DATABASE).exists()
+
+
+def test_current_database_takes_precedence_over_legacy_database(configured, tmp_path):
+    storage.save_credentials({'client_id': 'current-installation'})
+    storage.close()
+    (tmp_path / f'{definitions.Names.legacy_name.lower()}.db').write_bytes(b'unused previous database')
+    assert storage.get_credentials() == {'client_id': 'current-installation'}
+    assert storage.database_path() == str(tmp_path / definitions.Files.DATABASE)

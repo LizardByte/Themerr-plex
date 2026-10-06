@@ -50,7 +50,7 @@ def test_initialize_and_browser(configured, monkeypatch):
     monkeypatch.setattr(tray_icon.config, 'save_config', save)
 
     icon = tray_icon.tray_initialize()
-    assert icon.name == 'themerr-plex'
+    assert icon.name == 'themerr'
     assert isinstance(icon.menu, FakeMenu)
     assert callable(icon.menu)
     assert len(icon.menu) > 1
@@ -119,14 +119,14 @@ def test_about_and_donation_links_use_the_native_callback_contract(configured, m
     details = about.items[0]
     assert details.text == 'Version 2026.1003.120000'
     assert not details.enabled
-    assert icon.title == 'Themerr-plex'
+    assert icon.title == 'Themerr'
     assert not icon.menu.items[0](icon)
     opened.assert_not_called()
 
     destinations = {
-        'Repository': 'https://github.com/LizardByte/Themerr-plex',
-        'GitHub Releases': 'https://github.com/LizardByte/Themerr-plex/releases/latest',
-        'Documentation': '/docs/',
+        'Repository': 'https://github.com/LizardByte/Themerr',
+        'GitHub Releases': 'https://github.com/LizardByte/Themerr/releases/latest',
+        'Documentation': 'https://docs.lizardbyte.dev/projects/themerr/latest/',
         'API documentation': '/api/docs',
         'ThemerrDB': 'https://github.com/LizardByte/ThemerrDB',
         'GitHub Sponsors': 'https://github.com/sponsors/LizardByte',
@@ -148,7 +148,7 @@ def test_about_and_donation_links_use_the_native_callback_contract(configured, m
 
 def test_link_callback_returns_browser_failure(monkeypatch):
     monkeypatch.setattr(tray_icon.helpers, 'open_url_in_browser', lambda url: False)
-    assert tray_icon.open_link('https://github.com/LizardByte/Themerr-plex') is False
+    assert tray_icon.open_link('https://github.com/LizardByte/Themerr') is False
 
 
 @pytest.mark.skipif(not hasattr(tray_icon, 'MenuOnLeftClickIcon'), reason='Windows tray backend only')

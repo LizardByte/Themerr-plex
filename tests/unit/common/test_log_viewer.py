@@ -285,7 +285,7 @@ def test_three_channels_route_application_uvicorn_scheduler_and_ytdlp_once(confi
     try:
         logger.setup_loggers()
         logger.setup_loggers()  # Reconfiguration must not duplicate or retain old file handlers.
-        for name in ('common.webapp', 'common.helpers', 'plex.plexapi', 'themerr.general', 'youtube.youtube_dl'):
+        for name in ('common.webapp', 'common.helpers', 'plex.plexapi', 'plex.media', 'youtube.youtube_dl'):
             assert logger.get_logger(name) is logging.getLogger('themerr')
             assert helpers.get_logger(name) is logger.get_logger(name)
             logger.get_logger(name).info('application %s', name)

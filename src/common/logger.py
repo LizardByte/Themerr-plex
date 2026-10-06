@@ -464,7 +464,7 @@ def listener(logger: logging.Logger):
 
     Examples
     --------
-    >>> logger = get_logger(name='themerr-plex')
+    >>> logger = get_logger(name='themerr')
     >>> listener(logger=logger)
     """
 
@@ -509,7 +509,7 @@ def init_multiprocessing(logger: logging.Logger):
 
     Examples
     --------
-    >>> logger = get_logger(name='themerr-plex')
+    >>> logger = get_logger(name='themerr')
     >>> init_multiprocessing(logger=logger)
     """
 
@@ -549,8 +549,8 @@ def get_logger(name: str) -> logging.Logger:  # this also exists in helpers.py t
 
     Examples
     --------
-    >>> get_logger(name='themerr-plex')
-    <Logger themerr-plex (WARNING)>
+    >>> get_logger(name='themerr')
+    <Logger themerr (WARNING)>
     """
     logger = helpers.get_logger(name)
     logger.warn = logger.warning  # replace warn with warning
@@ -817,8 +817,8 @@ def init_logger(log_name: str) -> logging.Logger:
 
     Examples
     --------
-    >>> init_logger(log_name='themerr-plex')
-    <Logger themerr-plex (INFO)>
+    >>> init_logger(log_name='themerr')
+    <Logger themerr (INFO)>
     """
     logger = logging.getLogger(name=log_name)
 
