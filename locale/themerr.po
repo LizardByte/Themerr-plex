@@ -643,35 +643,35 @@ msgstr ""
 msgid "Show cookies"
 msgstr ""
 
-#: web/js/config.js:52 web/js/config.js:115
-msgid "Unsaved changes"
-msgstr ""
-
-#: web/js/config.js:60
-msgid "Discard unsaved settings changes?"
-msgstr ""
-
-#: web/js/config.js:92 web/templates/config.html:14
+#: web/js/config.js:18 web/templates/config.html:14
 msgid "Cookies saved"
 msgstr ""
 
-#: web/js/config.js:105 web/templates/config.html:14
+#: web/js/config.js:34 web/templates/config.html:14
 msgid "No cookies saved"
 msgstr ""
 
-#: web/js/config.js:115 web/templates/config.html:40
+#: web/js/config.js:81 web/js/config.js:123
+msgid "Unsaved changes"
+msgstr ""
+
+#: web/js/config.js:89
+msgid "Discard unsaved settings changes?"
+msgstr ""
+
+#: web/js/config.js:123 web/templates/config.html:40
 msgid "All changes saved."
 msgstr ""
 
-#: web/js/config.js:117
+#: web/js/config.js:125
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr ""
 
-#: web/js/config.js:121
+#: web/js/config.js:129
 msgid "Unable to save changes."
 msgstr ""
 
-#: web/js/config.js:129
+#: web/js/config.js:137
 msgid "Save your settings changes before changing your password."
 msgstr ""
 

@@ -101,11 +101,12 @@ def test_unavailable_secure_storage_never_writes_plaintext(configured, tmp_path,
 
 
 def test_missing_key_and_tampered_ciphertext_are_rejected(configured, monkeypatch):
-    encrypted = credentials.encrypt_setting(cookie_export())
+    plaintext = cookie_export()
+    encrypted = credentials.encrypt_setting(plaintext)
     with pytest.raises(credentials.TokenStorageError, match='decrypt'):
         credentials.decrypt_setting(encrypted[:-10] + 'tampered')
     monkeypatch.setattr(credentials.keyring, 'get_password', lambda *_: None)
     with pytest.raises(credentials.TokenStorageError, match='key is unavailable'):
         credentials.decrypt_setting(encrypted)
     with pytest.raises(credentials.TokenStorageError, match='not encrypted'):
-        credentials.decrypt_setting(cookie_export())
+        credentials.decrypt_setting(plaintext)

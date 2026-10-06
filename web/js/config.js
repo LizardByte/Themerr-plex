@@ -12,6 +12,35 @@ function setSecretVisible(button, visible) {
     });
 }
 
+function markSecretsSaved(form, secretFields, revealedSecrets) {
+    for (const { field, value } of secretFields) {
+        field.dataset.hasSecret = 'true';
+        field.placeholder = _('Cookies saved');
+        if (field.value === value) {
+            field.value = '';
+            revealedSecrets.delete(field);
+            field.type = 'password';
+            const button = form.querySelector(`[data-secret-toggle="${field.id}"]`);
+            setSecretVisible(button, false);
+        }
+    }
+}
+
+function markSecretsCleared(form, clearedSecrets, revealedSecrets, unchanged) {
+    for (const checkbox of clearedSecrets) {
+        for (const input of form.querySelectorAll('[category]')) {
+            if (`${input.getAttribute('category')}|${input.dataset.settingKey || input.id}` !== checkbox.dataset.clearSecret) continue;
+            input.dataset.hasSecret = 'false';
+            input.placeholder = _('No cookies saved');
+            if (unchanged) input.value = '';
+            revealedSecrets.delete(input);
+        }
+    }
+    if (unchanged) {
+        for (const field of clearedSecrets) field.checked = false;
+    }
+}
+
 export function initSettings(signal) {
     const form = document.getElementById('configForm');
     if (!form) return;
@@ -87,29 +116,8 @@ export function initSettings(signal) {
         const submittedLocale = locale.value;
         try {
             await api('/api/settings', { form: data });
-            for (const { field, value } of secretFields) {
-                field.dataset.hasSecret = 'true';
-                field.placeholder = _('Cookies saved');
-                if (field.value === value) {
-                    field.value = '';
-                    revealedSecrets.delete(field);
-                    field.type = 'password';
-                    const button = form.querySelector(`[data-secret-toggle="${field.id}"]`);
-                    setSecretVisible(button, false);
-                }
-            }
-            for (const checkbox of clearedSecrets) {
-                for (const input of form.querySelectorAll('[category]')) {
-                    if (`${input.getAttribute('category')}|${input.dataset.settingKey || input.id}` !== checkbox.dataset.clearSecret) continue;
-                    input.dataset.hasSecret = 'false';
-                    input.placeholder = _('No cookies saved');
-                    if (revision === submittedRevision) input.value = '';
-                    revealedSecrets.delete(input);
-                }
-            }
-            if (revision === submittedRevision) {
-                for (const field of clearedSecrets) field.checked = false;
-            }
+            markSecretsSaved(form, secretFields, revealedSecrets);
+            markSecretsCleared(form, clearedSecrets, revealedSecrets, revision === submittedRevision);
             dirty = revision !== submittedRevision;
             save.disabled = !dirty;
             status.textContent = dirty ? _('Unsaved changes') : _('All changes saved.');

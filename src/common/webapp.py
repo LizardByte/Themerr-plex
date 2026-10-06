@@ -663,6 +663,35 @@ def _parse_setting(option: str, value: str) -> tuple[str, str, object]:
     return key, setting, value
 
 
+def _apply_setting(candidate: dict, decoded: dict, option: str, value: str) -> tuple[str, str] | None:
+    """Apply one submitted setting and return its key if the value changed."""
+    clear_secret = option.endswith('|clear')
+    if clear_secret:
+        option = option.removesuffix('|clear')
+    key, setting, value = _parse_setting(option, value)
+    secret = config._CONFIG_SPEC_DICT[key][setting].get('secret')
+    if clear_secret:
+        if not secret or value != 'true':
+            raise ValueError(option)
+        value = ''
+    elif secret and not value:
+        return None
+    elif secret:
+        # Always encrypt submitted text, even if it resembles ciphertext.
+        value = credentials.encrypt_setting(value)
+
+    changed = (candidate[key][setting] if secret else decoded[key][setting]) != value
+    if config.is_masked_field(section=key, key=setting):
+        value = config.encode_value(value)
+    candidate[key][setting] = value
+    if changed:
+        return (
+            key,
+            setting,
+        )
+    return None
+
+
 def _candidate_settings(form) -> tuple[dict, list[tuple[str, str]], Response | None]:
     """Build a validated candidate from the submitted settings form.
 
@@ -675,21 +704,8 @@ def _candidate_settings(form) -> tuple[dict, list[tuple[str, str]], Response | N
     decoded = config.decode_config(common.CONFIG)
     changed = []
     for option, value in form.items():
-        clear_secret = option.endswith('|clear')
-        if clear_secret:
-            option = option.removesuffix('|clear')
         try:
-            key, setting, value = _parse_setting(option, value)
-            secret = config._CONFIG_SPEC_DICT[key][setting].get('secret')
-            if clear_secret:
-                if not secret or value != 'true':
-                    raise ValueError(option)
-                value = ''
-            elif secret and not value:
-                continue
-            elif secret:
-                # Always encrypt submitted text, even if it resembles ciphertext.
-                value = credentials.encrypt_setting(value)
+            changed_setting = _apply_setting(candidate, decoded, option, value)
         except KeyError:
             error = JSONResponse({'status': 'ERROR', 'message': 'Unknown or locked setting.'}, status_code=400)
             return candidate, changed, error
@@ -701,11 +717,8 @@ def _candidate_settings(form) -> tuple[dict, list[tuple[str, str]], Response | N
                                   'Check the OS credential store or THEMERR_TOKEN_KEY_FILE.'}, status_code=500)
             return candidate, changed, error
 
-        if (candidate[key][setting] if secret else decoded[key][setting]) != value:
-            changed.append((key, setting))
-        if config.is_masked_field(section=key, key=setting):
-            value = config.encode_value(value)
-        candidate[key][setting] = value
+        if changed_setting is not None:
+            changed.append(changed_setting)
     return candidate, changed, None
 
 
