@@ -1,6 +1,6 @@
 # Docker
 
-## lizardbyte/themerr-plex
+## lizardbyte/themerr
 
 Before connecting a media server, create a persistent key file outside the `/config` volume. Keep this file private and ensure the
 container's `PUID` can read it. Keep the same key when recreating the container; losing it requires signing in again.
@@ -20,7 +20,7 @@ Create and run the container (substitute your `<values>`):
 
 ```bash
 docker run -d \
-  --name=themerr-plex \
+  --name=themerr \
   --restart=unless-stopped \
   -v <path to data>:/config \
   -v <absolute path to themerr-tokens.key>:/run/secrets/themerr_token_key:ro \
@@ -30,18 +30,18 @@ docker run -d \
   -e TZ=<timezone> \
   -p 9494:9494 \
   -p 9495:9495 \
-  lizardbyte/themerr-plex
+  lizardbyte/themerr
 ```
 
 To update the container it must be removed and recreated:
 
 ```bash
 # Stop the container
-docker stop themerr-plex
+docker stop themerr
 # Remove the container
-docker rm themerr-plex
+docker rm themerr
 # Pull the latest update
-docker pull lizardbyte/themerr-plex
+docker pull lizardbyte/themerr
 # Run the container with the same parameters as before
 docker run -d ...
 ```
@@ -53,9 +53,9 @@ Create a `docker-compose.yml` file with the following contents (substitute your 
 ```yaml
 version: '3'
 services:
-  themerr-plex:
-    image: lizardbyte/themerr-plex
-    container_name: themerr-plex
+  themerr:
+    image: lizardbyte/themerr
+    container_name: themerr
     restart: unless-stopped
     volumes:
       - <path to data>:/config
@@ -99,7 +99,7 @@ The internal port is `9494`; the host port may be changed (e.g. `-p 8080:9494`).
 |------------------------------------------------------|--------------------------------------------------------------------------------------|----------------------------------|:--------:|
 | `-p <port>:9494`                                     | Web UI Port                                                                          | `9494`                           |   True   |
 | `-p <port>:9495`                                     | Jellyfin connector repository with self-signed TLS on the UI                         | `9495`                           |  False   |
-| `-v <path to data>:/config`                          | Volume mapping                                                                       | `/home/themerr-plex`             |   True   |
+| `-v <path to data>:/config`                          | Volume mapping                                                                       | `/home/themerr`                  |   True   |
 | `-v <path to key>:/run/secrets/themerr_token_key:ro` | Read-only token encryption key                                                       | `/home/me/themerr-tokens.key`    |   True   |
 | `-e THEMERR_TOKEN_KEY_FILE=...`                      | Container path to the token encryption key                                           | `/run/secrets/themerr_token_key` |   True   |
 | `-e PUID=<uid>`                                      | User ID                                                                              | `1001`                           |  False   |

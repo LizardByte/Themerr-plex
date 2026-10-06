@@ -222,7 +222,7 @@ def test_external_key_encrypts_independent_account_and_server_tokens(configured,
     assert auth.get_token() == 'account-secret'
     assert token_store.get_token(servers.credential_id('b')) == 'token-b'
     assert 'account-secret' not in storage.get_encrypted_token()
-    assert b'token-b' not in tmp_path.joinpath('themerr-plex.db').read_bytes()
+    assert b'token-b' not in tmp_path.joinpath('themerr.db').read_bytes()
 
 
 def test_cache_and_scan_keep_other_servers_running_when_one_is_offline(configured, monkeypatch):

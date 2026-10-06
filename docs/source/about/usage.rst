@@ -1,9 +1,7 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/about/usage.rst
-
 Usage
 =====
 
-Start Themerr-plex, then open its web UI at https://localhost:9494 (or the host and port you configured).
+Start Themerr, then open its web UI at https://localhost:9494 (or the host and port you configured).
 
 The web sidebar footer shows the installed version. In the system tray, open **About** to see the version and
 links to the repository, releases, online documentation, API documentation, and ThemerrDB. The API documentation
@@ -26,13 +24,13 @@ no increase, does not send an alert. Theme uploads are included in the next succ
 
 Notifications appear on the computer running Themerr, even when the web UI is open on another device.
 Docker and headless installations do not display desktop notifications. Linux requires a desktop notification
-service and a session D-Bus connection. On macOS, launch the signed ``themerr_plex.app`` bundle and allow
+service and a session D-Bus connection. On macOS, launch the signed ``themerr.app`` bundle and allow
 notifications when prompted. Operating system notification settings, including Do Not Disturb, still apply.
 
 Admin account
 -------------
 
-On first start, Themerr-plex prints a one-time setup link in the console and opens it if browser launching is enabled.
+On first start, Themerr prints a one-time setup link in the console and opens it if browser launching is enabled.
 Use this link to create the installation's single admin account with a password of at least 12 characters.
 For a remote or Docker installation, replace ``127.0.0.1`` in the link with the reachable hostname, retaining the setup
 token. Opening the normal address before setup shows instructions for obtaining this link.
@@ -47,7 +45,7 @@ application and run its executable with ``--reset-admin-password`` from a local 
 
 .. code-block:: shell
 
-   uv run --locked python src/themerr_plex.py --reset-admin-password
+   uv run --locked python src/main.py --reset-admin-password
 
 Supply ``--config`` if you normally use a different configuration file. The command prompts for a new password
 without echoing it and exits without starting the server.
@@ -85,17 +83,17 @@ each server to resume processing with its retained upload history.
 
 On desktop systems, account and server tokens are saved in the operating system's credential store.
 For Docker or headless systems, provide ``THEMERR_TOKEN_KEY_FILE`` pointing to a persistent Fernet key file outside
-the configuration directory. Themerr-plex uses that key to encrypt tokens stored in SQLite. Keep the key file private;
+the configuration directory. Themerr uses that key to encrypt tokens stored in SQLite. Keep the key file private;
 losing it requires signing in again. Docker sign-in requires this key file.
 
-Expand **Processing settings** on a server card to set its Plex data directory if you want Themerr-plex to remove
+Expand **Processing settings** on a server card to set its Plex data directory if you want Themerr to remove
 older uploaded media from Plex's metadata directory. Use the folder button to browse directories on the machine
-running Themerr-plex. The same button is available for the log directory in Settings.
+running Themerr. The same button is available for the log directory in Settings.
 
-When Themerr-plex runs on another machine, use the Plex server's reachable URL and mount its data directory if you
+When Themerr runs on another machine, use the Plex server's reachable URL and mount its data directory if you
 want this cleanup. Otherwise, disable the three **Remove unused** settings.
 
-Enable movie, series, and collection updates as needed. Themerr-plex listens for supported Plex library
+Enable movie, series, and collection updates as needed. Themerr listens for supported Plex library
 events and also scans on the configured schedule. The home page reports theme status for each supported
 library item and links to ThemerrDB contribution forms when a TMDB ID is known. It shows an IMDb or TVDB ID when Plex
 supplies one but a TMDB ID cannot be resolved. A Plex ID is shown for collections without a verified external ID;
@@ -156,7 +154,7 @@ To exclude a library from updates, enter its ID in **Ignored library IDs** in it
 The home page shows each library's ID beside its name. Separate multiple IDs with commas.
 
 TMDB IDs for titles already in ThemerrDB are resolved from ThemerrDB's index. Movie collections can also be resolved
-from matching collection metadata on their member movies. Themerr-plex asks the item's Plex server's TMDB proxy to
+from matching collection metadata on their member movies. Themerr asks the item's Plex server's TMDB proxy to
 resolve other IMDb or TVDB IDs and collection names. If the Plex proxy is unavailable, you can set the optional
 ``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
 web settings and configuration file.
@@ -202,10 +200,11 @@ For Docker and headless installations, set up the persistent credential encrypti
 Local data
 ----------
 
-Themerr-plex stores its server registry, admin password hash, dashboard snapshots, upload records, processing errors,
+Themerr stores its server registry, admin password hash, dashboard snapshots, upload records, processing errors,
 and non-secret client IDs in
-``themerr-plex.db`` beside the active configuration file (``config/themerr-plex.db`` by default, or
-``/config/themerr-plex.db`` in Docker). Docker and headless installs also store encrypted tokens and API keys there.
+``themerr.db`` beside the active configuration file (``config/themerr.db`` by default, or
+``/config/themerr.db`` in Docker). Docker and headless installs also store encrypted tokens and API keys there.
+Existing installations keep using their previous database and saved credentials.
 
 The ``/status`` endpoint returns a JSON health response. Open **Documentation** in the sidebar or
 system tray to read the online project documentation.
@@ -229,24 +228,24 @@ For Chrome or another compatible Chromium browser:
 3. In that same tab, visit https://www.youtube.com/robots.txt. Keep it as the only tab in the private window.
 4. Open the extension, set **Export Format** to **JSON**, and select **Copy** or **Export** for the current site.
    If you export a file, open it in a text editor and copy its entire contents. Avoid **Export All Cookies**;
-   Themerr-plex only needs the YouTube cookies.
+   Themerr only needs the YouTube cookies.
 5. Close the private window. These steps follow `yt-dlp's YouTube export guidance
    <https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies>`_ to reduce cookie rotation.
-6. In Themerr-plex, open **Settings** and find **YouTube Cookies** in the **Themerr** section. Paste the JSON and
+6. In Themerr, open **Settings** and find **YouTube Cookies** in the **Themerr** section. Paste the JSON and
    select **Save changes**. It will be used on the next extraction; a restart is not required.
 
 If YouTube starts asking you to sign in again, repeat the export and replace the saved JSON.
 Cookies cannot make a deleted or unavailable video accessible.
 
-Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr-plex
+Treat cookies like passwords: they can grant access to your browser session. Keep the export and Themerr
 configuration private, and never include cookie values in screenshots, logs, or issue reports.
-Themerr-plex converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
+Themerr converts the saved JSON to a temporary Netscape file for yt-dlp and removes that file after
 each extraction; the JSON remains in the configuration until you clear the setting and save.
 
 Theme format
 ------------
 
-Themerr-plex selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
+Themerr selects the largest available Opus or MP4A audio stream. Enable Prefer MP4A AAC Codec for
 Plex clients that cannot play Opus theme audio. If MP4A is unavailable, Opus is used.
 
 Themes are skipped on later jobs unless the source changes or the AAC preference requires a different codec.

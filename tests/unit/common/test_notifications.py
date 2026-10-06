@@ -277,7 +277,7 @@ def test_desktop_backend_is_lazy_serialized_and_failure_does_not_escape(monkeypa
     assert notifications._send('Title', 'Message')
     assert notifications._send('Second', 'Message')
     factory.assert_called_once()
-    assert factory.call_args.kwargs['app_name'] == 'Themerr-plex'
+    assert factory.call_args.kwargs['app_name'] == 'Themerr'
     notifier.send.side_effect = RuntimeError('backend failed')
     assert notifications._send('Failure', 'Message') is False
 

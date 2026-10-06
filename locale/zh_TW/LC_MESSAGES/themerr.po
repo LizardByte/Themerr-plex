@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
-"Language-Team: Korean\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,147 +10,147 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: ko\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-Language: zh-TW\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: ko_KR\n"
+"Language: zh_TW\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
-msgstr "정보"
+msgstr "資訊"
 
 #: src/common/config.py:91
 msgid "For information purposes only."
-msgstr "단순히 참고용으로만 제공됩니다."
+msgstr "僅供參考。"
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "구성 버전"
+msgstr "設定版本"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "구성 버전."
+msgstr "配置版本。"
 
 #: src/common/config.py:105
 msgid "First run complete"
-msgstr "첫 실행 완료"
+msgstr "首次執行完成"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "Todo: 사용자가 초기 설정을 완료했는지 여부를 나타냅니다."
+msgstr "待辦事項：顯示使用者是否已完成初始設定。"
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "일반"
+msgstr "概述"
 
 #: src/common/config.py:114
 msgid "General settings."
-msgstr "일반 설정."
+msgstr "一般設定。"
 
 #: src/common/config.py:118
 msgid "Locale"
-msgstr "지역 설정"
+msgstr "地區設定"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "사용할 현지화 설정."
+msgstr "要使用的本地化設定。"
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "시작 시 브라우저 실행 "
+msgstr "開機時啟動瀏覽器 "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "시스템 트레이 아이콘 활성화"
+msgstr "啟用系統托盤圖示"
 
 #: src/common/config.py:142
 msgid "Notifications"
-msgstr "알림"
+msgstr "通知"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "Themerr이 실행 중인 컴퓨터에 데스크톱 알림이 표시됩니다. Docker 및 헤드리스 설치 환경에서는 알림이 표시되지 않습니다."
+msgstr "桌面通知會出現在執行 Themerr 的電腦上。Docker 環境及無圖形介面的安裝方式則不會顯示這些通知。"
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
-msgstr "신규 출시 상품"
+msgstr "新版本已推出"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "Themerr의 최신 버전이 출시되면 알림을 보내주세요. 확인 작업은 매시간 한 번씩 수행됩니다."
+msgstr "當有較新版本的 Themerr 釋出時，請通知我。系統每小時檢查一次。"
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "사전 출시 소식 팔로우하기"
+msgstr "追蹤預發布版本"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "새로운 릴리스 알림에 사전 릴리스를 포함합니다."
+msgstr "在新版發布通知中納入預發布版本。"
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "주제별 다루는 범위가 확대되었습니다"
+msgstr "主題涵蓋範圍擴大"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
-msgstr "테마 적용 범위가 증가한 경우, 새로고침이 성공적으로 완료된 후 알림을 표시합니다. 적용 범위가 증가하지 않은 새로고침의 경우 알림을 표시하지 않습니다."
+msgstr "當總主題覆蓋率增加時，於刷新成功後發出通知。若刷新後未增加，則不發出通知。"
 
 #: src/common/config.py:168
 msgid "Logging"
-msgstr "로그 기록"
+msgstr "登錄"
 
 #: src/common/config.py:169
 msgid "Logging settings."
-msgstr "로그 기록 설정."
+msgstr "記錄設定。"
 
 #: src/common/config.py:173
 msgid "Log directory"
-msgstr "로그 디렉터리"
+msgstr "日誌目錄"
 
 #: src/common/config.py:175
 msgid "The directory where to store the log files."
-msgstr "로그 파일을 저장할 디렉터리입니다."
+msgstr "用來儲存日誌檔案的目錄。"
 
 #: src/common/config.py:182
 msgid "Debug logging"
-msgstr "디버그 로깅"
+msgstr "除錯記錄"
 
 #: src/common/config.py:184
 msgid "Enable debug logging."
-msgstr "디버그 로깅을 활성화합니다."
+msgstr "啟用除錯記錄。"
 
 #: src/common/config.py:190
 msgid "Network"
-msgstr "네트워크"
+msgstr "網路"
 
 #: src/common/config.py:191
 msgid "Network settings."
-msgstr "네트워크 설정."
+msgstr "網路設定。"
 
 #: src/common/config.py:195
 msgid "HTTP host address"
-msgstr "HTTP 호스트 주소"
+msgstr "HTTP 主機位址"
 
 #: src/common/config.py:197
 msgid "The HTTP address to bind to."
-msgstr "바인딩할 HTTP 주소."
+msgstr "要綁定的 HTTP 位址。"
 
 #: src/common/config.py:206
 msgid "HTTP port"
-msgstr "HTTP 포트"
+msgstr "HTTP 埠"
 
 #: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
-msgstr "웹 서버를 연결할 포트입니다. 1024 미만의 포트를 사용할 경우 루트 권한이 필요할 수 있으니 유의하십시오."
+msgstr "要將網頁伺服器綁定的埠號。請注意，1024 以下的埠號可能需要 root 權限。"
 
 #: src/common/config.py:216
 msgid "HTTP root"
-msgstr "HTTP 루트"
+msgstr "HTTP 根目錄"
 
 #: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
-msgstr "Todo: 웹 서버의 기본 URL입니다. 리버스 프록시에 사용됩니다."
+msgstr "待辦事項：Web 伺服器的基礎 URL。用於反向代理。"
 
 #: src/common/config.py:223
 msgid "SSL"
@@ -158,19 +158,19 @@ msgstr "SSL"
 
 #: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
-msgstr "웹 서버를 HTTPS로 실행하십시오. 이 기능을 비활성화하면 보안 위험이 발생할 수 있으므로, 이를 적용할 경우 모든 책임은 사용자에게 있습니다."
+msgstr "請以 HTTPS 模式執行網頁伺服器。停用此功能可能造成安全風險，請自行承擔風險後再進行此操作。"
 
 #: src/common/config.py:231
 msgid "Updater"
-msgstr "업데이터"
+msgstr "更新程式"
 
 #: src/common/config.py:232
 msgid "Updater settings."
-msgstr "업데이터 설정."
+msgstr "更新程式設定。"
 
 #: src/common/config.py:236
 msgid "Auto update"
-msgstr "자동 업데이트"
+msgstr "自動更新"
 
 #: src/common/config.py:244
 msgid "Plex"
@@ -178,7 +178,7 @@ msgstr "Plex"
 
 #: src/common/config.py:245
 msgid "Plex settings."
-msgstr "Plex 설정."
+msgstr "Plex 設定。"
 
 #: src/common/config.py:249
 msgid "Plex URL"
@@ -186,11 +186,11 @@ msgstr "Plex URL"
 
 #: src/common/config.py:250
 msgid "The URL to the Plex server."
-msgstr "Plex 서버의 URL입니다."
+msgstr "Plex 伺服器的 URL。"
 
 #: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
-msgstr "Plex 데이터 디렉터리"
+msgstr "Plex 資料目錄"
 
 #: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
@@ -202,416 +202,416 @@ msgstr "Themerr"
 
 #: src/common/config.py:271
 msgid "Themerr settings."
-msgstr "Themerr 설정."
+msgstr "Themerr 設定。"
 
 #: src/common/config.py:275
 msgid "Themerr Enabled"
-msgstr "Themerr 활성화됨"
+msgstr "已啟用 Themerr"
 
 #: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
-msgstr "이 기능이 활성화되면 Themerr는 테마를 업데이트하려고 시도합니다."
+msgstr "啟用後，Themerr 將嘗試更新主題。"
 
 #: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
-msgstr "컬렉션"
+msgstr "收藏集"
 
 #: src/common/config.py:282
 msgid "Add themes to collections."
-msgstr "컬렉션에 테마를 추가하세요."
+msgstr "將主題新增至收藏集。"
 
 #: src/common/config.py:287
 msgid "Movie support"
-msgstr "영화 지원"
+msgstr "電影支援"
 
 #: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
-msgstr "Plex Movie 에이전트를 사용하여 영화에 테마를 추가하세요."
+msgstr "使用 Plex Movie 代理程式為電影新增主題。"
 
 #: src/common/config.py:293
 msgid "Series support"
-msgstr "시리즈 지원"
+msgstr "系列支援"
 
 #: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
-msgstr "Plex 시리즈 에이전트를 사용하여 시리즈에 테마를 추가하세요."
+msgstr "使用 Plex 影集代理程式為影集新增主題。"
 
 #: src/common/config.py:299
 msgid "Overwrite Plex themes"
-msgstr "Plex 테마 덮어쓰기"
+msgstr "覆寫 Plex 主題"
 
 #: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
-msgstr "이 기능이 활성화되면 Themerr는 Plex에서 제공하는 테마를 덮어씁니다."
+msgstr "啟用後，Themerr 將覆寫 Plex 提供的主題。"
 
 #: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
-msgstr "MP4A AAC 코덱을 선호합니다"
+msgstr "建議使用 MP4A AAC 編解碼器"
 
 #: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
-msgstr "이를 통해 Apple 기기와의 테마 호환성을 높일 수 있습니다."
+msgstr "此舉可提升該主題與 Apple 裝置的相容性。"
 
 #: src/common/config.py:311
 msgid "Remove unused themes"
-msgstr "사용하지 않는 테마 삭제하기"
+msgstr "移除未使用的佈景主題"
 
 #: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Plex 메타데이터 디렉터리의 공간을 확보합니다. 이 옵션을 사용하려면 “Plex 데이터 디렉터리” 경로가 설정되어 있어야 합니다."
+msgstr "釋放 Plex 元資料目錄中的空間。此選項需要先設定「Plex 資料目錄」的路徑"
 
 #: src/common/config.py:318
 msgid "Remove unused art"
-msgstr "사용하지 않는 아트 제거하기"
+msgstr "移除未使用的圖像"
 
 #: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "컬렉션에 적용됩니다. Plex 메타데이터 디렉터리의 공간을 확보합니다. 이 옵션을 사용하려면 “Plex 데이터 디렉터리” 경로가 설정되어 있어야 합니다."
+msgstr "適用於收藏集。可釋放 Plex 元資料目錄中的空間。此選項需要先設定「Plex 資料目錄」的路徑"
 
 #: src/common/config.py:326
 msgid "Remove unused posters"
-msgstr "사용하지 않는 포스터를 치우세요"
+msgstr "移除未使用的海報"
 
 #: src/common/config.py:334
 msgid "Collection metadata"
-msgstr "컬렉션 메타데이터"
+msgstr "收藏集元資料"
 
 #: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
-msgstr "예정된 업데이트 시점에 컬렉션 메타데이터(포스터, 삽화, 요약)를 업데이트합니다."
+msgstr "在排程更新期間，更新收藏集的元資料（海報、藝術作品及摘要）。"
 
 #: src/common/config.py:340
 msgid "Ignore locked fields."
-msgstr "잠긴 필드는 무시합니다."
+msgstr "忽略已鎖定的欄位。"
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Themerr-plex v2024.813.13709 이하 버전을 사용 중이라면, 항목을 업데이트하기 위해 이 기능을 활성화해야 할 수도 있습니다."
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "如果您使用的是 Themerr v2024.813.13709 或更早版本，可能需要啟用此功能才能更新項目。"
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
-msgstr "무시된 라이브러리 ID"
+msgstr "被忽略的函式庫識別碼"
 
 #: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
-msgstr "예정된 업데이트에서 제외할 라이브러리 ID를 쉼표로 구분하여 나열합니다. ID는 ‘홈’ 화면에 표시됩니다."
+msgstr "以逗號分隔的庫 ID，這些庫將被排除在排程更新之外。這些 ID 會顯示在「首頁」上。"
 
 #: src/common/config.py:354
 msgid "Update themes interval"
-msgstr "테마 업데이트 주기"
+msgstr "更新主題的間隔"
 
 #: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
-msgstr "자동 업데이트 작업의 간격(분 단위, 최소 15분)."
+msgstr "自動更新任務的間隔，單位為分鐘（最小值：15）。"
 
 #: src/common/config.py:362
 msgid "Update database cache interval"
-msgstr "데이터베이스 캐시 간격 업데이트"
+msgstr "更新資料庫快取間隔"
 
 #: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
-msgstr "데이터베이스 캐시 업데이트 작업의 간격(분 단위, 최소 15분)."
+msgstr "資料庫快取更新任務的間隔時間，單位為分鐘（最小值：15）。"
 
 #: src/common/config.py:370
 msgid "PlexAPI timeout"
-msgstr "PlexAPI 시간 초과"
+msgstr "PlexAPI 超時"
 
 #: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
-msgstr "테마를 추가할 때 타임아웃이 발생하면 이 값을 약간 늘리세요. (최소: 1)"
+msgstr "若在新增主題時發生超時情況，請將此數值稍微調高一些。（最小值：1）"
 
 #: src/common/config.py:378
 msgid "Theme upload retries"
-msgstr "테마 업로드 재시도"
+msgstr "佈景主題上傳重試"
 
 #: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
-msgstr "테마 업로드에 실패할 경우, 이 횟수만큼 다시 시도합니다. (최소: 0)"
+msgstr "若上傳主題失敗，請重試此次數。（最小值：0）"
 
 #: src/common/config.py:386
 msgid "Multiprocessing thread count"
-msgstr "멀티프로세싱 스레드 수"
+msgstr "多處理程的執行緒數"
 
 #: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
-msgstr "테마를 추가할 때 사용할 스레드 수입니다. 재시작이 필요합니다. (최소: 1)"
+msgstr "新增主題時使用的執行緒數。需重新啟動。（最小值：1）"
 
 #: src/common/config.py:394
 msgid "YouTube Cookies"
-msgstr "YouTube 쿠키"
+msgstr "YouTube 的 Cookie"
 
 #: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "선택 사항: ‘Get cookies.txt’ 기능을 사용하여 youtube.com 쿠키를 JSON 형식으로 로컬에 내보낸 다음, 전체 JSON 배열을 여기에 붙여넣고 저장하세요. 쿠키에는 브라우저 세션 정보가 포함되어 있으므로, 비공개로 관리해야 합니다."
+msgstr "可選步驟：使用「Get cookies.txt」將 youtube.com 的 Cookie 以 JSON 格式匯出至本機，然後將整個 JSON 陣列貼在此處並儲存。Cookie 包含您的瀏覽器會話資訊；請務必妥善保管，避免洩露。"
 
 #: src/common/config.py:401
 msgid "Cookie export instructions"
-msgstr "쿠키 내보내기 방법"
+msgstr "Cookie 匯出說明"
 
 #: src/common/notifications.py:138
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr "%(app)s %(version)s 에서 확인할 수 있습니다.\n"
+msgstr "%(app)s %(version)s 已上線。\n"
 "%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr "새로 고침이 완료되었습니다."
+msgstr "重新整理完成"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr "주제 포함 비율은 %(increase)s % 포인트 증가했습니다: %(before)s%% → %(after)s%%. %(total)s 항목 중 %(installed)s 가 주제를 포함하고 있습니다."
+msgstr "主題涵蓋率增加了 %(increase)s 個百分點： %(before)s%% → %(after)s%%。 %(installed)s 項中的 %(total)s 項具有主題。"
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
-msgstr "열기 %(app_name)s"
+msgstr "開啟 %(app_name)s"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr "소개"
+msgstr "關於"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr "버전 %(version)s"
+msgstr "版本 %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr "저장소"
+msgstr "儲存庫"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
 #: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
-msgstr "%(github)s 보도자료"
+msgstr "%(github)s 新聞稿"
 
 #: src/common/tray_icon.py:119 web/templates/navbar.html:14
 msgid "Documentation"
-msgstr "문서"
+msgstr "文件"
 
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "API 문서"
+msgstr "API 文件"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
 msgid "Donate"
-msgstr "기부하기"
+msgstr "捐贈"
 
 #: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
-msgstr "GitHub 스폰서"
+msgstr "GitHub 贊助"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
 #: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
-msgstr "%(app_name)s 가 시작될 때 브라우저를 열기"
+msgstr "當 %(app_name)s 啟動時開啟瀏覽器"
 
 #. NOTE: Disable or turn off icon.
 #: src/common/tray_icon.py:139
 msgid "Disable icon"
-msgstr "아이콘 비활성화"
+msgstr "停用圖示"
 
 #. NOTE: Restart the program.
 #: src/common/tray_icon.py:142
 msgid "Restart"
-msgstr "다시 시작"
+msgstr "重新啟動"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
 #: src/common/tray_icon.py:144
 msgid "Quit"
-msgstr "종료"
+msgstr "退出"
 
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr "로그"
+msgstr "日誌"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
-msgstr "설정"
+msgstr "設定"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s Plex의 주제가를 관리합니다.\n"
-"여기에 지정된 인수는 임시로 사용되는 것입니다."
+msgstr "%(app_name)s 負責管理 Plex 的主題曲。\n"
+"此處提供的參數僅供暫時使用。"
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
-msgstr "이 도움말 메시지를 표시하고 종료합니다"
+msgstr "顯示此說明訊息並退出"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
-msgstr "사용할 구성 파일을 지정하십시오"
+msgstr "指定要使用的設定檔"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
-msgstr "디버그 로깅 수준 사용"
+msgstr "使用除錯記錄等級"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
-msgstr "개발 환경에서 ` %(app_name)s `을 실행합니다."
+msgstr "在開發環境中啟動 %(app_name)s 網站"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
-msgstr "컨테이너 상태 확인 후 종료"
+msgstr "檢查容器狀態並退出"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
-msgstr "브라우저에서 %(app_name)s 을 열지 마십시오."
+msgstr "請勿在瀏覽器中開啟 %(app_name)s 這個網址"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
-msgstr "%(app_name)s 가 지정된 포트에서 실행되도록 강제 설정, 기본값=9494"
+msgstr "強制 %(app_name)s 在指定埠上運行，預設值為 9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
-msgstr "콘솔 로깅을 끕니다"
+msgstr "關閉主控台記錄"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
-msgstr "버전 정보를 출력하고 종료합니다"
+msgstr "列印版本詳細資訊並退出"
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "세션이 만료되었습니다. 계속하려면 로그인하세요."
+msgstr "您的登入會話已過期。請登入以繼續。"
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "메시지 닫기"
+msgstr "關閉訊息"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
-msgstr "저장되지 않은 변경 사항"
+msgstr "未儲存的變更"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr "저장되지 않은 설정 변경 사항을 취소하시겠습니까?"
+msgstr "要刪除未儲存的設定變更嗎？"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
-msgstr "모든 변경 사항이 저장되었습니다."
+msgstr "所有變更已儲存。"
 
 #: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
-msgstr "설정이 저장되었습니다. 네트워크 변경 사항은 Themerr를 다시 시작한 후에 적용됩니다."
+msgstr "設定已儲存。網路變更將在重新啟動 Themerr 後生效。"
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "변경 사항을 저장할 수 없습니다."
+msgstr "無法儲存變更。"
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "비밀번호를 변경하기 전에 설정 변경 사항을 저장하세요."
+msgstr "在變更密碼之前，請先儲存設定變更。"
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr "지정하신 필터 조건에 맞는 기록이 없습니다."
+msgstr "沒有任何記錄符合您的篩選條件。"
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr "아직 로그 기록이 없습니다."
+msgstr "目前尚無日誌記錄。"
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr "검색, 필터, 경고 안내 및 다운로드 기능은 시스템 시작 이후 불러온 모든 레코드를 대상으로 합니다."
+msgstr "搜尋、篩選、警示導覽及下載功能，皆涵蓋自系統啟動以來所載入的所有記錄。"
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr "필터 및 검색 기능은 불러온 레코드에 적용됩니다. 이전 기록은 로그 디렉터리에 그대로 남아 있습니다."
+msgstr "篩選條件和搜尋結果僅適用於已載入的記錄。較早的歷史紀錄仍保留在日誌目錄中。"
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr "세션 로그 로딩이 중단되었습니다."
+msgstr "會話日誌載入停滯。"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
-msgstr "라이브"
+msgstr "直播"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
 #: web/templates/servers.html:13
 msgid "Paused"
-msgstr "일시 정지됨"
+msgstr "暫停"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr "새로 고침에 실패했습니다. 마지막으로 불러온 기록을 표시합니다."
+msgstr "刷新失敗。顯示上次載入的記錄。"
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr "무시할 라이브러리 선택"
+msgstr "選取要忽略的函式庫"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr "라이브러리 불러오기…"
+msgstr "載入函式庫…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr "캐시된 라이브러리가 표시되고 있습니다. 이 서버를 활성화하거나 다시 연결하여 현재 라이브러리를 불러오십시오."
+msgstr "顯示快取中的函式庫。請啟用此伺服器或重新連線，以載入其目前的函式庫。"
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr "이 서버에는 라이브러리가 없습니다."
+msgstr "此伺服器沒有任何函式庫。"
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr "라이브러리를 불러올 수 없습니다. 선택한 항목은 유지됩니다. 목록을 닫았다가 다시 열어 다시 시도해 주세요."
+msgstr "無法載入函式庫。您的選項已儲存。請關閉並重新開啟清單以重新嘗試。"
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
-msgstr "Themerr가 현재 어떤 작업을 진행 중인지, 그리고 어떤 항목에 여러분의 주의가 필요한지 확인해 보세요."
+msgstr "了解 Themerr 目前正在進行哪些工作，以及為何某項事項可能需要您關注。"
 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
-msgstr "주제 검색"
+msgstr "掃描以尋找主題"
 
 #: web/templates/activity.html:3 web/templates/logs.html:4
 msgid "BEHIND THE MUSIC"
-msgstr "음악의 이면"
+msgstr "《音樂背後》"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
-msgstr "활동"
+msgstr "活動"
 
 #: web/templates/activity.html:4
 msgid "items waiting in the processing queue"
-msgstr "처리 대기열에 있는 항목들"
+msgstr "處理佇列中待處理的項目"
 
 #: web/templates/activity.html:4
 msgid "Task history covers the current application session."
-msgstr "작업 내역은 현재 애플리케이션 세션을 포함합니다."
+msgstr "任務歷史紀錄涵蓋當前的應用程式工作階段。"
 
 #: web/templates/activity.html:5
 msgid "Recent tasks"
-msgstr "최근 작업"
+msgstr "最近的任務"
 
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
-msgstr "아직 실행된 작업이 없습니다. 스캔을 요청하거나 다음 예정된 새로고침을 기다려 주세요."
+msgstr "目前尚未執行任何任務。請要求執行掃描，或等待下一次排定的更新。"
 
 #: web/templates/activity.html:7 web/templates/home.html:14
 #: web/templates/home.html:31 web/templates/servers.html:13
 msgid "Needs attention"
-msgstr "주의가 필요함"
+msgstr "需要關注"
 
 #: web/templates/activity.html:8
 msgid "No processing failures recorded. All quiet here."
-msgstr "처리 오류는 기록되지 않았습니다. 이곳은 별다른 이상 없이 정상입니다."
+msgstr "未記錄任何處理失敗。這裡一切安好。"
 
 #: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
@@ -619,367 +619,367 @@ msgstr "Plex ID"
 
 #: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
-msgstr "ThemerrDB에서 더 이상 사용되지 않음"
+msgstr "來自 ThemerrDB 的過時資料"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "로그인된 세션을 사용하여 API를 살펴보세요."
+msgstr "請使用您的已登入會話來探索此 API。"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
-msgstr "당신의 도서관에서 들려오는 소리"
+msgstr "你的圖書館之聲"
 
 #: web/templates/auth.html:8
 msgid "Every story"
-msgstr "모든 이야기"
+msgstr "每個故事"
 
 #: web/templates/auth.html:8
 msgid "has a soundtrack."
-msgstr "사운드트랙이 있다."
+msgstr "有原聲帶。"
 
 #: web/templates/auth.html:9
 msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "Plex 라이브러리에 생동감을 불어넣어 보세요. 서버, 테마, 그리고 그 밖의 모든 요소를 한곳에서 차분하게 관리할 수 있는 작업 공간입니다."
+msgstr "讓您的 Plex 媒體庫煥發新生。一個整潔的工作空間，專門用於管理您的伺服器、主題以及所有相關內容。"
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
-msgstr "안전하게 보호되는 여러분의 작업 공간."
+msgstr "您的工作空間，安全無虞。"
 
 #: web/templates/auth.html:19
 msgid "Open the one-time setup link printed in the application console to create your admin account."
-msgstr "애플리케이션 콘솔에 표시된 일회성 설정 링크를 열어 관리자 계정을 생성하십시오."
+msgstr "請開啟印在應用程式控制台上的「一次性設定」連結，以建立您的管理員帳戶。"
 
 #: web/templates/auth.html:20
 msgid "The link is generated each time the application starts, until setup is complete."
-msgstr "설정이 완료될 때까지 애플리케이션이 시작될 때마다 링크가 생성됩니다."
+msgstr "該連結會在應用程式每次啟動時產生，直到設定完成為止。"
 
 #: web/templates/auth.html:22
 msgid "GET STARTED"
-msgstr "시작하기"
+msgstr "開始使用"
 
 #: web/templates/auth.html:22
 msgid "WELCOME BACK"
-msgstr "다시 오신 것을 환영합니다"
+msgstr "歡迎回來"
 
 #: web/templates/auth.html:23
 msgid "Make it yours."
-msgstr "나만의 것으로 만들어 보세요."
+msgstr "讓它成為你自己的。"
 
 #: web/templates/auth.html:23
 msgid "Sign in to Themerr."
-msgstr "Themerr에 로그인하세요."
+msgstr "登入 Themerr。"
 
 #: web/templates/auth.html:24
 msgid "Create the administrator account for this installation."
-msgstr "이 설치에 사용할 관리자 계정을 생성하십시오."
+msgstr "為此安裝建立管理員帳戶。"
 
 #: web/templates/auth.html:24
 msgid "Your libraries are waiting for their next soundtrack."
-msgstr "여러분의 서재들은 다음 사운드트랙을 기다리고 있습니다."
+msgstr "您的圖書館正期待著下一張原聲帶。"
 
 #: web/templates/auth.html:28
 msgid "Username"
-msgstr "사용자 이름"
+msgstr "使用者名稱"
 
 #: web/templates/auth.html:30
 msgid "Password"
-msgstr "비밀번호"
+msgstr "密碼"
 
 #: web/templates/auth.html:33
 msgid "Use at least 12 characters. A long, unique passphrase works well."
-msgstr "최소 12자 이상을 입력하세요. 길고 고유한 암호 문구가 효과적입니다."
+msgstr "請使用至少 12 個字元。長且獨特的密碼短語效果很好。"
 
 #: web/templates/auth.html:34
 msgid "Confirm password"
-msgstr "비밀번호 확인"
+msgstr "確認密碼"
 
 #: web/templates/auth.html:37
 msgid "Create workspace"
-msgstr "작업 공간 만들기"
+msgstr "建立工作區"
 
 #: web/templates/auth.html:37
 msgid "Sign in"
-msgstr "로그인"
+msgstr "登入"
 
 #: web/templates/auth.html:39
 msgid "Plex account linking happens inside your workspace."
-msgstr "Plex 계정 연동은 작업 공간 내에서 이루어집니다."
+msgstr "Plex 帳戶的綁定是在您的工作區內進行的。"
 
 #: web/templates/base.html:21
 msgid "Skip to content"
-msgstr "본문으로 건너뛰기"
+msgstr "跳至內容"
 
 #: web/templates/base.html:27
 msgid "Toggle navigation"
-msgstr "탐색 메뉴 전환"
+msgstr "切換導覽"
 
 #: web/templates/base.html:28
 msgid "Workspace"
-msgstr "작업 공간"
+msgstr "工作區"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr "테마: 자동. 밝은 모드로 전환."
+msgstr "主題：自動。切換至淺色模式。"
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr "테마: 밝은 모드. 어두운 모드로 전환."
+msgstr "主題：淺色。切換至深色模式。"
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr "테마: 다크. 자동 모드로 전환하세요."
+msgstr "主題：深色。切換至自動模式。"
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
-msgstr "다음 항목에 대한 디렉터리를 찾아보세요"
+msgstr "瀏覽目錄以尋找"
 
 #: web/templates/config.html:22
 msgid "TUNE YOUR WORKSPACE"
-msgstr "작업 공간 꾸미기"
+msgstr "打造理想的工作空間"
 
 #: web/templates/config.html:22
 msgid "Make Themerr work the way your library does."
-msgstr "Themerr가 여러분의 라이브러리와 동일한 방식으로 작동하도록 만드세요."
+msgstr "讓 Themerr 按照您的函式庫的方式運作。"
 
 #: web/templates/config.html:24
 msgid "Settings sections"
-msgstr "설정 항목"
+msgstr "「設定」區段"
 
 #: web/templates/config.html:24 web/templates/config.html:33
 msgid "Security"
-msgstr "보안"
+msgstr "安全"
 
 #: web/templates/config.html:28
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
-msgstr "서버 연결, 데이터 디렉터리 및 제외된 라이브러리는 ‘서버’ 페이지에서 관리됩니다."
+msgstr "伺服器連線、資料目錄及被忽略的函式庫皆在「伺服器」頁面中進行管理。"
 
 #: web/templates/config.html:28
 msgid "Changes to network settings take effect after restarting Themerr."
-msgstr "네트워크 설정 변경 사항은 Themerr를 다시 시작한 후에 적용됩니다."
+msgstr "網路設定的變更將在重新啟動 Themerr 後生效。"
 
 #: web/templates/config.html:33
 msgid "One administrator for this installation. Change your password and sign out other sessions."
-msgstr "이 설치 환경의 관리자 한 명입니다. 비밀번호를 변경하고 다른 세션에서 로그아웃하십시오."
+msgstr "此安裝環境僅有一位管理員。請變更您的密碼，並登出其他工作階段。"
 
 #: web/templates/config.html:34
 msgid "Current password"
-msgstr "현재 비밀번호"
+msgstr "目前密碼"
 
 #: web/templates/config.html:34
 msgid "New password"
-msgstr "새 비밀번호"
+msgstr "新密碼"
 
 #: web/templates/config.html:34
 msgid "Confirm new password"
-msgstr "새 비밀번호 확인"
+msgstr "確認新密碼"
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr "비밀번호 변경"
+msgstr "變更密碼"
 
 #: web/templates/config.html:36
 msgid "Save changes"
-msgstr "변경 사항 저장"
+msgstr "儲存變更"
 
 #: web/templates/directory_picker.html:2
 msgid "Choose an application directory"
-msgstr "응용 프로그램 디렉터리를 선택하십시오"
+msgstr "選擇一個應用程式目錄"
 
 #: web/templates/directory_picker.html:2
 msgid "Close directory picker"
-msgstr "디렉터리 선택기 닫기"
+msgstr "關閉目錄選擇器"
 
 #: web/templates/directory_picker.html:3
 msgid "Browse directories on the machine running Themerr."
-msgstr "Themerr가 실행 중인 컴퓨터의 디렉터리를 탐색합니다."
+msgstr "瀏覽正在執行 Themerr 的電腦上的目錄。"
 
 #: web/templates/directory_picker.html:4
 msgid "Parent directory"
-msgstr "상위 디렉터리"
+msgstr "父目錄"
 
 #: web/templates/directory_picker.html:6
 msgid "Select directory"
-msgstr "디렉터리 선택"
+msgstr "選擇目錄"
 
 #: web/templates/error.html:5
 msgid "LET’S TRY THAT AGAIN"
-msgstr "다시 한번 해 봅시다"
+msgstr "我們再來試一次吧"
 
 #: web/templates/error.html:7
 msgid "Back to workspace"
-msgstr "작업 공간으로 돌아가기"
+msgstr "返回工作區"
 
 #: web/templates/home.html:4
 msgid "YOUR LIBRARY, IN HARMONY"
-msgstr "조화를 이루는 당신의 도서관"
+msgstr "您的圖書館，和諧共處"
 
 #: web/templates/home.html:4
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
-msgstr "모든 이야기에 어울리는 사운드트랙. 현재 재생 중인 곡과 조금 더 신경 써야 할 곡을 확인해 보세요."
+msgstr "每個故事都有一首配樂。看看正在播放什麼，以及哪些需要多加留意。"
 
 #: web/templates/home.html:4 web/templates/navbar.html:6
 msgid "Overview"
-msgstr "개요"
+msgstr "概覽"
 
 #: web/templates/home.html:5
 msgid "Refresh libraries"
-msgstr "라이브러리 새로 고침"
+msgstr "重新整理函式庫"
 
 #: web/templates/home.html:7
 msgid "Unknown"
-msgstr "알 수 없음"
+msgstr "未知"
 
 #: web/templates/home.html:7
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "GitHub 확인에 실패했습니다. 마지막으로 확인된 배포 내역을 표시합니다. 확인 작업은 최대 1시간 간격으로 실행됩니다."
+msgstr "GitHub 檢查失敗。顯示最後一次已知的部署；檢查最多每小時執行一次。"
 
 #: web/templates/home.html:8
 msgid "Last deployed"
-msgstr "최종 배치일"
+msgstr "最後一次部署"
 
 #: web/templates/home.html:8
 msgid "Checking…"
-msgstr "… 확인하기"
+msgstr "查閱…"
 
 #: web/templates/home.html:8
 msgid "Check unavailable"
-msgstr "확인 불가"
+msgstr "「檢查」選項不可用"
 
 #: web/templates/home.html:11
 msgid "Library items"
-msgstr "도서관 자료"
+msgstr "圖書館館藏"
 
 #: web/templates/home.html:11
 msgid "libraries across"
-msgstr "전국의 도서관들"
+msgstr "各地的圖書館"
 
 #: web/templates/home.html:11
 msgid "servers"
-msgstr "서버"
+msgstr "伺服器"
 
 #: web/templates/home.html:12
 msgid "Themes installed"
-msgstr "설치된 테마"
+msgstr "已安裝的主題"
 
 #: web/templates/home.html:12
 msgid "Your library sounds better already."
-msgstr "이미 도서관 분위기가 훨씬 좋아진 것 같네요."
+msgstr "聽起來你的圖書館已經更棒了。"
 
 #: web/templates/home.html:13
 msgid "Theme coverage"
-msgstr "주제별 다루는 내용"
+msgstr "主題涵蓋範圍"
 
 #: web/templates/home.html:14
 msgid "Review activity"
-msgstr "활동 검토"
+msgstr "複習活動"
 
 #: web/templates/home.html:19
 msgid "LET’S SET THE TONE"
-msgstr "분위기를 잡아봅시다"
+msgstr "讓我們定下基調"
 
 #: web/templates/home.html:20
 msgid "Your library deserves a soundtrack."
-msgstr "여러분의 도서관에는 배경 음악이 어울립니다."
+msgstr "您的圖書館值得擁有一首配樂。"
 
 #: web/templates/home.html:20
 msgid "Getting to know your library."
-msgstr "도서관 알아보기."
+msgstr "認識您的圖書館。"
 
 #: web/templates/home.html:21
 msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "Plex 계정을 연결하고, 서버를 선택한 다음, 음악 관리는 Themerr에게 맡기세요."
+msgstr "連結您的 Plex 帳戶、選擇伺服器，然後讓 Themerr 來處理音樂事宜。"
 
 #: web/templates/home.html:21
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
-msgstr "첫 번째 새로고침은 라이브러리 보기를 불러오는 과정입니다. 진행 상황은 Activity에서 확인하거나, 상단에서 새로고침을 요청하세요."
+msgstr "首次刷新時會建立圖書庫檢視畫面。請查看「Activity」以了解進度，或點擊上方按鈕要求刷新。"
 
 #: web/templates/home.html:22
 msgid "Connect a server"
-msgstr "서버 연결하기"
+msgstr "連線至伺服器"
 
 #: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
 msgid "View activity"
-msgstr "활동 보기"
+msgstr "檢視活動"
 
 #: web/templates/home.html:26
 msgid "Your libraries"
-msgstr "사용자의 라이브러리"
+msgstr "您的函式庫"
 
 #: web/templates/home.html:26
 msgid "items"
-msgstr "항목"
+msgstr "項目"
 
 #: web/templates/home.html:28
 msgid "Search library items"
-msgstr "도서관 자료 검색"
+msgstr "搜尋圖書館館藏"
 
 #: web/templates/home.html:28
 msgid "Search titles…"
-msgstr "제목 검색…"
+msgstr "搜尋標題：…"
 
 #: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
-msgstr "검색 내용 지우기"
+msgstr "清除搜尋"
 
 #: web/templates/home.html:29
 msgid "Server"
-msgstr "서버"
+msgstr "伺服器"
 
 #: web/templates/home.html:29
 msgid "All servers"
-msgstr "모든 서버"
+msgstr "所有伺服器"
 
 #: web/templates/home.html:30
 msgid "Type"
-msgstr "유형"
+msgstr "類型"
 
 #: web/templates/home.html:30
 msgid "All types"
-msgstr "모든 유형"
+msgstr "所有類型"
 
 #: web/templates/home.html:30
 msgid "Movies"
-msgstr "영화"
+msgstr "電影"
 
 #: web/templates/home.html:30
 msgid "TV shows"
-msgstr "TV 프로그램"
+msgstr "電視節目"
 
 #: web/templates/home.html:31
 msgid "Theme status"
-msgstr "테마 상태"
+msgstr "主題狀態"
 
 #: web/templates/home.html:31
 msgid "All statuses"
-msgstr "모든 상태"
+msgstr "所有狀態"
 
 #: web/templates/home.html:31
 msgid "Has a theme"
-msgstr "주제가 있다"
+msgstr "有主題"
 
 #: web/templates/home.html:31
 msgid "No theme"
-msgstr "주제 없음"
+msgstr "無主題"
 
 #: web/templates/home.html:32
 msgid "Reset filters"
-msgstr "필터 초기화"
+msgstr "重設篩選條件"
 
 #: web/templates/home.html:38
 msgid "Library ID"
-msgstr "도서관 ID"
+msgstr "圖書館編號"
 
 #: web/templates/home.html:43
 msgid "Title"
-msgstr "제목"
+msgstr "標題"
 
 #: web/templates/home.html:43
 msgid "Metadata ID"
-msgstr "메타데이터 ID"
+msgstr "元資料 ID"
 
 #: web/templates/home.html:43
 msgid "Theme"
-msgstr "주제"
+msgstr "主題"
 
 #: web/templates/home.html:43
 msgid "ThemerrDB"
@@ -987,453 +987,453 @@ msgstr "ThemerrDB"
 
 #: web/templates/home.html:56
 msgid "Pause theme for"
-msgstr "[ ]의 주제 일시 중지"
+msgstr "暫停主題為"
 
 #: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
-msgstr "[제목]의 배경 음악"
+msgstr "播放主題曲："
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "이 테마를 재생할 수 없습니다. Plex 연결 상태와 브라우저의 오디오 지원 여부를 확인해 주세요."
+msgstr "無法播放此主題。請檢查 Plex 的連線狀況及瀏覽器的音訊支援功能。"
 
 #: web/templates/home.html:64
 msgid "Open in Plex"
-msgstr "Plex에서 열기"
+msgstr "在 Plex 中開啟"
 
 #: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
-msgstr "외부 ID를 확인할 수 없습니다."
+msgstr "無法取得外部識別碼"
 
 #: web/templates/home.html:70
 msgid "Failed to add theme"
-msgstr "테마 추가에 실패했습니다."
+msgstr "無法新增主題"
 
 #: web/templates/home.html:71
 msgid "Plex provided"
-msgstr "Plex 제공"
+msgstr "Plex 提供"
 
 #: web/templates/home.html:72
 msgid "User provided"
-msgstr "사용자 제공"
+msgstr "使用者提供"
 
 #: web/templates/home.html:73
 msgid "Themerr provided"
-msgstr "테메르 제공"
+msgstr "Themerr 提供"
 
 #: web/templates/home.html:74
 msgid "Unknown provider"
-msgstr "알 수 없는 공급자"
+msgstr "未知提供者"
 
 #: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
-msgstr "ThemerrDB에서 누락됨"
+msgstr "從 ThemerrDB 遺失"
 
 #: web/templates/home.html:76
 msgid "TMDB ID unavailable"
-msgstr "TMDB ID를 확인할 수 없습니다."
+msgstr "TMDB 編號無法取得"
 
 #: web/templates/home.html:77
 msgid "Theme not installed yet"
-msgstr "테마가 아직 설치되지 않았습니다"
+msgstr "主題尚未安裝"
 
 #: web/templates/home.html:80
 msgid "Edit"
-msgstr "편집"
+msgstr "編輯"
 
 #: web/templates/home.html:80
 msgid "Add"
-msgstr "추가"
+msgstr "新增"
 
 #: web/templates/home.html:87
 msgid "No titles match."
-msgstr "일치하는 제목이 없습니다."
+msgstr "沒有符合的標題。"
 
 #: web/templates/home.html:87
 msgid "Try another search or reset your filters."
-msgstr "다른 검색어를 입력하거나 필터를 초기화해 보세요."
+msgstr "請嘗試其他搜尋方式，或重設篩選條件。"
 
 #: web/templates/home_db_not_cached.html:3
 msgid "Your library is on its way."
-msgstr "도서관이 곧 도착할 예정입니다."
+msgstr "您的圖書已寄出。"
 
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
-msgstr "첫 번째 새로 고침 시 라이브러리 보기가 생성됩니다. Activity에서 진행 상황을 확인할 수 있습니다."
+msgstr "第一次刷新會建立您的圖書庫檢視。您可以在 Activity 中追蹤進度。"
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr "최근 로그를 살펴보고, 메시지를 찾으며, 경고와 오류 간을 자유롭게 이동해 보세요."
+msgstr "瀏覽最近的日誌、尋找特定訊息，並在警告與錯誤之間切換。"
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr "필터링된 로그 다운로드"
+msgstr "下載已過濾的日誌"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr "로그 뷰어"
+msgstr "日誌檢視器"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr "검색 기록"
+msgstr "搜尋記錄"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr "메시지, 스레드 또는 타임스탬프 검색…"
+msgstr "搜尋訊息、討論串或時間戳記…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr "로그 출처"
+msgstr "日誌來源"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr "모든 출처"
+msgstr "所有來源"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr "로그 수준"
+msgstr "日誌等級"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr "모든 레벨"
+msgstr "所有等級"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr "경고 및 오류"
+msgstr "警告與錯誤"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr "로그 기록"
+msgstr "日誌歷史紀錄"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr "최신 250개"
+msgstr "最新 250 則"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr "최신 1,000건"
+msgstr "最新 1,000 則"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr "최신 2,000건"
+msgstr "最新 2,000 則"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr "창업 이래"
+msgstr "自創立以來"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr "필터 지우기"
+msgstr "清除篩選條件"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr "경고 및 오류 탐색"
+msgstr "警告與錯誤導覽"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr "이전 경고 또는 오류"
+msgstr "先前出現的警告或錯誤"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr "다음 경고 또는 오류"
+msgstr "下一則警告或錯誤"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr "실시간 갱신"
+msgstr "即時更新"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr "최신 소식 보기"
+msgstr "追蹤最新消息"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr "새로 고침"
+msgstr "重新整理"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr "로그 불러오기 중…"
+msgstr "載入日誌…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr "로그 내역 페이지"
+msgstr "日誌歷史紀錄頁面"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr "이전 기록"
+msgstr "較早的紀錄"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr "최신 기록"
+msgstr "較新的紀錄"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr "로그 기록"
+msgstr "日誌記錄"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
-msgstr "탐색 메뉴 닫기"
+msgstr "關閉導覽列"
 
 #: web/templates/navbar.html:2
 msgid "Main navigation"
-msgstr "주요 메뉴"
+msgstr "主導覽列"
 
 #: web/templates/navbar.html:4
 msgid "YOUR WORKSPACE"
-msgstr "여러분의 업무 공간"
+msgstr "您的工作空間"
 
 #: web/templates/navbar.html:5
 msgid "Workspace pages"
-msgstr "작업 공간 페이지"
+msgstr "工作區頁面"
 
 #: web/templates/navbar.html:6 web/templates/servers.html:3
 msgid "Servers"
-msgstr "서버"
+msgstr "伺服器"
 
 #: web/templates/navbar.html:11
 msgid "A little music."
-msgstr "음악을 조금 들어볼까요."
+msgstr "來點音樂。"
 
 #: web/templates/navbar.html:11
 msgid "A lot more atmosphere."
-msgstr "분위기가 훨씬 더 살아나네요."
+msgstr "氛圍更濃郁了許多。"
 
 #: web/templates/navbar.html:12
 msgid "Resources"
-msgstr "자료"
+msgstr "資源"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
-msgstr "테마 기여하기"
+msgstr "貢獻一個主題"
 
 #: web/templates/navbar.html:16
 msgid "Support LizardByte"
-msgstr "LizardByte를 후원해 주세요"
+msgstr "支持 LizardByte"
 
 #: web/templates/navbar.html:20
 msgid "Sign out"
-msgstr "로그아웃"
+msgstr "登出"
 
 #: web/templates/servers.html:3
 msgid "ONE WORKSPACE. EVERY SERVER."
-msgstr "하나의 작업 공간. 모든 서버."
+msgstr "一個工作空間。每台伺服器。"
 
 #: web/templates/servers.html:3
 msgid "Connect your Plex account, then choose where the music goes."
-msgstr "Plex 계정을 연동한 다음, 음악을 저장할 위치를 선택하세요."
+msgstr "請連結您的 Plex 帳戶，然後選擇音樂的儲存位置。"
 
 #: web/templates/servers.html:3
 msgid "saved"
-msgstr "저장됨"
+msgstr "已儲存"
 
 #: web/templates/servers.html:6
 msgid "Your Plex account"
-msgstr "귀하의 Plex 계정"
+msgstr "您的 Plex 帳戶"
 
 #: web/templates/servers.html:6
 msgid "Account linked. Choose a server below."
-msgstr "계정이 연결되었습니다. 아래에서 서버를 선택하세요."
+msgstr "帳戶已連結。請從下方選擇伺服器。"
 
 #: web/templates/servers.html:6
 msgid "Link your account securely through Plex to access your servers."
-msgstr "Plex를 통해 계정을 안전하게 연동하여 서버에 접속하세요."
+msgstr "請透過 Plex 安全地連結您的帳戶，以便存取您的伺服器。"
 
 #: web/templates/servers.html:6
 msgid "Continue Plex sign-in"
-msgstr "Plex 로그인 계속하기"
+msgstr "繼續 Plex 登入"
 
 #: web/templates/servers.html:7
 msgid "Reconnect account"
-msgstr "계정 다시 연결"
+msgstr "重新連結帳戶"
 
 #: web/templates/servers.html:7
 msgid "Connect Plex account"
-msgstr "Plex 계정 연결"
+msgstr "連結 Plex 帳戶"
 
 #: web/templates/servers.html:7
 msgid "Disconnect"
-msgstr "연결 해제"
+msgstr "斷開連接"
 
 #: web/templates/servers.html:9
 msgid "Connected servers"
-msgstr "연결된 서버"
+msgstr "已連線的伺服器"
 
 #: web/templates/servers.html:9
 msgid "Theme history and library settings are kept separately for each server."
-msgstr "테마 기록과 라이브러리 설정은 서버별로 별도로 관리됩니다."
+msgstr "每個伺服器的佈景主題歷史紀錄與函式庫設定皆獨立儲存。"
 
 #: web/templates/servers.html:13
 msgid "Enabled"
-msgstr "활성화됨"
+msgstr "已啟用"
 
 #: web/templates/servers.html:16
 msgid "Last library refresh"
-msgstr "최종 도서관 업데이트"
+msgstr "上次圖書館資料更新"
 
 #: web/templates/servers.html:16
 msgid "Not yet refreshed"
-msgstr "아직 새로고침되지 않았습니다"
+msgstr "尚未更新"
 
 #: web/templates/servers.html:17
 msgid "Processing settings"
-msgstr "처리 설정"
+msgstr "處理設定"
 
 #: web/templates/servers.html:19
 msgid "Process this server"
-msgstr "이 서버를 처리하십시오"
+msgstr "處理此伺服器"
 
 #: web/templates/servers.html:20
 msgid "optional"
-msgstr "선택 사항"
+msgstr "可選"
 
 #: web/templates/servers.html:21
 msgid "Browse Plex data directory"
-msgstr "Plex 데이터 디렉터리 살펴보기"
+msgstr "瀏覽 Plex 資料目錄"
 
 #: web/templates/servers.html:22
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "로컬 또는 마운트된 Plex 데이터 디렉터리는 이전에 업로드된 파일을 삭제할 때만 필요합니다. 원격 서버의 경우 이 항목을 비워 두십시오."
+msgstr "僅需指定本機或已掛載的 Plex 資料目錄，以便移除較舊的上傳檔案。若使用遠端伺服器，請將此欄位留空。"
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr "무시된 라이브러리"
+msgstr "被忽略的函式庫"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr "도서관"
+msgstr "圖書館"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr "이 서버의 라이브러리를 불러오려면 목록을 열어주세요."
+msgstr "開啟清單以載入此伺服器的函式庫。"
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr "테마 업데이트에서 제외할 라이브러리를 선택하세요. 모든 항목의 선택을 해제하면 모든 라이브러리가 처리됩니다."
+msgstr "選取要從主題更新中排除的函式庫。若不勾選任何選項，則會處理所有函式庫。"
 
 #: web/templates/servers.html:36
 msgid "Save settings"
-msgstr "설정 저장"
+msgstr "儲存設定"
 
 #: web/templates/servers.html:36
 msgid "Remove server"
-msgstr "서버 제거"
+msgstr "移除伺服器"
 
 #: web/templates/servers.html:40
 msgid "Your first server starts here."
-msgstr "첫 번째 서버를 시작하는 곳은 바로 여기입니다."
+msgstr "您的第一台伺服器就從這裡開始。"
 
 #: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
-msgstr "위에서 Plex를 연결한 다음, 아래에서 주소를 찾거나 추가하세요."
+msgstr "請先連結上方的 Link Plex，然後在下方搜尋或新增一個地址。"
 
 #: web/templates/servers.html:43
 msgid "Add a server"
-msgstr "서버 추가하기"
+msgstr "新增伺服器"
 
 #: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
-msgstr "Plex 계정에서 서버를 선택하거나, 근처에 있는 서버를 찾거나, 알고 있는 주소를 사용하세요."
+msgstr "從您的 Plex 帳戶中選擇一台伺服器、尋找附近的伺服器，或使用您已知的伺服器位址。"
 
 #: web/templates/servers.html:44
 msgid "Find account servers"
-msgstr "계정 서버 찾기"
+msgstr "尋找帳戶伺服器"
 
 #: web/templates/servers.html:44
 msgid "Discover on LAN"
-msgstr "LAN에서 찾아보기"
+msgstr "透過區域網路 (LAN) 進行偵測"
 
 #: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
-msgstr "LAN 탐색 기능은 애플리케이션의 네트워크에서 Plex GDM을 사용합니다."
+msgstr "區域網路（LAN）偵測會使用您應用程式網路上的 Plex GDM。"
 
 #: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
-msgstr "계정 주소는 Plex에서 공개하는 것이며, 접속이 불가능할 수 있습니다. HTTPS plex.direct 주소는 Plex의 인증서를 사용합니다. Themerr이 실행 중인 컴퓨터에서 접속 가능한 주소를 선택하거나, 알려진 주소를 직접 입력하십시오."
+msgstr "帳戶網址由 Plex 公開，但可能無法連線。HTTPS 格式的 plex.direct 網址使用 Plex 的憑證。請選擇一個可從執行 Themerr 的裝置連線的網址，或手動輸入已知的網址。"
 
 #: web/templates/servers.html:47
 msgid "Enter an address manually"
-msgstr "주소를 직접 입력하세요"
+msgstr "手動輸入地址"
 
 #: web/templates/servers.html:48
 msgid "Plex server address"
-msgstr "Plex 서버 주소"
+msgstr "Plex 伺服器地址"
 
 #: web/templates/servers.html:48
 msgid "Connect server"
-msgstr "서버 연결"
+msgstr "連線至伺服器"
 
 #: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
-msgstr "LAN 주소 또는 유효한 HTTPS Plex 주소를 사용하십시오. 연결된 Plex 계정에 해당 서버에 대한 접근 권한이 있어야 합니다. 기존 서버를 추가하면 해당 서버의 주소가 업데이트됩니다."
+msgstr "請使用 LAN 位址或有效的 HTTPS Plex 位址。您所連結的 Plex 帳戶必須具備存取權限。新增現有伺服器會更新其位址。"
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr "테마 플레이어"
+msgstr "主題播放器"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr "라이브러리에서 테마를 선택하세요"
+msgstr "從您的圖庫中選擇一個主題"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr "테마를 불러올 수 없습니다. 다시 시도해 주세요."
+msgstr "無法載入主題。請重試。"
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr "아직 설치된 테마가 없습니다."
+msgstr "目前尚無已安裝的主題。"
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr "테마 플레이어"
+msgstr "主題播放器"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr "모든 이야기에 어울리는 사운드트랙."
+msgstr "每個故事都有一首配樂。"
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr "셔플"
+msgstr "隨機播放"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr "이전 테마"
+msgstr "上一主題"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr "테마 재생"
+msgstr "播放主題曲"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr "주제 일시 정지"
+msgstr "暫停主題"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr "다음 주제"
+msgstr "下一個主題"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr "이 테마를 반복하세요"
+msgstr "重複這個主題"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr "재생 위치"
+msgstr "播放位置"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr "나를 깜짝 놀라게 해줘"
+msgstr "給我個驚喜"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr "권"
+msgstr "卷"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
-msgstr "Themerr는 여러분이 사용하는 언어를 지원합니다."
+msgstr "Themerr 懂你的語言。"
 
 #: web/templates/translations.html:3
 msgid "Choose a language in Settings, or help improve translations on Crowdin."
-msgstr "‘설정’에서 언어를 선택하거나, Crowdin에서 번역 품질 향상에 기여해 주세요."
+msgstr "請在「設定」中選擇語言，或協助在 Crowdin 上改善翻譯。"
 
 #: web/templates/translations.html:3
 msgid "Help translate"
-msgstr "번역에 도움을 주세요"
+msgstr "協助翻譯"
 

@@ -13,7 +13,7 @@ on:
       - '.github/workflows/localize.yml'
       - 'scripts/localize.py'
       - 'scripts/babel.cfg'
-      - 'locale/themerr-plex.po'
+      - 'locale/themerr.po'
       - 'src/**.py'
       - 'web/js/**.js'
       - 'web/templates/**'
@@ -50,7 +50,7 @@ jobs:
           git config --global pager.diff false
 
           # print the git diff
-          git diff locale/themerr-plex.po
+          git diff locale/themerr.po
 
       - name: Get current date
         id: date

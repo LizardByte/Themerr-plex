@@ -1,7 +1,7 @@
 """
 scripts/build.py
 
-Creates spec and builds binaries for Themerr-plex.
+Creates spec and builds binaries for Themerr.
 """
 
 # standard imports
@@ -43,7 +43,8 @@ def build():
         raise SystemExit('Deno is required to bundle yt-dlp YouTube support.')
 
     pyinstaller_args = [
-        './src/themerr_plex.py',
+        './src/main.py',
+        '--name=themerr',
         '--onedir' if sys.platform == 'darwin' else '--onefile',
         '--noconfirm',
         '--paths=./src',
@@ -65,7 +66,7 @@ def build():
 
     elif sys.platform.lower() == 'darwin':  # macOS
         pyinstaller_args.append('--windowed')
-        pyinstaller_args.append('--osx-bundle-identifier=dev.lizardbyte.app.themerr-plex')
+        pyinstaller_args.append('--osx-bundle-identifier=dev.lizardbyte.app.themerr')
         codesign_identity = os.environ.get('APPLE_CODESIGN_IDENTITY')
         if codesign_identity:
             pyinstaller_args.append(f'--codesign-identity={codesign_identity}')

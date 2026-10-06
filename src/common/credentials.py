@@ -77,7 +77,11 @@ def get_token(client_id: str) -> str:
         ) as exc:
             raise TokenStorageError('The encryption key does not match the stored token.') from exc
     try:
-        return keyring.get_password(SERVICE, client_id) or ''
+        return (
+            keyring.get_password(SERVICE, client_id)
+            or keyring.get_password(Names.legacy_name, client_id)
+            or ''
+        )
     # Native backends can raise errors outside keyring's exception hierarchy.
     except Exception as exc:
         raise TokenStorageError(STORE_UNAVAILABLE) from exc
@@ -114,12 +118,16 @@ def delete_token(client_id: str) -> None:
     storage.save_encrypted_token(None, _namespace(client_id))
     if os.environ.get(KEY_FILE_ENV) or os.environ.get(LEGACY_KEY_FILE_ENV) or os.environ.get('THEMERR_DOCKER'):
         return
-    try:
-        keyring.delete_password(SERVICE, client_id)
-    except PasswordDeleteError:
-        pass
-    except Exception as exc:
-        raise TokenStorageError(STORE_UNAVAILABLE) from exc
+    for service in (
+        SERVICE,
+        Names.legacy_name,
+    ):
+        try:
+            keyring.delete_password(service, client_id)
+        except PasswordDeleteError:
+            pass
+        except Exception as exc:
+            raise TokenStorageError(STORE_UNAVAILABLE) from exc
 
 
 def _namespace(client_id: str) -> str:

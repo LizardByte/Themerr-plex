@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
-"Language-Team: Turkish\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: English, United Kingdom\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,147 +10,147 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: tr\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-Language: en-GB\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: tr_TR\n"
+"Language: en_GB\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
-msgstr "Bilgi"
+msgstr "Info"
 
 #: src/common/config.py:91
 msgid "For information purposes only."
-msgstr "Yalnızca bilgilendirme amaçlıdır."
+msgstr "For information purposes only."
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "Yapılandırma sürümü"
+msgstr "Config version"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "Yapılandırma sürümü."
+msgstr "The configuration version."
 
 #: src/common/config.py:105
 msgid "First run complete"
-msgstr "İlk çalıştırma tamamlandı"
+msgstr "First run complete"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "Yapılacaklar: Kullanıcının ilk kurulumu tamamlayıp tamamlamadığını gösterir."
+msgstr "Todo: Indicates if the user has completed the initial setup."
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "Genel"
+msgstr "General"
 
 #: src/common/config.py:114
 msgid "General settings."
-msgstr "Genel ayarlar."
+msgstr "General settings."
 
 #: src/common/config.py:118
 msgid "Locale"
-msgstr "Yerel ayar"
+msgstr "Locale"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "Kullanılacak yerelleştirme ayarı."
+msgstr "The localization setting to use."
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "Başlangıçta Tarayıcıyı Aç "
+msgstr "Launch Browser on Startup "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "Sistem Tepsisi Simgesini Etkinleştir"
+msgstr "Enable System Tray Icon"
 
 #: src/common/config.py:142
 msgid "Notifications"
-msgstr "Bildirimler"
+msgstr "Notifications"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "Masaüstü bildirimleri, Themerr’in çalıştığı bilgisayarda görünür. Docker ve başsız kurulumlarda bu bildirimler görüntülenmez."
+msgstr "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
-msgstr "Yeni sürüm çıktı"
+msgstr "New release available"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "Themerr’ın daha yeni bir sürümü çıktığında bildirim gönder. Kontroller saatte bir kez yapılır."
+msgstr "Notify when a newer Themerr release is available. Checks run once per hour."
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "Ön sürümleri takip edin"
+msgstr "Follow pre-releases"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "Yeni sürüm bildirimlerine ön sürümleri de dahil edin."
+msgstr "Include pre-releases in new release notifications."
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "Tema kapsamı genişledi"
+msgstr "Theme coverage increased"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
-msgstr "Toplam tema kapsamı arttığında, yenileme işlemi başarıyla tamamlandıktan sonra bildirim gönderilir. Kapsamda artış olmayan yenileme işlemlerinde bildirim yapılmaz."
+msgstr "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 
 #: src/common/config.py:168
 msgid "Logging"
-msgstr "Günlük kaydı"
+msgstr "Logging"
 
 #: src/common/config.py:169
 msgid "Logging settings."
-msgstr "Günlük kaydı ayarları."
+msgstr "Logging settings."
 
 #: src/common/config.py:173
 msgid "Log directory"
-msgstr "Günlük dizini"
+msgstr "Log directory"
 
 #: src/common/config.py:175
 msgid "The directory where to store the log files."
-msgstr "Günlük dosyalarının depolanacağı dizin."
+msgstr "The directory where to store the log files."
 
 #: src/common/config.py:182
 msgid "Debug logging"
-msgstr "Hata ayıklama günlüğü"
+msgstr "Debug logging"
 
 #: src/common/config.py:184
 msgid "Enable debug logging."
-msgstr "Hata ayıklama günlüğünü etkinleştirin."
+msgstr "Enable debug logging."
 
 #: src/common/config.py:190
 msgid "Network"
-msgstr "Ağ"
+msgstr "Network"
 
 #: src/common/config.py:191
 msgid "Network settings."
-msgstr "Ağ ayarları."
+msgstr "Network settings."
 
 #: src/common/config.py:195
 msgid "HTTP host address"
-msgstr "HTTP ana bilgisayar adresi"
+msgstr "HTTP host address"
 
 #: src/common/config.py:197
 msgid "The HTTP address to bind to."
-msgstr "Bağlanılacak HTTP adresi."
+msgstr "The HTTP address to bind to."
 
 #: src/common/config.py:206
 msgid "HTTP port"
-msgstr "HTTP bağlantı noktası"
+msgstr "HTTP port"
 
 #: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
-msgstr "Web sunucusunun bağlanacağı bağlantı noktası. 1024'ün altındaki bağlantı noktaları için root yetkisi gerekebileceğini unutmayın."
+msgstr "Port to bind web server to. Note that ports below 1024 may require root."
 
 #: src/common/config.py:216
 msgid "HTTP root"
-msgstr "HTTP kökü"
+msgstr "HTTP root"
 
 #: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
-msgstr "Yapılacaklar: Web sunucusunun temel URL’si. Ters proxy’ler için kullanılır."
+msgstr "Todo: The base URL of the web server. Used for reverse proxies."
 
 #: src/common/config.py:223
 msgid "SSL"
@@ -158,19 +158,19 @@ msgstr "SSL"
 
 #: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
-msgstr "Web sunucusunu HTTPS ile çalıştırın. Bu ayarın devre dışı bırakılması bir güvenlik riski oluşturabilir; bu işlemi kendi sorumluluğunuzda gerçekleştirin."
+msgstr "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 
 #: src/common/config.py:231
 msgid "Updater"
-msgstr "Güncelleyici"
+msgstr "Updater"
 
 #: src/common/config.py:232
 msgid "Updater settings."
-msgstr "Güncelleyici ayarları."
+msgstr "Updater settings."
 
 #: src/common/config.py:236
 msgid "Auto update"
-msgstr "Otomatik güncelleme"
+msgstr "Auto update"
 
 #: src/common/config.py:244
 msgid "Plex"
@@ -178,19 +178,19 @@ msgstr "Plex"
 
 #: src/common/config.py:245
 msgid "Plex settings."
-msgstr "Plex ayarları."
+msgstr "Plex settings."
 
 #: src/common/config.py:249
 msgid "Plex URL"
-msgstr "Plex URL'si"
+msgstr "Plex URL"
 
 #: src/common/config.py:250
 msgid "The URL to the Plex server."
-msgstr "Plex sunucusunun URL'si."
+msgstr "The URL to the Plex server."
 
 #: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
-msgstr "Plex veri dizini"
+msgstr "Plex data directory"
 
 #: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
@@ -202,784 +202,784 @@ msgstr "Themerr"
 
 #: src/common/config.py:271
 msgid "Themerr settings."
-msgstr "Themerr ayarları."
+msgstr "Themerr settings."
 
 #: src/common/config.py:275
 msgid "Themerr Enabled"
-msgstr "Themerr Etkin"
+msgstr "Themerr Enabled"
 
 #: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
-msgstr "Etkinleştirildiğinde, Themerr temaları güncellemeye çalışacaktır."
+msgstr "When enabled, Themerr will attempt to update themes."
 
 #: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
-msgstr "Koleksiyonlar"
+msgstr "Collections"
 
 #: src/common/config.py:282
 msgid "Add themes to collections."
-msgstr "Temaları koleksiyonlara ekleyin."
+msgstr "Add themes to collections."
 
 #: src/common/config.py:287
 msgid "Movie support"
-msgstr "Film desteği"
+msgstr "Movie support"
 
 #: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
-msgstr "Plex Movie ajanı kullanarak filmlere temalar ekleyin."
+msgstr "Add themes to movies using the Plex Movie agent."
 
 #: src/common/config.py:293
 msgid "Series support"
-msgstr "Seri desteği"
+msgstr "Series support"
 
 #: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
-msgstr "Plex Series ajanı kullanarak dizilere temalar ekleyin."
+msgstr "Add themes to series using the Plex Series agent."
 
 #: src/common/config.py:299
 msgid "Overwrite Plex themes"
-msgstr "Plex temalarını üzerine yaz"
+msgstr "Overwrite Plex themes"
 
 #: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
-msgstr "Etkinleştirildiğinde, Themerr, Plex tarafından sağlanan temaların üzerine yazacaktır."
+msgstr "When enabled, Themerr will overwrite themes provided by Plex."
 
 #: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
-msgstr "MP4A AAC kodekini tercih edin"
+msgstr "Prefer MP4A AAC Codec"
 
 #: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
-msgstr "Bu, temanın Apple cihazlarıyla uyumluluğunu artırabilir."
+msgstr "This can improve theme compatibility with Apple devices."
 
 #: src/common/config.py:311
 msgid "Remove unused themes"
-msgstr "Kullanılmayan temaları kaldırın"
+msgstr "Remove unused themes"
 
 #: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Plex meta veri dizininizde yer açar. Bu seçeneğin kullanılabilmesi için “Plex veri dizini” yolunun ayarlanmış olması gerekir"
+msgstr "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 
 #: src/common/config.py:318
 msgid "Remove unused art"
-msgstr "Kullanılmayan görselleri kaldırın"
+msgstr "Remove unused art"
 
 #: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Koleksiyon için geçerlidir. Plex meta veri dizininde yer açar. Bu seçeneğin kullanılabilmesi için “Plex veri dizini” yolunun ayarlanmış olması gerekir"
+msgstr "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 
 #: src/common/config.py:326
 msgid "Remove unused posters"
-msgstr "Kullanılmayan posterleri kaldırın"
+msgstr "Remove unused posters"
 
 #: src/common/config.py:334
 msgid "Collection metadata"
-msgstr "Koleksiyon meta verileri"
+msgstr "Collection metadata"
 
 #: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
-msgstr "Zamanlanmış güncelleme sırasında koleksiyon meta verilerini (afiş, görsel ve özet) güncelleyin."
+msgstr "Update collection metadata (poster, art, and summary) during scheduled update."
 
 #: src/common/config.py:340
 msgid "Ignore locked fields."
-msgstr "Kilitli alanları göz ardı et."
+msgstr "Ignore locked fields."
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Themerr-plex v2024.813.13709 veya daha eski bir sürümünü kullandıysanız, öğeleri güncellemek için bu özelliği etkinleştirmeniz gerekebilir."
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
-msgstr "Yoksayılan kütüphane kimlikleri"
+msgstr "Ignored library IDs"
 
 #: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
-msgstr "Zamanlanmış güncellemelerden hariç tutulacak, virgülle ayrılmış kütüphane kimlikleri. Kimlikler Ana Sayfa’da görüntülenir."
+msgstr "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 
 #: src/common/config.py:354
 msgid "Update themes interval"
-msgstr "Tema güncelleme aralığı"
+msgstr "Update themes interval"
 
 #: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
-msgstr "Otomatik güncelleme görevinin aralığı, dakika cinsinden (min: 15)."
+msgstr "Interval for automatic update task, in minutes (min: 15)."
 
 #: src/common/config.py:362
 msgid "Update database cache interval"
-msgstr "Veritabanı önbellek aralığını güncelle"
+msgstr "Update database cache interval"
 
 #: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
-msgstr "Veritabanı önbelleği güncelleme görevinin aralığı, dakika cinsinden (min: 15)."
+msgstr "Interval for database cache update task, in minutes (min: 15)."
 
 #: src/common/config.py:370
 msgid "PlexAPI timeout"
-msgstr "PlexAPI zaman aşımı"
+msgstr "PlexAPI timeout"
 
 #: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
-msgstr "Tema eklerken zaman aşımı hatalarıyla karşılaşırsanız bu değeri biraz artırın. (min: 1)"
+msgstr "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 
 #: src/common/config.py:378
 msgid "Theme upload retries"
-msgstr "Tema yükleme yeniden denemeleri"
+msgstr "Theme upload retries"
 
 #: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
-msgstr "Tema yükleme işlemi başarısız olursa, bu kadar kez yeniden dene. (en az: 0)"
+msgstr "If uploading themes fail, retry this many times. (min: 0)"
 
 #: src/common/config.py:386
 msgid "Multiprocessing thread count"
-msgstr "Çoklu işleme iş parçacığı sayısı"
+msgstr "Multiprocessing thread count"
 
 #: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
-msgstr "Tema eklenirken kullanılacak iş parçacığı sayısı. Yeniden başlatma gereklidir. (min: 1)"
+msgstr "The number of threads to use when adding themes. Restart required. (min: 1)"
 
 #: src/common/config.py:394
 msgid "YouTube Cookies"
-msgstr "YouTube Çerezleri"
+msgstr "YouTube Cookies"
 
 #: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "İsteğe bağlı: youtube.com çerezlerini “Get cookies.txt” komutuyla JSON biçiminde YEREL OLARAK dışa aktarın, ardından JSON dizisinin tamamını buraya yapıştırın ve kaydedin. Çerezler tarayıcınızın oturum bilgilerini içerir; bunları gizli tutun."
+msgstr "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
 
 #: src/common/config.py:401
 msgid "Cookie export instructions"
-msgstr "Çerez aktarım talimatları"
+msgstr "Cookie export instructions"
 
 #: src/common/notifications.py:138
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr "%(app)s %(version)s mevcuttur.\n"
+msgstr "%(app)s %(version)s is available.\n"
 "%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr "Yenileme işlemi tamamlandı"
+msgstr "Refresh completed"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr "Tema kapsamı %(increase)s yüzde puanı kadar arttı: %(before)s%% → %(after)s%%. %(total)s öğesinin %(installed)s ’si tema içeriyor."
+msgstr "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
-msgstr "Aç %(app_name)s"
+msgstr "Open %(app_name)s"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr "Hakkında"
+msgstr "About"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr "Sürüm %(version)s"
+msgstr "Version %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr "Depo"
+msgstr "Repository"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
 #: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
-msgstr "%(github)s Yayınlar"
+msgstr "%(github)s Releases"
 
 #: src/common/tray_icon.py:119 web/templates/navbar.html:14
 msgid "Documentation"
-msgstr "Belgeler"
+msgstr "Documentation"
 
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "API belgeleri"
+msgstr "API documentation"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
 msgid "Donate"
-msgstr "Bağış"
+msgstr "Donate"
 
 #: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsorları"
+msgstr "GitHub Sponsors"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
 #: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
-msgstr "%(app_name)s başladığında tarayıcıyı aç"
+msgstr "Open browser when %(app_name)s starts"
 
 #. NOTE: Disable or turn off icon.
 #: src/common/tray_icon.py:139
 msgid "Disable icon"
-msgstr "Simgeyi devre dışı bırak"
+msgstr "Disable icon"
 
 #. NOTE: Restart the program.
 #: src/common/tray_icon.py:142
 msgid "Restart"
-msgstr "Yeniden başlat"
+msgstr "Restart"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
 #: src/common/tray_icon.py:144
 msgid "Quit"
-msgstr "Çık"
+msgstr "Quit"
 
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr "Günlükler"
+msgstr "Logs"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
-msgstr "Ayarlar"
+msgstr "Settings"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s Plex için tema şarkılarını yönetir.\n"
-"Buraya girilen argümanlar geçici niteliktedir."
+msgstr "%(app_name)s manages theme songs for Plex.\n"
+"Arguments supplied here are meant to be temporary."
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
-msgstr "Bu yardım mesajını göster ve çık"
+msgstr "Show this help message and exit"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
-msgstr "Kullanılacak bir yapılandırma dosyası belirtin"
+msgstr "Specify a config file to use"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
-msgstr "Hata ayıklama günlüğü düzeyini kullan"
+msgstr "Use debug logging level"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
-msgstr "Geliştirme ortamında %(app_name)s adresini başlatın"
+msgstr "Start %(app_name)s in the development environment"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
-msgstr "Konteyneri kontrol edin ve çıkın"
+msgstr "Health check the container and exit"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
-msgstr "%(app_name)s adresini tarayıcıda açmayın"
+msgstr "Do not open %(app_name)s in browser"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
-msgstr "%(app_name)s ’ın belirtilen bir bağlantı noktasında çalışmasını zorla; varsayılan=9494"
+msgstr "Force %(app_name)s to run on a specified port, default=9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
-msgstr "Konsol günlüğünü kapatın"
+msgstr "Turn off console logging"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
-msgstr "Sürüm ayrıntılarını yazdır ve çık"
+msgstr "Print the version details and exit"
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "Oturumunuzun süresi doldu. Devam etmek için oturum açın."
+msgstr "Your session expired. Sign in to continue."
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "Mesajı kapat"
+msgstr "Dismiss message"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
-msgstr "Kaydedilmemiş değişiklikler"
+msgstr "Unsaved changes"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr "Kaydedilmemiş ayar değişikliklerini silmek ister misiniz?"
+msgstr "Discard unsaved settings changes?"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
-msgstr "Tüm değişiklikler kaydedildi."
+msgstr "All changes saved."
 
 #: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
-msgstr "Ayarlar kaydedildi. Ağ değişiklikleri, Themerr yeniden başlatıldıktan sonra yürürlüğe girer."
+msgstr "Settings saved. Network changes take effect after restarting Themerr."
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "Değişiklikler kaydedilemedi."
+msgstr "Unable to save changes."
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "Şifrenizi değiştirmeden önce ayar değişikliklerinizi kaydedin."
+msgstr "Save your settings changes before changing your password."
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr "Filtrelerinize uyan hiçbir kayıt bulunamadı."
+msgstr "No records match your filters."
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr "Henüz herhangi bir günlük kaydı yok."
+msgstr "No log records yet."
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr "Arama, filtreler, uyarı navigasyonu ve indirme işlevleri, sistemin başlatılmasından bu yana yüklenen tüm kayıtları kapsar."
+msgstr "Search, filters, warning navigation, and download cover all loaded records since startup."
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr "Filtreler ve arama işlemleri yüklenen kayıtlara uygulanır. Daha eski geçmiş kayıtları günlük dizininde kalır."
+msgstr "Filters and search apply to the loaded records. Older history remains in the log directory."
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr "Oturum günlüğünün yüklenmesi durdu."
+msgstr "Session log loading stalled."
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
-msgstr "Canlı"
+msgstr "Live"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
 #: web/templates/servers.html:13
 msgid "Paused"
-msgstr "Duraklatıldı"
+msgstr "Paused"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr "Yenileme işlemi başarısız oldu. En son yüklenen kayıtlar gösteriliyor."
+msgstr "Refresh failed. Showing the last loaded records."
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr "Yoksayılacak kütüphaneleri seçin"
+msgstr "Select libraries to ignore"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr "Kütüphaneler yükleniyor…"
+msgstr "Loading libraries…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr "Önbelleğe alınmış kütüphaneler gösteriliyor. Bu sunucuyu etkinleştirin veya yeniden bağlayın, böylece güncel kütüphaneleri yüklenebilir."
+msgstr "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr "Bu sunucuda kütüphane bulunmamaktadır."
+msgstr "This server has no libraries."
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr "Kütüphaneler yüklenemedi. Seçimleriniz kaydedildi. Tekrar denemek için listeyi kapatıp yeniden açın."
+msgstr "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
-msgstr "Themerr’in üzerinde çalıştığı şeyleri görün ve bir öğenin neden dikkatinizi gerektirebileceğini öğrenin."
+msgstr "See what Themerr is working on, and why an item might need your attention."
 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
-msgstr "Temaları ara"
+msgstr "Scan for themes"
 
 #: web/templates/activity.html:3 web/templates/logs.html:4
 msgid "BEHIND THE MUSIC"
-msgstr "MÜZİĞİN ARKASINDA"
+msgstr "BEHIND THE MUSIC"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
-msgstr "Etkinlik"
+msgstr "Activity"
 
 #: web/templates/activity.html:4
 msgid "items waiting in the processing queue"
-msgstr "işleme kuyruğunda bekleyen öğeler"
+msgstr "items waiting in the processing queue"
 
 #: web/templates/activity.html:4
 msgid "Task history covers the current application session."
-msgstr "Görev geçmişi, mevcut uygulama oturumunu kapsar."
+msgstr "Task history covers the current application session."
 
 #: web/templates/activity.html:5
 msgid "Recent tasks"
-msgstr "Son görevler"
+msgstr "Recent tasks"
 
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
-msgstr "Henüz hiçbir görev çalıştırılmadı. Bir tarama talebinde bulunun ya da bir sonraki planlanmış güncellemeyi bekleyin."
+msgstr "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
 
 #: web/templates/activity.html:7 web/templates/home.html:14
 #: web/templates/home.html:31 web/templates/servers.html:13
 msgid "Needs attention"
-msgstr "Dikkat edilmesi gereken husus"
+msgstr "Needs attention"
 
 #: web/templates/activity.html:8
 msgid "No processing failures recorded. All quiet here."
-msgstr "Herhangi bir işleme hatası kaydedilmedi. Burada her şey yolunda."
+msgstr "No processing failures recorded. All quiet here."
 
 #: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
-msgstr "Plex Kimliği"
+msgstr "Plex ID"
 
 #: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
-msgstr "ThemerrDB'den kaldırıldı"
+msgstr "Outdated from ThemerrDB"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "Oturum açtığınız hesapla API’yi keşfedin."
+msgstr "Explore the API using your signed-in session."
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
-msgstr "KÜTÜPHANENİZİN SESİ"
+msgstr "THE SOUND OF YOUR LIBRARY"
 
 #: web/templates/auth.html:8
 msgid "Every story"
-msgstr "Her hikâye"
+msgstr "Every story"
 
 #: web/templates/auth.html:8
 msgid "has a soundtrack."
-msgstr "bir film müziği var."
+msgstr "has a soundtrack."
 
 #: web/templates/auth.html:9
 msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "Plex kütüphanelerinize hayat verin. Sunucularınız, temalarınız ve bunların arasındaki her şey için tek bir düzenli çalışma alanı."
+msgstr "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
-msgstr "Çalışma alanınız, güvende."
+msgstr "Your workspace, secured."
 
 #: web/templates/auth.html:19
 msgid "Open the one-time setup link printed in the application console to create your admin account."
-msgstr "Yönetici hesabınızı oluşturmak için uygulama konsolunda yazılı olan tek seferlik kurulum bağlantısını açın."
+msgstr "Open the one-time setup link printed in the application console to create your admin account."
 
 #: web/templates/auth.html:20
 msgid "The link is generated each time the application starts, until setup is complete."
-msgstr "Bağlantı, kurulum tamamlanana kadar uygulama her başlatıldığında oluşturulur."
+msgstr "The link is generated each time the application starts, until setup is complete."
 
 #: web/templates/auth.html:22
 msgid "GET STARTED"
-msgstr "BAŞLAYIN"
+msgstr "GET STARTED"
 
 #: web/templates/auth.html:22
 msgid "WELCOME BACK"
-msgstr "TEKRAR HOŞ GELDİNİZ"
+msgstr "WELCOME BACK"
 
 #: web/templates/auth.html:23
 msgid "Make it yours."
-msgstr "Kendine ait hale getir."
+msgstr "Make it yours."
 
 #: web/templates/auth.html:23
 msgid "Sign in to Themerr."
-msgstr "Themerr'e giriş yapın."
+msgstr "Sign in to Themerr."
 
 #: web/templates/auth.html:24
 msgid "Create the administrator account for this installation."
-msgstr "Bu kurulum için yönetici hesabını oluşturun."
+msgstr "Create the administrator account for this installation."
 
 #: web/templates/auth.html:24
 msgid "Your libraries are waiting for their next soundtrack."
-msgstr "Kütüphaneleriniz bir sonraki film müziğini bekliyor."
+msgstr "Your libraries are waiting for their next soundtrack."
 
 #: web/templates/auth.html:28
 msgid "Username"
-msgstr "Kullanıcı adı"
+msgstr "Username"
 
 #: web/templates/auth.html:30
 msgid "Password"
-msgstr "Şifre"
+msgstr "Password"
 
 #: web/templates/auth.html:33
 msgid "Use at least 12 characters. A long, unique passphrase works well."
-msgstr "En az 12 karakter kullanın. Uzun ve benzersiz bir parola etkili olur."
+msgstr "Use at least 12 characters. A long, unique passphrase works well."
 
 #: web/templates/auth.html:34
 msgid "Confirm password"
-msgstr "Şifreyi onaylayın"
+msgstr "Confirm password"
 
 #: web/templates/auth.html:37
 msgid "Create workspace"
-msgstr "Çalışma alanı oluştur"
+msgstr "Create workspace"
 
 #: web/templates/auth.html:37
 msgid "Sign in"
-msgstr "Giriş yap"
+msgstr "Sign in"
 
 #: web/templates/auth.html:39
 msgid "Plex account linking happens inside your workspace."
-msgstr "Plex hesabının bağlanması, çalışma alanınızın içinde gerçekleşir."
+msgstr "Plex account linking happens inside your workspace."
 
 #: web/templates/base.html:21
 msgid "Skip to content"
-msgstr "İçeriğe atla"
+msgstr "Skip to content"
 
 #: web/templates/base.html:27
 msgid "Toggle navigation"
-msgstr "Gezinmeyi aç/kapat"
+msgstr "Toggle navigation"
 
 #: web/templates/base.html:28
 msgid "Workspace"
-msgstr "Çalışma Alanı"
+msgstr "Workspace"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr "Tema: Otomatik. Açık moda geç."
+msgstr "Theme: Automatic. Switch to light mode."
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr "Tema: Açık. Koyu moda geç."
+msgstr "Theme: Light. Switch to dark mode."
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr "Tema: Karanlık. Otomatik moda geç."
+msgstr "Theme: Dark. Switch to automatic mode."
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
-msgstr "Şu dizinlere göz atın:"
+msgstr "Browse directories for"
 
 #: web/templates/config.html:22
 msgid "TUNE YOUR WORKSPACE"
-msgstr "ÇALIŞMA ALANINIZI DÜZENLEYİN"
+msgstr "TUNE YOUR WORKSPACE"
 
 #: web/templates/config.html:22
 msgid "Make Themerr work the way your library does."
-msgstr "Themerr’ı kütüphanenizin çalışma şekline uygun hale getirin."
+msgstr "Make Themerr work the way your library does."
 
 #: web/templates/config.html:24
 msgid "Settings sections"
-msgstr "Ayarlar bölümleri"
+msgstr "Settings sections"
 
 #: web/templates/config.html:24 web/templates/config.html:33
 msgid "Security"
-msgstr "Güvenlik"
+msgstr "Security"
 
 #: web/templates/config.html:28
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
-msgstr "Sunucu bağlantıları, veri dizinleri ve göz ardı edilen kütüphaneler, “Sunucular” sayfasında yönetilir."
+msgstr "Server connections, data directories, and ignored libraries are managed on the Servers page."
 
 #: web/templates/config.html:28
 msgid "Changes to network settings take effect after restarting Themerr."
-msgstr "Ağ ayarlarında yapılan değişiklikler, Themerr yeniden başlatıldıktan sonra yürürlüğe girer."
+msgstr "Changes to network settings take effect after restarting Themerr."
 
 #: web/templates/config.html:33
 msgid "One administrator for this installation. Change your password and sign out other sessions."
-msgstr "Bu kurulum için bir yönetici. Şifrenizi değiştirin ve diğer oturumlardan çıkış yapın."
+msgstr "One administrator for this installation. Change your password and sign out other sessions."
 
 #: web/templates/config.html:34
 msgid "Current password"
-msgstr "Mevcut şifre"
+msgstr "Current password"
 
 #: web/templates/config.html:34
 msgid "New password"
-msgstr "Yeni şifre"
+msgstr "New password"
 
 #: web/templates/config.html:34
 msgid "Confirm new password"
-msgstr "Yeni şifreyi onaylayın"
+msgstr "Confirm new password"
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr "Şifreyi değiştir"
+msgstr "Change password"
 
 #: web/templates/config.html:36
 msgid "Save changes"
-msgstr "Değişiklikleri kaydet"
+msgstr "Save changes"
 
 #: web/templates/directory_picker.html:2
 msgid "Choose an application directory"
-msgstr "Bir uygulama dizini seçin"
+msgstr "Choose an application directory"
 
 #: web/templates/directory_picker.html:2
 msgid "Close directory picker"
-msgstr "Dizin seçiciyi kapat"
+msgstr "Close directory picker"
 
 #: web/templates/directory_picker.html:3
 msgid "Browse directories on the machine running Themerr."
-msgstr "Themerr’ın çalıştığı bilgisayardaki dizinlere göz atın."
+msgstr "Browse directories on the machine running Themerr."
 
 #: web/templates/directory_picker.html:4
 msgid "Parent directory"
-msgstr "Üst dizin"
+msgstr "Parent directory"
 
 #: web/templates/directory_picker.html:6
 msgid "Select directory"
-msgstr "Dizini seçin"
+msgstr "Select directory"
 
 #: web/templates/error.html:5
 msgid "LET’S TRY THAT AGAIN"
-msgstr "Hadi bunu bir daha deneyelim"
+msgstr "LET’S TRY THAT AGAIN"
 
 #: web/templates/error.html:7
 msgid "Back to workspace"
-msgstr "Çalışma alanına geri dön"
+msgstr "Back to workspace"
 
 #: web/templates/home.html:4
 msgid "YOUR LIBRARY, IN HARMONY"
-msgstr "KÜTÜPHANENİZ, UYUM İÇİNDE"
+msgstr "YOUR LIBRARY, IN HARMONY"
 
 #: web/templates/home.html:4
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
-msgstr "Her hikâyeye uygun bir müzik. Şu anda çalanları ve biraz ilgiye ihtiyaç duyanları görün."
+msgstr "A soundtrack for every story. See what’s playing, and what needs a little attention."
 
 #: web/templates/home.html:4 web/templates/navbar.html:6
 msgid "Overview"
-msgstr "Genel Bakış"
+msgstr "Overview"
 
 #: web/templates/home.html:5
 msgid "Refresh libraries"
-msgstr "Kütüphaneleri yenileme"
+msgstr "Refresh libraries"
 
 #: web/templates/home.html:7
 msgid "Unknown"
-msgstr "Bilinmiyor"
+msgstr "Unknown"
 
 #: web/templates/home.html:7
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "GitHub denetimi başarısız oldu. Bilinen en son dağıtım gösteriliyor; denetimler en fazla saat başı gerçekleştirilir."
+msgstr "GitHub check failed. Showing the last known deployment; checks run at most hourly."
 
 #: web/templates/home.html:8
 msgid "Last deployed"
-msgstr "En son konuşlandırılma tarihi"
+msgstr "Last deployed"
 
 #: web/templates/home.html:8
 msgid "Checking…"
-msgstr "… adresini kontrol etme"
+msgstr "Checking…"
 
 #: web/templates/home.html:8
 msgid "Check unavailable"
-msgstr "Kullanılabilir değil"
+msgstr "Check unavailable"
 
 #: web/templates/home.html:11
 msgid "Library items"
-msgstr "Kütüphane materyalleri"
+msgstr "Library items"
 
 #: web/templates/home.html:11
 msgid "libraries across"
-msgstr "çeşitli kütüphaneler"
+msgstr "libraries across"
 
 #: web/templates/home.html:11
 msgid "servers"
-msgstr "sunucular"
+msgstr "servers"
 
 #: web/templates/home.html:12
 msgid "Themes installed"
-msgstr "Yüklü temalar"
+msgstr "Themes installed"
 
 #: web/templates/home.html:12
 msgid "Your library sounds better already."
-msgstr "Kütüphanen şimdiden daha iyi görünüyor."
+msgstr "Your library sounds better already."
 
 #: web/templates/home.html:13
 msgid "Theme coverage"
-msgstr "Tema kapsamı"
+msgstr "Theme coverage"
 
 #: web/templates/home.html:14
 msgid "Review activity"
-msgstr "İnceleme faaliyeti"
+msgstr "Review activity"
 
 #: web/templates/home.html:19
 msgid "LET’S SET THE TONE"
-msgstr "HADİ TONU BELİRLİYELİM"
+msgstr "LET’S SET THE TONE"
 
 #: web/templates/home.html:20
 msgid "Your library deserves a soundtrack."
-msgstr "Kütüphanenizin bir fon müziği hak ediyor."
+msgstr "Your library deserves a soundtrack."
 
 #: web/templates/home.html:20
 msgid "Getting to know your library."
-msgstr "Kütüphanenizi tanımak."
+msgstr "Getting to know your library."
 
 #: web/templates/home.html:21
 msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "Plex hesabınızı bağlayın, sunucularınızı seçin ve müziği Themerr’e bırakın."
+msgstr "Connect your Plex account, choose your servers, and let Themerr take care of the music."
 
 #: web/templates/home.html:21
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
-msgstr "İlk yenileme işlemi, kütüphane görünümünü oluşturuyor. İlerleme durumunu Activity bölümünden kontrol edebilir veya yukarıdan yenileme talebinde bulunabilirsiniz."
+msgstr "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
 
 #: web/templates/home.html:22
 msgid "Connect a server"
-msgstr "Bir sunucuya bağlan"
+msgstr "Connect a server"
 
 #: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
 msgid "View activity"
-msgstr "Etkinliği görüntüle"
+msgstr "View activity"
 
 #: web/templates/home.html:26
 msgid "Your libraries"
-msgstr "Kütüphaneleriniz"
+msgstr "Your libraries"
 
 #: web/templates/home.html:26
 msgid "items"
-msgstr "ürünler"
+msgstr "items"
 
 #: web/templates/home.html:28
 msgid "Search library items"
-msgstr "Kütüphane materyallerini ara"
+msgstr "Search library items"
 
 #: web/templates/home.html:28
 msgid "Search titles…"
-msgstr "Başlıklarda arama yap…"
+msgstr "Search titles…"
 
 #: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
-msgstr "Aramayı temizle"
+msgstr "Clear search"
 
 #: web/templates/home.html:29
 msgid "Server"
-msgstr "Sunucu"
+msgstr "Server"
 
 #: web/templates/home.html:29
 msgid "All servers"
-msgstr "Tüm sunucular"
+msgstr "All servers"
 
 #: web/templates/home.html:30
 msgid "Type"
-msgstr "Tip"
+msgstr "Type"
 
 #: web/templates/home.html:30
 msgid "All types"
-msgstr "Tüm türler"
+msgstr "All types"
 
 #: web/templates/home.html:30
 msgid "Movies"
-msgstr "Filmler"
+msgstr "Movies"
 
 #: web/templates/home.html:30
 msgid "TV shows"
-msgstr "TV dizileri"
+msgstr "TV shows"
 
 #: web/templates/home.html:31
 msgid "Theme status"
-msgstr "Tema durumu"
+msgstr "Theme status"
 
 #: web/templates/home.html:31
 msgid "All statuses"
-msgstr "Tüm durumlar"
+msgstr "All statuses"
 
 #: web/templates/home.html:31
 msgid "Has a theme"
-msgstr "Bir teması var"
+msgstr "Has a theme"
 
 #: web/templates/home.html:31
 msgid "No theme"
-msgstr "Tema yok"
+msgstr "No theme"
 
 #: web/templates/home.html:32
 msgid "Reset filters"
-msgstr "Filtreleri sıfırla"
+msgstr "Reset filters"
 
 #: web/templates/home.html:38
 msgid "Library ID"
-msgstr "Kütüphane Kimliği"
+msgstr "Library ID"
 
 #: web/templates/home.html:43
 msgid "Title"
-msgstr "Başlık"
+msgstr "Title"
 
 #: web/templates/home.html:43
 msgid "Metadata ID"
-msgstr "Meta veri kimliği"
+msgstr "Metadata ID"
 
 #: web/templates/home.html:43
 msgid "Theme"
-msgstr "Tema"
+msgstr "Theme"
 
 #: web/templates/home.html:43
 msgid "ThemerrDB"
@@ -987,453 +987,453 @@ msgstr "ThemerrDB"
 
 #: web/templates/home.html:56
 msgid "Pause theme for"
-msgstr "Şu tema için duraklatma:"
+msgstr "Pause theme for"
 
 #: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
-msgstr "[Tema] için çal"
+msgstr "Play theme for"
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "Bu tema oynatılamıyor. Plex bağlantısını ve tarayıcının ses desteğini kontrol edin."
+msgstr "Unable to play this theme. Check the Plex connection and browser audio support."
 
 #: web/templates/home.html:64
 msgid "Open in Plex"
-msgstr "Plex'te aç"
+msgstr "Open in Plex"
 
 #: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
-msgstr "Dış kimlik mevcut değil"
+msgstr "External ID unavailable"
 
 #: web/templates/home.html:70
 msgid "Failed to add theme"
-msgstr "Tema eklenemedi"
+msgstr "Failed to add theme"
 
 #: web/templates/home.html:71
 msgid "Plex provided"
-msgstr "Plex tarafından sağlanan"
+msgstr "Plex provided"
 
 #: web/templates/home.html:72
 msgid "User provided"
-msgstr "Kullanıcı tarafından sağlanan"
+msgstr "User provided"
 
 #: web/templates/home.html:73
 msgid "Themerr provided"
-msgstr "Themerr tarafından sağlanan"
+msgstr "Themerr provided"
 
 #: web/templates/home.html:74
 msgid "Unknown provider"
-msgstr "Bilinmeyen sağlayıcı"
+msgstr "Unknown provider"
 
 #: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
-msgstr "ThemerrDB'de eksik"
+msgstr "Missing from ThemerrDB"
 
 #: web/templates/home.html:76
 msgid "TMDB ID unavailable"
-msgstr "TMDB kimliği mevcut değil"
+msgstr "TMDB ID unavailable"
 
 #: web/templates/home.html:77
 msgid "Theme not installed yet"
-msgstr "Tema henüz yüklenmemiş"
+msgstr "Theme not installed yet"
 
 #: web/templates/home.html:80
 msgid "Edit"
-msgstr "Düzenle"
+msgstr "Edit"
 
 #: web/templates/home.html:80
 msgid "Add"
-msgstr "Ekle"
+msgstr "Add"
 
 #: web/templates/home.html:87
 msgid "No titles match."
-msgstr "Eşleşen başlık bulunamadı."
+msgstr "No titles match."
 
 #: web/templates/home.html:87
 msgid "Try another search or reset your filters."
-msgstr "Başka bir arama deneyin veya filtrelerinizi sıfırlayın."
+msgstr "Try another search or reset your filters."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "Your library is on its way."
-msgstr "Kütüphaneniz yolda."
+msgstr "Your library is on its way."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
-msgstr "İlk yenileme işlemi, kütüphane görünümünüzü oluşturur. İlerleme durumunu Activity'den takip edebilirsiniz."
+msgstr "The first refresh builds your library view. You can follow progress in Activity."
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr "Son günlükleri inceleyin, bir mesajı bulun ve uyarılar ile hatalar arasında geçiş yapın."
+msgstr "Explore recent logs, find a message, and jump between warnings and errors."
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr "Filtrelenmiş günlükleri indir"
+msgstr "Download filtered logs"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr "Günlük görüntüleyici"
+msgstr "Log viewer"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr "Arama günlükleri"
+msgstr "Search logs"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr "… 'da mesajları, konu dizilerini veya zaman damgalarını arayın"
+msgstr "Search messages, threads, or timestamps…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr "Günlük kaynağı"
+msgstr "Log source"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr "Tüm kaynaklar"
+msgstr "All sources"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr "Günlük seviyesi"
+msgstr "Log level"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr "Tüm seviyeler"
+msgstr "All levels"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr "Uyarılar ve hatalar"
+msgstr "Warnings and errors"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr "Günlük geçmişi"
+msgstr "Log history"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr "Son 250"
+msgstr "Latest 250"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr "Son 1.000"
+msgstr "Latest 1,000"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr "Son 2.000"
+msgstr "Latest 2,000"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr "Kuruluşundan bu yana"
+msgstr "Since startup"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr "Filtreleri temizle"
+msgstr "Clear filters"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr "Uyarı ve hata gezinme"
+msgstr "Warning and error navigation"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr "Önceki uyarı veya hata"
+msgstr "Previous warning or error"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr "Bir sonraki uyarı veya hata"
+msgstr "Next warning or error"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr "Canlı güncelleme"
+msgstr "Live refresh"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr "En son gelişmeleri takip edin"
+msgstr "Follow latest"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr "Yenile"
+msgstr "Refresh"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr "… dosyasındaki günlükler yükleniyor"
+msgstr "Loading logs…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr "Günlük geçmişi sayfaları"
+msgstr "Log history pages"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr "Eski kayıtlar"
+msgstr "Older records"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr "Daha yeni kayıtlar"
+msgstr "Newer records"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr "Günlük kayıtları"
+msgstr "Log records"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
-msgstr "Gezinme menüsünü kapat"
+msgstr "Close navigation"
 
 #: web/templates/navbar.html:2
 msgid "Main navigation"
-msgstr "Ana gezinme menüsü"
+msgstr "Main navigation"
 
 #: web/templates/navbar.html:4
 msgid "YOUR WORKSPACE"
-msgstr "ÇALIŞMA ALANINIZ"
+msgstr "YOUR WORKSPACE"
 
 #: web/templates/navbar.html:5
 msgid "Workspace pages"
-msgstr "Çalışma alanı sayfaları"
+msgstr "Workspace pages"
 
 #: web/templates/navbar.html:6 web/templates/servers.html:3
 msgid "Servers"
-msgstr "Sunucular"
+msgstr "Servers"
 
 #: web/templates/navbar.html:11
 msgid "A little music."
-msgstr "Biraz müzik."
+msgstr "A little music."
 
 #: web/templates/navbar.html:11
 msgid "A lot more atmosphere."
-msgstr "Çok daha fazla atmosfer."
+msgstr "A lot more atmosphere."
 
 #: web/templates/navbar.html:12
 msgid "Resources"
-msgstr "Kaynaklar"
+msgstr "Resources"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
-msgstr "Bir tema ekleyin"
+msgstr "Contribute a theme"
 
 #: web/templates/navbar.html:16
 msgid "Support LizardByte"
-msgstr "LizardByte'ı Destekleyin"
+msgstr "Support LizardByte"
 
 #: web/templates/navbar.html:20
 msgid "Sign out"
-msgstr "Çıkış yap"
+msgstr "Sign out"
 
 #: web/templates/servers.html:3
 msgid "ONE WORKSPACE. EVERY SERVER."
-msgstr "TEK ÇALIŞMA ALANI. HER SUNUCU."
+msgstr "ONE WORKSPACE. EVERY SERVER."
 
 #: web/templates/servers.html:3
 msgid "Connect your Plex account, then choose where the music goes."
-msgstr "Plex hesabınızı bağlayın, ardından müziğin nereye aktarılacağını seçin."
+msgstr "Connect your Plex account, then choose where the music goes."
 
 #: web/templates/servers.html:3
 msgid "saved"
-msgstr "kaydedildi"
+msgstr "saved"
 
 #: web/templates/servers.html:6
 msgid "Your Plex account"
-msgstr "Plex hesabınız"
+msgstr "Your Plex account"
 
 #: web/templates/servers.html:6
 msgid "Account linked. Choose a server below."
-msgstr "Hesap bağlandı. Aşağıdan bir sunucu seçin."
+msgstr "Account linked. Choose a server below."
 
 #: web/templates/servers.html:6
 msgid "Link your account securely through Plex to access your servers."
-msgstr "Sunucularınıza erişmek için hesabınızı Plex üzerinden güvenli bir şekilde bağlayın."
+msgstr "Link your account securely through Plex to access your servers."
 
 #: web/templates/servers.html:6
 msgid "Continue Plex sign-in"
-msgstr "Plex oturum açma işlemine devam et"
+msgstr "Continue Plex sign-in"
 
 #: web/templates/servers.html:7
 msgid "Reconnect account"
-msgstr "Hesabı yeniden bağla"
+msgstr "Reconnect account"
 
 #: web/templates/servers.html:7
 msgid "Connect Plex account"
-msgstr "Plex hesabını bağla"
+msgstr "Connect Plex account"
 
 #: web/templates/servers.html:7
 msgid "Disconnect"
-msgstr "Bağlantıyı kes"
+msgstr "Disconnect"
 
 #: web/templates/servers.html:9
 msgid "Connected servers"
-msgstr "Bağlı sunucular"
+msgstr "Connected servers"
 
 #: web/templates/servers.html:9
 msgid "Theme history and library settings are kept separately for each server."
-msgstr "Tema geçmişi ve kütüphane ayarları her sunucu için ayrı ayrı tutulur."
+msgstr "Theme history and library settings are kept separately for each server."
 
 #: web/templates/servers.html:13
 msgid "Enabled"
-msgstr "Etkinleştirildi"
+msgstr "Enabled"
 
 #: web/templates/servers.html:16
 msgid "Last library refresh"
-msgstr "Kütüphanenin en son güncellenme tarihi"
+msgstr "Last library refresh"
 
 #: web/templates/servers.html:16
 msgid "Not yet refreshed"
-msgstr "Henüz güncellenmedi"
+msgstr "Not yet refreshed"
 
 #: web/templates/servers.html:17
 msgid "Processing settings"
-msgstr "İşleme ayarları"
+msgstr "Processing settings"
 
 #: web/templates/servers.html:19
 msgid "Process this server"
-msgstr "Bu sunucuyu işleme al"
+msgstr "Process this server"
 
 #: web/templates/servers.html:20
 msgid "optional"
-msgstr "isteğe bağlı"
+msgstr "optional"
 
 #: web/templates/servers.html:21
 msgid "Browse Plex data directory"
-msgstr "Plex veri dizinine göz at"
+msgstr "Browse Plex data directory"
 
 #: web/templates/servers.html:22
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "Yerel veya Plex verisi dizinine bağlanmış bir dizin, yalnızca daha eski yüklü dosyaları silmek için gereklidir. Uzak sunucular için bu alanı boş bırakın."
+msgstr "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr "Yoksayılan kütüphaneler"
+msgstr "Ignored libraries"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr "Kütüphane"
+msgstr "Library"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr "Bu sunucunun kütüphanelerini yüklemek için listeyi açın."
+msgstr "Open the list to load this server’s libraries."
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr "Tema güncellemelerinden hariç tutulacak kütüphaneleri seçin. Tüm kütüphaneleri işlemek için hiçbir seçeneği işaretlemeyin."
+msgstr "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 
 #: web/templates/servers.html:36
 msgid "Save settings"
-msgstr "Ayarları kaydet"
+msgstr "Save settings"
 
 #: web/templates/servers.html:36
 msgid "Remove server"
-msgstr "Sunucuyu kaldır"
+msgstr "Remove server"
 
 #: web/templates/servers.html:40
 msgid "Your first server starts here."
-msgstr "İlk sunucunuzun yolculuğu burada başlıyor."
+msgstr "Your first server starts here."
 
 #: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
-msgstr "Yukarıdaki Plex bağlantısını ekleyin, ardından aşağıdan bir adres bulun veya ekleyin."
+msgstr "Link Plex above, then discover or add an address below."
 
 #: web/templates/servers.html:43
 msgid "Add a server"
-msgstr "Sunucu ekle"
+msgstr "Add a server"
 
 #: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
-msgstr "Plex hesabınızdan bir sunucu seçin, yakınınızdaki bir sunucuyu bulun ya da bildiğiniz bir adresi kullanın."
+msgstr "Choose a server from your Plex account, discover one nearby, or use an address you know."
 
 #: web/templates/servers.html:44
 msgid "Find account servers"
-msgstr "Hesap sunucularını bul"
+msgstr "Find account servers"
 
 #: web/templates/servers.html:44
 msgid "Discover on LAN"
-msgstr "LAN'da keşfet"
+msgstr "Discover on LAN"
 
 #: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
-msgstr "LAN keşfi, uygulamanızın ağında Plex GDM’yi kullanır."
+msgstr "LAN discovery uses Plex GDM on your application’s network."
 
 #: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
-msgstr "Hesap adresleri Plex tarafından duyurulur ve erişilemeyebilir. HTTPS plex.direct adresleri, Plex’in sertifikasını kullanır. Themerr’in çalıştığı makineden erişilebilen bir adres seçin veya bilinen bir adresi manuel olarak girin."
+msgstr "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 
 #: web/templates/servers.html:47
 msgid "Enter an address manually"
-msgstr "Bir adresi manuel olarak girin"
+msgstr "Enter an address manually"
 
 #: web/templates/servers.html:48
 msgid "Plex server address"
-msgstr "Plex sunucu adresi"
+msgstr "Plex server address"
 
 #: web/templates/servers.html:48
 msgid "Connect server"
-msgstr "Sunucuya bağlan"
+msgstr "Connect server"
 
 #: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
-msgstr "Bir LAN adresi veya geçerli bir HTTPS Plex adresi kullanın. Bağlı Plex hesabınızın erişim izni olmalıdır. Mevcut bir sunucu eklendiğinde, sunucunun adresi güncellenir."
+msgstr "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr "Tema oynatıcı"
+msgstr "Theme player"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr "Kütüphanenizden bir tema seçin"
+msgstr "Choose a theme from your library"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr "Temalar yüklenemedi. Lütfen tekrar deneyin."
+msgstr "Unable to load themes. Try again."
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr "Henüz yüklenmiş bir tema bulunmamaktadır."
+msgstr "No installed themes are available yet."
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr "TEMA OYNATICI"
+msgstr "THEME PLAYER"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr "Her hikâyeye uygun bir film müziği."
+msgstr "A soundtrack for every story."
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr "Karıştır"
+msgstr "Shuffle"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr "Önceki tema"
+msgstr "Previous theme"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr "Temayı çal"
+msgstr "Play theme"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr "Tema duraklatma"
+msgstr "Pause theme"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr "Sonraki tema"
+msgstr "Next theme"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr "Bu temayı tekrarla"
+msgstr "Repeat this theme"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr "Oynatma konumu"
+msgstr "Playback position"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr "Beni şaşırt"
+msgstr "Surprise me"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr "Hacim"
+msgstr "Volume"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
-msgstr "Themerr sizin dilinizi konuşur."
+msgstr "Themerr speaks your language."
 
 #: web/templates/translations.html:3
 msgid "Choose a language in Settings, or help improve translations on Crowdin."
-msgstr "Ayarlar'dan bir dil seçin veya Crowdin'de çevirilerin geliştirilmesine katkıda bulunun."
+msgstr "Choose a language in Settings, or help improve translations on Crowdin."
 
 #: web/templates/translations.html:3
 msgid "Help translate"
-msgstr "Çevirmeye yardım edin"
+msgstr "Help translate"
 

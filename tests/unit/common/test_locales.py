@@ -15,18 +15,18 @@ from common import config, locales
 def test_discover_catalogs(tmp_path, monkeypatch):
     monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
     for locale_id, filename in [
-        ('ko', 'themerr-plex.po'),
-        ('pt_BR', 'themerr-plex.po'),
-        ('pt_BR', 'themerr-plex.mo'),
-        ('zh_TW', 'themerr-plex.mo'),
+        ('ko', 'themerr.po'),
+        ('pt_BR', 'themerr.po'),
+        ('pt_BR', 'themerr.mo'),
+        ('zh_TW', 'themerr.mo'),
         ('fr', 'other.po'),
     ]:
         messages = tmp_path / locale_id / 'LC_MESSAGES'
         messages.mkdir(parents=True, exist_ok=True)
         (messages / filename).touch()
-    (tmp_path / 'themerr-plex.po').touch()
+    (tmp_path / 'themerr.po').touch()
     (tmp_path / 'de' / 'LC_MESSAGES').mkdir(parents=True)
-    (tmp_path / 'es' / 'LC_MESSAGES' / 'themerr-plex.po').mkdir(parents=True)
+    (tmp_path / 'es' / 'LC_MESSAGES' / 'themerr.po').mkdir(parents=True)
 
     assert locales.get_supported_locales() == ['en', 'ko', 'pt_BR', 'zh_TW']
 
@@ -38,7 +38,7 @@ def test_discover_missing_catalog_directory(tmp_path, monkeypatch):
 
 def test_repository_catalogs_are_settings_options_and_valid_locales():
     root = Path(__file__).resolve().parents[3] / 'locale'
-    catalog_codes = {catalog.parent.parent.name for catalog in root.glob('*/LC_MESSAGES/themerr-plex.po')}
+    catalog_codes = {catalog.parent.parent.name for catalog in root.glob('*/LC_MESSAGES/themerr.po')}
     options = config._CONFIG_SPEC_DICT['General']['LOCALE']
     assert set(options['options']) == catalog_codes | {'en'}
     assert options['options'] == locales.supported_locales
@@ -72,7 +72,7 @@ def test_unavailable_locale_falls_back_to_english(value, monkeypatch):
 def test_new_catalog_has_display_name_and_runtime_support(tmp_path, monkeypatch):
     messages = tmp_path / 'ko' / 'LC_MESSAGES'
     messages.mkdir(parents=True)
-    (messages / 'themerr-plex.po').touch()
+    (messages / 'themerr.po').touch()
     monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
     monkeypatch.setattr(locales, 'supported_locales', locales.get_supported_locales())
     monkeypatch.setattr(config, 'CONFIG', {'General': {'LOCALE': 'ko'}})
@@ -93,7 +93,7 @@ def write_catalog(path, **messages):
 
 def test_source_catalog_overrides_stale_mo_and_reloads_edits(tmp_path, monkeypatch):
     monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
-    path = tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po'
+    path = tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr.po'
     old = write_catalog(path, Settings='Ancien')
     old.save_as_mofile(str(path.with_suffix('.mo')))
     write_catalog(path, Settings='Paramètres')
@@ -104,10 +104,10 @@ def test_source_catalog_overrides_stale_mo_and_reloads_edits(tmp_path, monkeypat
 
 def test_english_uses_root_source_without_an_english_directory(tmp_path, monkeypatch):
     monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
-    write_catalog(tmp_path / 'themerr-plex.po', Greeting='Default greeting')
-    write_catalog(tmp_path / 'en' / 'LC_MESSAGES' / 'themerr-plex.po', Greeting='Old greeting')
+    write_catalog(tmp_path / 'themerr.po', Greeting='Default greeting')
+    write_catalog(tmp_path / 'en' / 'LC_MESSAGES' / 'themerr.po', Greeting='Old greeting')
     assert locales.get_translation('en').gettext('Greeting') == 'Default greeting'
-    (tmp_path / 'en' / 'LC_MESSAGES' / 'themerr-plex.po').unlink()
+    (tmp_path / 'en' / 'LC_MESSAGES' / 'themerr.po').unlink()
     assert locales.get_translation('en').gettext('Greeting') == 'Default greeting'
     assert locales.get_translation('en').gettext('Missing') == 'Missing'
     assert locales.get_translation('en_US').gettext('Greeting') == 'Default greeting'
@@ -115,7 +115,7 @@ def test_english_uses_root_source_without_an_english_directory(tmp_path, monkeyp
 
 def test_dynamic_translator_follows_setting_and_regional_fallback(tmp_path, monkeypatch):
     monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
-    write_catalog(tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po', Settings='Paramètres')
+    write_catalog(tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr.po', Settings='Paramètres')
     monkeypatch.setattr(config, 'CONFIG', {'General': {'LOCALE': 'fr'}})
     translate = locales.get_text()
     assert translate('Settings') == 'Paramètres'
@@ -126,7 +126,7 @@ def test_dynamic_translator_follows_setting_and_regional_fallback(tmp_path, monk
 
 def test_plural_fuzzy_and_untranslated_entries(tmp_path, monkeypatch):
     monkeypatch.setattr(locales.Paths, 'LOCALE_DIR', str(tmp_path))
-    path = tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po'
+    path = tmp_path / 'fr' / 'LC_MESSAGES' / 'themerr.po'
     catalog = write_catalog(path, Missing='')
     catalog.append(polib.POEntry(msgid='Fuzzy', msgstr='Unreviewed', flags=['fuzzy']))
     catalog.append(polib.POEntry(msgid='item', msgid_plural='items', msgstr_plural={0: 'objet', 1: 'objets'}))

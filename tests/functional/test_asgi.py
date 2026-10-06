@@ -230,8 +230,8 @@ def test_template_translation_follows_locale_changes(browser, monkeypatch, tmp_p
 def test_saved_locale_changes_templates_schema_labels_and_survives_restart(browser, monkeypatch, tmp_path):
     monkeypatch.setattr(Paths, 'LOCALE_DIR', str(tmp_path / 'catalogs'))
     root = tmp_path / 'catalogs'
-    write_catalog(root / 'themerr-plex.po', Settings='', Locale='')
-    path = root / 'fr' / 'LC_MESSAGES' / 'themerr-plex.po'
+    write_catalog(root / 'themerr.po', Settings='', Locale='')
+    path = root / 'fr' / 'LC_MESSAGES' / 'themerr.po'
     write_catalog(path, Settings='Ancien').save_as_mofile(str(path.with_suffix('.mo')))
     write_catalog(path, Settings='Paramètres', Locale='Langue')
     browser.get('/settings/')

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Themerr-plex.py
+src/main.py
 
-Responsible for starting Themerr Plex.
+Responsible for starting Themerr.
 """
 # standard imports
 import argparse
@@ -51,7 +51,7 @@ class IntRange(object):
     Examples
     --------
     >>> IntRange(0, 10)
-    <themerr-plex.IntRange object at 0x...>
+    <main.IntRange object at 0x...>
     """
     def __init__(self, stop: int, start: int = 0,):
         """
@@ -168,7 +168,7 @@ def main():
     splash = _start_splash()
 
     # Set up and gather command line arguments
-    parser = argparse.ArgumentParser(description=_('%(app_name)s manages theme songs for Plex.\n'
+    parser = argparse.ArgumentParser(description=_('%(app_name)s manages theme songs for Plex and Jellyfin.\n'
                                                    'Arguments supplied here are meant to be temporary.')
                                      % {'app_name': definitions.Names.name},
                                      add_help=False)

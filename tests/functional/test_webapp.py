@@ -135,15 +135,15 @@ def test_branding_uses_the_project_asset_and_links(client):
     assert b'class="brand-logo"' in page
     assert b'src="/images/icon-default.png"' in page
     assert b'href="https://app.lizardbyte.dev/" target="_blank" rel="noopener noreferrer"' in page
-    assert b'href="https://github.com/LizardByte/Themerr-plex" target="_blank" rel="noopener noreferrer"' in page
-    assert b'href="https://docs.lizardbyte.dev/projects/themerr-plex/latest/" target="_blank"' in page
+    assert b'href="https://github.com/LizardByte/Themerr" target="_blank" rel="noopener noreferrer"' in page
+    assert b'href="https://docs.lizardbyte.dev/projects/themerr/latest/" target="_blank"' in page
     for body in re.findall(rb'<a\b[^>]*target="_blank"[^>]*>(.*?)</a>', page, re.DOTALL):
         assert b'data-lucide="arrow-up-right"' in body
 
 
 def test_cookie_help_links_to_the_hosted_usage_page(client):
     page = client.get('/settings/').text
-    assert 'https://docs.lizardbyte.dev/projects/themerr-plex/latest/docs/about/usage.html#youtube-cookies' in page
+    assert 'https://docs.lizardbyte.dev/projects/themerr/latest/docs/about/usage.html#youtube-cookies' in page
 
 
 @pytest.mark.parametrize('path', [

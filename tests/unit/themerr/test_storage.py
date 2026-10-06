@@ -168,3 +168,26 @@ def test_database_uses_active_config_directory(configured, tmp_path, monkeypatch
     assert storage.get_errors() == {'42': 'Video unavailable'}
     assert (tmp_path / definitions.Files.DATABASE).is_file()
     assert not (tmp_path / 'inactive').exists()
+
+
+def test_repository_rename_reuses_existing_database(configured, tmp_path, monkeypatch):
+    legacy_filename = f'{definitions.Names.legacy_name.lower()}.db'
+    with monkeypatch.context() as previous:
+        previous.setattr(definitions.Files, 'DATABASE', legacy_filename)
+        storage.replace_dashboard(_dashboard())
+        storage.save_credentials({'client_id': 'existing-installation'})
+        storage.save_encrypted_token('encrypted-secret')
+        storage.close()
+
+    assert storage.get_dashboard()['1']['items'][0]['title'] == 'Example'
+    assert storage.get_credentials() == {'client_id': 'existing-installation'}
+    assert storage.get_encrypted_token() == 'encrypted-secret'
+    assert not (tmp_path / definitions.Files.DATABASE).exists()
+
+
+def test_current_database_takes_precedence_over_legacy_database(configured, tmp_path):
+    storage.save_credentials({'client_id': 'current-installation'})
+    storage.close()
+    (tmp_path / f'{definitions.Names.legacy_name.lower()}.db').write_bytes(b'unused previous database')
+    assert storage.get_credentials() == {'client_id': 'current-installation'}
+    assert storage.database_path() == str(tmp_path / definitions.Files.DATABASE)

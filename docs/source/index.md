@@ -31,7 +31,7 @@ contributing/testing
 :caption: Source Code
 :titlesonly:
 
-src/themerr_plex
+src/main
 src/common/common
 src/common/config
 src/common/crypto

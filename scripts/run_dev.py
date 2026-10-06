@@ -1,4 +1,4 @@
-"""Prepare local assets and run Themerr-plex in this Python process for debugging."""
+"""Prepare local assets and run Themerr in this Python process for debugging."""
 
 # standard imports
 import os
@@ -104,7 +104,7 @@ def main() -> None:
         print('No Deno or Node runtime found; YouTube extraction may be incomplete.', file=sys.stderr)
 
     sys.path.insert(0, str(ROOT / 'src'))
-    from themerr_plex import main as app_main
+    from main import main as app_main
 
     app_main()
 

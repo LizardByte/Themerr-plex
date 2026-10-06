@@ -35,7 +35,7 @@ def test_locale_compile_works_without_existing_translations(tmp_path):
     script = build_tree(tmp_path)
     messages = tmp_path / 'locale' / 'en' / 'LC_MESSAGES'
     messages.mkdir(parents=True)
-    (messages / 'themerr-plex.po').write_text(
+    (messages / 'themerr.po').write_text(
         'msgid ""\nmsgstr ""\n"Language: en\\n"\n"Content-Type: text/plain; charset=UTF-8\\n"\n\n'
         'msgid "Theme"\nmsgstr "A theme"\n', encoding='utf-8',
     )
@@ -43,7 +43,7 @@ def test_locale_compile_works_without_existing_translations(tmp_path):
     result = subprocess.run([sys.executable, str(script), '--compile'], env=environment,
                             capture_output=True, text=True, timeout=15)
     assert result.returncode == 0, result.stderr
-    with (messages / 'themerr-plex.mo').open('rb') as catalog:
+    with (messages / 'themerr.mo').open('rb') as catalog:
         assert gettext.GNUTranslations(catalog).gettext('Theme') == 'A theme'
 
 
@@ -60,7 +60,7 @@ def test_locale_extraction_cleans_template_and_preserves_crowdin_catalogs(tmp_pa
     (tmp_path / 'src' / 'messages.py').write_text(
         f"_('Café')\n_({metadata_message!r})\n", encoding='utf-8',
     )
-    translation_path = tmp_path / 'locale' / 'pt_BR' / 'LC_MESSAGES' / 'themerr-plex.po'
+    translation_path = tmp_path / 'locale' / 'pt_BR' / 'LC_MESSAGES' / 'themerr.po'
     translation_path.parent.mkdir(parents=True)
     translation = polib.POFile()
     translation.header = 'Translated by Example Translator'
@@ -82,13 +82,13 @@ def test_locale_extraction_cleans_template_and_preserves_crowdin_catalogs(tmp_pa
         assert result.returncode == 0, result.stderr
 
     run_locale('--extract')
-    template = tmp_path / 'locale' / 'themerr-plex.po'
+    template = tmp_path / 'locale' / 'themerr.po'
     catalog = polib.pofile(str(template))
     assert 'POT-Creation-Date' not in catalog.metadata
     assert 'PO-Revision-Date' not in catalog.metadata
     assert 'FIRST AUTHOR <EMAIL@ADDRESS>' not in catalog.header
     assert 'Last-Translator' not in catalog.metadata
-    assert catalog.metadata['Report-Msgid-Bugs-To'] == 'https://github.com/LizardByte/Themerr-plex/issues'
+    assert catalog.metadata['Report-Msgid-Bugs-To'] == 'https://github.com/LizardByte/Themerr/issues'
     assert 'charset=utf-8' in catalog.metadata['Content-Type']
     assert catalog.find('Café') is not None
     assert catalog.find(metadata_message) is not None

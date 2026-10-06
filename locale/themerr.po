@@ -1,13 +1,12 @@
-# Translations template for Themerr-plex.
-# Copyright (C) 2026 Themerr-plex
-# This file is distributed under the same license as the Themerr-plex
-# project.
+# Translations template for Themerr.
+# Copyright (C) 2026 Themerr
+# This file is distributed under the same license as the Themerr project.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Themerr-plex v0\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
+"Project-Id-Version: Themerr v0\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -412,8 +411,8 @@ msgstr ""
 
 #: src/common/config.py:397
 msgid ""
-"If you used Themerr-plex v2024.813.13709 or lower, you may need to enable"
-" this to update items."
+"If you used Themerr v2024.813.13709 or lower, you may need to enable this"
+" to update items."
 msgstr ""
 
 #: src/common/config.py:403
@@ -503,8 +502,8 @@ msgid ""
 "→ %(after)s%%. %(installed)s of %(total)s items have themes."
 msgstr ""
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
-#. translate "%(app_name)s".
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not translate
+#. "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
@@ -580,49 +579,49 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid ""
-"%(app_name)s manages theme songs for Plex.\n"
+"%(app_name)s manages theme songs for Plex and Jellyfin.\n"
 "Arguments supplied here are meant to be temporary."
 msgstr ""
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
 msgstr ""
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
 msgstr ""
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
 msgstr ""
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
 msgstr ""
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
 msgstr ""
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
 msgstr ""
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
 msgstr ""
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
 msgstr ""
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
 msgstr ""
 

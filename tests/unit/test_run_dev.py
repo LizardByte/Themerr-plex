@@ -51,9 +51,9 @@ def test_main_runs_source_in_current_process(tmp_path, monkeypatch):
     monkeypatch.setattr(run_dev.os, 'chdir', lambda _: None)
     monkeypatch.setattr(run_dev, '_ensure_assets', Mock())
     monkeypatch.setattr(run_dev, '_has_js_runtime', lambda: True)
-    app = ModuleType('themerr_plex')
+    app = ModuleType('main')
     app.main = Mock()
-    monkeypatch.setitem(sys.modules, 'themerr_plex', app)
+    monkeypatch.setitem(sys.modules, 'main', app)
     monkeypatch.syspath_prepend(str(tmp_path))
     run_dev.main()
 

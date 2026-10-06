@@ -1,156 +1,156 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
-"Language-Team: Portuguese, Brazilian\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: pt-BR\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: pt_BR\n"
+"Language: zh_CN\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
-msgstr "Informações"
+msgstr "信息"
 
 #: src/common/config.py:91
 msgid "For information purposes only."
-msgstr "Para fins informativos apenas."
+msgstr "仅供参考。"
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "Configurar versão"
+msgstr "配置版本"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "A versão de configuração."
+msgstr "配置版本。"
 
 #: src/common/config.py:105
 msgid "First run complete"
-msgstr "Primeira execução completa"
+msgstr "第一次运行完成"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "Todo: Indica se o usuário completou a configuração inicial."
+msgstr "待办事项：指示用户是否完成了初始设置。"
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "Gerais"
+msgstr "A. 概况"
 
 #: src/common/config.py:114
 msgid "General settings."
-msgstr "Configurações gerais."
+msgstr "常规设置。"
 
 #: src/common/config.py:118
 msgid "Locale"
-msgstr "Localidade"
+msgstr "区域设置"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "A configuração de localização para usar."
+msgstr "要使用的本地化设置。"
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "Iniciar o navegador na inicialização "
+msgstr "启动时启动浏览器 "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "Habilitar ícone de bandeja do sistema"
+msgstr "启用系统托盘图标"
 
 #: src/common/config.py:142
 msgid "Notifications"
-msgstr "notificações"
+msgstr "通知"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "As notificações na área de trabalho aparecem no computador executando o Themerr. Instalações Docker e headless não as exibem."
+msgstr "桌面通知出现在运行Themerr的计算机上，停靠栏和无头安装不显示它们。"
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
-msgstr "Nova versão disponível"
+msgstr "有新版本可用"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "Notificar quando uma versão mais recente do Themerr estiver disponível. Verificações executam uma vez por hora."
+msgstr "当有新的 Themerr 版本可用时通知。检查每小时一次。"
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "Seguir pré-lançamentos"
+msgstr "跟随预发布"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "Incluir pré-lançamentos em novas notificações de lançamento."
+msgstr "在新的发布通知中包含预发布通知。"
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "Cobertura de tema aumentada"
+msgstr "主题覆盖面增加"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
-msgstr "Notificar após uma atualização bem-sucedida quando a cobertura total do tema aumentar. Atualiza sem aumentar o número em silêncio."
+msgstr "当主题覆盖率增加时，在成功刷新后通知。刷新时不会增加静音。"
 
 #: src/common/config.py:168
 msgid "Logging"
-msgstr "Registro"
+msgstr "日志记录"
 
 #: src/common/config.py:169
 msgid "Logging settings."
-msgstr "Configurações de registro."
+msgstr "日志设置。"
 
 #: src/common/config.py:173
 msgid "Log directory"
-msgstr "Diretório de log"
+msgstr "日志目录"
 
 #: src/common/config.py:175
 msgid "The directory where to store the log files."
-msgstr "O diretório onde armazenar os arquivos de log."
+msgstr "存储日志文件的目录。"
 
 #: src/common/config.py:182
 msgid "Debug logging"
-msgstr "Debug log"
+msgstr "调试日志"
 
 #: src/common/config.py:184
 msgid "Enable debug logging."
-msgstr "Ativar log de depuração."
+msgstr "启用调试记录。"
 
 #: src/common/config.py:190
 msgid "Network"
-msgstr "Rede"
+msgstr "网络"
 
 #: src/common/config.py:191
 msgid "Network settings."
-msgstr "Configurações de rede."
+msgstr "网络设置。"
 
 #: src/common/config.py:195
 msgid "HTTP host address"
-msgstr "Endereço do host HTTP"
+msgstr "HTTP 主机地址"
 
 #: src/common/config.py:197
 msgid "The HTTP address to bind to."
-msgstr "O endereço HTTP a ser vinculado."
+msgstr "要绑定的 HTTP 地址。"
 
 #: src/common/config.py:206
 msgid "HTTP port"
-msgstr "Porta HTTP"
+msgstr "HTTP 端口"
 
 #: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
-msgstr "Porta para vincular o servidor web. Observe que portas abaixo de 1024 podem exigir root."
+msgstr "要绑定网络服务器的端口。请注意低于1024的端口可能需要root。"
 
 #: src/common/config.py:216
 msgid "HTTP root"
-msgstr "Raiz HTTP"
+msgstr "HTTP 根目录"
 
 #: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
-msgstr "Todo: O URL base do servidor web. Usado para proxy reverso."
+msgstr "待办事项：Web 服务器的基础URL。用于反向代理。"
 
 #: src/common/config.py:223
 msgid "SSL"
@@ -158,19 +158,19 @@ msgstr "SSL"
 
 #: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
-msgstr "Execute o servidor web com HTTPS. Desabilitar isto pode ser um risco de segurança, fazer isso por sua conta e risco."
+msgstr "使用 HTTP 运行网络服务器。禁用这可能是一个安全风险，请自行承担风险。"
 
 #: src/common/config.py:231
 msgid "Updater"
-msgstr "Atualizações"
+msgstr "更新器"
 
 #: src/common/config.py:232
 msgid "Updater settings."
-msgstr "Configurações de atualização."
+msgstr "更新程序设置。"
 
 #: src/common/config.py:236
 msgid "Auto update"
-msgstr "Atualização automática"
+msgstr "自动更新"
 
 #: src/common/config.py:244
 msgid "Plex"
@@ -178,440 +178,440 @@ msgstr "Plex"
 
 #: src/common/config.py:245
 msgid "Plex settings."
-msgstr "Configurações de Plex."
+msgstr "Plex设置。"
 
 #: src/common/config.py:249
 msgid "Plex URL"
-msgstr "URL Plex"
+msgstr "Plex URL"
 
 #: src/common/config.py:250
 msgid "The URL to the Plex server."
-msgstr "A URL para o servidor Plex."
+msgstr "Plex服务器的 URL。"
 
 #: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
-msgstr "Diretório de dados Plex"
+msgstr "Plex数据目录"
 
 #: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directora-localizado/"
+msgstr "https://support.plex.tv/articles/202915258-where is-the-plex-media-server-data-directory/"
 
 #: src/common/config.py:270
 msgid "Themerr"
-msgstr "Tematizador"
+msgstr "星历表"
 
 #: src/common/config.py:271
 msgid "Themerr settings."
-msgstr "Configurações de Themerr."
+msgstr "星历设置。"
 
 #: src/common/config.py:275
 msgid "Themerr Enabled"
-msgstr "Themerr habilitado"
+msgstr "星历已启用"
 
 #: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
-msgstr "Quando ativado, o Themerr tentará atualizar os temas."
+msgstr "启用时，Themer将尝试更新主题。"
 
 #: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
-msgstr "Coleções"
+msgstr "合集"
 
 #: src/common/config.py:282
 msgid "Add themes to collections."
-msgstr "Adicionar temas a coleções."
+msgstr "将主题添加到收藏中。"
 
 #: src/common/config.py:287
 msgid "Movie support"
-msgstr "Suporte para filmes"
+msgstr "电影支持"
 
 #: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
-msgstr "Adicione temas a filmes usando o agente de filmes Plex."
+msgstr "使用Plex电影代理将主题添加到电影中。"
 
 #: src/common/config.py:293
 msgid "Series support"
-msgstr "Suporte de Séries"
+msgstr "系列支持"
 
 #: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
-msgstr "Adicionar temas a séries usando o agente Série Plex."
+msgstr "使用Plex系列代理添加主题到系列中。"
 
 #: src/common/config.py:299
 msgid "Overwrite Plex themes"
-msgstr "Sobrescrever temas Plex"
+msgstr "覆盖Plex主题"
 
 #: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
-msgstr "Quando ativado, o Themerr substituirá os temas fornecidos por Plex."
+msgstr "如果启用，Themer将覆盖由Plex提供的主题。"
 
 #: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
-msgstr "Prefirir MP4A AAC Codec"
+msgstr "优先使用 MP4A AAC 解码器"
 
 #: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
-msgstr "Isto pode melhorar a compatibilidade de temas com dispositivos Apple."
+msgstr "这可以提高主题与苹果设备的兼容性。"
 
 #: src/common/config.py:311
 msgid "Remove unused themes"
-msgstr "Remover temas não utilizados"
+msgstr "删除未使用的主题"
 
 #: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Libera espaço em seu diretório de metadados Plex. Esta opção requer que o caminho \"Plex data directory\" esteja definido"
+msgstr "在您的Plex元数据目录中空闲空间。此选项需要设置\"Plex数据目录\"路径"
 
 #: src/common/config.py:318
 msgid "Remove unused art"
-msgstr "Remover arte não utilizada"
+msgstr "移除未使用的艺像"
 
 #: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Aplica-se à coleção. Libera espaço em seu diretório de metadados Plex. Esta opção requer que o caminho do \"Diretório de dados Plex\" esteja definido"
+msgstr "应用于收藏。在您的Plex元数据目录中释放空间。此选项需要设置\"Plex数据目录\"路径"
 
 #: src/common/config.py:326
 msgid "Remove unused posters"
-msgstr "Remover pôsteres não utilizados"
+msgstr "删除未使用的海报"
 
 #: src/common/config.py:334
 msgid "Collection metadata"
-msgstr "Metadados da coleção"
+msgstr "集合元数据"
 
 #: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
-msgstr "Atualizar metadados da coleção (poster, arte e resumo) durante atualização programada."
+msgstr "在预定的更新过程中更新收藏元数据(海报、艺术和摘要)。"
 
 #: src/common/config.py:340
 msgid "Ignore locked fields."
-msgstr "Ignorar campos trancados."
+msgstr "忽略锁定的字段。"
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Se você usou o Themerr-plex v2024.813.13709 ou inferior, você pode precisar habilitar isso para atualizar itens."
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "如果您使用 Themerr v2024.813.13709 或更低，您可能需要启用此选项来更新项目。"
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
-msgstr "IDs de bibliotecas ignorados"
+msgstr "忽略的库 ID"
 
 #: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
-msgstr "IDs de bibliotecas separadas por vírgulas para excluir das atualizações agendadas. IDs aparecem em Página Inicial."
+msgstr "用于排除预定更新的逗号分隔的库ID。ID出现在主屏幕上。"
 
 #: src/common/config.py:354
 msgid "Update themes interval"
-msgstr "Intervalo de atualização dos temas"
+msgstr "更新主题间隔"
 
 #: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
-msgstr "Intervalo para atualização automática da tarefa, em minutos (min: 15)."
+msgstr "自动更新任务的间隔，以分钟为单位(分钟：15分钟)。"
 
 #: src/common/config.py:362
 msgid "Update database cache interval"
-msgstr "Atualizar intervalo de cache do banco de dados"
+msgstr "更新数据库缓存间隔"
 
 #: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
-msgstr "Intervalo para a tarefa de atualização do cache da base de dados em minutos (min: 15)."
+msgstr "数据库缓存更新任务的间隔，以分钟为单位(分钟：15分钟)。"
 
 #: src/common/config.py:370
 msgid "PlexAPI timeout"
-msgstr "Tempo limite PlexAPI"
+msgstr "PlexAPI 超时"
 
 #: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
-msgstr "Aumente um pouco se você tiver o tempo limite de experiência ao adicionar temas. (min: 1)"
+msgstr "如果您在添加主题时遇到超时时间问题，请稍微增加。(最小：1)"
 
 #: src/common/config.py:378
 msgid "Theme upload retries"
-msgstr "Upload de temas"
+msgstr "主题上传重试"
 
 #: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
-msgstr "Se o carregamento de temas falhar, tente novamente muitas vezes. (min: 0)"
+msgstr "如果上传主题失败，请重试这么多次(最小：0)"
 
 #: src/common/config.py:386
 msgid "Multiprocessing thread count"
-msgstr "Contagem de thread multi-processamento"
+msgstr "多处理线程计数"
 
 #: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
-msgstr "O número de tópicos a serem usados ao adicionar temas. Reinicie os itens necessários. (min: 1)"
+msgstr "添加主题时要使用的线程数。重启所需(最小：1)"
 
 #: src/common/config.py:394
 msgid "YouTube Cookies"
-msgstr "Cookies do YouTube"
+msgstr "YouTube Cookie"
 
 #: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "Opcional: exporte cookies do youtube.com com Obter cookies.txt LOCALLY usando seu formato JSON, e cole aqui todo o array JSON e salve. Os cookies contêm sua sessão no navegador, mantenha-os privados."
+msgstr "可选：使用 Get cookies.txt LOCALY 导出youtube.com cookie，然后将整个JSON 数组粘贴到此处，然后保存。 Cookie 包含您的浏览器会话；保持它们的隐私。"
 
 #: src/common/config.py:401
 msgid "Cookie export instructions"
-msgstr "Instruções de exportação de cookies"
+msgstr "Cookie 导出说明"
 
 #: src/common/notifications.py:138
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr "%(app)s %(version)s está disponível.\n"
+msgstr "%(app)s %(version)s 已发布。\n"
 "%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr "Atualização concluída"
+msgstr "刷新完成"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr "Cobertura do tema aumentada por %(increase)s pontos percentuais: %(before)s%% → %(after)s%%. %(installed)s de %(total)s itens têm temas."
+msgstr "主题覆盖率增加了 %(increase)s 个百分点： %(before)s%% → %(after)s%%。 %(installed)s 的 %(total)s 项内容包含主题。"
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
-msgstr "Abrir %(app_name)s"
+msgstr "打开 %(app_name)s"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr "SOBRE"
+msgstr "关于"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr "Versão %(version)s"
+msgstr "版本 %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr "Repositório"
+msgstr "存储库"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
 #: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
-msgstr "Lançamentos %(github)s"
+msgstr "%(github)s 新闻稿"
 
 #: src/common/tray_icon.py:119 web/templates/navbar.html:14
 msgid "Documentation"
-msgstr "Documentação"
+msgstr "文件"
 
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "Documentação da API"
+msgstr "API 文档"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
 msgid "Donate"
-msgstr "Doação"
+msgstr "捐赠"
 
 #: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
-msgstr "Patrocinadores do GitHub"
+msgstr "GitHub Sponsors"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
 #: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
-msgstr "Abrir o navegador quando %(app_name)s iniciar"
+msgstr "在 %(app_name)s 启动时打开浏览器"
 
 #. NOTE: Disable or turn off icon.
 #: src/common/tray_icon.py:139
 msgid "Disable icon"
-msgstr "Desativar ícone"
+msgstr "禁用图标"
 
 #. NOTE: Restart the program.
 #: src/common/tray_icon.py:142
 msgid "Restart"
-msgstr "Reiniciar"
+msgstr "重新启动"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
 #: src/common/tray_icon.py:144
 msgid "Quit"
-msgstr "Encerrar"
+msgstr "退出"
 
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr "Registros"
+msgstr "日志"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
-msgstr "Confirgurações"
+msgstr "设置"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s gerencia músicas do tema para Plex.\n"
-"Os argumentos fornecidos aqui são destinados a serem temporários."
+msgstr "%(app_name)s 负责管理 Plex 的主题曲。\n"
+"此处提供的参数仅供临时使用。"
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
-msgstr "Mostrar esta mensagem de ajuda e saída"
+msgstr "显示此帮助信息并退出"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
-msgstr "Especifique um arquivo de configuração para usar"
+msgstr "指定要使用的配置文件"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
-msgstr "Usar nível de log de depuração"
+msgstr "使用调试日志级别"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
-msgstr "Iniciar %(app_name)s no ambiente de desenvolvimento"
+msgstr "在开发环境中启动 %(app_name)s 程序"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
-msgstr "O exame de saúde do recipiente e a saída"
+msgstr "健康检查容器并退出"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
-msgstr "Não abrir %(app_name)s no navegador"
+msgstr "请勿在浏览器中打开 %(app_name)s 该网址"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
-msgstr "Força %(app_name)s a ser executado em uma porta especificada, default=9494"
+msgstr "强制 %(app_name)s 在指定端口上运行，默认端口为 9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
-msgstr "Desativar registro do console"
+msgstr "关闭控制台日志"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
-msgstr "Imprima os detalhes da versão e saia"
+msgstr "打印版本详细信息并退出"
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "Sua sessão expirou. Entre para continuar."
+msgstr "您的会话已过期。登录以继续。"
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "Rejeitar mensagem"
+msgstr "清除消息"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
-msgstr "Alterações não salvas"
+msgstr "未保存的更改"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr "Descartar alterações nas configurações não salvas?"
+msgstr "放弃未保存的设置更改？"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
-msgstr "Todas as alterações salvas."
+msgstr "所有更改已保存。"
 
 #: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
-msgstr "Configurações salvas. As alterações de rede terão efeito após reiniciar o Themerr."
+msgstr "设置已保存。网络更改在重启主题后生效。"
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "Não é possível salvar as alterações."
+msgstr "无法保存更改。"
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "Salve suas alterações de configurações antes de alterar sua senha."
+msgstr "更改密码前保存您的设置。"
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr "Nenhum registro corresponde aos seus filtros."
+msgstr "没有与您的筛选器匹配的记录。"
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr "Ainda não há registros de registro."
+msgstr "尚无日志记录。"
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr "Busque, filtros, advertindo navegação e baixando todos os registros carregados desde a inicialização."
+msgstr "搜索、过滤、警告导航和下载覆盖启动以来所有加载的记录。"
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr "Filtros e pesquisa se aplicam aos registros carregados. História antiga permanece no diretório de registro."
+msgstr "过滤器和搜索应用于加载的记录。旧的历史记录仍然存在于日志目录。"
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr "Carregamento de registro de sessão interrompido."
+msgstr "会话日志加载已停顿。"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
-msgstr "Publicado"
+msgstr "实时模式"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
 #: web/templates/servers.html:13
 msgid "Paused"
-msgstr "Pausado"
+msgstr "已暂停"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr "Falha ao atualizar. Mostrando os últimos registros carregados"
+msgstr "刷新失败。显示最近加载的记录。"
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr "Selecione as bibliotecas para ignorar"
+msgstr "选择要忽略的库"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr "Carregando bibliotecas…"
+msgstr "正在加载库：…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr "Mostrando bibliotecas em cache. Ative ou reconecte este servidor para carregar suas bibliotecas atuais."
+msgstr "显示缓存的库。启用或重新连接此服务器以加载当前库。"
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr "Este servidor não tem bibliotecas."
+msgstr "此服务器没有库。"
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr "Não foi possível carregar bibliotecas. Suas seleções foram mantidas. Feche e abra a lista para tentar novamente."
+msgstr "无法加载库。保留您的选择。关闭并重新打开列表以重试。"
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
-msgstr "Veja no que o Themerr está trabalhando e por que um item pode precisar da sua atenção."
+msgstr "看看Themer正在做什么，为什么某个项目可能需要您注意。"
 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
-msgstr "Procurar por temas"
+msgstr "扫描主题"
 
 #: web/templates/activity.html:3 web/templates/logs.html:4
 msgid "BEHIND THE MUSIC"
-msgstr "APROVEITE O MÚSICA"
+msgstr "从MUSIC"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
-msgstr "Atividade"
+msgstr "活动"
 
 #: web/templates/activity.html:4
 msgid "items waiting in the processing queue"
-msgstr "itens na fila de processamento"
+msgstr "等待处理队列中的项目"
 
 #: web/templates/activity.html:4
 msgid "Task history covers the current application session."
-msgstr "O histórico de tarefas cobre a sessão atual do aplicativo."
+msgstr "任务历史涵盖当前应用程序会话。"
 
 #: web/templates/activity.html:5
 msgid "Recent tasks"
-msgstr "Tarefas recentes"
+msgstr "最近任务"
 
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
-msgstr "Nenhuma tarefa foi executada ainda. Solicite uma verificação ou aguarde a próxima atualização programada."
+msgstr "尚未运行任何任务。请求扫描，或等待下次计划刷新。"
 
 #: web/templates/activity.html:7 web/templates/home.html:14
 #: web/templates/home.html:31 web/templates/servers.html:13
 msgid "Needs attention"
-msgstr "Precisa de atenção"
+msgstr "需要关注"
 
 #: web/templates/activity.html:8
 msgid "No processing failures recorded. All quiet here."
-msgstr "Nenhuma falha de processamento gravado. Silêncio aqui."
+msgstr "没有记录处理失败。此处保持静音。"
 
 #: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
@@ -619,415 +619,415 @@ msgstr "Plex ID"
 
 #: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
-msgstr "Desatualizado do ThemerrDB"
+msgstr "ThemerrDB 过期的"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "Explore a API usando sua sessão conectada."
+msgstr "使用您登录的会话探索API。"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
-msgstr "O SOM DA SUA BENDA"
+msgstr "你的船主"
 
 #: web/templates/auth.html:8
 msgid "Every story"
-msgstr "Toda história"
+msgstr "每个故事"
 
 #: web/templates/auth.html:8
 msgid "has a soundtrack."
-msgstr "tem uma trilha sonora."
+msgstr "有音轨。"
 
 #: web/templates/auth.html:9
 msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "Dê vida às suas bibliotecas Plex. Uma área de trabalho calma para seus servidores, seus temas e tudo o mais."
+msgstr "将您的Plex库带到生命中。为您的服务器，您的主题和之间的一切，一个平静的工作空间。"
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
-msgstr "Seu espaço de trabalho, protegido."
+msgstr "您的工作区，安全无误。"
 
 #: web/templates/auth.html:19
 msgid "Open the one-time setup link printed in the application console to create your admin account."
-msgstr "Abra o link de configuração única impresso no console do aplicativo para criar a sua conta de administrador."
+msgstr "打开应用程序控制台打印的一次性设置链接来创建您的管理员帐户。"
 
 #: web/templates/auth.html:20
 msgid "The link is generated each time the application starts, until setup is complete."
-msgstr "O link é gerado cada vez que o aplicativo é iniciado, até que a configuração seja concluída."
+msgstr "每次应用程序启动时都生成链接，直到安装完成。"
 
 #: web/templates/auth.html:22
 msgid "GET STARTED"
-msgstr "PRIMEIROS PASSOS"
+msgstr "开始了"
 
 #: web/templates/auth.html:22
 msgid "WELCOME BACK"
-msgstr "BEM-VINDO DE VOLTA"
+msgstr "WELCOME BACK"
 
 #: web/templates/auth.html:23
 msgid "Make it yours."
-msgstr "Faça-o seu."
+msgstr "让它成为你的。"
 
 #: web/templates/auth.html:23
 msgid "Sign in to Themerr."
-msgstr "Entrar no Themerr."
+msgstr "登录到 Themerr。"
 
 #: web/templates/auth.html:24
 msgid "Create the administrator account for this installation."
-msgstr "Crie a conta de administrador para esta instalação."
+msgstr "为此安装创建管理员帐户。"
 
 #: web/templates/auth.html:24
 msgid "Your libraries are waiting for their next soundtrack."
-msgstr "Suas bibliotecas estão esperando por sua próxima trilha sonora."
+msgstr "您的库正在等待下一个音轨。"
 
 #: web/templates/auth.html:28
 msgid "Username"
-msgstr "Usuário:"
+msgstr "用户名"
 
 #: web/templates/auth.html:30
 msgid "Password"
-msgstr "Palavra-passe"
+msgstr "密码"
 
 #: web/templates/auth.html:33
 msgid "Use at least 12 characters. A long, unique passphrase works well."
-msgstr "Use pelo menos 12 caracteres. Uma senha longa e única funciona bem."
+msgstr "至少使用12个字符。一个长的、唯一的密码很好。"
 
 #: web/templates/auth.html:34
 msgid "Confirm password"
-msgstr "Confirmar a senha"
+msgstr "确认密码"
 
 #: web/templates/auth.html:37
 msgid "Create workspace"
-msgstr "Criar projeto"
+msgstr "创建工作区"
 
 #: web/templates/auth.html:37
 msgid "Sign in"
-msgstr "Iniciar sessão"
+msgstr "登录"
 
 #: web/templates/auth.html:39
 msgid "Plex account linking happens inside your workspace."
-msgstr "O vínculo de contas Plex acontece dentro do seu espaço de trabalho."
+msgstr "Plex帐户链接发生在您的工作区内。"
 
 #: web/templates/base.html:21
 msgid "Skip to content"
-msgstr "Pular para o conteúdo"
+msgstr "跳转到内容"
 
 #: web/templates/base.html:27
 msgid "Toggle navigation"
-msgstr "Menu de navegação"
+msgstr "切换导航"
 
 #: web/templates/base.html:28
 msgid "Workspace"
-msgstr "Workspace"
+msgstr "工作区"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr "Tema: Automático. Alterne para o modo claro."
+msgstr "主题：自动切换到灯光模式。"
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr "Tema: Leve. Alterne para o modo escuro."
+msgstr "主题: Light, 切换到暗色模式。"
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr "Tema: Escuro. Mudar para modo automático."
+msgstr "主题: 暗色。切换到自动模式。"
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
-msgstr "Procurar diretórios para"
+msgstr "浏览目录为"
 
 #: web/templates/config.html:22
 msgid "TUNE YOUR WORKSPACE"
-msgstr "ENCONTRE SEU ESPAÇO"
+msgstr "推荐您的工作"
 
 #: web/templates/config.html:22
 msgid "Make Themerr work the way your library does."
-msgstr "Faça o Themerr funcionar como sua biblioteca funciona."
+msgstr "让Themer以您的知识库的方式工作。"
 
 #: web/templates/config.html:24
 msgid "Settings sections"
-msgstr "Seções de configurações"
+msgstr "设置部分"
 
 #: web/templates/config.html:24 web/templates/config.html:33
 msgid "Security"
-msgstr "Segurança"
+msgstr "安全"
 
 #: web/templates/config.html:28
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
-msgstr "Conexões, diretórios de dados e bibliotecas ignoradas são gerenciadas na página de Servidores."
+msgstr "服务器连接、数据目录和忽略的库在服务器页面上管理。"
 
 #: web/templates/config.html:28
 msgid "Changes to network settings take effect after restarting Themerr."
-msgstr "Alterações nas configurações de rede terão efeito após reiniciar o Themerr."
+msgstr "网络设置的更改在重启主题后生效。"
 
 #: web/templates/config.html:33
 msgid "One administrator for this installation. Change your password and sign out other sessions."
-msgstr "Um administrador para esta instalação. Altere sua senha e saia de outras sessões."
+msgstr "此安装有一个管理员。更改您的密码并注销其他会话。"
 
 #: web/templates/config.html:34
 msgid "Current password"
-msgstr "Senha atual"
+msgstr "当前密码"
 
 #: web/templates/config.html:34
 msgid "New password"
-msgstr "Nova senha"
+msgstr "新密码"
 
 #: web/templates/config.html:34
 msgid "Confirm new password"
-msgstr "Confirme a nova senha"
+msgstr "确认新密码"
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr "Mudar Senha"
+msgstr "更改密码"
 
 #: web/templates/config.html:36
 msgid "Save changes"
-msgstr "Salvar as alterações"
+msgstr "保存更改"
 
 #: web/templates/directory_picker.html:2
 msgid "Choose an application directory"
-msgstr "Escolha um diretório do aplicativo"
+msgstr "选择应用程序目录"
 
 #: web/templates/directory_picker.html:2
 msgid "Close directory picker"
-msgstr "Fechar seletor de diretório"
+msgstr "关闭目录选择器"
 
 #: web/templates/directory_picker.html:3
 msgid "Browse directories on the machine running Themerr."
-msgstr "Navegue por diretórios na máquina executando o Themerr."
+msgstr "在运行Themerr的机器上浏览目录。"
 
 #: web/templates/directory_picker.html:4
 msgid "Parent directory"
-msgstr "Diretório pai"
+msgstr "父目录"
 
 #: web/templates/directory_picker.html:6
 msgid "Select directory"
-msgstr "Selecione o diretório"
+msgstr "选择目录"
 
 #: web/templates/error.html:5
 msgid "LET’S TRY THAT AGAIN"
-msgstr "VAMOS TESTE NOVAMENTE"
+msgstr "试试他们的"
 
 #: web/templates/error.html:7
 msgid "Back to workspace"
-msgstr "Voltar ao espaço de trabalho"
+msgstr "返回工作区"
 
 #: web/templates/home.html:4
 msgid "YOUR LIBRARY, IN HARMONY"
-msgstr "SUA BIBLIOTECA, NA HARMONY"
+msgstr "你的液体流感，血液量"
 
 #: web/templates/home.html:4
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
-msgstr "Uma trilha sonora para cada história. Veja o que está tocando, e o que precisa de um pouco de atenção."
+msgstr "每个故事的声音轨迹。看看什么在玩，什么需要一点关注。"
 
 #: web/templates/home.html:4 web/templates/navbar.html:6
 msgid "Overview"
-msgstr "Geral"
+msgstr "概览"
 
 #: web/templates/home.html:5
 msgid "Refresh libraries"
-msgstr "Atualizar bibliotecas"
+msgstr "刷新库"
 
 #: web/templates/home.html:7
 msgid "Unknown"
-msgstr "Desconhecido"
+msgstr "未知的"
 
 #: web/templates/home.html:7
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "A verificação do GitHub falhou. Mostrando o último deploy conhecido; as verificações são executadas no máximo por hora."
+msgstr "GitHub 检查失败。显示最后一个已知的部署；检查运行时间最多为小时。"
 
 #: web/templates/home.html:8
 msgid "Last deployed"
-msgstr "Última implantação"
+msgstr "最后一次部署"
 
 #: web/templates/home.html:8
 msgid "Checking…"
-msgstr "Verificando…"
+msgstr "正在检查…"
 
 #: web/templates/home.html:8
 msgid "Check unavailable"
-msgstr "Verificação indisponível"
+msgstr "检查不可用"
 
 #: web/templates/home.html:11
 msgid "Library items"
-msgstr "Itens da biblioteca"
+msgstr "图书馆项目"
 
 #: web/templates/home.html:11
 msgid "libraries across"
-msgstr "bibliotecas em"
+msgstr "跨越库"
 
 #: web/templates/home.html:11
 msgid "servers"
-msgstr "servidor"
+msgstr "服务器"
 
 #: web/templates/home.html:12
 msgid "Themes installed"
-msgstr "Temas instalados"
+msgstr "已安装的主题"
 
 #: web/templates/home.html:12
 msgid "Your library sounds better already."
-msgstr "A sua biblioteca já parece melhor."
+msgstr "您的知识库已经有了更好的声音。"
 
 #: web/templates/home.html:13
 msgid "Theme coverage"
-msgstr "Cobertura de tema"
+msgstr "主题范围"
 
 #: web/templates/home.html:14
 msgid "Review activity"
-msgstr "Rever atividade"
+msgstr "审核活动"
 
 #: web/templates/home.html:19
 msgid "LET’S SET THE TONE"
-msgstr "VAMOS CONFIRMAR O TONE"
+msgstr "已经设置了 TONE"
 
 #: web/templates/home.html:20
 msgid "Your library deserves a soundtrack."
-msgstr "Sua biblioteca merece uma trilha sonora."
+msgstr "你的知识库应该有一个音轨。"
 
 #: web/templates/home.html:20
 msgid "Getting to know your library."
-msgstr "Conheça a sua biblioteca."
+msgstr "了解您的故事书库。"
 
 #: web/templates/home.html:21
 msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "Conecte sua conta Plex, escolha seus servidores e deixe que o Themerr cuide das músicas."
+msgstr "连接您的Plex帐户，选择您的服务器，然后让Themer照看音乐。"
 
 #: web/templates/home.html:21
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
-msgstr "A sua primeira atualização é construir a visualização da biblioteca. Verifique a atividade para o progresso ou solicite uma atualização acima."
+msgstr "您的第一次刷新正在构建库视图。请检查进度或请求刷新。"
 
 #: web/templates/home.html:22
 msgid "Connect a server"
-msgstr "Conectar um servidor"
+msgstr "连接服务器"
 
 #: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
 msgid "View activity"
-msgstr "Visualizar atividade"
+msgstr "查看活动"
 
 #: web/templates/home.html:26
 msgid "Your libraries"
-msgstr "Suas bibliotecas"
+msgstr "您的库"
 
 #: web/templates/home.html:26
 msgid "items"
-msgstr "Itens"
+msgstr "项目"
 
 #: web/templates/home.html:28
 msgid "Search library items"
-msgstr "Pesquisar itens da biblioteca"
+msgstr "搜索库项"
 
 #: web/templates/home.html:28
 msgid "Search titles…"
-msgstr "Pesquisar títulos…"
+msgstr "搜索标题：…"
 
 #: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
-msgstr "Limpar pesquisa"
+msgstr "清除搜索"
 
 #: web/templates/home.html:29
 msgid "Server"
-msgstr "Servidor"
+msgstr "服务器"
 
 #: web/templates/home.html:29
 msgid "All servers"
-msgstr "Todos os servidores"
+msgstr "所有服务器"
 
 #: web/templates/home.html:30
 msgid "Type"
-msgstr "Tipo"
+msgstr "类型"
 
 #: web/templates/home.html:30
 msgid "All types"
-msgstr "Todos os tipos"
+msgstr "所有类型"
 
 #: web/templates/home.html:30
 msgid "Movies"
-msgstr "Filmes"
+msgstr "电影"
 
 #: web/templates/home.html:30
 msgid "TV shows"
-msgstr "Séries de TV"
+msgstr "电视节目"
 
 #: web/templates/home.html:31
 msgid "Theme status"
-msgstr "Status do tema"
+msgstr "主题状态"
 
 #: web/templates/home.html:31
 msgid "All statuses"
-msgstr "Todos os estados"
+msgstr "所有状态"
 
 #: web/templates/home.html:31
 msgid "Has a theme"
-msgstr "Tem um tema"
+msgstr "有主题"
 
 #: web/templates/home.html:31
 msgid "No theme"
-msgstr "Nenhum tema"
+msgstr "无主题"
 
 #: web/templates/home.html:32
 msgid "Reset filters"
-msgstr "Redefinir filtros"
+msgstr "重置过滤器"
 
 #: web/templates/home.html:38
 msgid "Library ID"
-msgstr "ID da Biblioteca"
+msgstr "库 ID"
 
 #: web/templates/home.html:43
 msgid "Title"
-msgstr "Título"
+msgstr "标题"
 
 #: web/templates/home.html:43
 msgid "Metadata ID"
-msgstr "ID de Metadados"
+msgstr "元数据ID"
 
 #: web/templates/home.html:43
 msgid "Theme"
-msgstr "Tema"
+msgstr "主题"
 
 #: web/templates/home.html:43
 msgid "ThemerrDB"
-msgstr "ThemerrDB"
+msgstr "主题DB"
 
 #: web/templates/home.html:56
 msgid "Pause theme for"
-msgstr "Pausar tema para"
+msgstr "暂停主题为"
 
 #: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
-msgstr "Reproduzir tema para"
+msgstr "播放主题"
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "Não é possível reproduzir este tema. Verifique a conexão Plex e o suporte por áudio do navegador."
+msgstr "无法播放此主题。请检查Plex连接和浏览器音频支持。"
 
 #: web/templates/home.html:64
 msgid "Open in Plex"
-msgstr "Abrir no Plex"
+msgstr "在Plex中打开"
 
 #: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
-msgstr "ID Externo indisponível"
+msgstr "外部ID不可用"
 
 #: web/templates/home.html:70
 msgid "Failed to add theme"
-msgstr "Falha ao adicionar tema"
+msgstr "添加主题失败"
 
 #: web/templates/home.html:71
 msgid "Plex provided"
-msgstr "Plex fornecido"
+msgstr "Plex提供"
 
 #: web/templates/home.html:72
 msgid "User provided"
-msgstr "Fornecido pelo usuário"
+msgstr "用户提供"
 
 #: web/templates/home.html:73
 msgid "Themerr provided"
-msgstr "A empresa forneceu"
+msgstr "Themerr提供"
 
 #: web/templates/home.html:74
 msgid "Unknown provider"
-msgstr "Fornecedor desconhecido"
+msgstr "未知提供者"
 
 #: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
-msgstr "Ausente no ThemerrDB"
+msgstr "不在ThemerrDB中"
 
 #: web/templates/home.html:76
 msgid "TMDB ID unavailable"
@@ -1035,405 +1035,405 @@ msgstr "TMDB ID unavailable"
 
 #: web/templates/home.html:77
 msgid "Theme not installed yet"
-msgstr "Tema ainda não instalado"
+msgstr "主题尚未安装"
 
 #: web/templates/home.html:80
 msgid "Edit"
-msgstr "Editar"
+msgstr "编辑"
 
 #: web/templates/home.html:80
 msgid "Add"
-msgstr "Adicionar"
+msgstr "添加"
 
 #: web/templates/home.html:87
 msgid "No titles match."
-msgstr "Nenhum título corresponde."
+msgstr "没有匹配的标题。"
 
 #: web/templates/home.html:87
 msgid "Try another search or reset your filters."
-msgstr "Tente outra pesquisa ou redefina seus filtros."
+msgstr "尝试另一次搜索或重置您的过滤器。"
 
 #: web/templates/home_db_not_cached.html:3
 msgid "Your library is on its way."
-msgstr "A sua biblioteca está a caminho."
+msgstr "您的库正在运行中。"
 
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
-msgstr "A primeira atualização constrói a visualização da biblioteca. Você pode acompanhar o progresso na Atividade."
+msgstr "第一次刷新你的库视图。你可以跟随活动进度。"
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr "Explore registros recentes, encontre uma mensagem e pule entre os avisos e erros."
+msgstr "探索最近的日志，找到一条消息，然后在警告和错误之间跳跃。"
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr "Baixar logs filtrados"
+msgstr "下载过滤日志"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr "Visualizador de log"
+msgstr "日志查看器"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr "Buscar logs"
+msgstr "搜索日志"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr "Pesquisar mensagens, tópicos ou timestamps…"
+msgstr "搜索消息、线程或时间戳…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr "Log de origem"
+msgstr "日志源"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr "Todas as fontes"
+msgstr "所有来源"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr "Nível do log"
+msgstr "日志级别"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr "Todos os níveis"
+msgstr "所有级别"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr "Avisos e erros"
+msgstr "警告和错误"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr "Histórico do log"
+msgstr "历史记录"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr "Últimos 250"
+msgstr "最新的 250"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr "Últimos 1.000"
+msgstr "最新1 000"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr "Últimos 2.000"
+msgstr "最新的 2 000"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr "Desde a inicialização"
+msgstr "自启动"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr "Limpar filtros"
+msgstr "清除过滤器"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr "Navegação por alerta e erro"
+msgstr "警告和错误导航"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr "Aviso anterior ou erro"
+msgstr "上一个警告或错误"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr "Próximo aviso ou erro"
+msgstr "下一个警告或错误"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr "Atualização ao vivo"
+msgstr "实时刷新"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr "Seguir mais recente"
+msgstr "跟随最新的"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr "atualizar"
+msgstr "刷新"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr "Carregando logs…"
+msgstr "加载日志…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr "Histórico do log"
+msgstr "历史记录页面"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr "Registros mais antigos"
+msgstr "旧记录"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr "Registros mais recentes"
+msgstr "更新记录"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr "Registro de registros"
+msgstr "日志记录"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
-msgstr "Fechar navegação"
+msgstr "关闭导航"
 
 #: web/templates/navbar.html:2
 msgid "Main navigation"
-msgstr "Navegação principal"
+msgstr "主导航"
 
 #: web/templates/navbar.html:4
 msgid "YOUR WORKSPACE"
-msgstr "SEU ESPAÇO"
+msgstr "您的工作"
 
 #: web/templates/navbar.html:5
 msgid "Workspace pages"
-msgstr "Páginas do Workspace"
+msgstr "工作区页面"
 
 #: web/templates/navbar.html:6 web/templates/servers.html:3
 msgid "Servers"
-msgstr "Servidores"
+msgstr "服务器"
 
 #: web/templates/navbar.html:11
 msgid "A little music."
-msgstr "Uma pequena música."
+msgstr "一款小音乐。"
 
 #: web/templates/navbar.html:11
 msgid "A lot more atmosphere."
-msgstr "Muito mais atmosfera."
+msgstr "更多的大气层。"
 
 #: web/templates/navbar.html:12
 msgid "Resources"
-msgstr "Recursos"
+msgstr "资源"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
-msgstr "Contribuir com um tema"
+msgstr "贡献一个主题"
 
 #: web/templates/navbar.html:16
 msgid "Support LizardByte"
-msgstr "Apoie LizardByte"
+msgstr "支持 LizardByte"
 
 #: web/templates/navbar.html:20
 msgid "Sign out"
-msgstr "Encerrar sessão"
+msgstr "登出"
 
 #: web/templates/servers.html:3
 msgid "ONE WORKSPACE. EVERY SERVER."
-msgstr "QUAL SERVIDOR. TODOS OS SERVIDOR."
+msgstr "工作站. EVERY SERVER."
 
 #: web/templates/servers.html:3
 msgid "Connect your Plex account, then choose where the music goes."
-msgstr "Conecte sua conta do Plex e escolha para onde vai a música."
+msgstr "连接您的Plex帐户，然后选择音乐去哪里。"
 
 #: web/templates/servers.html:3
 msgid "saved"
-msgstr "guardado"
+msgstr "已保存"
 
 #: web/templates/servers.html:6
 msgid "Your Plex account"
-msgstr "Sua conta Plex"
+msgstr "您的Plex帐户"
 
 #: web/templates/servers.html:6
 msgid "Account linked. Choose a server below."
-msgstr "Conta vinculada. Escolha um servidor abaixo."
+msgstr "帐户已链接。请在下面选择一个服务器。"
 
 #: web/templates/servers.html:6
 msgid "Link your account securely through Plex to access your servers."
-msgstr "Vincule sua conta com segurança através do Plex para acessar seus servidores."
+msgstr "通过Plex安全地连接您的帐户以访问您的服务器。"
 
 #: web/templates/servers.html:6
 msgid "Continue Plex sign-in"
-msgstr "Continuar o login Plex"
+msgstr "继续Plex登录"
 
 #: web/templates/servers.html:7
 msgid "Reconnect account"
-msgstr "Reconectar conta"
+msgstr "重新连接帐户"
 
 #: web/templates/servers.html:7
 msgid "Connect Plex account"
-msgstr "Conectar conta do Plex"
+msgstr "连接Plex账户"
 
 #: web/templates/servers.html:7
 msgid "Disconnect"
-msgstr "Desconectar"
+msgstr "断开连接"
 
 #: web/templates/servers.html:9
 msgid "Connected servers"
-msgstr "Servidores conectados"
+msgstr "已连接服务器"
 
 #: web/templates/servers.html:9
 msgid "Theme history and library settings are kept separately for each server."
-msgstr "As configurações de histórico de temas e da biblioteca são mantidas separadamente para cada servidor."
+msgstr "每个服务器的主题历史和库设置都是分开保存的。"
 
 #: web/templates/servers.html:13
 msgid "Enabled"
-msgstr "Ativado"
+msgstr "已启用"
 
 #: web/templates/servers.html:16
 msgid "Last library refresh"
-msgstr "Última atualização da biblioteca"
+msgstr "上次刷新库"
 
 #: web/templates/servers.html:16
 msgid "Not yet refreshed"
-msgstr "Não atualizado ainda"
+msgstr "尚未刷新"
 
 #: web/templates/servers.html:17
 msgid "Processing settings"
-msgstr "Processando configurações"
+msgstr "处理设置"
 
 #: web/templates/servers.html:19
 msgid "Process this server"
-msgstr "Processar este servidor"
+msgstr "处理此服务器"
 
 #: web/templates/servers.html:20
 msgid "optional"
-msgstr "opcional"
+msgstr "可选的"
 
 #: web/templates/servers.html:21
 msgid "Browse Plex data directory"
-msgstr "Procurar diretório de dados Plex"
+msgstr "浏览Plex数据目录"
 
 #: web/templates/servers.html:22
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "Um diretório de dados Plex local ou montado só é necessário para remover arquivos enviados mais antigos. Deixe em branco para servidores remotos."
+msgstr "仅需要本地或挂载Plex数据目录来删除旧上传的文件。为远程服务器留空。"
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr "Bibliotecas ignoradas"
+msgstr "忽略的库"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr "Biblioteca"
+msgstr "书库"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr "Abra a lista para carregar as bibliotecas deste servidor."
+msgstr "打开列表加载此服务器的库。"
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr "Selecione as bibliotecas para excluir das atualizações do tema. Deixe todas desmarcadas para processar cada biblioteca."
+msgstr "选择要从主题更新中排除的库。请取消选中以处理每个库。"
 
 #: web/templates/servers.html:36
 msgid "Save settings"
-msgstr "Salvar Configurações"
+msgstr "保存设置"
 
 #: web/templates/servers.html:36
 msgid "Remove server"
-msgstr "Remover servidor"
+msgstr "删除服务器"
 
 #: web/templates/servers.html:40
 msgid "Your first server starts here."
-msgstr "Seu primeiro servidor começa aqui."
+msgstr "您的第一个服务器在此开始。"
 
 #: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
-msgstr "Vincule Plex acima, em seguida, descubra ou adicione um endereço abaixo."
+msgstr "链接上面的Plex，然后发现或添加一个地址。"
 
 #: web/templates/servers.html:43
 msgid "Add a server"
-msgstr "Adicionar um servidor"
+msgstr "添加服务器"
 
 #: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
-msgstr "Escolha um servidor de sua conta Plex, descubra um por perto ou use um endereço que você conhece."
+msgstr "从您的Plex帐户中选择一个服务器，发现附近的服务器，或使用您知道的地址。"
 
 #: web/templates/servers.html:44
 msgid "Find account servers"
-msgstr "Encontrar servidores de conta"
+msgstr "查找帐户服务器"
 
 #: web/templates/servers.html:44
 msgid "Discover on LAN"
-msgstr "Descubra na LAN"
+msgstr "在局域网上发现"
 
 #: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
-msgstr "A descoberta em LAN usa o Plex GDM na rede do seu aplicativo."
+msgstr "局域网发现在您的应用程序网络上使用PlexGDM。"
 
 #: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
-msgstr "Os endereços da conta são anunciados por Plex e podem ser inacessíveis. Os endereços HTTPS plex.direct usam o certificado Plex. Escolha um endereço acessível a partir da máquina que roda o tema, ou insira um endereço conhecido manualmente."
+msgstr "帐户地址由Plex发布，可能无法访问。HTTPS plex.direct 地址使用Plex的证书。 从运行Themerr的机器中选择一个可访问的地址，或手动输入一个已知地址。"
 
 #: web/templates/servers.html:47
 msgid "Enter an address manually"
-msgstr "Insira um endereço manualmente"
+msgstr "手动输入地址"
 
 #: web/templates/servers.html:48
 msgid "Plex server address"
-msgstr "Endereço do servidor Plex"
+msgstr "Plex服务器地址"
 
 #: web/templates/servers.html:48
 msgid "Connect server"
-msgstr "Conectar servidor"
+msgstr "连接服务器"
 
 #: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
-msgstr "Use um endereço LAN ou um endereço Plex HTTPS válido. Sua conta Plex vinculada deve ter acesso. Adicionar um servidor existente atualiza seu endereço."
+msgstr "使用局域网地址或有效的 HTTPS Plex地址。您链接的Plex帐户必须有访问权限。添加现有的服务器更新其地址。"
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr "Jogador de tema"
+msgstr "主题播放器"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr "Escolha um tema da sua biblioteca"
+msgstr "从您的知识库中选择一个主题"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr "Não foi possível carregar os temas. Tente novamente."
+msgstr "无法加载主题。请重试。"
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr "Nenhum tema instalado está disponível ainda."
+msgstr "尚无已安装的主题。"
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr "JOGADOR TEMA"
+msgstr "这个玩家"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr "Uma trilha sonora para cada história."
+msgstr "每个故事的声音曲目。"
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr "Aleatório"
+msgstr "随机播放"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr "Tema anterior"
+msgstr "上一个主题"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr "Tema de reprodução"
+msgstr "播放主题"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr "Pausar tema"
+msgstr "暂停主题"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr "Próximo tema"
+msgstr "下一个主题"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr "Repetir este tema"
+msgstr "重复此主题"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr "Posição de reprodução"
+msgstr "播放位置"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr "Me surpreenda"
+msgstr "惊喜我"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr "Volume"
+msgstr "音量"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
-msgstr "Themerr fala seu idioma."
+msgstr "Themer说你的语言。"
 
 #: web/templates/translations.html:3
 msgid "Choose a language in Settings, or help improve translations on Crowdin."
-msgstr "Escolha um idioma nas configurações, ou ajude a melhorar as traduções no Crowdin."
+msgstr "在设置中选择一种语言，或帮助改进Crowdin上的翻译。"
 
 #: web/templates/translations.html:3
 msgid "Help translate"
-msgstr "Ajude a traduzir"
+msgstr "帮助翻译"
 

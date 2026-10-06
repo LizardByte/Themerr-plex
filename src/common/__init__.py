@@ -1,7 +1,7 @@
 """
 src/common/__init__.py
 
-Responsible for initialization of Themerr-plex.
+Responsible for initialization of Themerr.
 """
 # standard imports
 import os
@@ -30,7 +30,7 @@ QUIET = False
 
 def initialize(config_file: str) -> bool:
     """
-    Initialize Themerr-plex.
+    Initialize Themerr.
 
     Sets up config, loggers, and http port.
 
@@ -98,9 +98,9 @@ def initialize(config_file: str) -> bool:
 
 def stop(exit_code: int = 0, restart: bool = False) -> None:
     """
-    Stop Themerr-plex.
+    Stop Themerr.
 
-    This function ends the tray icon if it's running. Then restarts or shutdowns Themerr-plex depending on the value of
+    This function ends the tray icon if it's running. Then restarts or shutdowns Themerr depending on the value of
     the `restart` parameter.
 
     Parameters
@@ -108,7 +108,7 @@ def stop(exit_code: int = 0, restart: bool = False) -> None:
     exit_code : int, default 0
         The exit code to send. Does not apply if `restart = True`.
     restart : bool, default = False
-        Set to True to restart Themerr-plex.
+        Set to True to restart Themerr.
 
     Examples
     --------

@@ -1,156 +1,156 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
-"Language-Team: Japanese\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: ja\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-Language: pl\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: ja_JP\n"
+"Language: pl_PL\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
-msgstr "情報"
+msgstr "Informacje"
 
 #: src/common/config.py:91
 msgid "For information purposes only."
-msgstr "情報提供のみ。"
+msgstr "Wyłącznie do celów informacyjnych."
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "設定のバージョン"
+msgstr "Wersja konfiguracji"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "設定のバージョン"
+msgstr "Wersja konfiguracyjna."
 
 #: src/common/config.py:105
 msgid "First run complete"
-msgstr "最初の実行完了"
+msgstr "Pierwsze uruchomienie zakończone"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "Todo: ユーザーが初期設定を完了したかどうかを示します。"
+msgstr "Todo: Wskazuje, czy użytkownik zakończył początkową konfigurację."
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "全般"
+msgstr "Ogólny"
 
 #: src/common/config.py:114
 msgid "General settings."
-msgstr "全般設定"
+msgstr "Ustawienia ogólne."
 
 #: src/common/config.py:118
 msgid "Locale"
-msgstr "ロケール"
+msgstr "Język"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "使用するローカライゼーションの設定"
+msgstr "Ustawienia lokalizacji do użycia."
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "起動時にブラウザを起動 "
+msgstr "Uruchom przeglądarkę przy starcie "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "システムトレイアイコンを有効にする"
+msgstr "Włącz ikonę zasobnika systemowego"
 
 #: src/common/config.py:142
 msgid "Notifications"
-msgstr "通知"
+msgstr "Powiadomienia"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "Themerrを実行しているコンピュータにデスクトップ通知が表示されます。Dockerとヘッドレスインストールでは表示されません。"
+msgstr "Powiadomienia na pulpicie pojawiają się na komputerze Themerr. Instalacje dokujące i bezgłowne nie wyświetlają ich."
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
-msgstr "新しいリリースが利用可能です"
+msgstr "Dostępna nowa wersja"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "新しいThemerrリリースが利用可能になったら通知します。チェックは1時間に1回実行されます。"
+msgstr "Powiadom o dostępności nowszej wersji Themerra. Sprawdzanie trwa raz na godzinę."
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "プレリリースをフォローする"
+msgstr "Śledź wstępne wydania"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "新しいリリース通知にプレリリースを含めます。"
+msgstr "Uwzględnij wstępne wydania w powiadomieniach o nowym wydaniu."
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "テーマの適用範囲が増加しました"
+msgstr "Zasięg motywu zwiększony"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
-msgstr "テーマの総カバー率が上がるとリフレッシュが成功した場合に通知します。静かにリフレッシュしないとリフレッシュできます。"
+msgstr "Powiadom po udanym odświeżeniu po zwiększeniu całkowitego pokrycia motywu. Odświeża się bez zwiększenia ciszy."
 
 #: src/common/config.py:168
 msgid "Logging"
-msgstr "ログ"
+msgstr "Rejestrowanie"
 
 #: src/common/config.py:169
 msgid "Logging settings."
-msgstr "ログの設定"
+msgstr "Ustawienia rejestrowania."
 
 #: src/common/config.py:173
 msgid "Log directory"
-msgstr "ログディレクトリ"
+msgstr "Katalog logów"
 
 #: src/common/config.py:175
 msgid "The directory where to store the log files."
-msgstr "ログファイルを保存するディレクトリ。"
+msgstr "Katalog przechowywania plików dziennika."
 
 #: src/common/config.py:182
 msgid "Debug logging"
-msgstr "デバッグログ"
+msgstr "Rejestrowanie debugowania"
 
 #: src/common/config.py:184
 msgid "Enable debug logging."
-msgstr "デバッグログを有効にします。"
+msgstr "Włącz logowanie debugowania."
 
 #: src/common/config.py:190
 msgid "Network"
-msgstr "ネットワーク"
+msgstr "Sieć"
 
 #: src/common/config.py:191
 msgid "Network settings."
-msgstr "ネットワーク設定。"
+msgstr "Ustawienia sieci."
 
 #: src/common/config.py:195
 msgid "HTTP host address"
-msgstr "HTTP ホスト アドレス"
+msgstr "Adres hosta HTTP"
 
 #: src/common/config.py:197
 msgid "The HTTP address to bind to."
-msgstr "バインドする HTTP アドレス。"
+msgstr "Adres HTTP do powiązania."
 
 #: src/common/config.py:206
 msgid "HTTP port"
-msgstr "HTTP ポート"
+msgstr "Port HTTP"
 
 #: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
-msgstr "ウェブサーバーをバインドするポート。1024以下のポートにはルートが必要になることに注意してください。"
+msgstr "Port do powiązania serwera WWW. Zauważ, że porty poniżej 1024 mogą wymagać roota."
 
 #: src/common/config.py:216
 msgid "HTTP root"
-msgstr "HTTP ルート"
+msgstr "Główny HTTP"
 
 #: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
-msgstr "Todo: Web サーバのベース URL です。リバースプロキシに使用します。"
+msgstr "Todo: Podstawowy adres URL serwera WWW. Używany do proxy odwrotnych."
 
 #: src/common/config.py:223
 msgid "SSL"
@@ -158,460 +158,460 @@ msgstr "SSL"
 
 #: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
-msgstr "HTTPS でウェブサーバーを実行します。これを無効にするとセキュリティ上のリスクが生じる可能性があります。自己責任で実行してください。"
+msgstr "Uruchom serwer internetowy za pomocą protokołu HTTPS. Wyłączenie tego może stanowić zagrożenie dla bezpieczeństwa, czyń to na własne ryzyko."
 
 #: src/common/config.py:231
 msgid "Updater"
-msgstr "アップデータ"
+msgstr "Aktualizator"
 
 #: src/common/config.py:232
 msgid "Updater settings."
-msgstr "アップデータの設定"
+msgstr "Ustawienia aktualizacji."
 
 #: src/common/config.py:236
 msgid "Auto update"
-msgstr "自動アップデート"
+msgstr "Automatyczna aktualizacja"
 
 #: src/common/config.py:244
 msgid "Plex"
-msgstr "プレックス"
+msgstr "Plex"
 
 #: src/common/config.py:245
 msgid "Plex settings."
-msgstr "プレックスの設定"
+msgstr "Ustawienia Plex."
 
 #: src/common/config.py:249
 msgid "Plex URL"
-msgstr "プレックス URL"
+msgstr "URL Plex"
 
 #: src/common/config.py:250
 msgid "The URL to the Plex server."
-msgstr "プレックスサーバーへのURL。"
+msgstr "Adres URL serwera Plex."
 
 #: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
-msgstr "プレックスデータディレクトリ"
+msgstr "Katalog danych Plex"
 
 #: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-locctory-located/"
 
 #: src/common/config.py:270
 msgid "Themerr"
-msgstr "Themerr"
+msgstr "Tajemnica"
 
 #: src/common/config.py:271
 msgid "Themerr settings."
-msgstr "Themerrの設定"
+msgstr "Ustawienia Temerra."
 
 #: src/common/config.py:275
 msgid "Themerr Enabled"
-msgstr "Themerr 有効"
+msgstr "Themerr włączony"
 
 #: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
-msgstr "有効にすると、Themerrはテーマを更新しようとします。"
+msgstr "Po włączeniu Themerr spróbuje zaktualizować motywy."
 
 #: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
-msgstr "コレクション"
+msgstr "Kolekcje"
 
 #: src/common/config.py:282
 msgid "Add themes to collections."
-msgstr "テーマをコレクションに追加"
+msgstr "Dodaj motywy do kolekcji."
 
 #: src/common/config.py:287
 msgid "Movie support"
-msgstr "ムービーサポート"
+msgstr "Wsparcie dla filmów"
 
 #: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
-msgstr "format@@0エージェントを使用してテーマをムービーに追加します。"
+msgstr "Dodaj motywy do filmów za pomocą agenta Plex Movie."
 
 #: src/common/config.py:293
 msgid "Series support"
-msgstr "シリーズのサポート"
+msgstr "Obsługa serii"
 
 #: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
-msgstr "プレックスシリーズエージェントを使用して、テーマをシリーズに追加します。"
+msgstr "Dodaj motywy do serii za pomocą agenta Plex Series."
 
 #: src/common/config.py:299
 msgid "Overwrite Plex themes"
-msgstr "プレックスのテーマを上書き"
+msgstr "Nadpisz motywy Plex"
 
 #: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
-msgstr "有効にすると、ThemerrはPlexが提供するテーマを上書きします。"
+msgstr "Po włączeniu Themerr nadpisze motywy dostarczone przez Plex."
 
 #: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
-msgstr "MP4A AACコーデックを優先"
+msgstr "Preferuj kod MP4A AAC"
 
 #: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
-msgstr "これにより、Appleデバイスとのテーマ互換性が向上します。"
+msgstr "Może to poprawić kompatybilność motywów z urządzeniami Apple'a."
 
 #: src/common/config.py:311
 msgid "Remove unused themes"
-msgstr "未使用のテーマを削除"
+msgstr "Usuń nieużywane motywy"
 
 #: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "プレックス メタデータ ディレクトリの空き容量を増やします。このオプションには、\"プレックス データ ディレクトリ\" パスが設定されている必要があります。"
+msgstr "Zwolnia miejsce w katalogu metadanych Plex. Ta opcja wymaga ustawienia ścieżki \"Plex data Directory\""
 
 #: src/common/config.py:318
 msgid "Remove unused art"
-msgstr "未使用のアートを削除"
+msgstr "Usuń nieużywaną sztukę"
 
 #: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "コレクションに適用します。プレックスのメタデータディレクトリ内の領域を解放します。このオプションは、「プレックスデータディレクトリ」パスが設定されている必要があります。"
+msgstr "Stosuje się do kolekcji. Zwolnij miejsce w katalogu metadanych Plex. Ta opcja wymaga ustawienia ścieżki \"Plex data directory\""
 
 #: src/common/config.py:326
 msgid "Remove unused posters"
-msgstr "未使用のポスターを削除"
+msgstr "Usuń niewykorzystane plakaty"
 
 #: src/common/config.py:334
 msgid "Collection metadata"
-msgstr "コレクションメタデータ"
+msgstr "Metadane kolekcji"
 
 #: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
-msgstr "スケジュールされた更新中にコレクションのメタデータ (ポスター、アート、概要) を更新します。"
+msgstr "Aktualizuj metadane kolekcji (plakat, sztuka i podsumowanie) podczas planowanej aktualizacji."
 
 #: src/common/config.py:340
 msgid "Ignore locked fields."
-msgstr "ロックされたフィールドを無視します。"
+msgstr "Ignoruj zablokowane pola."
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Themerr-plex v2024.813.13709以下を使用している場合は、これを有効にしてアイテムを更新する必要がある場合があります。"
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "Jeśli używałeś Themerr v2024.813.13709 lub niższego, może być konieczne włączenie tej opcji aby zaktualizować pozycje."
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
-msgstr "無視されたライブラリ ID"
+msgstr "Ignorowane ID biblioteki"
 
 #: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
-msgstr "スケジュールされた更新から除外するカンマ区切りのライブラリIDがホームに表示されます。"
+msgstr "ID biblioteki oddzielonej przecinkami do wykluczenia z zaplanowanych aktualizacji. ID pojawiają się w domu."
 
 #: src/common/config.py:354
 msgid "Update themes interval"
-msgstr "テーマの間隔を更新"
+msgstr "Aktualizuj interwał motywów"
 
 #: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
-msgstr "自動更新タスクの間隔(分:15)。"
+msgstr "Interwał dla zadania automatycznej aktualizacji, w minutach (min: 15)."
 
 #: src/common/config.py:362
 msgid "Update database cache interval"
-msgstr "データベースキャッシュの間隔を更新"
+msgstr "Aktualizuj interwał pamięci podręcznej bazy danych"
 
 #: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
-msgstr "データベースキャッシュの更新タスクの間隔(分:15)。"
+msgstr "Interwał dla zadania aktualizacji pamięci podręcznej bazy danych, w minutach (min: 15)."
 
 #: src/common/config.py:370
 msgid "PlexAPI timeout"
-msgstr "PlexAPI タイムアウト"
+msgstr "Limit czasu PlexAPI"
 
 #: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
-msgstr "テーマの追加時にタイムアウトが発生した場合は少し増やします。(min: 1)"
+msgstr "Zwiększ to nieznacznie jeśli masz limit czasu podczas dodawania motywów. (min: 1)"
 
 #: src/common/config.py:378
 msgid "Theme upload retries"
-msgstr "テーマのアップロード再試行中"
+msgstr "Ponów próby przesyłania motywu"
 
 #: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
-msgstr "テーマのアップロードに失敗した場合は、何度も再試行してください。(min: 0)"
+msgstr "Jeśli przesłanie motywów nie powiedzie się, spróbuj ponownie to wiele razy. (min: 0)"
 
 #: src/common/config.py:386
 msgid "Multiprocessing thread count"
-msgstr "マルチプロセッシングスレッド数"
+msgstr "Liczba wątków wieloprzetwarzanych"
 
 #: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
-msgstr "テーマを追加するときに使用するスレッド数です。再起動が必要です。(min: 1)"
+msgstr "Liczba wątków do użycia podczas dodawania motywów. Wymagane ponowne uruchomienie (min: 1)"
 
 #: src/common/config.py:394
 msgid "YouTube Cookies"
-msgstr "YouTube Cookie"
+msgstr "Pliki cookie YouTube"
 
 #: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "必要に応じて、youtube.comのCookieをJSON形式で取得します。そして、ここにJSON配列全体を貼り付けて保存します。 Cookieにはブラウザセッションが含まれています。ブラウザセッションは非公開にしてください。"
+msgstr "Opcjonalnie: eksport ciasteczek youtube.com za pomocą Pobierz ciasteczka.txt LOCALLY przy użyciu formatu JSON, a następnie wklej tutaj całą tablicę JSON i zapisz. Pliki cookie zawierają sesję przeglądarki; zachowaj je prywatnie."
 
 #: src/common/config.py:401
 msgid "Cookie export instructions"
-msgstr "Cookie のエクスポート手順"
+msgstr "Instrukcje eksportu plików cookie"
 
 #: src/common/notifications.py:138
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr "%(app)s %(version)s が利用可能です。\n"
+msgstr "%(app)s %(version)s jest dostępny.\n"
 "%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr "更新完了"
+msgstr "Odświeżanie zakończone"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr "テーマの範囲が %(increase)s パーセントポイント増加: %(before)s%% → %(after)s%%. %(installed)s の %(total)s 項目にテーマがあります。"
+msgstr "Zasięg motywu zwiększony o %(increase)s punktów procentowych: %(before)s%% → %(after)s%%. %(installed)s elementów %(total)s mają motywy."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
-msgstr "%(app_name)s を開く"
+msgstr "Otwórz %(app_name)s"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr "About"
+msgstr "O programie"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr "バージョン %(version)s"
+msgstr "Wersja %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr "リポジトリ"
+msgstr "Repozytorium"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
 #: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
-msgstr "%(github)s リリース"
+msgstr "Wydania %(github)s"
 
 #: src/common/tray_icon.py:119 web/templates/navbar.html:14
 msgid "Documentation"
-msgstr "ドキュメント"
+msgstr "Dokumentacja"
 
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "API ドキュメント"
+msgstr "Dokumentacja API"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
 msgid "Donate"
-msgstr "寄付"
+msgstr "Darowizna"
 
 #: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "Sponsorzy GitHub"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
 #: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
-msgstr "%(app_name)s 起動時にブラウザを開く"
+msgstr "Otwórz przeglądarkę po uruchomieniu %(app_name)s"
 
 #. NOTE: Disable or turn off icon.
 #: src/common/tray_icon.py:139
 msgid "Disable icon"
-msgstr "アイコンを無効化"
+msgstr "Wyłącz ikonę"
 
 #. NOTE: Restart the program.
 #: src/common/tray_icon.py:142
 msgid "Restart"
-msgstr "再起動"
+msgstr "Uruchom ponownie"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
 #: src/common/tray_icon.py:144
 msgid "Quit"
-msgstr "終了"
+msgstr "Wyjdź"
 
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr "ログ"
+msgstr "Logi"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
-msgstr "設定"
+msgstr "Ustawienia"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s はPlexのテーマ曲を管理しています。\n"
-"ここに提供される引数は一時的なものです。"
+msgstr "%(app_name)s zarządza utworami motywu dla Plex.\n"
+"Argumenty dostarczone tutaj mają być tymczasowe."
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
-msgstr "このヘルプメッセージを表示して終了します"
+msgstr "Pokaż tę wiadomość pomocy i wyjdź"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
-msgstr "使用する設定ファイルを指定してください"
+msgstr "Określ plik konfiguracyjny do użycia"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
-msgstr "デバッグログレベルを使用"
+msgstr "Użyj poziomu rejestrowania debugowania"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
-msgstr "開発環境で %(app_name)s を起動する"
+msgstr "Rozpocznij %(app_name)s w środowisku rozwoju"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
-msgstr "コンテナの状態を確認し、終了します"
+msgstr "Ocena stanu kontenera i wyjścia"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
-msgstr "ブラウザで %(app_name)s を開かない"
+msgstr "Nie otwieraj %(app_name)s w przeglądarce"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
-msgstr "指定されたポートで、 %(app_name)s を強制的に実行する default=9494"
+msgstr "Wymuś działanie %(app_name)s na określonym porcie, domyślnie=9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
-msgstr "コンソールログをオフにする"
+msgstr "Wyłącz rejestrowanie konsoli"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
-msgstr "バージョンの詳細を印刷して終了"
+msgstr "Wydrukuj szczegóły wersji i zakończ"
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "セッションの有効期限が切れました。続行するにはログインしてください。"
+msgstr "Twoja sesja wygasła. Zaloguj się, aby kontynuować."
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "僅用於中文"
+msgstr "Odrzuć wiadomość"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
-msgstr "保存されていない変更"
+msgstr "Niezapisane zmiany"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr "未保存の設定の変更を破棄しますか？"
+msgstr "Czy odrzucić niezapisane zmiany ustawień?"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
-msgstr "すべての変更が保存されました。"
+msgstr "Wszystkie zmiany zapisane."
 
 #: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
-msgstr "設定を保存しました。ネットワークの変更は、Themerrを再起動した後に反映されます。"
+msgstr "Ustawienia zapisane. Zmiany w sieci stają się skuteczne po ponownym uruchomieniu Themerra."
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "変更を保存できません。"
+msgstr "Nie można zapisać zmian."
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "パスワードを変更する前に設定の変更を保存してください。"
+msgstr "Zapisz zmiany ustawień przed zmianą hasła."
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr "フィルターに一致するレコードはありません。"
+msgstr "Brak rekordów pasujących do Twoich filtrów."
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr "ログ記録はまだありません。"
+msgstr "Brak rekordów dziennika."
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr "検索、フィルタ、警告ナビゲーション、およびダウンロードカバーは起動時からすべて読み込まれたレコードです。"
+msgstr "Wyszukaj, filtry, nawigacja ostrzegawcza i pobierz wszystkie załadowane rekordy od czasu uruchomienia."
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr "フィルタと検索は読み込まれたレコードに適用されます。古い履歴はログディレクトリに残ります。"
+msgstr "Filtry i wyszukiwanie odnoszą się do załadowanych rekordów. Starsza historia pozostaje w katalogu dzienników."
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr "セッションログの読み込みが停止しました。"
+msgstr "Ładowanie dziennika sesji zablokowane."
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
-msgstr "ライブ"
+msgstr "Żywe"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
 #: web/templates/servers.html:13
 msgid "Paused"
-msgstr "一時停止"
+msgstr "Zatrzymano"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr "更新に失敗しました。最後に読み込んだレコードを表示しています。"
+msgstr "Odświeżanie nie powiodło się. Wyświetlanie ostatnio załadowanych rekordów."
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr "無視するライブラリを選択"
+msgstr "Wybierz biblioteki do zignorowania"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr "ライブラリの読み込み中…"
+msgstr "Ładowanie bibliotek…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr "キャッシュされたライブラリを表示しています。現在のライブラリをロードするには、このサーバーを有効または再接続してください。"
+msgstr "Wyświetlanie buforowanych bibliotek. Włącz lub ponownie podłącz ten serwer, aby załadować bieżące biblioteki."
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr "このサーバーにはライブラリがありません。"
+msgstr "Ten serwer nie ma biblioteki."
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr "ライブラリを読み込むことができません。選択したライブラリが保持されています。リストを閉じて再試行してください。"
+msgstr "Nie można załadować bibliotek. Twoje wybory są zachowane. Zamknij i otwórz ponownie listę, aby spróbować ponownie."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
-msgstr "Themerrが取り組んでいることと、アイテムがあなたの注意を必要とする理由をご覧ください。"
+msgstr "Zobacz, nad czym pracuje Themerr i dlaczego przedmiot może wymagać Twojej uwagi."
 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
-msgstr "テーマをスキャン"
+msgstr "Skanuj w poszukiwaniu motywów"
 
 #: web/templates/activity.html:3 web/templates/logs.html:4
 msgid "BEHIND THE MUSIC"
-msgstr "音楽になろう"
+msgstr "ZABEZPIECZENIE MUZYKA"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
-msgstr "アクティビティ"
+msgstr "Aktywność"
 
 #: web/templates/activity.html:4
 msgid "items waiting in the processing queue"
-msgstr "処理キューで待機しているアイテム"
+msgstr "elementy oczekujące w kolejce przetwarzania"
 
 #: web/templates/activity.html:4
 msgid "Task history covers the current application session."
-msgstr "タスク履歴は、現在のアプリケーションセッションをカバーしています。"
+msgstr "Historia zadań obejmuje bieżącą sesję aplikacji."
 
 #: web/templates/activity.html:5
 msgid "Recent tasks"
-msgstr "最近のタスク"
+msgstr "Ostatnie zadania"
 
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
-msgstr "タスクがまだ実行されていません。スキャンをリクエストするか、次回のスケジュール更新をお待ちください。"
+msgstr "Nie uruchomiono jeszcze zadań. Poproś o skanowanie lub poczekaj na następne zaplanowane odświeżenie."
 
 #: web/templates/activity.html:7 web/templates/home.html:14
 #: web/templates/home.html:31 web/templates/servers.html:13
 msgid "Needs attention"
-msgstr "注意が必要です"
+msgstr "Potrzebne uwagi"
 
 #: web/templates/activity.html:8
 msgid "No processing failures recorded. All quiet here."
-msgstr "処理の失敗が記録されていません。ここではすべて静かです。"
+msgstr "Nie zarejestrowano błędów przetwarzania. Wszystkie ciche tutaj."
 
 #: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
@@ -619,367 +619,367 @@ msgstr "Plex ID"
 
 #: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
-msgstr "ThemerrDB から古いものです"
+msgstr "Nieaktualne z ThemerrDB"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "サインインセッションを使用してAPIを探索します。"
+msgstr "Przeglądaj API przy użyciu zalogowanej sesji."
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
-msgstr "あなたの書物の音"
+msgstr "ŹRÓDŁO TWOJ LIBRARII"
 
 #: web/templates/auth.html:8
 msgid "Every story"
-msgstr "すべてのストーリー"
+msgstr "Każda opowieść"
 
 #: web/templates/auth.html:8
 msgid "has a soundtrack."
-msgstr "サウンドトラックがあります"
+msgstr "posiada ścieżkę dźwiękową."
 
 #: web/templates/auth.html:9
 msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "プレックスライブラリを活用しましょう。サーバー、テーマ、その間のすべての機能を一つの落ち着いたワークスペースにしましょう。"
+msgstr "Przynieś swoje biblioteki Plex do życia. Jeden spokojny obszar roboczy dla serwerów, twoich motywów i wszystkiego między nimi."
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
-msgstr "ワークスペースを確保しました。"
+msgstr "Twój obszar roboczy, zabezpieczony."
 
 #: web/templates/auth.html:19
 msgid "Open the one-time setup link printed in the application console to create your admin account."
-msgstr "アプリケーションコンソールに印刷されたワンタイムセットアップリンクを開き、管理者アカウントを作成します。"
+msgstr "Otwórz jednorazowy link konfiguracyjny wydrukowany w konsoli aplikacji, aby utworzyć konto administratora."
 
 #: web/templates/auth.html:20
 msgid "The link is generated each time the application starts, until setup is complete."
-msgstr "セットアップが完了するまで、アプリケーションが起動するたびにリンクが生成されます。"
+msgstr "Link jest generowany za każdym razem, gdy aplikacja zaczyna się aż do zakończenia instalacji."
 
 #: web/templates/auth.html:22
 msgid "GET STARTED"
-msgstr "始めよう"
+msgstr "ROZPOCZNIJ"
 
 #: web/templates/auth.html:22
 msgid "WELCOME BACK"
-msgstr "戻る"
+msgstr "BACK WELCOME"
 
 #: web/templates/auth.html:23
 msgid "Make it yours."
-msgstr "それをあなたのものにしなさい。"
+msgstr "Zrób to sobie."
 
 #: web/templates/auth.html:23
 msgid "Sign in to Themerr."
-msgstr "Themerrにサインインします。"
+msgstr "Zaloguj się do Themerra."
 
 #: web/templates/auth.html:24
 msgid "Create the administrator account for this installation."
-msgstr "このインストールの管理者アカウントを作成します。"
+msgstr "Utwórz konto administratora dla tej instalacji."
 
 #: web/templates/auth.html:24
 msgid "Your libraries are waiting for their next soundtrack."
-msgstr "ライブラリは次のサウンドトラックを待っています。"
+msgstr "Twoje biblioteki czekają na ich następną ścieżkę dźwiękową."
 
 #: web/templates/auth.html:28
 msgid "Username"
-msgstr "ユーザー名"
+msgstr "Nazwa użytkownika"
 
 #: web/templates/auth.html:30
 msgid "Password"
-msgstr "パスワード"
+msgstr "Hasło"
 
 #: web/templates/auth.html:33
 msgid "Use at least 12 characters. A long, unique passphrase works well."
-msgstr "少なくとも12文字を使用してください。長くてユニークなパスフレーズはうまく機能します。"
+msgstr "Użyj co najmniej 12 znaków. Długie, unikalne hasło działa dobrze."
 
 #: web/templates/auth.html:34
 msgid "Confirm password"
-msgstr "パスワードの確認"
+msgstr "Potwierdź hasło"
 
 #: web/templates/auth.html:37
 msgid "Create workspace"
-msgstr "ワークスペースを作成"
+msgstr "Utwórz obszar roboczy"
 
 #: web/templates/auth.html:37
 msgid "Sign in"
-msgstr "サインイン"
+msgstr "Zaloguj się"
 
 #: web/templates/auth.html:39
 msgid "Plex account linking happens inside your workspace."
-msgstr "ワークスペース内でプレックスアカウントのリンクが発生します。"
+msgstr "Łączenie konta Plex dzieje się wewnątrz obszaru roboczego."
 
 #: web/templates/base.html:21
 msgid "Skip to content"
-msgstr "コンテンツにスキップ"
+msgstr "Przejdź do treści"
 
 #: web/templates/base.html:27
 msgid "Toggle navigation"
-msgstr "ナビゲーションの切り替え"
+msgstr "Przełącz nawigację"
 
 #: web/templates/base.html:28
 msgid "Workspace"
-msgstr "ワークスペース"
+msgstr "Obszar roboczy"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr "テーマ：自動。ライトモードに切り替えます。"
+msgstr "Motyw: Automatyczny. Przełącz na tryb jasny."
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr "テーマ：ライト。ダークモードに切り替えます。"
+msgstr "Motyw: Jasny. Przełącz na tryb ciemny."
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr "テーマ：ダーク。自動モードに切り替えます。"
+msgstr "Motyw: Ciemny. Przełącz na tryb automatyczny."
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
-msgstr "ディレクトリを参照"
+msgstr "Przeglądaj katalogi dla"
 
 #: web/templates/config.html:22
 msgid "TUNE YOUR WORKSPACE"
-msgstr "ワークスペースを調整してください"
+msgstr "CZEKUJ SWOJE PRACY"
 
 #: web/templates/config.html:22
 msgid "Make Themerr work the way your library does."
-msgstr "ライブラリと同じようにThemerrを動作させます。"
+msgstr "Spraw, aby Themerr działał jak twoja biblioteka."
 
 #: web/templates/config.html:24
 msgid "Settings sections"
-msgstr "設定セクション"
+msgstr "Sekcje ustawień"
 
 #: web/templates/config.html:24 web/templates/config.html:33
 msgid "Security"
-msgstr "セキュリティ"
+msgstr "Bezpieczeństwo"
 
 #: web/templates/config.html:28
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
-msgstr "サーバー接続、データディレクトリ、および無視されたライブラリは format@@0 ページで管理されます。"
+msgstr "Połączenia z serwerem, katalogi danych i ignorowane biblioteki są zarządzane na stronie serwerów."
 
 #: web/templates/config.html:28
 msgid "Changes to network settings take effect after restarting Themerr."
-msgstr "ネットワーク設定の変更は、Themerrの再起動後に反映されます。"
+msgstr "Zmiany w ustawieniach sieci stają się skuteczne po ponownym uruchomieniu Themerra."
 
 #: web/templates/config.html:33
 msgid "One administrator for this installation. Change your password and sign out other sessions."
-msgstr "このインストールの管理者がいます。パスワードを変更し、他のセッションにサインアウトしてください。"
+msgstr "Jeden administrator dla tej instalacji. Zmień hasło i wyloguj inne sesje."
 
 #: web/templates/config.html:34
 msgid "Current password"
-msgstr "現在のパスワード"
+msgstr "Aktualne hasło"
 
 #: web/templates/config.html:34
 msgid "New password"
-msgstr "新しいパスワード"
+msgstr "Nowe hasło"
 
 #: web/templates/config.html:34
 msgid "Confirm new password"
-msgstr "新しいパスワードを確認"
+msgstr "Potwierdź nowe hasło"
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr "パスワードの変更"
+msgstr "Zmień hasło"
 
 #: web/templates/config.html:36
 msgid "Save changes"
-msgstr "変更を保存"
+msgstr "Zapisz zmiany"
 
 #: web/templates/directory_picker.html:2
 msgid "Choose an application directory"
-msgstr "アプリケーションディレクトリを選択"
+msgstr "Wybierz katalog aplikacji"
 
 #: web/templates/directory_picker.html:2
 msgid "Close directory picker"
-msgstr "ディレクトリピッカーを閉じる"
+msgstr "Zamknij wybór katalogu"
 
 #: web/templates/directory_picker.html:3
 msgid "Browse directories on the machine running Themerr."
-msgstr "Themerrを実行しているマシンのディレクトリを参照します。"
+msgstr "Przeglądaj katalogi na maszynie obsługującej Themerr."
 
 #: web/templates/directory_picker.html:4
 msgid "Parent directory"
-msgstr "親ディレクトリ"
+msgstr "Katalog nadrzędny"
 
 #: web/templates/directory_picker.html:6
 msgid "Select directory"
-msgstr "ディレクトリを選択"
+msgstr "Wybierz katalog"
 
 #: web/templates/error.html:5
 msgid "LET’S TRY THAT AGAIN"
-msgstr "もう一度お試しください"
+msgstr "LET'S TRY, ŻE PRZECIWINA"
 
 #: web/templates/error.html:7
 msgid "Back to workspace"
-msgstr "ワークスペースに戻る"
+msgstr "Powrót do projektu"
 
 #: web/templates/home.html:4
 msgid "YOUR LIBRARY, IN HARMONY"
-msgstr "あなたのライブラリ、ハードウェアで"
+msgstr "TWOJE LIBRARIA W HARMONACH"
 
 #: web/templates/home.html:4
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
-msgstr "すべてのストーリーに対応したサウンドトラック。何が再生されているか、何が少し注意を必要としているかを確認してください。"
+msgstr "Ścieżka dźwiękowa dla każdej opowieści. Zobacz, co gra i co wymaga niewielkiej uwagi."
 
 #: web/templates/home.html:4 web/templates/navbar.html:6
 msgid "Overview"
-msgstr "概要"
+msgstr "Przegląd"
 
 #: web/templates/home.html:5
 msgid "Refresh libraries"
-msgstr "ライブラリを更新"
+msgstr "Odśwież biblioteki"
 
 #: web/templates/home.html:7
 msgid "Unknown"
-msgstr "不明"
+msgstr "Nieznane"
 
 #: web/templates/home.html:7
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "GitHub のチェックに失敗しました。最後に既知のデプロイメントを表示します。チェックはせいぜい1時間で実行されます。"
+msgstr "Sprawdzanie GitHub nie powiodło się. Wyświetlanie ostatniego znanego wdrożenia; sprawdzanie trwa co najwyżej godzinę."
 
 #: web/templates/home.html:8
 msgid "Last deployed"
-msgstr "最後に配置された"
+msgstr "Ostatnio rozmieszczone"
 
 #: web/templates/home.html:8
 msgid "Checking…"
-msgstr "… の確認"
+msgstr "Sprawdzanie…"
 
 #: web/templates/home.html:8
 msgid "Check unavailable"
-msgstr "ご確認いただけません"
+msgstr "Sprawdź niedostępne"
 
 #: web/templates/home.html:11
 msgid "Library items"
-msgstr "ライブラリ項目"
+msgstr "Elementy biblioteki"
 
 #: web/templates/home.html:11
 msgid "libraries across"
-msgstr "全面的なライブラリ"
+msgstr "biblioteki we wszystkich"
 
 #: web/templates/home.html:11
 msgid "servers"
-msgstr "サーバー"
+msgstr "serwery"
 
 #: web/templates/home.html:12
 msgid "Themes installed"
-msgstr "テーマがインストールされました"
+msgstr "Zainstalowane motywy"
 
 #: web/templates/home.html:12
 msgid "Your library sounds better already."
-msgstr "あなたのライブラリはすでに良く聞こえます。"
+msgstr "Twoja biblioteka brzmi już lepiej."
 
 #: web/templates/home.html:13
 msgid "Theme coverage"
-msgstr "テーマの範囲"
+msgstr "Zasięg motywu"
 
 #: web/templates/home.html:14
 msgid "Review activity"
-msgstr "アクティビティを確認"
+msgstr "Przejrzyj aktywność"
 
 #: web/templates/home.html:19
 msgid "LET’S SET THE TONE"
-msgstr "トーンを設定してください"
+msgstr "POBIERZ TONE"
 
 #: web/templates/home.html:20
 msgid "Your library deserves a soundtrack."
-msgstr "あなたのライブラリはサウンドトラックに値する。"
+msgstr "Twoja biblioteka zasługuje na ścieżkę dźwiękową."
 
 #: web/templates/home.html:20
 msgid "Getting to know your library."
-msgstr "ライブラリを知るために。"
+msgstr "Poznaj swoją bibliotekę."
 
 #: web/templates/home.html:21
 msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "プレックスアカウントを接続し、サーバーを選択し、Themerrに音楽を処理させます。"
+msgstr "Połącz swoje konto Plex, wybierz swoje serwery i pozwól, aby Themerr zajął się muzyką."
 
 #: web/templates/home.html:21
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
-msgstr "最初の更新はライブラリビューを構築しています。進行状況を確認するか、上記の更新をリクエストしてください。"
+msgstr "Twoje pierwsze odświeżenie to budowanie widoku biblioteki. Sprawdź aktywność pod kątem postępu lub poproś o odświeżenie powyżej."
 
 #: web/templates/home.html:22
 msgid "Connect a server"
-msgstr "サーバーに接続"
+msgstr "Połącz z serwerem"
 
 #: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
 msgid "View activity"
-msgstr "アクティビティを表示"
+msgstr "Zobacz aktywność"
 
 #: web/templates/home.html:26
 msgid "Your libraries"
-msgstr "あなたのライブラリ"
+msgstr "Twoje biblioteki"
 
 #: web/templates/home.html:26
 msgid "items"
-msgstr "項目"
+msgstr "elementy"
 
 #: web/templates/home.html:28
 msgid "Search library items"
-msgstr "ライブラリ項目を検索"
+msgstr "Szukaj elementów biblioteki"
 
 #: web/templates/home.html:28
 msgid "Search titles…"
-msgstr "タイトルを検索…"
+msgstr "Szukaj tytułów…"
 
 #: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
-msgstr "検索をクリア"
+msgstr "Wyczyść wyszukiwanie"
 
 #: web/templates/home.html:29
 msgid "Server"
-msgstr "サーバー"
+msgstr "Serwer"
 
 #: web/templates/home.html:29
 msgid "All servers"
-msgstr "すべてのサーバー"
+msgstr "Wszystkie serwery"
 
 #: web/templates/home.html:30
 msgid "Type"
-msgstr "タイプ"
+msgstr "Typ"
 
 #: web/templates/home.html:30
 msgid "All types"
-msgstr "すべてのタイプ"
+msgstr "Wszystkie typy"
 
 #: web/templates/home.html:30
 msgid "Movies"
-msgstr "映画"
+msgstr "Filmy"
 
 #: web/templates/home.html:30
 msgid "TV shows"
-msgstr "テレビ"
+msgstr "seriale"
 
 #: web/templates/home.html:31
 msgid "Theme status"
-msgstr "テーマの状態"
+msgstr "Status motywu"
 
 #: web/templates/home.html:31
 msgid "All statuses"
-msgstr "すべてのステータス"
+msgstr "Wszystkie statusy"
 
 #: web/templates/home.html:31
 msgid "Has a theme"
-msgstr "テーマがあります"
+msgstr "Posiada motyw"
 
 #: web/templates/home.html:31
 msgid "No theme"
-msgstr "テーマなし"
+msgstr "Brak motywu"
 
 #: web/templates/home.html:32
 msgid "Reset filters"
-msgstr "フィルターをリセット"
+msgstr "Resetuj filtry"
 
 #: web/templates/home.html:38
 msgid "Library ID"
-msgstr "ライブラリID"
+msgstr "ID biblioteki"
 
 #: web/templates/home.html:43
 msgid "Title"
-msgstr "タイトル"
+msgstr "Tytuł"
 
 #: web/templates/home.html:43
 msgid "Metadata ID"
-msgstr "メタデータID"
+msgstr "ID metadanych"
 
 #: web/templates/home.html:43
 msgid "Theme"
-msgstr "テーマ"
+msgstr "Motyw"
 
 #: web/templates/home.html:43
 msgid "ThemerrDB"
@@ -987,47 +987,47 @@ msgstr "ThemerrDB"
 
 #: web/templates/home.html:56
 msgid "Pause theme for"
-msgstr "テーマを一時停止："
+msgstr "Wstrzymaj motyw dla"
 
 #: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
-msgstr "テーマを再生"
+msgstr "Odtwórz motyw dla"
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "このテーマを再生できません。プレックス接続とブラウザの音声サポートを確認してください。"
+msgstr "Nie można odtworzyć tego motywu. Sprawdź połączenie Plex i obsługę dźwięku przeglądarki."
 
 #: web/templates/home.html:64
 msgid "Open in Plex"
-msgstr "プレックスで開く"
+msgstr "Otwórz w Plex"
 
 #: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
-msgstr "外部IDが利用できません"
+msgstr "Zewnętrzne ID niedostępne"
 
 #: web/templates/home.html:70
 msgid "Failed to add theme"
-msgstr "テーマの追加に失敗しました"
+msgstr "Nie udało się dodać motywu"
 
 #: web/templates/home.html:71
 msgid "Plex provided"
-msgstr "プレックスが提供されました"
+msgstr "Plex dostarczył"
 
 #: web/templates/home.html:72
 msgid "User provided"
-msgstr "ユーザーが提供されました"
+msgstr "Dostarczone przez użytkownika"
 
 #: web/templates/home.html:73
 msgid "Themerr provided"
-msgstr "Themerr provided"
+msgstr "Themerr zapewnił"
 
 #: web/templates/home.html:74
 msgid "Unknown provider"
-msgstr "不明なプロバイダー"
+msgstr "Nieznany dostawca"
 
 #: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
-msgstr "ThemerrDB から欠落しています"
+msgstr "Brakujące w ThemerrDB"
 
 #: web/templates/home.html:76
 msgid "TMDB ID unavailable"
@@ -1035,405 +1035,405 @@ msgstr "TMDB ID unavailable"
 
 #: web/templates/home.html:77
 msgid "Theme not installed yet"
-msgstr "テーマはまだインストールされていません"
+msgstr "Motyw jeszcze nie zainstalowany"
 
 #: web/templates/home.html:80
 msgid "Edit"
-msgstr "編集"
+msgstr "Edytuj"
 
 #: web/templates/home.html:80
 msgid "Add"
-msgstr "追加"
+msgstr "Dodaj"
 
 #: web/templates/home.html:87
 msgid "No titles match."
-msgstr "タイトルが一致しません。"
+msgstr "Żadne tytuły nie pasują."
 
 #: web/templates/home.html:87
 msgid "Try another search or reset your filters."
-msgstr "別の検索を試みるか、フィルターをリセットしてください。"
+msgstr "Wypróbuj inne wyszukiwanie lub zresetuj filtry."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "Your library is on its way."
-msgstr "あなたの図書館は今向かっています。"
+msgstr "Twoja biblioteka jest w drodze."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
-msgstr "最初の更新はライブラリビューをビルドします。アクティビティの進行状況を確認できます。"
+msgstr "Pierwsze odświeżenie tworzy widok Twojej biblioteki. Możesz śledzić postępy w Aktywności."
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr "最近のログを調べたり、メッセージを見つけたり、警告とエラーを飛び越えたりします。"
+msgstr "Przeglądaj ostatnie logi, znajdź wiadomość i przeskocz pomiędzy ostrzeżeniami i błędami."
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr "フィルタされたログをダウンロード"
+msgstr "Pobierz filtrowane logi"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr "ログビューアー"
+msgstr "Podgląd dziennika"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr "ログを検索"
+msgstr "Szukaj logów"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr "メッセージ、スレッド、またはタイムスタンプを検索する…"
+msgstr "Szukaj wiadomości, wątków lub znaczników czasu…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr "ログ ソース"
+msgstr "Źródło dziennika"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr "すべてのソース"
+msgstr "Wszystkie źródła"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr "ログレベル"
+msgstr "Poziom logowania"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr "すべてのレベル"
+msgstr "Wszystkie poziomy"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr "警告とエラー"
+msgstr "Ostrzeżenia i błędy"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr "ログの履歴"
+msgstr "Historia logów"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr "最新 250"
+msgstr "Najnowsze 250"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr "最新1,000"
+msgstr "Najnowsze 1000"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr "最新 2,000"
+msgstr "Najnowsze 2000"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr "起動後"
+msgstr "Od uruchomienia"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr "フィルターをクリア"
+msgstr "Wyczyść filtry"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr "警告とエラーナビゲーション"
+msgstr "Ostrzeżenie i nawigacja błędów"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr "前の警告またはエラー"
+msgstr "Poprzednie ostrzeżenie lub błąd"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr "次の警告またはエラー"
+msgstr "Następne ostrzeżenie lub błąd"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr "ライブ更新"
+msgstr "Odświeżenie na żywo"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr "最新をフォロー"
+msgstr "Śledź najnowsze"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr "更新"
+msgstr "Odśwież"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr "ログを読み込み中…"
+msgstr "Wczytywanie logów…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr "ログ履歴ページ"
+msgstr "Strony historii dziennika"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr "古いレコード"
+msgstr "Starsze rekordy"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr "新しいレコード"
+msgstr "Nowsze rekordy"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr "ログの記録"
+msgstr "Zapisy dziennika"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
-msgstr "ナビゲーションを閉じる"
+msgstr "Zamknij nawigację"
 
 #: web/templates/navbar.html:2
 msgid "Main navigation"
-msgstr "メインナビゲーション"
+msgstr "Główna nawigacja"
 
 #: web/templates/navbar.html:4
 msgid "YOUR WORKSPACE"
-msgstr "ワークスペースの設定"
+msgstr "TWOJE PRACY"
 
 #: web/templates/navbar.html:5
 msgid "Workspace pages"
-msgstr "ワークスペースのページ"
+msgstr "Strony obszaru roboczego"
 
 #: web/templates/navbar.html:6 web/templates/servers.html:3
 msgid "Servers"
-msgstr "サーバー"
+msgstr "Serwery"
 
 #: web/templates/navbar.html:11
 msgid "A little music."
-msgstr "ちょっとした音楽。"
+msgstr "Trochę muzyki."
 
 #: web/templates/navbar.html:11
 msgid "A lot more atmosphere."
-msgstr "もっとたくさんの雰囲気。"
+msgstr "Dużo więcej atmosfery."
 
 #: web/templates/navbar.html:12
 msgid "Resources"
-msgstr "リソース"
+msgstr "Zasoby"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
-msgstr "テーマに貢献する"
+msgstr "Przyczyń się do tematu"
 
 #: web/templates/navbar.html:16
 msgid "Support LizardByte"
-msgstr "LizardByte をサポート"
+msgstr "Wsparcie dla Lizardbajtu"
 
 #: web/templates/navbar.html:20
 msgid "Sign out"
-msgstr "サインアウト"
+msgstr "Wyloguj się"
 
 #: web/templates/servers.html:3
 msgid "ONE WORKSPACE. EVERY SERVER."
-msgstr "一つのワークスペース。すべてのサーバー。"
+msgstr "JEDNA PRACA. KAŻDY SERWER."
 
 #: web/templates/servers.html:3
 msgid "Connect your Plex account, then choose where the music goes."
-msgstr "プレックスアカウントを接続し、音楽の場所を選択します。"
+msgstr "Połącz swoje konto Plex, a następnie wybierz miejsce dla muzyki."
 
 #: web/templates/servers.html:3
 msgid "saved"
-msgstr "保存しました"
+msgstr "zapisano"
 
 #: web/templates/servers.html:6
 msgid "Your Plex account"
-msgstr "プレックスアカウント"
+msgstr "Twoje konto Plex"
 
 #: web/templates/servers.html:6
 msgid "Account linked. Choose a server below."
-msgstr "アカウントがリンクされました。以下のサーバーを選択してください。"
+msgstr "Konto połączone. Wybierz serwer poniżej."
 
 #: web/templates/servers.html:6
 msgid "Link your account securely through Plex to access your servers."
-msgstr "プレックス経由でアカウントを安全にリンクし、サーバーにアクセスします。"
+msgstr "Połącz swoje konto bezpiecznie przez Plex, aby uzyskać dostęp do serwerów."
 
 #: web/templates/servers.html:6
 msgid "Continue Plex sign-in"
-msgstr "プレックスのサインインを続ける"
+msgstr "Kontynuuj logowanie do Plex"
 
 #: web/templates/servers.html:7
 msgid "Reconnect account"
-msgstr "アカウントに再接続"
+msgstr "Połącz ponownie konto"
 
 #: web/templates/servers.html:7
 msgid "Connect Plex account"
-msgstr "プレックスアカウントに接続"
+msgstr "Połącz konto Plex"
 
 #: web/templates/servers.html:7
 msgid "Disconnect"
-msgstr "接続を解除"
+msgstr "Rozłącz"
 
 #: web/templates/servers.html:9
 msgid "Connected servers"
-msgstr "接続済みサーバー"
+msgstr "Połączone serwery"
 
 #: web/templates/servers.html:9
 msgid "Theme history and library settings are kept separately for each server."
-msgstr "テーマの履歴とライブラリの設定は、サーバーごとに個別に保持されます。"
+msgstr "Historia tematu i ustawienia biblioteki są przechowywane oddzielnie dla każdego serwera."
 
 #: web/templates/servers.html:13
 msgid "Enabled"
-msgstr "有効"
+msgstr "Włączone"
 
 #: web/templates/servers.html:16
 msgid "Last library refresh"
-msgstr "最後のライブラリを更新"
+msgstr "Ostatnio odświeżone biblioteki"
 
 #: web/templates/servers.html:16
 msgid "Not yet refreshed"
-msgstr "まだ更新されていません"
+msgstr "Jeszcze nie odświeżono"
 
 #: web/templates/servers.html:17
 msgid "Processing settings"
-msgstr "処理中の設定"
+msgstr "Przetwarzanie ustawień"
 
 #: web/templates/servers.html:19
 msgid "Process this server"
-msgstr "このサーバーを処理します"
+msgstr "Przetwórz ten serwer"
 
 #: web/templates/servers.html:20
 msgid "optional"
-msgstr "省略可能"
+msgstr "fakultatywne"
 
 #: web/templates/servers.html:21
 msgid "Browse Plex data directory"
-msgstr "プレックスデータディレクトリを参照"
+msgstr "Przeglądaj katalog danych Plex"
 
 #: web/templates/servers.html:22
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "ローカルまたはマウントされた Plex データディレクトリは、古いアップロードされたファイルを削除するためにのみ必要です。リモート サーバーでは空のままにします。"
+msgstr "Lokalny lub zamontowany katalog danych Plex jest wymagany tylko do usunięcia starych przesłanych plików. Pozostaw to puste dla serwerów zdalnych."
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr "無視されたライブラリ"
+msgstr "Ignorowane biblioteki"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr "ライブラリ"
+msgstr "Biblioteka"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr "このサーバーのライブラリをロードするためにリストを開きます。"
+msgstr "Otwórz listę, aby załadować biblioteki tego serwera."
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr "テーマの更新から除外するライブラリを選択します。すべてのライブラリを処理するにはチェックを外してください。"
+msgstr "Wybierz biblioteki, aby wykluczyć z aktualizacji motywu. Pozostaw wszystkie niezaznaczone aby przetworzyć każdą bibliotekę."
 
 #: web/templates/servers.html:36
 msgid "Save settings"
-msgstr "設定を保存"
+msgstr "Zapisz ustawienia"
 
 #: web/templates/servers.html:36
 msgid "Remove server"
-msgstr "サーバーを削除"
+msgstr "Usuń serwer"
 
 #: web/templates/servers.html:40
 msgid "Your first server starts here."
-msgstr "最初のサーバーはここから始まります。"
+msgstr "Twój pierwszy serwer zaczyna się tutaj."
 
 #: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
-msgstr "上記の Plex をリンクし、以下のアドレスを見つけるか追加します。"
+msgstr "Połącz Plex powyżej, a następnie odkryj lub dodaj adres poniżej."
 
 #: web/templates/servers.html:43
 msgid "Add a server"
-msgstr "サーバーを追加"
+msgstr "Dodaj serwer"
 
 #: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
-msgstr "Plexアカウントからサーバーを選択し、近くのサーバーを見つけるか、知っているアドレスを使用してください。"
+msgstr "Wybierz serwer z konta Plex, odkryj go w pobliżu lub użyj adresu który znasz."
 
 #: web/templates/servers.html:44
 msgid "Find account servers"
-msgstr "アカウントサーバーを検索"
+msgstr "Znajdź serwery kont"
 
 #: web/templates/servers.html:44
 msgid "Discover on LAN"
-msgstr "LAN で発見する"
+msgstr "Odkryj na LAN"
 
 #: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
-msgstr "LAN Discovery は Plex GDM をアプリケーションのネットワーク上で使用します。"
+msgstr "Odkrycie LAN używa Plex GDM w sieci aplikacji."
 
 #: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
-msgstr "アカウントアドレスはプレックスによって宣伝され、到達不能な場合があります。HTTPS plex.directアドレスはプレックスの証明書を使用します。 Themerrを実行しているマシンからアクセス可能なアドレスを選択するか、既知のアドレスを手動で入力してください。"
+msgstr "Adresy konta są reklamowane przez Plex i mogą być nieosiągalne. Adresy HTTPS plex.direct używają certyfikatu Plex. Wybierz adres osiągalny z maszyny używającej Themerra lub wprowadź znany adres ręcznie."
 
 #: web/templates/servers.html:47
 msgid "Enter an address manually"
-msgstr "住所を手動で入力してください"
+msgstr "Wprowadź adres ręcznie"
 
 #: web/templates/servers.html:48
 msgid "Plex server address"
-msgstr "プレックスサーバーアドレス"
+msgstr "Adres serwera Plex"
 
 #: web/templates/servers.html:48
 msgid "Connect server"
-msgstr "サーバーに接続"
+msgstr "Podłącz serwer"
 
 #: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
-msgstr "LAN アドレスまたは有効な HTTPS の Plex アドレスを使用します。リンクされた Plex アカウントにアクセスする必要があります。既存のサーバーを追加すると、そのアドレスが更新されます。"
+msgstr "Użyj adresu LAN lub poprawnego adresu HTTPS Plex. Twoje połączone konto Plex musi mieć dostęp. Dodanie istniejącego serwera aktualizuje jego adres."
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr "テーマプレイヤー"
+msgstr "Odtwarzacz motywu"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr "ライブラリからテーマを選択"
+msgstr "Wybierz motyw z biblioteki"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr "テーマを読み込めません。もう一度お試しください。"
+msgstr "Nie można załadować motywów. Spróbuj ponownie."
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr "インストールされているテーマはまだありません。"
+msgstr "Brak zainstalowanych motywów."
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr "プレイヤー数"
+msgstr "TEMAT GRACZA"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr "あらゆる物語のサウンドトラック。"
+msgstr "Ścieżka dźwiękowa dla każdej opowieści."
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr "シャッフル"
+msgstr "Losuj"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr "前のテーマ"
+msgstr "Poprzedni motyw"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr "テーマを再生"
+msgstr "Odtwórz motyw"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr "テーマを一時停止"
+msgstr "Wstrzymaj motyw"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr "次のテーマ"
+msgstr "Następny motyw"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr "このテーマを繰り返す"
+msgstr "Powtórz ten motyw"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr "再生位置"
+msgstr "Pozycja odtwarzania"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr "私を驚かせて"
+msgstr "Niespodzianka"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr "音量"
+msgstr "Objętość"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
-msgstr "Themerrはあなたの言語を話します。"
+msgstr "Twórca mówi w twoim języku."
 
 #: web/templates/translations.html:3
 msgid "Choose a language in Settings, or help improve translations on Crowdin."
-msgstr "設定で言語を選択するか、Crowdin で翻訳を改善してください。"
+msgstr "Wybierz język w Ustawieniach lub pomóż poprawić tłumaczenia na Crowdin."
 
 #: web/templates/translations.html:3
 msgid "Help translate"
-msgstr "翻訳を支援する"
+msgstr "Pomóż tłumaczyć"
 

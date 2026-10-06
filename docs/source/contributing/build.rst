@@ -1,9 +1,7 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/contributing/build.rst
-
 Build
 =====
 
-Themerr-plex uses Python 3.14, uv, npm, Deno, and the .NET 10 SDK. Python dependencies are specified in pyproject.toml and
+Themerr uses Python 3.14, uv, npm, Deno, and the .NET 10 SDK. Python dependencies are specified in pyproject.toml and
 resolved in uv.lock. The npm lockfile supplies reproducible web assets. esbuild bundles browser dependencies and local
 scripts into ``web/assets``.
 
@@ -55,8 +53,8 @@ Install the commit hook once per checkout:
 
    uv run --locked --no-sync pre-commit install
 
-Before each commit, the hook extracts Python, JavaScript, and template messages into ``locale/themerr-plex.po``.
-If that file changes, the commit stops so you can review it, stage it with ``git add locale/themerr-plex.po``,
+Before each commit, the hook extracts Python, JavaScript, and template messages into ``locale/themerr.po``.
+If that file changes, the commit stops so you can review it, stage it with ``git add locale/themerr.po``,
 and retry the commit. Unstaged edits are temporarily set aside while the hook checks the staged source.
 The generated template omits creation and revision date headers and Babel's author placeholders. Its bug-report
 URL points to the repository's GitHub issues page. Crowdin creates and updates the per-language catalogs under
@@ -87,7 +85,7 @@ PyInstaller includes the web assets and translations in the
 executable under dist, including Deno for yt-dlp and both Jellyfin connector archives. The standalone build
 rebuilds the connectors after stamping the release version. CI builds both connectors once and shares the artifact
 with all desktop packaging jobs. ``THEMERR_PREBUILT_CONNECTOR=1`` validates the artifact's source identity, release,
-ABI and checksums instead of compiling again. macOS also produces ``dist/themerr_plex.app``, a directory
+ABI and checksums instead of compiling again. macOS also produces ``dist/themerr.app``, a directory
 bundle needed for native notifications. Set ``THEMERR_VERSION`` to the release version before running
 ``scripts/build.py`` to stamp ``src/common/version.py`` with the version used by release notifications and
 ``--version``. CI supplies this value from the release setup action's ``release_version`` output. The module
@@ -123,4 +121,4 @@ the runtime image contains their artifacts without the SDK:
 
 .. code-block:: shell
 
-   docker build -t themerr-plex .
+   docker build -t themerr .

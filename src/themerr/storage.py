@@ -153,14 +153,20 @@ class AppSetting(Base):
 def database_path() -> str:
     """Return the SQLite path beside the active configuration file.
 
+    Reuse the previous database when upgrading an existing installation.
+
     Returns
     -------
     str
         Absolute database path.
     """
     if app_config.CONFIG is not None and getattr(app_config.CONFIG, 'filename', None):
-        return os.path.join(os.path.dirname(os.path.abspath(app_config.CONFIG.filename)), definitions.Files.DATABASE)
-    return os.path.join(definitions.Paths.CONFIG_DIR, definitions.Files.DATABASE)
+        directory = os.path.dirname(os.path.abspath(app_config.CONFIG.filename))
+    else:
+        directory = definitions.Paths.CONFIG_DIR
+    path = os.path.join(directory, definitions.Files.DATABASE)
+    legacy_path = os.path.join(directory, f'{definitions.Names.legacy_name.lower()}.db')
+    return legacy_path if not os.path.exists(path) and os.path.isfile(legacy_path) else path
 
 
 def _replace_dashboard(session: Session, sections: dict) -> None:

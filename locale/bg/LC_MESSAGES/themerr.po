@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
 "Language-Team: Bulgarian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: bg\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: bg_BG\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
@@ -285,8 +285,8 @@ msgid "Ignore locked fields."
 msgstr "Пренебрегни заключените полета."
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Ако сте използвали Themerr-plex v2024.813.13709 или по-стара версия, може да се наложи да активирате тази опция, за да актуализирате елементите."
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "Ако сте използвали Themerr v2024.813.13709 или по-стара версия, може да се наложи да активирате тази опция, за да актуализирате елементите."
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
@@ -364,7 +364,7 @@ msgstr "Опресняването приключи"
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
 msgstr "Покритието на темите се е увеличило с %(increase)s процентни пункта: %(before)s%% → %(after)s%%. %(installed)s от %(total)s елемента имат теми."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
@@ -441,49 +441,49 @@ msgstr "Дневници"
 msgid "Settings"
 msgstr "Настройки"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
 msgstr "%(app_name)s управлява тематичните мелодии за Plex.\n"
 "Параметрите, зададени тук, са предназначени за временно използване."
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
 msgstr "Покажи това съобщение за помощ и излез"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
 msgstr "Посочете конфигурационния файл, който да се използва"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
 msgstr "Използване на ниво на отладочно логване"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
 msgstr "Стартирайте %(app_name)s в средата за разработка"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
 msgstr "Проверка на състоянието на контейнера и изход"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
 msgstr "Не отваряйте %(app_name)s в браузъра"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
 msgstr "Принуди %(app_name)s да работи на зададен порт, по подразбиране=9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
 msgstr "Изключете записването в конзолата"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
 msgstr "Отпечатай подробностите за версията и излез"
 

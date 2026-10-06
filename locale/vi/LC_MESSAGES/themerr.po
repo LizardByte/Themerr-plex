@@ -1,156 +1,156 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
-"Language-Team: Russian\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-Language: vi\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: ru_RU\n"
+"Language: vi_VN\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
-msgstr "Инфо"
+msgstr "Thông tin"
 
 #: src/common/config.py:91
 msgid "For information purposes only."
-msgstr "Только для информационных целей."
+msgstr "Chỉ mang tính chất tham khảo."
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "Версия конфигурации"
+msgstr "Phiên bản cấu hình"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "Версия конфигурации."
+msgstr "Phiên bản cấu hình."
 
 #: src/common/config.py:105
 msgid "First run complete"
-msgstr "Первый запуск завершен"
+msgstr "Lần chạy đầu tiên đã hoàn tất"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "Внимание: Указывает, завершил ли пользователь начальную настройку."
+msgstr "Todo: Cho biết người dùng đã hoàn tất quá trình thiết lập ban đầu hay chưa."
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "Общие положения"
+msgstr "Tổng quan"
 
 #: src/common/config.py:114
 msgid "General settings."
-msgstr "Общие настройки."
+msgstr "Cài đặt chung."
 
 #: src/common/config.py:118
 msgid "Locale"
-msgstr "Язык"
+msgstr "Vùng địa phương"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "Параметр локализации для использования."
+msgstr "Cài đặt bản địa hóa cần sử dụng."
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "Запуск браузера при запуске "
+msgstr "Khởi chạy trình duyệt khi khởi động "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "Включить значок в системном трее"
+msgstr "Bật biểu tượng trên khay hệ thống"
 
 #: src/common/config.py:142
 msgid "Notifications"
-msgstr "Уведомления"
+msgstr "Thông báo"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "Уведомления на рабочем столе отображаются на компьютере с запущенным Themerr. Docker и бесголовной инсталляции их не отображают."
+msgstr "Các thông báo trên màn hình sẽ xuất hiện trên máy tính đang chạy Themerr. Các bản cài đặt Docker và bản cài đặt không giao diện người dùng sẽ không hiển thị các thông báo này."
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
-msgstr "Доступна новая версия"
+msgstr "Phiên bản mới đã ra mắt"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "Уведомлять, когда доступен новый релиз Themerr. Проверяет запуск раз в час."
+msgstr "Thông báo khi có phiên bản mới hơn của Themerr. Quá trình kiểm tra được thực hiện mỗi giờ một lần."
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "Следить за предрелизами"
+msgstr "Theo dõi các bản phát hành trước"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "Включать предварительные релизы в новые уведомления о выпуске."
+msgstr "Bao gồm các phiên bản thử nghiệm trong thông báo về phiên bản mới."
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "Расширенный охват темы"
+msgstr "Phạm vi bao phủ của chủ đề đã được mở rộng"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
-msgstr "Уведомлять после успешного обновления, когда увеличивается общее покрытие темы. Обновляется без увеличения спокойно."
+msgstr "Thông báo sau khi làm mới thành công nếu tổng mức độ bao phủ của chủ đề tăng lên. Các lần làm mới mà không có sự gia tăng sẽ không hiển thị thông báo."
 
 #: src/common/config.py:168
 msgid "Logging"
-msgstr "Ведение журнала"
+msgstr "Ghi nhật ký"
 
 #: src/common/config.py:169
 msgid "Logging settings."
-msgstr "Настройки ведения журнала."
+msgstr "Cài đặt ghi nhật ký."
 
 #: src/common/config.py:173
 msgid "Log directory"
-msgstr "Директория журнала"
+msgstr "Thư mục nhật ký"
 
 #: src/common/config.py:175
 msgid "The directory where to store the log files."
-msgstr "Каталог хранения лог файлов."
+msgstr "Thư mục dùng để lưu trữ các tệp nhật ký."
 
 #: src/common/config.py:182
 msgid "Debug logging"
-msgstr "Журнал отладки"
+msgstr "Ghi nhật ký gỡ lỗi"
 
 #: src/common/config.py:184
 msgid "Enable debug logging."
-msgstr "Включить ведение журнала отладки."
+msgstr "Bật tính năng ghi nhật ký gỡ lỗi."
 
 #: src/common/config.py:190
 msgid "Network"
-msgstr "Сеть"
+msgstr "Mạng"
 
 #: src/common/config.py:191
 msgid "Network settings."
-msgstr "Сетевые настройки."
+msgstr "Cài đặt mạng."
 
 #: src/common/config.py:195
 msgid "HTTP host address"
-msgstr "Адрес HTTP хоста"
+msgstr "Địa chỉ máy chủ HTTP"
 
 #: src/common/config.py:197
 msgid "The HTTP address to bind to."
-msgstr "Адрес HTTP для привязки."
+msgstr "Địa chỉ HTTP cần liên kết."
 
 #: src/common/config.py:206
 msgid "HTTP port"
-msgstr "Порт HTTP"
+msgstr "Cổng HTTP"
 
 #: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
-msgstr "Порт для привязки веб-сервера. Заметьте, что порты ниже 1024 могут требовать root."
+msgstr "Cổng để kết nối với máy chủ web. Lưu ý rằng các cổng dưới 1024 có thể yêu cầu quyền root."
 
 #: src/common/config.py:216
 msgid "HTTP root"
-msgstr "HTTP корень"
+msgstr "Thư mục gốc HTTP"
 
 #: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
-msgstr "Todo: базовый URL-адрес веб-сервера. Используется для обратных прокси."
+msgstr "Todo: URL cơ sở của máy chủ web. Được sử dụng cho các máy chủ proxy ngược."
 
 #: src/common/config.py:223
 msgid "SSL"
@@ -158,828 +158,828 @@ msgstr "SSL"
 
 #: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
-msgstr "Запустите веб-сервер с HTTPS. Отключение этого может представлять угрозу безопасности, делайте это на свой страх и риск."
+msgstr "Chạy máy chủ web bằng HTTPS. Việc tắt tính năng này có thể gây ra rủi ro bảo mật; nếu bạn quyết định tắt, hãy tự chịu trách nhiệm về hậu quả."
 
 #: src/common/config.py:231
 msgid "Updater"
-msgstr "Обновления"
+msgstr "Trình cập nhật"
 
 #: src/common/config.py:232
 msgid "Updater settings."
-msgstr "Настройки обновления."
+msgstr "Cài đặt trình cập nhật."
 
 #: src/common/config.py:236
 msgid "Auto update"
-msgstr "Автообновление"
+msgstr "Cập nhật tự động"
 
 #: src/common/config.py:244
 msgid "Plex"
-msgstr "Плекс"
+msgstr "Plex"
 
 #: src/common/config.py:245
 msgid "Plex settings."
-msgstr "Настройки Plex."
+msgstr "Cài đặt Plex."
 
 #: src/common/config.py:249
 msgid "Plex URL"
-msgstr "Plex URL"
+msgstr "URL Plex"
 
 #: src/common/config.py:250
 msgid "The URL to the Plex server."
-msgstr "URL-адрес сервера Plex."
+msgstr "Địa chỉ URL của máy chủ Plex."
 
 #: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
-msgstr "Каталог данных Plex"
+msgstr "Thư mục dữ liệu Plex"
 
 #: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-msgstr "https://support.plex.tv/articles/202915258 where-is-the-plex-media-server-data-directory-located/"
+msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
 #: src/common/config.py:270
 msgid "Themerr"
-msgstr "Таммерр"
+msgstr "Themerr"
 
 #: src/common/config.py:271
 msgid "Themerr settings."
-msgstr "Настройки Themerr."
+msgstr "Cài đặt Themerr."
 
 #: src/common/config.py:275
 msgid "Themerr Enabled"
-msgstr "Themerr включен"
+msgstr "Đã bật Themerr"
 
 #: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
-msgstr "Когда включено, Themerr попытается обновить темы."
+msgstr "Khi được bật, Themerr sẽ cố gắng cập nhật các chủ đề."
 
 #: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
-msgstr "Коллекции"
+msgstr "Bộ sưu tập"
 
 #: src/common/config.py:282
 msgid "Add themes to collections."
-msgstr "Добавить темы в коллекции."
+msgstr "Thêm chủ đề vào bộ sưu tập."
 
 #: src/common/config.py:287
 msgid "Movie support"
-msgstr "Поддержка фильмов"
+msgstr "Hỗ trợ phim"
 
 #: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
-msgstr "Добавьте темы в фильмы с помощью Plex Movie Agent."
+msgstr "Thêm chủ đề vào phim bằng trình quản lý phim Plex."
 
 #: src/common/config.py:293
 msgid "Series support"
-msgstr "Поддержка серии"
+msgstr "Hỗ trợ chuỗi"
 
 #: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
-msgstr "Добавляйте темы в серии, используя Plex Server."
+msgstr "Thêm chủ đề vào các bộ phim bằng trình quản lý Plex Series."
 
 #: src/common/config.py:299
 msgid "Overwrite Plex themes"
-msgstr "Перезаписать темы Plex"
+msgstr "Ghi đè các chủ đề Plex"
 
 #: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
-msgstr "Когда включено, Themerr перезапишет темы, предоставляемые Plex."
+msgstr "Khi được bật, Themerr sẽ ghi đè lên các chủ đề do Plex cung cấp."
 
 #: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
-msgstr "Предпочитать MP4A AAC кодек"
+msgstr "Ưu tiên codec MP4A AAC"
 
 #: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
-msgstr "Это может улучшить совместимость тем с устройствами Apple."
+msgstr "Điều này có thể giúp cải thiện khả năng tương thích của chủ đề với các thiết bị của Apple."
 
 #: src/common/config.py:311
 msgid "Remove unused themes"
-msgstr "Удалить неиспользуемые темы"
+msgstr "Xóa các chủ đề không sử dụng"
 
 #: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Освободить место в папке метаданных Plex. Эта опция требует указания пути к папке данных Plex"
+msgstr "Giải phóng dung lượng trong thư mục siêu dữ liệu Plex của bạn. Tùy chọn này yêu cầu phải thiết lập đường dẫn “thư mục dữ liệu Plex”"
 
 #: src/common/config.py:318
 msgid "Remove unused art"
-msgstr "Удалить неиспользованные обложки"
+msgstr "Xóa các hình ảnh không sử dụng"
 
 #: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "Применяется к коллекции. Освободите место в папке метаданных Plex. Эта опция требует, чтобы установлен путь к папке данных Plex"
+msgstr "Áp dụng cho bộ sưu tập. Giải phóng dung lượng trong thư mục siêu dữ liệu Plex của bạn. Tùy chọn này yêu cầu đường dẫn “Thư mục dữ liệu Plex” phải được thiết lập"
 
 #: src/common/config.py:326
 msgid "Remove unused posters"
-msgstr "Удалить неиспользуемые постеры"
+msgstr "Gỡ bỏ các áp phích không sử dụng"
 
 #: src/common/config.py:334
 msgid "Collection metadata"
-msgstr "Метаданные коллекции"
+msgstr "Siêu dữ liệu bộ sưu tập"
 
 #: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
-msgstr "Обновление сбора метаданных (плакат, арт и резюме) в ходе запланированного обновления."
+msgstr "Cập nhật siêu dữ liệu của bộ sưu tập (áp phích, hình ảnh và tóm tắt) trong quá trình cập nhật theo lịch trình."
 
 #: src/common/config.py:340
 msgid "Ignore locked fields."
-msgstr "Игнорировать заблокированные поля."
+msgstr "Bỏ qua các trường bị khóa."
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Если вы использовали Themerr-plex v2024.813.13709 или ниже, вам может потребоваться включить это для обновления элементов."
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "Nếu bạn đang sử dụng Themerr phiên bản v2024.813.13709 hoặc các phiên bản cũ hơn, bạn có thể cần phải kích hoạt tính năng này để cập nhật các mục."
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
-msgstr "Игнорируемые ID библиотеки"
+msgstr "Các ID thư viện bị bỏ qua"
 
 #: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
-msgstr "Идентификаторы библиотеки, разделенные запятыми, для исключения из запланированных обновлений. Идентификаторы отображаются на Доме."
+msgstr "Các ID thư viện được phân tách bằng dấu phẩy cần loại trừ khỏi các bản cập nhật theo lịch trình. Các ID này hiển thị trên trang Chủ."
 
 #: src/common/config.py:354
 msgid "Update themes interval"
-msgstr "Интервал обновления тем"
+msgstr "Cập nhật khoảng thời gian thay đổi chủ đề"
 
 #: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
-msgstr "Интервал автоматического обновления в минутах (мин: 15)."
+msgstr "Khoảng thời gian cho tác vụ cập nhật tự động, tính bằng phút (tối thiểu: 15)."
 
 #: src/common/config.py:362
 msgid "Update database cache interval"
-msgstr "Интервал обновления кэша базы данных"
+msgstr "Cập nhật khoảng thời gian lưu trữ bộ nhớ đệm cơ sở dữ liệu"
 
 #: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
-msgstr "Интервал обновления базы данных в минутах (мин: 15)."
+msgstr "Khoảng thời gian thực hiện tác vụ cập nhật bộ nhớ đệm cơ sở dữ liệu, tính bằng phút (tối thiểu: 15)."
 
 #: src/common/config.py:370
 msgid "PlexAPI timeout"
-msgstr "Таймаут PlexAPI"
+msgstr "Thời gian chờ của PlexAPI"
 
 #: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
-msgstr "Увеличивает это, если вы наблюдаете таймауты при добавлении тем. (мин: 1)"
+msgstr "Hãy tăng giá trị này lên một chút nếu bạn gặp phải tình trạng hết thời gian chờ khi thêm chủ đề. (tối thiểu: 1)"
 
 #: src/common/config.py:378
 msgid "Theme upload retries"
-msgstr "Попытки загрузки темы"
+msgstr "Số lần thử lại khi tải lên chủ đề"
 
 #: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
-msgstr "Если загрузка тем не удалась, попробуйте повторить много раз. (мин: 0)"
+msgstr "Nếu việc tải lên chủ đề không thành công, hãy thử lại số lần này. (tối thiểu: 0)"
 
 #: src/common/config.py:386
 msgid "Multiprocessing thread count"
-msgstr "Количество потоков"
+msgstr "Số luồng trong xử lý đa luồng"
 
 #: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
-msgstr "Количество потоков, используемых при добавлении тем. Требуется перезапуск. (мин: 1)"
+msgstr "Số luồng cần sử dụng khi thêm chủ đề. Cần khởi động lại. (tối thiểu: 1)"
 
 #: src/common/config.py:394
 msgid "YouTube Cookies"
-msgstr "Куки YouTube"
+msgstr "Cookie của YouTube"
 
 #: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "Необязательно: экспортируйте файлы cookie youtube.com с помощью файла cookies.txt LOCALLY в его формате JSON, затем вставьте сюда весь массив JSON и сохраните. Cookies содержат сеанс вашего браузера; храните их в секрете."
+msgstr "Tùy chọn: Xuất các tệp cookie từ youtube.com bằng công cụ “Get cookies.txt” dưới dạng tệp cục bộ (LOCALLY) theo định dạng JSON, sau đó dán toàn bộ mảng JSON vào đây và lưu lại. Các tệp cookie chứa thông tin phiên làm việc của trình duyệt; hãy giữ chúng ở chế độ riêng tư."
 
 #: src/common/config.py:401
 msgid "Cookie export instructions"
-msgstr "Инструкции по экспорту Cookie"
+msgstr "Hướng dẫn xuất cookie"
 
 #: src/common/notifications.py:138
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr "%(app)s %(version)s доступно.\n"
+msgstr "%(app)s %(version)s đã có sẵn.\n"
 "%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr "Обновление завершено"
+msgstr "Quá trình làm mới đã hoàn tất"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr "Охват темы увеличился на %(increase)s процентов: %(before)s%% → %(after)s%%. %(installed)s из %(total)s элементов имеют темы."
+msgstr "Tỷ lệ bao phủ chủ đề đã tăng thêm %(increase)s điểm phần trăm: %(before)s%% → %(after)s%%. %(installed)s trong số %(total)s mục có chủ đề."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
-msgstr "Открыть %(app_name)s"
+msgstr "Mở %(app_name)s"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr "О программе"
+msgstr "Giới thiệu"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr "Версия %(version)s"
+msgstr "Phiên bản %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr "Репозиторий"
+msgstr "Kho lưu trữ"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
 #: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
-msgstr "Релизы %(github)s"
+msgstr "%(github)s Các bản phát hành"
 
 #: src/common/tray_icon.py:119 web/templates/navbar.html:14
 msgid "Documentation"
-msgstr "Документация"
+msgstr "Tài liệu hướng dẫn"
 
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "Документация по API"
+msgstr "Tài liệu API"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
 msgid "Donate"
-msgstr "Пожертвовать"
+msgstr "Ủng hộ"
 
 #: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
-msgstr "Спонсоры на GitHub"
+msgstr "Nhà tài trợ GitHub"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
 #: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
-msgstr "Открыть браузер при запуске %(app_name)s"
+msgstr "Mở trình duyệt khi %(app_name)s khởi động"
 
 #. NOTE: Disable or turn off icon.
 #: src/common/tray_icon.py:139
 msgid "Disable icon"
-msgstr "Отключить иконку"
+msgstr "Biểu tượng tắt"
 
 #. NOTE: Restart the program.
 #: src/common/tray_icon.py:142
 msgid "Restart"
-msgstr "Перезапустить"
+msgstr "Khởi động lại"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
 #: src/common/tray_icon.py:144
 msgid "Quit"
-msgstr "Выйти"
+msgstr "Thoát"
 
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr "Логи"
+msgstr "Nhật ký"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
-msgstr "Настройки"
+msgstr "Cài đặt"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s управляет песнями темы для Plex.\n"
-"представленных здесь аргументов предназначены для временных."
+msgstr "%(app_name)s quản lý các bài hát chủ đề cho Plex.\n"
+"Các tham số được cung cấp tại đây chỉ mang tính tạm thời."
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
-msgstr "Показать это сообщение справки и выйти"
+msgstr "Hiển thị thông báo trợ giúp này và thoát"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
-msgstr "Укажите конфигурационный файл для использования"
+msgstr "Chỉ định tệp cấu hình cần sử dụng"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
-msgstr "Использовать журнал отладки"
+msgstr "Sử dụng mức ghi nhật ký gỡ lỗi"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
-msgstr "Начать %(app_name)s в среде разработки"
+msgstr "Khởi động %(app_name)s trong môi trường phát triển"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
-msgstr "Проверка состояния контейнера и выход"
+msgstr "Kiểm tra tình trạng của container và thoát ra"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
-msgstr "Не открывать %(app_name)s в браузере"
+msgstr "Không mở trang web %(app_name)s trong trình duyệt"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
-msgstr "Принудительный запуск %(app_name)s по указанному порту по умолчанию=9494"
+msgstr "Buộc %(app_name)s chạy trên cổng được chỉ định, mặc định là 9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
-msgstr "Отключить журналирование консоли"
+msgstr "Tắt tính năng ghi nhật ký trên bảng điều khiển"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
-msgstr "Распечатать детали версии и выйти"
+msgstr "In thông tin phiên bản và thoát"
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "Ваша сессия истекла. Войдите, чтобы продолжить."
+msgstr "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập để tiếp tục."
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "Закрыть сообщение"
+msgstr "Bỏ qua tin nhắn"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
-msgstr "Несохраненные изменения"
+msgstr "Các thay đổi chưa được lưu"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr "Отменить несохраненные изменения в настройках?"
+msgstr "Có muốn hủy bỏ các thay đổi cài đặt chưa được lưu không?"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
-msgstr "Все изменения сохранены."
+msgstr "Tất cả các thay đổi đã được lưu."
 
 #: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
-msgstr "Настройки сохранены. Изменения сети вступят в силу после перезапуска Themerr."
+msgstr "Cài đặt đã được lưu. Các thay đổi về mạng sẽ có hiệu lực sau khi khởi động lại Themerr."
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "Не удалось сохранить изменения."
+msgstr "Không thể lưu các thay đổi."
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "Сохраните изменения в настройках перед изменением пароля."
+msgstr "Hãy lưu các thay đổi về cài đặt trước khi thay đổi mật khẩu."
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr "Нет записей, соответствующих вашим фильтрам."
+msgstr "Không có kết quả nào phù hợp với các tiêu chí lọc của bạn."
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr "Нет записей журнала."
+msgstr "Chưa có bản ghi nhật ký nào."
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr "Поиск, фильтры, предупреждающая навигация и загрузка обложки всех загруженных записей с момента запуска."
+msgstr "Chức năng tìm kiếm, lọc, điều hướng cảnh báo và tải xuống áp dụng cho tất cả các bản ghi đã được tải kể từ khi khởi động."
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr "Фильтры и поиск применяются к загруженным записям. Старая история остается в каталоге журнала."
+msgstr "Các bộ lọc và điều kiện tìm kiếm được áp dụng cho các bản ghi đã được tải. Lịch sử cũ hơn vẫn được lưu giữ trong thư mục nhật ký."
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr "Загрузка журнала сессий остановлена."
+msgstr "Quá trình tải nhật ký phiên bị đình trệ."
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
-msgstr "Онлайн"
+msgstr "Trực tiếp"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
 #: web/templates/servers.html:13
 msgid "Paused"
-msgstr "Пауза"
+msgstr "Tạm dừng"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr "Обновление не удалось. Показаны последние загруженные записи."
+msgstr "Không thể làm mới. Đang hiển thị các bản ghi được tải lần cuối."
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr "Выберите библиотеки для игнорирования"
+msgstr "Chọn các thư viện cần bỏ qua"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr "Загрузка библиотек…"
+msgstr "Đang tải các thư viện…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr "Отображение кэшированных библиотек. Включите или переподключите этот сервер для загрузки его текущих библиотек."
+msgstr "Đang hiển thị các thư viện đã được lưu trong bộ nhớ đệm. Vui lòng bật tính năng này hoặc kết nối lại với máy chủ này để tải các thư viện hiện tại của nó."
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr "У этого сервера нет библиотек."
+msgstr "Máy chủ này không có thư viện nào."
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr "Не удается загрузить библиотеки. Выбранные файлы сохранены. Закройте и переоткройте список, чтобы повторить попытку."
+msgstr "Không thể tải các thư viện. Các lựa chọn của bạn vẫn được lưu lại. Hãy đóng và mở lại danh sách để thử lại."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
-msgstr "Посмотрите, над чем работает Themerr, и почему тот или иной пункт может потребовать вашего внимания."
+msgstr "Hãy xem Themerr đang làm gì và tại sao một mục nào đó có thể cần sự chú ý của bạn."
 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
-msgstr "Сканировать темы"
+msgstr "Tìm kiếm theo chủ đề"
 
 #: web/templates/activity.html:3 web/templates/logs.html:4
 msgid "BEHIND THE MUSIC"
-msgstr "ПОСТУЙТЕ МУЗЫКИ"
+msgstr "PHÍA SAU NHỮNG BẢN NHẠC"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
-msgstr "Активность"
+msgstr "Hoạt động"
 
 #: web/templates/activity.html:4
 msgid "items waiting in the processing queue"
-msgstr "пунктов, ожидающих в очереди обработки"
+msgstr "các mục đang chờ xử lý trong hàng đợi"
 
 #: web/templates/activity.html:4
 msgid "Task history covers the current application session."
-msgstr "История задач описывает текущую сессию приложения."
+msgstr "Lịch sử tác vụ bao gồm phiên làm việc hiện tại của ứng dụng."
 
 #: web/templates/activity.html:5
 msgid "Recent tasks"
-msgstr "Недавние задачи"
+msgstr "Các nhiệm vụ gần đây"
 
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
-msgstr "Нет запущенных задач. Запросите сканирование или ожидание следующего запланированного обновления."
+msgstr "Chưa có tác vụ nào được thực thi. Hãy yêu cầu quét hoặc đợi đến lần làm mới theo lịch trình tiếp theo."
 
 #: web/templates/activity.html:7 web/templates/home.html:14
 #: web/templates/home.html:31 web/templates/servers.html:13
 msgid "Needs attention"
-msgstr "Требует внимания"
+msgstr "Cần chú ý"
 
 #: web/templates/activity.html:8
 msgid "No processing failures recorded. All quiet here."
-msgstr "Ошибки обработки не записаны. Тихий здесь."
+msgstr "Không ghi nhận sự cố xử lý nào. Mọi thứ vẫn ổn ở đây."
 
 #: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
-msgstr "Plex ID"
+msgstr "ID Plex"
 
 #: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
-msgstr "Устаревшие от ThemerrDB"
+msgstr "Đã lỗi thời từ ThemerrDB"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "Исследуйте API, используя логин и пароль."
+msgstr "Khám phá API bằng phiên đăng nhập của bạn."
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
-msgstr "ПРОДАЖА ВАШЕЙ ЛИБРАРИ"
+msgstr "ÂM THANH TỪ THƯ VIỆN CỦA BẠN"
 
 #: web/templates/auth.html:8
 msgid "Every story"
-msgstr "Каждая история"
+msgstr "Mỗi câu chuyện"
 
 #: web/templates/auth.html:8
 msgid "has a soundtrack."
-msgstr "имеет звуковую дорожку."
+msgstr "có nhạc nền."
 
 #: web/templates/auth.html:9
 msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "Принеси свои библиотеки Plex в жизнь. Одно спокойное рабочее пространство для серверов, ваших тем и всего между ними."
+msgstr "Hãy thổi hồn vào các thư viện Plex của bạn. Một không gian làm việc gọn gàng và dễ chịu dành cho các máy chủ, các chủ đề và mọi thứ khác của bạn."
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
-msgstr "Ваше рабочее пространство защищено."
+msgstr "Không gian làm việc của bạn, được bảo mật."
 
 #: web/templates/auth.html:19
 msgid "Open the one-time setup link printed in the application console to create your admin account."
-msgstr "Откройте одноразовую ссылку установки, напечатанную в консоли приложения, чтобы создать учетную запись администратора."
+msgstr "Hãy mở liên kết thiết lập một lần được in trong bảng điều khiển ứng dụng để tạo tài khoản quản trị viên của bạn."
 
 #: web/templates/auth.html:20
 msgid "The link is generated each time the application starts, until setup is complete."
-msgstr "Ссылка создается каждый раз при запуске приложения до завершения установки."
+msgstr "Liên kết này được tạo ra mỗi khi ứng dụng khởi động, cho đến khi quá trình cài đặt hoàn tất."
 
 #: web/templates/auth.html:22
 msgid "GET STARTED"
-msgstr "НАЧАТЬ"
+msgstr "BẮT ĐẦU"
 
 #: web/templates/auth.html:22
 msgid "WELCOME BACK"
-msgstr "ДОБРО ПОЖАЛОВАТЬ"
+msgstr "CHÀO MỪNG BẠN TRỞ LẠI"
 
 #: web/templates/auth.html:23
 msgid "Make it yours."
-msgstr "Сделай это твоим."
+msgstr "Hãy biến nó thành của riêng bạn."
 
 #: web/templates/auth.html:23
 msgid "Sign in to Themerr."
-msgstr "Войти в Themerr."
+msgstr "Đăng nhập vào Themerr."
 
 #: web/templates/auth.html:24
 msgid "Create the administrator account for this installation."
-msgstr "Создайте учётную запись администратора для этой установки."
+msgstr "Tạo tài khoản quản trị viên cho bản cài đặt này."
 
 #: web/templates/auth.html:24
 msgid "Your libraries are waiting for their next soundtrack."
-msgstr "Ваши библиотеки ждут их следующего звукового трека."
+msgstr "Các thư viện của bạn đang chờ đón bản nhạc nền tiếp theo."
 
 #: web/templates/auth.html:28
 msgid "Username"
-msgstr "Имя пользователя"
+msgstr "Tên người dùng"
 
 #: web/templates/auth.html:30
 msgid "Password"
-msgstr "Пароль"
+msgstr "Mật khẩu"
 
 #: web/templates/auth.html:33
 msgid "Use at least 12 characters. A long, unique passphrase works well."
-msgstr "Используйте не менее 12 символов. Длинная, уникальная парольная фраза работает хорошо."
+msgstr "Hãy sử dụng ít nhất 12 ký tự. Một cụm mật khẩu dài và độc đáo sẽ rất hiệu quả."
 
 #: web/templates/auth.html:34
 msgid "Confirm password"
-msgstr "Подтвердите пароль"
+msgstr "Xác nhận mật khẩu"
 
 #: web/templates/auth.html:37
 msgid "Create workspace"
-msgstr "Создать рабочую область"
+msgstr "Tạo không gian làm việc"
 
 #: web/templates/auth.html:37
 msgid "Sign in"
-msgstr "Войти"
+msgstr "Đăng nhập"
 
 #: web/templates/auth.html:39
 msgid "Plex account linking happens inside your workspace."
-msgstr "Привязка Plex аккаунта происходит внутри вашей рабочей области."
+msgstr "Việc liên kết tài khoản Plex được thực hiện ngay trong không gian làm việc của bạn."
 
 #: web/templates/base.html:21
 msgid "Skip to content"
-msgstr "Перейти к содержимому"
+msgstr "Chuyển thẳng đến nội dung"
 
 #: web/templates/base.html:27
 msgid "Toggle navigation"
-msgstr "Переключить навигацию"
+msgstr "Chuyển đổi thanh điều hướng"
 
 #: web/templates/base.html:28
 msgid "Workspace"
-msgstr "Рабочая область"
+msgstr "Không gian làm việc"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr "Тема: Автоматически. Переключиться в светлый режим."
+msgstr "Chủ đề: Tự động. Chuyển sang chế độ sáng."
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr "Тема: Готово. Переключиться в темный режим."
+msgstr "Chủ đề: Ánh sáng. Chuyển sang chế độ tối."
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr "Тема: Темная. Переключиться в автоматический режим."
+msgstr "Chủ đề: Tối. Chuyển sang chế độ tự động."
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
-msgstr "Просмотр каталогов для"
+msgstr "Duyệt qua các thư mục để tìm"
 
 #: web/templates/config.html:22
 msgid "TUNE YOUR WORKSPACE"
-msgstr "ПОЛУЧИТЬ ВАШУ РАБОТУ"
+msgstr "TỐI ƯU HÓA KHÔNG GIAN LÀM VIỆC CỦA BẠN"
 
 #: web/templates/config.html:22
 msgid "Make Themerr work the way your library does."
-msgstr "Сделайте Themerr доступным для работы в вашей библиотеке."
+msgstr "Hãy làm cho Themerr hoạt động giống như thư viện của bạn."
 
 #: web/templates/config.html:24
 msgid "Settings sections"
-msgstr "Разделы настроек"
+msgstr "Các phần cài đặt"
 
 #: web/templates/config.html:24 web/templates/config.html:33
 msgid "Security"
-msgstr "Безопасность"
+msgstr "An ninh"
 
 #: web/templates/config.html:28
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
-msgstr "На странице Серверы управляются соединения с сервером, каталоги данных и игнорируемые библиотеки."
+msgstr "Các kết nối máy chủ, thư mục dữ liệu và các thư viện bị bỏ qua được quản lý trên trang Máy chủ."
 
 #: web/templates/config.html:28
 msgid "Changes to network settings take effect after restarting Themerr."
-msgstr "Изменения сетевых настроек вступят в силу после перезапуска Themerr."
+msgstr "Các thay đổi đối với cài đặt mạng sẽ có hiệu lực sau khi khởi động lại Themerr."
 
 #: web/templates/config.html:33
 msgid "One administrator for this installation. Change your password and sign out other sessions."
-msgstr "Один администратор для этой установки. Измените пароль и выйдите из других сессий."
+msgstr "Chỉ có một quản trị viên cho hệ thống này. Hãy thay đổi mật khẩu của bạn và đăng xuất khỏi các phiên làm việc khác."
 
 #: web/templates/config.html:34
 msgid "Current password"
-msgstr "Текущий пароль"
+msgstr "Mật khẩu hiện tại"
 
 #: web/templates/config.html:34
 msgid "New password"
-msgstr "Новый пароль"
+msgstr "Mật khẩu mới"
 
 #: web/templates/config.html:34
 msgid "Confirm new password"
-msgstr "Подтвердите новый пароль"
+msgstr "Xác nhận mật khẩu mới"
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr "Изменить пароль"
+msgstr "Thay đổi mật khẩu"
 
 #: web/templates/config.html:36
 msgid "Save changes"
-msgstr "Сохранить изменения"
+msgstr "Lưu các thay đổi"
 
 #: web/templates/directory_picker.html:2
 msgid "Choose an application directory"
-msgstr "Выберите каталог приложения"
+msgstr "Chọn thư mục chứa ứng dụng"
 
 #: web/templates/directory_picker.html:2
 msgid "Close directory picker"
-msgstr "Закрыть выбор каталогов"
+msgstr "Đóng cửa sổ chọn thư mục"
 
 #: web/templates/directory_picker.html:3
 msgid "Browse directories on the machine running Themerr."
-msgstr "Обзор каталогов на машине с запущенным Themerr."
+msgstr "Duyệt qua các thư mục trên máy đang chạy Themerr."
 
 #: web/templates/directory_picker.html:4
 msgid "Parent directory"
-msgstr "Родительский каталог"
+msgstr "Thư mục cha"
 
 #: web/templates/directory_picker.html:6
 msgid "Select directory"
-msgstr "Выберите папку"
+msgstr "Chọn thư mục"
 
 #: web/templates/error.html:5
 msgid "LET’S TRY THAT AGAIN"
-msgstr "ПОПРОБУЙТЕ"
+msgstr "HÃY THỬ LẠI NHÉ"
 
 #: web/templates/error.html:7
 msgid "Back to workspace"
-msgstr "Вернуться к проекту"
+msgstr "Quay lại không gian làm việc"
 
 #: web/templates/home.html:4
 msgid "YOUR LIBRARY, IN HARMONY"
-msgstr "ВАШЕ ЛИБРАРИРОВАННЫЕ В СЛОЖНОСТИ"
+msgstr "THƯ VIỆN CỦA BẠN, TRONG SỰ HÒA HỢP"
 
 #: web/templates/home.html:4
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
-msgstr "Саундтрек для каждой истории. Посмотрите, что играть, и что нужно немного внимания."
+msgstr "Một bản nhạc nền cho mỗi câu chuyện. Xem những gì đang phát và những gì cần được chú ý một chút."
 
 #: web/templates/home.html:4 web/templates/navbar.html:6
 msgid "Overview"
-msgstr "Общий обзор"
+msgstr "Tổng quan"
 
 #: web/templates/home.html:5
 msgid "Refresh libraries"
-msgstr "Обновить библиотеки"
+msgstr "Làm mới thư viện"
 
 #: web/templates/home.html:7
 msgid "Unknown"
-msgstr "Неизвестен"
+msgstr "Không rõ"
 
 #: web/templates/home.html:7
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "Не удалось проверить GitHub. Показано последнее известное развертывание; проверка выполняется не чаще часа."
+msgstr "Kiểm tra GitHub không thành công. Đang hiển thị lần triển khai gần nhất được ghi nhận; các kiểm tra được thực hiện tối đa mỗi giờ một lần."
 
 #: web/templates/home.html:8
 msgid "Last deployed"
-msgstr "Последнее развертывание"
+msgstr "Lần triển khai gần đây nhất"
 
 #: web/templates/home.html:8
 msgid "Checking…"
-msgstr "Проверка…"
+msgstr "Kiểm tra…"
 
 #: web/templates/home.html:8
 msgid "Check unavailable"
-msgstr "Проверка недоступна"
+msgstr "Kiểm tra: Không có sẵn"
 
 #: web/templates/home.html:11
 msgid "Library items"
-msgstr "Библиотека элементов"
+msgstr "Tài liệu thư viện"
 
 #: web/templates/home.html:11
 msgid "libraries across"
-msgstr "библиотеки через"
+msgstr "các thư viện trên khắp"
 
 #: web/templates/home.html:11
 msgid "servers"
-msgstr "серверы"
+msgstr "máy chủ"
 
 #: web/templates/home.html:12
 msgid "Themes installed"
-msgstr "Установленные темы"
+msgstr "Các chủ đề đã cài đặt"
 
 #: web/templates/home.html:12
 msgid "Your library sounds better already."
-msgstr "Ваша библиотека уже звучит лучше."
+msgstr "Thư viện của bạn nghe có vẻ đã hay hơn rồi."
 
 #: web/templates/home.html:13
 msgid "Theme coverage"
-msgstr "Покрытие темы"
+msgstr "Phạm vi chủ đề"
 
 #: web/templates/home.html:14
 msgid "Review activity"
-msgstr "Обзор активности"
+msgstr "Hoạt động đánh giá"
 
 #: web/templates/home.html:19
 msgid "LET’S SET THE TONE"
-msgstr "НАСТРОИТЬ БОЛЬШЕ"
+msgstr "HÃY ĐẶT TÔN GIỚI"
 
 #: web/templates/home.html:20
 msgid "Your library deserves a soundtrack."
-msgstr "Ваша библиотека заслуживает звуковой дорожки."
+msgstr "Thư viện của bạn xứng đáng có một bản nhạc nền."
 
 #: web/templates/home.html:20
 msgid "Getting to know your library."
-msgstr "Узнайте о своей библиотеке."
+msgstr "Tìm hiểu về thư viện của bạn."
 
 #: web/templates/home.html:21
 msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "Подключите ваш аккаунт Plex, выберите серверы и пусть Themerr позаботится о музыке."
+msgstr "Kết nối tài khoản Plex của bạn, chọn máy chủ và để Themerr lo phần nhạc cho bạn."
 
 #: web/templates/home.html:21
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
-msgstr "Первое обновление - создание представления библиотеки. Проверьте прогресс или запросите обновление выше."
+msgstr "Lần làm mới đầu tiên của bạn là tạo giao diện thư viện. Hãy kiểm tra tiến trình trong Activity hoặc nhấn vào nút “Làm mới” ở trên."
 
 #: web/templates/home.html:22
 msgid "Connect a server"
-msgstr "Подключить сервер"
+msgstr "Kết nối với máy chủ"
 
 #: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
 msgid "View activity"
-msgstr "Просмотр активности"
+msgstr "Xem hoạt động"
 
 #: web/templates/home.html:26
 msgid "Your libraries"
-msgstr "Ваши библиотеки"
+msgstr "Thư viện của bạn"
 
 #: web/templates/home.html:26
 msgid "items"
-msgstr "элементы"
+msgstr "mặt hàng"
 
 #: web/templates/home.html:28
 msgid "Search library items"
-msgstr "Поиск элементов в библиотеке"
+msgstr "Tìm kiếm tài liệu trong thư viện"
 
 #: web/templates/home.html:28
 msgid "Search titles…"
-msgstr "Поиск по заголовкам…"
+msgstr "Tìm kiếm theo tiêu đề…"
 
 #: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
-msgstr "Очистить поиск"
+msgstr "Xóa kết quả tìm kiếm"
 
 #: web/templates/home.html:29
 msgid "Server"
-msgstr "Сервер"
+msgstr "Máy chủ"
 
 #: web/templates/home.html:29
 msgid "All servers"
-msgstr "Все серверы"
+msgstr "Tất cả các máy chủ"
 
 #: web/templates/home.html:30
 msgid "Type"
-msgstr "Тип"
+msgstr "Loại"
 
 #: web/templates/home.html:30
 msgid "All types"
-msgstr "Все типы"
+msgstr "Tất cả các loại"
 
 #: web/templates/home.html:30
 msgid "Movies"
-msgstr "Фильмы"
+msgstr "Phim"
 
 #: web/templates/home.html:30
 msgid "TV shows"
-msgstr "ТВ-шоу"
+msgstr "Chương trình truyền hình"
 
 #: web/templates/home.html:31
 msgid "Theme status"
-msgstr "Статус темы"
+msgstr "Trạng thái chủ đề"
 
 #: web/templates/home.html:31
 msgid "All statuses"
-msgstr "Все статусы"
+msgstr "Tất cả các trạng thái"
 
 #: web/templates/home.html:31
 msgid "Has a theme"
-msgstr "Имеет тему"
+msgstr "Có chủ đề"
 
 #: web/templates/home.html:31
 msgid "No theme"
-msgstr "Нет темы"
+msgstr "Không có chủ đề"
 
 #: web/templates/home.html:32
 msgid "Reset filters"
-msgstr "Сбросить фильтры"
+msgstr "Đặt lại bộ lọc"
 
 #: web/templates/home.html:38
 msgid "Library ID"
-msgstr "ID библиотеки"
+msgstr "Mã số thư viện"
 
 #: web/templates/home.html:43
 msgid "Title"
-msgstr "Заголовок"
+msgstr "Tiêu đề"
 
 #: web/templates/home.html:43
 msgid "Metadata ID"
-msgstr "ID метаданных"
+msgstr "ID siêu dữ liệu"
 
 #: web/templates/home.html:43
 msgid "Theme"
-msgstr "Тема"
+msgstr "Chủ đề"
 
 #: web/templates/home.html:43
 msgid "ThemerrDB"
@@ -987,453 +987,453 @@ msgstr "ThemerrDB"
 
 #: web/templates/home.html:56
 msgid "Pause theme for"
-msgstr "Приостановить тему для"
+msgstr "Tạm dừng nhạc nền cho"
 
 #: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
-msgstr "Играть тему для"
+msgstr "Nhạc nền cho"
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "Не удалось воспроизвести тему. Проверьте подключение Plex и поддержку звука браузера."
+msgstr "Không thể phát bản nhạc này. Vui lòng kiểm tra kết nối Plex và tính năng hỗ trợ âm thanh của trình duyệt."
 
 #: web/templates/home.html:64
 msgid "Open in Plex"
-msgstr "Открыть в Plex"
+msgstr "Mở trong Plex"
 
 #: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
-msgstr "Внешний ID недоступен"
+msgstr "Không có ID bên ngoài"
 
 #: web/templates/home.html:70
 msgid "Failed to add theme"
-msgstr "Не удалось добавить тему"
+msgstr "Không thể thêm chủ đề"
 
 #: web/templates/home.html:71
 msgid "Plex provided"
-msgstr "Plex предоставлен"
+msgstr "Plex cung cấp"
 
 #: web/templates/home.html:72
 msgid "User provided"
-msgstr "Пользователь предоставлен"
+msgstr "Do người dùng cung cấp"
 
 #: web/templates/home.html:73
 msgid "Themerr provided"
-msgstr "Themerr предоставлен"
+msgstr "Themerr cung cấp"
 
 #: web/templates/home.html:74
 msgid "Unknown provider"
-msgstr "Неизвестный провайдер"
+msgstr "Nhà cung cấp không xác định"
 
 #: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
-msgstr "Отсутствует в ThemerrDB"
+msgstr "Thiếu trong ThemerrDB"
 
 #: web/templates/home.html:76
 msgid "TMDB ID unavailable"
-msgstr "TMDB ID unavailable"
+msgstr "Không tìm thấy ID TMDB"
 
 #: web/templates/home.html:77
 msgid "Theme not installed yet"
-msgstr "Тема еще не установлена"
+msgstr "Chủ đề chưa được cài đặt"
 
 #: web/templates/home.html:80
 msgid "Edit"
-msgstr "Редактировать"
+msgstr "Chỉnh sửa"
 
 #: web/templates/home.html:80
 msgid "Add"
-msgstr "Добавить"
+msgstr "Thêm"
 
 #: web/templates/home.html:87
 msgid "No titles match."
-msgstr "Нет подходящих заголовков."
+msgstr "Không có tiêu đề nào khớp."
 
 #: web/templates/home.html:87
 msgid "Try another search or reset your filters."
-msgstr "Попробуйте другой поиск или сброс фильтров."
+msgstr "Hãy thử tìm kiếm lại hoặc đặt lại các bộ lọc."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "Your library is on its way."
-msgstr "Ваша библиотека уже в пути."
+msgstr "Thư viện của bạn đang trên đường đến."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
-msgstr "Первое обновление сборки вашей библиотеки. Вы можете следить за прогрессом в активности."
+msgstr "Lần làm mới đầu tiên sẽ hiển thị giao diện thư viện của bạn. Bạn có thể theo dõi tiến trình trong Activity."
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr "Изучите последние журналы, найдите сообщение и прыжок между предупреждениями и ошибками."
+msgstr "Khám phá các bản ghi gần đây, tìm một thông báo và chuyển đổi giữa các cảnh báo và lỗi."
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr "Скачать отфильтрованные журналы"
+msgstr "Tải xuống nhật ký đã được lọc"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr "Просмотр журнала"
+msgstr "Trình xem nhật ký"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr "Поиск журналов"
+msgstr "Nhật ký tìm kiếm"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr "Поиск сообщений, тем или временных меток…"
+msgstr "Tìm kiếm tin nhắn, chuỗi tin nhắn hoặc dấu thời gian…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr "Источник журнала"
+msgstr "Nguồn nhật ký"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr "Все источники"
+msgstr "Tất cả các nguồn"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr "Уровень журнала"
+msgstr "Mức độ ghi nhật ký"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr "Все уровни"
+msgstr "Tất cả các cấp độ"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr "Предупреждения и ошибки"
+msgstr "Cảnh báo và lỗi"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr "Журнал журнала"
+msgstr "Lịch sử nhật ký"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr "Последние 250"
+msgstr "250 mới nhất"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr "Последние 1000"
+msgstr "1.000 bài mới nhất"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr "Последние 2,000"
+msgstr "2.000 bài mới nhất"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr "С момента запуска"
+msgstr "Kể từ khi thành lập"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr "Очистить фильтры"
+msgstr "Xóa bộ lọc"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr "Предупреждение и ошибка навигации"
+msgstr "Điều hướng cảnh báo và lỗi"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr "Предыдущее предупреждение или ошибка"
+msgstr "Cảnh báo hoặc lỗi trước đó"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr "Следующее предупреждение или ошибка"
+msgstr "Cảnh báo hoặc lỗi tiếp theo"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr "Живое обновление"
+msgstr "Cập nhật trực tiếp"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr "Следить за последними"
+msgstr "Theo dõi tin tức mới nhất"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr "Обновить"
+msgstr "Làm mới"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr "Загрузка журналов…"
+msgstr "Đang tải nhật ký…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr "Журнал страниц журнала"
+msgstr "Các trang lịch sử nhật ký"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr "Старые записи"
+msgstr "Các hồ sơ cũ hơn"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr "Новые записи"
+msgstr "Các bản ghi mới hơn"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr "Записи журнала"
+msgstr "Bản ghi nhật ký"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
-msgstr "Закрыть навигацию"
+msgstr "Đóng thanh điều hướng"
 
 #: web/templates/navbar.html:2
 msgid "Main navigation"
-msgstr "Основная навигация"
+msgstr "Thanh điều hướng chính"
 
 #: web/templates/navbar.html:4
 msgid "YOUR WORKSPACE"
-msgstr "ВАША РАБОТА"
+msgstr "KHÔNG GIAN LÀM VIỆC CỦA BẠN"
 
 #: web/templates/navbar.html:5
 msgid "Workspace pages"
-msgstr "Страницы рабочей области"
+msgstr "Các trang trong không gian làm việc"
 
 #: web/templates/navbar.html:6 web/templates/servers.html:3
 msgid "Servers"
-msgstr "Серверы"
+msgstr "Máy chủ"
 
 #: web/templates/navbar.html:11
 msgid "A little music."
-msgstr "Маленькая музыка."
+msgstr "Một chút âm nhạc."
 
 #: web/templates/navbar.html:11
 msgid "A lot more atmosphere."
-msgstr "Гораздо больше атмосферы."
+msgstr "Không khí sôi động hơn rất nhiều."
 
 #: web/templates/navbar.html:12
 msgid "Resources"
-msgstr "Ресурсы"
+msgstr "Tài nguyên"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
-msgstr "Внести свой вклад в тему"
+msgstr "Góp phần tạo ra một chủ đề"
 
 #: web/templates/navbar.html:16
 msgid "Support LizardByte"
-msgstr "Поддержка LizardByte"
+msgstr "Hãy ủng hộ LizardByte"
 
 #: web/templates/navbar.html:20
 msgid "Sign out"
-msgstr "Выйти"
+msgstr "Đăng xuất"
 
 #: web/templates/servers.html:3
 msgid "ONE WORKSPACE. EVERY SERVER."
-msgstr "ОДИН МИРОВО. КАЖДЫЙ СЕРВЕР."
+msgstr "MỘT MÔI TRƯỜNG LÀM VIỆC. MỌI MÁY CHỦ."
 
 #: web/templates/servers.html:3
 msgid "Connect your Plex account, then choose where the music goes."
-msgstr "Подключите свою учётную запись Plex, затем выберите, где находится музыка."
+msgstr "Kết nối tài khoản Plex của bạn, sau đó chọn nơi lưu trữ nhạc."
 
 #: web/templates/servers.html:3
 msgid "saved"
-msgstr "сохранено"
+msgstr "đã lưu"
 
 #: web/templates/servers.html:6
 msgid "Your Plex account"
-msgstr "Ваш аккаунт Plex"
+msgstr "Tài khoản Plex của bạn"
 
 #: web/templates/servers.html:6
 msgid "Account linked. Choose a server below."
-msgstr "Учетная запись привязана. Выберите сервер ниже."
+msgstr "Tài khoản đã được liên kết. Vui lòng chọn một máy chủ trong danh sách dưới đây."
 
 #: web/templates/servers.html:6
 msgid "Link your account securely through Plex to access your servers."
-msgstr "Безопасно подключите ваш аккаунт через Plex для доступа к вашим серверам."
+msgstr "Kết nối tài khoản của bạn một cách an toàn qua Plex để truy cập các máy chủ của bạn."
 
 #: web/templates/servers.html:6
 msgid "Continue Plex sign-in"
-msgstr "Продолжить вход Plex"
+msgstr "Tiếp tục đăng nhập vào Plex"
 
 #: web/templates/servers.html:7
 msgid "Reconnect account"
-msgstr "Переподключить аккаунт"
+msgstr "Kết nối lại tài khoản"
 
 #: web/templates/servers.html:7
 msgid "Connect Plex account"
-msgstr "Подключить аккаунт Plex"
+msgstr "Kết nối tài khoản Plex"
 
 #: web/templates/servers.html:7
 msgid "Disconnect"
-msgstr "Отключиться"
+msgstr "Ngắt kết nối"
 
 #: web/templates/servers.html:9
 msgid "Connected servers"
-msgstr "Подключенные серверы"
+msgstr "Các máy chủ được kết nối"
 
 #: web/templates/servers.html:9
 msgid "Theme history and library settings are kept separately for each server."
-msgstr "История тем и настройки библиотеки хранятся отдельно для каждого сервера."
+msgstr "Lịch sử chủ đề và cài đặt thư viện được lưu trữ riêng biệt cho từng máy chủ."
 
 #: web/templates/servers.html:13
 msgid "Enabled"
-msgstr "Включено"
+msgstr "Đã bật"
 
 #: web/templates/servers.html:16
 msgid "Last library refresh"
-msgstr "Последнее обновление библиотеки"
+msgstr "Lần cập nhật thư viện gần đây nhất"
 
 #: web/templates/servers.html:16
 msgid "Not yet refreshed"
-msgstr "Еще не обновлено"
+msgstr "Chưa được làm mới"
 
 #: web/templates/servers.html:17
 msgid "Processing settings"
-msgstr "Обработка настроек"
+msgstr "Cài đặt xử lý"
 
 #: web/templates/servers.html:19
 msgid "Process this server"
-msgstr "Обработать этот сервер"
+msgstr "Xử lý máy chủ này"
 
 #: web/templates/servers.html:20
 msgid "optional"
-msgstr "опционально"
+msgstr "tùy chọn"
 
 #: web/templates/servers.html:21
 msgid "Browse Plex data directory"
-msgstr "Обзор каталога данных Plex"
+msgstr "Duyệt thư mục dữ liệu của Plex"
 
 #: web/templates/servers.html:22
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "Локальный или смонтированный Plex каталог необходим только для удаления старых загруженных файлов. Оставьте пустым для удаленных серверов."
+msgstr "Thư mục dữ liệu Plex cục bộ hoặc được gắn chỉ cần thiết để xóa các tệp đã tải lên từ trước. Hãy để trống trường này đối với các máy chủ từ xa."
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr "Игнорируемые библиотеки"
+msgstr "Các thư viện bị bỏ qua"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr "Библиотека"
+msgstr "Thư viện"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr "Откройте список для загрузки библиотек этого сервера."
+msgstr "Mở danh sách để tải các thư viện của máy chủ này."
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr "Выберите библиотеки для исключения обновлений темы. Оставьте все непроверенные для обработки каждой библиотеки."
+msgstr "Chọn các thư viện cần loại trừ khỏi các bản cập nhật chủ đề. Để tất cả các ô trống để xử lý mọi thư viện."
 
 #: web/templates/servers.html:36
 msgid "Save settings"
-msgstr "Сохранить настройки"
+msgstr "Lưu cài đặt"
 
 #: web/templates/servers.html:36
 msgid "Remove server"
-msgstr "Удалить сервер"
+msgstr "Xóa máy chủ"
 
 #: web/templates/servers.html:40
 msgid "Your first server starts here."
-msgstr "Ваш первый сервер запускается здесь."
+msgstr "Hành trình với máy chủ đầu tiên của bạn bắt đầu từ đây."
 
 #: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
-msgstr "Ссылка Plex выше, а затем найти или добавить адрес ниже."
+msgstr "Hãy kết nối Plex ở trên, sau đó tìm kiếm hoặc thêm địa chỉ ở dưới đây."
 
 #: web/templates/servers.html:43
 msgid "Add a server"
-msgstr "Добавить сервер"
+msgstr "Thêm máy chủ"
 
 #: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
-msgstr "Выберите сервер из вашего аккаунта Plex, откройте его поблизости, или воспользуйтесь известным вам адресом."
+msgstr "Chọn một máy chủ từ tài khoản Plex của bạn, tìm một máy chủ gần đó hoặc sử dụng địa chỉ mà bạn biết."
 
 #: web/templates/servers.html:44
 msgid "Find account servers"
-msgstr "Поиск серверов аккаунтов"
+msgstr "Tìm máy chủ tài khoản"
 
 #: web/templates/servers.html:44
 msgid "Discover on LAN"
-msgstr "Откройте для себя в LAN"
+msgstr "Khám phá trên mạng LAN"
 
 #: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
-msgstr "Обнаружение LAN использует Plex GDM в сети вашего приложения."
+msgstr "Tính năng phát hiện mạng LAN sử dụng Plex GDM trên mạng của ứng dụng của bạn."
 
 #: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
-msgstr "Адреса счетов рекламируются Plex и могут быть недоступны. HTTPS plex.direct адреса используют сертификат Plex. Выберите адрес, доступный на машине под управлением Themerr, или введите известный адрес вручную."
+msgstr "Các địa chỉ tài khoản được Plex công bố và có thể không truy cập được. Các địa chỉ HTTPS plex.direct sử dụng chứng chỉ của Plex. Hãy chọn một địa chỉ có thể truy cập được từ máy đang chạy Themerr, hoặc nhập thủ công một địa chỉ đã biết."
 
 #: web/templates/servers.html:47
 msgid "Enter an address manually"
-msgstr "Введите адрес вручную"
+msgstr "Nhập địa chỉ theo cách thủ công"
 
 #: web/templates/servers.html:48
 msgid "Plex server address"
-msgstr "Адрес Plex сервера"
+msgstr "Địa chỉ máy chủ Plex"
 
 #: web/templates/servers.html:48
 msgid "Connect server"
-msgstr "Подключить сервер"
+msgstr "Kết nối máy chủ"
 
 #: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
-msgstr "Используйте LAN адрес или действительный HTTPS Plex адрес. Ваш связанный Plex аккаунт должен иметь доступ. Добавление существующего сервера обновляет его адрес."
+msgstr "Hãy sử dụng địa chỉ LAN hoặc địa chỉ HTTPS hợp lệ của Plex. Tài khoản Plex đã liên kết của bạn phải có quyền truy cập. Việc thêm một máy chủ hiện có sẽ cập nhật địa chỉ của máy chủ đó."
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr "Плеер темы"
+msgstr "Trình phát chủ đề"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr "Выберите тему из вашей библиотеки"
+msgstr "Chọn một chủ đề từ thư viện của bạn"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr "Не удалось загрузить темы. Повторите попытку."
+msgstr "Không thể tải chủ đề. Vui lòng thử lại."
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr "Нет установленных тем."
+msgstr "Hiện tại chưa có chủ đề nào được cài đặt."
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr "ТЕМА ИГРОКА"
+msgstr "TRÌNH PHÁT THEO CHỦ ĐỀ"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr "Саундтрек для каждой истории."
+msgstr "Một bản nhạc nền cho mỗi câu chuyện."
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr "Перемешать"
+msgstr "Xáo trộn"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr "Предыдущая тема"
+msgstr "Chủ đề trước"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr "Играть тему"
+msgstr "Phát nhạc nền"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr "Приостановить тему"
+msgstr "Tạm dừng chủ đề"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr "Следующая тема"
+msgstr "Chủ đề tiếp theo"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr "Повторить эту тему"
+msgstr "Lặp lại chủ đề này"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr "Позиция воспроизведения"
+msgstr "Vị trí phát lại"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr "Сюрприз"
+msgstr "Hãy làm tôi ngạc nhiên"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr "Объем"
+msgstr "Khối lượng"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
-msgstr "Themerr говорит на вашем языке."
+msgstr "Themerr hiểu ngôn ngữ của bạn."
 
 #: web/templates/translations.html:3
 msgid "Choose a language in Settings, or help improve translations on Crowdin."
-msgstr "Выберите язык в Настройках или помогите улучшить перевод на Crowdin."
+msgstr "Chọn ngôn ngữ trong phần Cài đặt, hoặc góp phần cải thiện các bản dịch trên Crowdin."
 
 #: web/templates/translations.html:3
 msgid "Help translate"
-msgstr "Помогите перевести"
+msgstr "Giúp dịch"
 

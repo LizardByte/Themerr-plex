@@ -568,7 +568,7 @@ def image(img: str = 'favicon.ico') -> Response:
 @router.api_route('/status', methods=['GET', 'HEAD'], name='status', response_model=None)
 def status() -> dict:
     """
-    Check the status of Themerr-plex.
+    Check the status of Themerr.
 
     This is useful for a healthcheck from Docker, and may have many other uses in the future for third party
     applications.

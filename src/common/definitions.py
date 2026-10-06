@@ -9,7 +9,7 @@ import platform
 import sys
 
 
-DOCUMENTATION_URL = 'https://docs.lizardbyte.dev/projects/themerr-plex/latest/'
+DOCUMENTATION_URL = 'https://docs.lizardbyte.dev/projects/themerr/latest/'
 
 
 class Names:
@@ -19,14 +19,17 @@ class Names:
     The purpose of this class is to ensure consistency when using these names.
 
     name : str
-        The application's name. i.e. `Themerr-plex`.
+        The application's name. i.e. `Themerr`.
+    legacy_name : str
+        Previous name used only to find existing application data and credentials.
 
     Examples
     --------
     >>> Names.name
-    'Themerr-plex'
+    'Themerr'
     """
-    name = 'Themerr-plex'
+    name = 'Themerr'
+    legacy_name = 'Themerr-plex'
 
 
 class Platform:
@@ -151,13 +154,16 @@ class Paths:
     SRC_DIR = os.path.dirname(COMMON_DIR)
     ROOT_DIR = os.path.dirname(SRC_DIR)
     DATA_DIR = ROOT_DIR
-    BINARY_PATH = os.path.abspath(os.path.join(SRC_DIR, 'themerr_plex.py'))
+    BINARY_PATH = os.path.abspath(os.path.join(SRC_DIR, 'main.py'))
 
     if Modes.FROZEN:  # pyinstaller build
         ROOT_DIR = sys._MEIPASS
         DATA_DIR = os.path.dirname(sys.executable)
         if Platform.os_platform == 'darwin':
             DATA_DIR = os.path.expanduser(os.path.join('~', 'Library', 'Application Support', Names.name))
+            legacy_data_dir = os.path.join(os.path.dirname(DATA_DIR), Names.legacy_name)
+            if not os.path.exists(DATA_DIR) and os.path.isdir(legacy_data_dir):
+                DATA_DIR = legacy_data_dir
         BINARY_PATH = os.path.abspath(sys.executable)
     if Modes.DOCKER:  # docker install
         DATA_DIR = '/config'  # overwrite the value that was already set

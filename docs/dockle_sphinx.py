@@ -32,7 +32,7 @@ numpydoc_validation_checks = {
 numpydoc_validation_exclude = {
     # Sphinx 9 exposes imported library objects through automodule; their
     # upstream docstrings are outside this project's NumPy style contract.
-    r'^(?:common(?:\.[^.]+)?|themerr_plex)\.(?:Union|ConfigObj|ValidateError|Validator|datetime|timedelta|'
+    r'^(?:common(?:\.[^.]+)?|main)\.(?:Union|ConfigObj|ValidateError|Validator|datetime|timedelta|'
     r'quote|quote_plus|unquote|unquote_plus|QueueHandler|QueueListener|Icon|Menu|MenuItem|'
     r'APIRouter|Depends|FastAPI|Request|HTTPException|'
     r'Response|JSONResponse|PlainTextResponse|StreamingResponse|FileResponse|ClientDisconnect|FormData|'

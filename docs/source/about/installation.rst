@@ -1,20 +1,19 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/about/installation.rst
-
 Installation
 ============
 
-Themerr-plex runs as a separate application alongside Plex Media Server. It does not use the Plex plug-in framework.
-The application needs network access to Plex, ThemerrDB, and YouTube. To remove old plug-in behavior, stop Plex,
-remove the old Themerr-plex bundle from its Plug-Ins directory, and restart Plex before starting the standalone app.
+Themerr runs as a separate application alongside Plex Media Server or Jellyfin. It does not use the Plex plug-in framework.
+The application needs network access to your media server, ThemerrDB, and YouTube. To remove old Plex plug-in behavior, stop Plex,
+remove the old Themerr bundle from its Plug-Ins directory, and restart Plex before starting the standalone app.
 
 Release archive
 ---------------
 
-Download the archive for your operating system and architecture from https://github.com/LizardByte/Themerr-plex/releases/latest.
-Extract it and run the themerr_plex executable, or the themerr_plex.app bundle on macOS.
-The macOS bundle stores configuration under ``~/Library/Application Support/Themerr-plex/config``.
+Download the archive for your operating system and architecture from https://github.com/LizardByte/Themerr/releases/latest.
+Extract it and run the ``themerr`` executable, or the ``themerr.app`` bundle on macOS.
+The macOS bundle stores configuration under ``~/Library/Application Support/Themerr/config``.
+Existing installations keep using their saved configuration directory.
 Deno is bundled for yt-dlp's YouTube challenge solver. Open the web UI
-at https://localhost:9494 to configure the Plex URL and sign in through Plex. Set the Plex data directory only if you want
+at https://localhost:9494 to connect Plex or Jellyfin. Set the Plex data directory only if you want
 to remove old uploaded media. The default web server uses a locally generated certificate, so your browser may ask you to trust it.
 
 Docker
@@ -34,6 +33,6 @@ Then run from the repository root:
    uv sync --locked
    npm ci --ignore-scripts
    npm run build
-   uv run --locked python src/themerr_plex.py
+   uv run --locked python src/main.py
 
 For a packaged build with web assets, see :ref:`Build <contributing/build:build>`.

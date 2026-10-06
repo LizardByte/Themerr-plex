@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11,7 +11,7 @@ msgstr ""
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: sv-SE\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
 "Language: sv_SE\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
@@ -285,8 +285,8 @@ msgid "Ignore locked fields."
 msgstr "Ignorera låsta fält."
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "Om du använde Themerr-plex v2024.813.13709 eller lägre, kan du behöva aktivera detta för att uppdatera objekt."
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "Om du använde Themerr v2024.813.13709 eller lägre, kan du behöva aktivera detta för att uppdatera objekt."
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
@@ -364,7 +364,7 @@ msgstr "Uppdatering slutförd"
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
 msgstr "Tematäckningen ökade med %(increase)s procentenheter: %(before)s%% → %(after)s%%. %(installed)s av %(total)s objekt har teman."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
@@ -441,49 +441,49 @@ msgstr "Loggar"
 msgid "Settings"
 msgstr "Inställningar"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
 msgstr "%(app_name)s hanterar temalåtar för Plex.\n"
 "Argument levereras här är avsedda att vara tillfälliga."
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
 msgstr "Visa detta hjälpmeddelande och avsluta"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
 msgstr "Ange en konfigurationsfil att använda"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
 msgstr "Använd felsökningsloggningsnivå"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
 msgstr "Starta %(app_name)s i utvecklingsmiljön"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
 msgstr "Hälsa kontrollera behållaren och avsluta"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
 msgstr "Öppna inte %(app_name)s i webbläsaren"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
 msgstr "Tvinga %(app_name)s att köra på en angiven port, default=9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
 msgstr "Stäng av konsolloggning"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
 msgstr "Skriv ut versionsuppgifterna och avsluta"
 

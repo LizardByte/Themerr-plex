@@ -1,18 +1,16 @@
-:github_url: https://github.com/LizardByte/Themerr-plex/blob/master/docs/source/about/troubleshooting.rst
-
 Troubleshooting
 ===============
 
 YouTube extraction
 ------------------
 
-Themerr-plex uses yt-dlp for YouTube audio. YouTube may rate limit anonymous requests or require a signed-in
+Themerr uses yt-dlp for YouTube audio. YouTube may rate limit anonymous requests or require a signed-in
 session for some videos. Follow :ref:`the cookie export steps <about/usage:YouTube cookies>` and paste the entire
 JSON export in the web UI's **YouTube Cookies** setting. Select **JSON** in the exporter; Netscape text and
 cookie file paths are not accepted by this setting. If saved cookies stop working, export a fresh session.
 Test again after an item update or the next scheduled scan. If extraction still
 fails, update the locked yt-dlp version and check the application log for the extractor error.
-Themerr-plex selects an audio-only stream URL and does not require local FFmpeg for that extraction path.
+Themerr selects an audio-only stream URL and does not require local FFmpeg for that extraction path.
 An unavailable video is a separate YouTube error.
 The home page shows the latest recorded extraction or upload failure beside the affected item. A theme that is listed
 in ThemerrDB but has not been installed and has no recorded failure is shown as **Theme not installed yet**.
@@ -27,7 +25,7 @@ For an HTTPS Plex URL, the server certificate must be trusted. Set ``REQUESTS_CA
 when using a private certificate authority.
 If theme uploads through a reverse proxy return an HTTP 504 gateway timeout, use a direct LAN Plex URL when the
 application can reach the server on the local network, or increase the reverse proxy's upstream timeout. The
-**PlexAPI timeout** setting controls how long Themerr-plex waits for Plex; it cannot extend a proxy's timeout.
+**PlexAPI timeout** setting controls how long Themerr waits for Plex; it cannot extend a proxy's timeout.
 
 Application logs
 ----------------

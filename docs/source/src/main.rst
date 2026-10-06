@@ -1,7 +1,7 @@
 .. include:: global.rst
 
-:modname:`themerr_plex`
+:modname:`main`
 -----------------------
-.. automodule:: themerr_plex
+.. automodule:: main
     :members:
     :show-inheritance:

@@ -114,7 +114,7 @@ def docker_healthcheck() -> bool:
     """
     Check the health of the docker container.
 
-    .. Warning:: This is only meant to be called by `themerr-plex.py`, and the interpreter should be immediate exited
+    .. Warning:: This is only meant to be called by `main.py`, and the interpreter should be immediate exited
        following the result.
 
     The default port is used considering that the container will use the default port internally.
@@ -237,7 +237,7 @@ def get_logger(name: str) -> logging.Logger:
     <Logger my_log (WARNING)>
     """
     if name.split('.')[0] in (
-        'common', 'media_servers', 'jellyfin', 'plex', 'themerr', 'youtube', 'themerr_plex', 'schedule',
+        'common', 'media_servers', 'jellyfin', 'plex', 'themerr', 'youtube', 'main', 'schedule',
     ):
         name = 'themerr'
     return logging.getLogger(name=name)

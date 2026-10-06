@@ -1,156 +1,156 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardbyte\n"
-"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr-plex/issues\n"
-"Language-Team: Chinese Simplified\n"
+"Report-Msgid-Bugs-To: https://github.com/LizardByte/Themerr/issues\n"
+"Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: lizardbyte\n"
 "X-Crowdin-Project-ID: 606145\n"
-"X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: /[LizardByte.Themerr-plex] master/themerr-plex.po\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 5784\n"
-"Language: zh_CN\n"
+"Language: hu_HU\n"
 "PO-Revision-Date: 2026-10-04 15:02\n"
 
 #: src/common/config.py:90
 msgid "Info"
-msgstr "信息"
+msgstr "Információ"
 
 #: src/common/config.py:91
 msgid "For information purposes only."
-msgstr "仅供参考。"
+msgstr "Kizárólag tájékoztató jellegű."
 
 #: src/common/config.py:95
 msgid "Config version"
-msgstr "配置版本"
+msgstr "Konfigurációs verzió"
 
 #: src/common/config.py:96
 msgid "The configuration version."
-msgstr "配置版本。"
+msgstr "A konfigurációs verzió."
 
 #: src/common/config.py:105
 msgid "First run complete"
-msgstr "第一次运行完成"
+msgstr "Az első futtatás befejeződött"
 
 #: src/common/config.py:106
 msgid "Todo: Indicates if the user has completed the initial setup."
-msgstr "待办事项：指示用户是否完成了初始设置。"
+msgstr "Todo: Jelzi, hogy a felhasználó elvégezte-e az első beállítást."
 
 #: src/common/config.py:113
 msgid "General"
-msgstr "A. 概况"
+msgstr "Általános"
 
 #: src/common/config.py:114
 msgid "General settings."
-msgstr "常规设置。"
+msgstr "Általános beállítások."
 
 #: src/common/config.py:118
 msgid "Locale"
-msgstr "区域设置"
+msgstr "Helyi beállítások"
 
 #: src/common/config.py:119
 msgid "The localization setting to use."
-msgstr "要使用的本地化设置。"
+msgstr "A használni kívánt lokalizációs beállítás."
 
 #: src/common/config.py:128
 msgid "Launch Browser on Startup "
-msgstr "启动时启动浏览器 "
+msgstr "A böngésző elindítása a rendszer indításakor "
 
 #: src/common/config.py:134
 msgid "Enable System Tray Icon"
-msgstr "启用系统托盘图标"
+msgstr "A tálcán megjelenő ikon engedélyezése"
 
 #: src/common/config.py:142
 msgid "Notifications"
-msgstr "通知"
+msgstr "Értesítések"
 
 #: src/common/config.py:143
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
-msgstr "桌面通知出现在运行Themerr的计算机上，停靠栏和无头安装不显示它们。"
+msgstr "Az asztali értesítések azon a számítógépen jelennek meg, amelyen a Themerr fut. A Docker- és a headless telepítések esetén ezek nem jelennek meg."
 
 #: src/common/config.py:148 src/common/notifications.py:138
 msgid "New release available"
-msgstr "有新版本可用"
+msgstr "Új kiadás elérhető"
 
 #: src/common/config.py:149
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
-msgstr "当有新的 Themerr 版本可用时通知。检查每小时一次。"
+msgstr "Értesíts, ha elérhető egy újabb Themerr-kiadás. Az ellenőrzés óránként egyszer történik."
 
 #: src/common/config.py:154
 msgid "Follow pre-releases"
-msgstr "跟随预发布"
+msgstr "Kövesse az előzetes kiadásokat"
 
 #: src/common/config.py:155
 msgid "Include pre-releases in new release notifications."
-msgstr "在新的发布通知中包含预发布通知。"
+msgstr "Az új kiadásokról szóló értesítésekbe vegyék fel az előzetes kiadásokat is."
 
 #: src/common/config.py:160
 msgid "Theme coverage increased"
-msgstr "主题覆盖面增加"
+msgstr "A témák lefedettsége nőtt"
 
 #: src/common/config.py:161
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
-msgstr "当主题覆盖率增加时，在成功刷新后通知。刷新时不会增加静音。"
+msgstr "A sikeres frissítés után értesítsen, ha a téma teljes lefedettsége növekszik. Ha a frissítés során nem történik növekedés, ne küldjön értesítést."
 
 #: src/common/config.py:168
 msgid "Logging"
-msgstr "日志记录"
+msgstr "Fakitermelés"
 
 #: src/common/config.py:169
 msgid "Logging settings."
-msgstr "日志设置。"
+msgstr "Naplózási beállítások."
 
 #: src/common/config.py:173
 msgid "Log directory"
-msgstr "日志目录"
+msgstr "Naplókönyvtár"
 
 #: src/common/config.py:175
 msgid "The directory where to store the log files."
-msgstr "存储日志文件的目录。"
+msgstr "Az a könyvtár, amelybe a naplófájlokat kell menteni."
 
 #: src/common/config.py:182
 msgid "Debug logging"
-msgstr "调试日志"
+msgstr "Hibakeresési naplózás"
 
 #: src/common/config.py:184
 msgid "Enable debug logging."
-msgstr "启用调试记录。"
+msgstr "Engedélyezze a hibakeresési naplózást."
 
 #: src/common/config.py:190
 msgid "Network"
-msgstr "网络"
+msgstr "Hálózat"
 
 #: src/common/config.py:191
 msgid "Network settings."
-msgstr "网络设置。"
+msgstr "Hálózati beállítások."
 
 #: src/common/config.py:195
 msgid "HTTP host address"
-msgstr "HTTP 主机地址"
+msgstr "HTTP-gazdagép-cím"
 
 #: src/common/config.py:197
 msgid "The HTTP address to bind to."
-msgstr "要绑定的 HTTP 地址。"
+msgstr "A kapcsolni kívánt HTTP-cím."
 
 #: src/common/config.py:206
 msgid "HTTP port"
-msgstr "HTTP 端口"
+msgstr "HTTP-port"
 
 #: src/common/config.py:208
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
-msgstr "要绑定网络服务器的端口。请注意低于1024的端口可能需要root。"
+msgstr "A webszerverhez rendelendő port. Figyelem: az 1024 alatti portok használatához root jogosultságra lehet szükség."
 
 #: src/common/config.py:216
 msgid "HTTP root"
-msgstr "HTTP 根目录"
+msgstr "HTTP gyökérkönyvtár"
 
 #: src/common/config.py:218
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
-msgstr "待办事项：Web 服务器的基础URL。用于反向代理。"
+msgstr "Todo: A webszerver alap-URL-je. Fordított proxy-k esetén használatos."
 
 #: src/common/config.py:223
 msgid "SSL"
@@ -158,19 +158,19 @@ msgstr "SSL"
 
 #: src/common/config.py:225
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
-msgstr "使用 HTTP 运行网络服务器。禁用这可能是一个安全风险，请自行承担风险。"
+msgstr "Indítsa el a webszervert HTTPS-en keresztül. Ennek letiltása biztonsági kockázatot jelenthet, ezért ezt saját felelősségére tegye."
 
 #: src/common/config.py:231
 msgid "Updater"
-msgstr "更新器"
+msgstr "Frissítő"
 
 #: src/common/config.py:232
 msgid "Updater settings."
-msgstr "更新程序设置。"
+msgstr "A frissítő beállításai."
 
 #: src/common/config.py:236
 msgid "Auto update"
-msgstr "自动更新"
+msgstr "Automatikus frissítés"
 
 #: src/common/config.py:244
 msgid "Plex"
@@ -178,7 +178,7 @@ msgstr "Plex"
 
 #: src/common/config.py:245
 msgid "Plex settings."
-msgstr "Plex设置。"
+msgstr "A Plex beállításai."
 
 #: src/common/config.py:249
 msgid "Plex URL"
@@ -186,1254 +186,1254 @@ msgstr "Plex URL"
 
 #: src/common/config.py:250
 msgid "The URL to the Plex server."
-msgstr "Plex服务器的 URL。"
+msgstr "A Plex-kiszolgáló URL-címe."
 
 #: src/common/config.py:259 web/templates/servers.html:20
 msgid "Plex data directory"
-msgstr "Plex数据目录"
+msgstr "A Plex adatkönyvtára"
 
 #: src/common/config.py:260
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-msgstr "https://support.plex.tv/articles/202915258-where is-the-plex-media-server-data-directory/"
+msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
 #: src/common/config.py:270
 msgid "Themerr"
-msgstr "星历表"
+msgstr "Themerr"
 
 #: src/common/config.py:271
 msgid "Themerr settings."
-msgstr "星历设置。"
+msgstr "Themerr beállítások."
 
 #: src/common/config.py:275
 msgid "Themerr Enabled"
-msgstr "星历已启用"
+msgstr "Themerr engedélyezve"
 
 #: src/common/config.py:276
 msgid "When enabled, Themerr will attempt to update themes."
-msgstr "启用时，Themer将尝试更新主题。"
+msgstr "Ha engedélyezve van, a Themerr megpróbálja frissíteni a témákat."
 
 #: src/common/config.py:281 web/templates/home.html:30
 msgid "Collections"
-msgstr "合集"
+msgstr "Gyűjtemények"
 
 #: src/common/config.py:282
 msgid "Add themes to collections."
-msgstr "将主题添加到收藏中。"
+msgstr "Témák hozzáadása gyűjteményekhez."
 
 #: src/common/config.py:287
 msgid "Movie support"
-msgstr "电影支持"
+msgstr "Filmek támogatása"
 
 #: src/common/config.py:288
 msgid "Add themes to movies using the Plex Movie agent."
-msgstr "使用Plex电影代理将主题添加到电影中。"
+msgstr "A Plex Movie ügynök segítségével témákat adhat hozzá a filmekhez."
 
 #: src/common/config.py:293
 msgid "Series support"
-msgstr "系列支持"
+msgstr "Sorozat-támogatás"
 
 #: src/common/config.py:294
 msgid "Add themes to series using the Plex Series agent."
-msgstr "使用Plex系列代理添加主题到系列中。"
+msgstr "A Plex Series ügynök segítségével témákat adhat hozzá sorozatokhoz."
 
 #: src/common/config.py:299
 msgid "Overwrite Plex themes"
-msgstr "覆盖Plex主题"
+msgstr "A Plex-témák felülírása"
 
 #: src/common/config.py:300
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
-msgstr "如果启用，Themer将覆盖由Plex提供的主题。"
+msgstr "Ha engedélyezve van, a Themerr felülírja a Plex által biztosított témákat."
 
 #: src/common/config.py:305
 msgid "Prefer MP4A AAC Codec"
-msgstr "优先使用 MP4A AAC 解码器"
+msgstr "Az MP4A AAC kodeket részesítsd előnyben"
 
 #: src/common/config.py:306
 msgid "This can improve theme compatibility with Apple devices."
-msgstr "这可以提高主题与苹果设备的兼容性。"
+msgstr "Ez javíthatja a téma kompatibilitását az Apple-eszközökkel."
 
 #: src/common/config.py:311
 msgid "Remove unused themes"
-msgstr "删除未使用的主题"
+msgstr "A fel nem használt témák eltávolítása"
 
 #: src/common/config.py:312
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "在您的Plex元数据目录中空闲空间。此选项需要设置\"Plex数据目录\"路径"
+msgstr "Helyet szabadít fel a Plex metaadat-könyvtárában. Ehhez az opcióhoz be kell állítani a „Plex adatkönyvtár” elérési útját"
 
 #: src/common/config.py:318
 msgid "Remove unused art"
-msgstr "移除未使用的艺像"
+msgstr "A fel nem használt illusztrációk eltávolítása"
 
 #: src/common/config.py:319 src/common/config.py:327
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
-msgstr "应用于收藏。在您的Plex元数据目录中释放空间。此选项需要设置\"Plex数据目录\"路径"
+msgstr "A gyűjteményre vonatkozik. Helyet szabadít fel a Plex metaadat-könyvtárában. Ehhez az opcióhoz be kell állítani a „Plex adatkönyvtár” elérési útját"
 
 #: src/common/config.py:326
 msgid "Remove unused posters"
-msgstr "删除未使用的海报"
+msgstr "A felesleges plakátok eltávolítása"
 
 #: src/common/config.py:334
 msgid "Collection metadata"
-msgstr "集合元数据"
+msgstr "A gyűjtemény metaadatai"
 
 #: src/common/config.py:335
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
-msgstr "在预定的更新过程中更新收藏元数据(海报、艺术和摘要)。"
+msgstr "A tervezett frissítés során frissítse a gyűjtemény metaadatait (plakát, illusztráció és összefoglaló)."
 
 #: src/common/config.py:340
 msgid "Ignore locked fields."
-msgstr "忽略锁定的字段。"
+msgstr "A lezárt mezőket hagyja figyelmen kívül."
 
 #: src/common/config.py:341
-msgid "If you used Themerr-plex v2024.813.13709 or lower, you may need to enable this to update items."
-msgstr "如果您使用 Themerr-plex v2024.813.13709 或更低，您可能需要启用此选项来更新项目。"
+msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
+msgstr "Ha a Themerr v2024.813.13709 vagy annál korábbi verziót használtad, előfordulhat, hogy ezt engedélyezned kell az elemek frissítéséhez."
 
 #: src/common/config.py:347
 msgid "Ignored library IDs"
-msgstr "忽略的库 ID"
+msgstr "Figyelmen kívül hagyott könyvtár-azonosítók"
 
 #: src/common/config.py:348
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
-msgstr "用于排除预定更新的逗号分隔的库ID。ID出现在主屏幕上。"
+msgstr "Vesszővel elválasztott könyvtár-azonosítók, amelyeket ki kell zárni a tervezett frissítésekből. Az azonosítók a Főoldalon jelennek meg."
 
 #: src/common/config.py:354
 msgid "Update themes interval"
-msgstr "更新主题间隔"
+msgstr "A témák frissítésének gyakorisága"
 
 #: src/common/config.py:355
 msgid "Interval for automatic update task, in minutes (min: 15)."
-msgstr "自动更新任务的间隔，以分钟为单位(分钟：15分钟)。"
+msgstr "Az automatikus frissítési feladat időköz, percben kifejezve (min.: 15)."
 
 #: src/common/config.py:362
 msgid "Update database cache interval"
-msgstr "更新数据库缓存间隔"
+msgstr "Az adatbázis-gyorsítótár frissítési időközének módosítása"
 
 #: src/common/config.py:363
 msgid "Interval for database cache update task, in minutes (min: 15)."
-msgstr "数据库缓存更新任务的间隔，以分钟为单位(分钟：15分钟)。"
+msgstr "Az adatbázis-gyorsítótár frissítési feladatának időköz, percben kifejezve (min.: 15)."
 
 #: src/common/config.py:370
 msgid "PlexAPI timeout"
-msgstr "PlexAPI 超时"
+msgstr "PlexAPI időtúllépés"
 
 #: src/common/config.py:371
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
-msgstr "如果您在添加主题时遇到超时时间问题，请稍微增加。(最小：1)"
+msgstr "Ha a témák hozzáadása során időtúllépés lép fel, növelje ezt az értéket kissé. (min.: 1)"
 
 #: src/common/config.py:378
 msgid "Theme upload retries"
-msgstr "主题上传重试"
+msgstr "A téma feltöltésének újrapróbálkozásai"
 
 #: src/common/config.py:379
 msgid "If uploading themes fail, retry this many times. (min: 0)"
-msgstr "如果上传主题失败，请重试这么多次(最小：0)"
+msgstr "Ha a témák feltöltése sikertelen, ennyiszer próbálja meg újra. (min.: 0)"
 
 #: src/common/config.py:386
 msgid "Multiprocessing thread count"
-msgstr "多处理线程计数"
+msgstr "Többfolyamatú feldolgozás: szálak száma"
 
 #: src/common/config.py:387
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
-msgstr "添加主题时要使用的线程数。重启所需(最小：1)"
+msgstr "A témák hozzáadásakor használandó szálak száma. Újraindítás szükséges. (min.: 1)"
 
 #: src/common/config.py:394
 msgid "YouTube Cookies"
-msgstr "YouTube Cookie"
+msgstr "YouTube-sütik"
 
 #: src/common/config.py:396
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "可选：使用 Get cookies.txt LOCALY 导出youtube.com cookie，然后将整个JSON 数组粘贴到此处，然后保存。 Cookie 包含您的浏览器会话；保持它们的隐私。"
+msgstr "Opcionális: exportáld a youtube.com cookie-jait a „Get cookies.txt” paranccsal HELYILEG JSON formátumban, majd illeszd be ide a teljes JSON-tömböt, és mentsd el. A cookie-k a böngésződ munkamenetét tartalmazzák; gondoskodj azok titkosságáról."
 
 #: src/common/config.py:401
 msgid "Cookie export instructions"
-msgstr "Cookie 导出说明"
+msgstr "A cookie-k exportálására vonatkozó utasítások"
 
 #: src/common/notifications.py:138
 #, python-format
 msgid "%(app)s %(version)s is available.\n"
 "%(url)s"
-msgstr "%(app)s %(version)s 已发布。\n"
+msgstr "%(app)s %(version)s elérhető.\n"
 "%(url)s"
 
 #: src/common/notifications.py:176
 msgid "Refresh completed"
-msgstr "刷新完成"
+msgstr "A frissítés befejeződött"
 
 #: src/common/notifications.py:177
 #, python-format
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
-msgstr "主题覆盖率增加了 %(increase)s 个百分点： %(before)s%% → %(after)s%%。 %(installed)s 的 %(total)s 项内容包含主题。"
+msgstr "A témák lefedettsége %(increase)s százalékponttal nőtt: %(before)s%% → %(after)s%%.  A %(total)s elemek közül %(installed)s tartalmaz témákat."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr-plex". Do not
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
 #. translate "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
-msgstr "打开 %(app_name)s"
+msgstr "Nyitás %(app_name)s"
 
 #: src/common/tray_icon.py:110
 msgid "About"
-msgstr "关于"
+msgstr "Rólunk"
 
 #: src/common/tray_icon.py:111 web/templates/navbar.html:22
 #, python-format
 msgid "Version %(version)s"
-msgstr "版本 %(version)s"
+msgstr "Verzió %(version)s"
 
 #: src/common/tray_icon.py:113
 msgid "Repository"
-msgstr "存储库"
+msgstr "Tárház"
 
 #. NOTE: Open GitHub Releases. "%(github)s" = "GitHub". Do not translate
 #. "%(github)s".
 #: src/common/tray_icon.py:116
 #, python-format
 msgid "%(github)s Releases"
-msgstr "%(github)s 新闻稿"
+msgstr "%(github)s Kiadványok"
 
 #: src/common/tray_icon.py:119 web/templates/navbar.html:14
 msgid "Documentation"
-msgstr "文件"
+msgstr "Dokumentáció"
 
 #: src/common/tray_icon.py:120 web/templates/api_docs.html:6
 #: web/templates/api_docs.html:7 web/templates/navbar.html:13
 msgid "API documentation"
-msgstr "API 文档"
+msgstr "API-dokumentáció"
 
 #. NOTE: Donate to LizardByte.
 #: src/common/tray_icon.py:126
 msgid "Donate"
-msgstr "捐赠"
+msgstr "Adományozni"
 
 #: src/common/tray_icon.py:127
 msgid "GitHub Sponsors"
-msgstr "GitHub Sponsors"
+msgstr "GitHub szponzorok"
 
 #. NOTE: Open web browser when application starts. Do not translate
 #. "%(app_name)s".
 #: src/common/tray_icon.py:136
 #, python-format
 msgid "Open browser when %(app_name)s starts"
-msgstr "在 %(app_name)s 启动时打开浏览器"
+msgstr "A %(app_name)s elindulásakor nyissa meg a böngészőt"
 
 #. NOTE: Disable or turn off icon.
 #: src/common/tray_icon.py:139
 msgid "Disable icon"
-msgstr "禁用图标"
+msgstr "Ikon letiltása"
 
 #. NOTE: Restart the program.
 #: src/common/tray_icon.py:142
 msgid "Restart"
-msgstr "重新启动"
+msgstr "Újraindítás"
 
 #. NOTE: Quit, Stop, End, or Shutdown the program.
 #: src/common/tray_icon.py:144
 msgid "Quit"
-msgstr "退出"
+msgstr "Kilépés"
 
 #: src/common/webapp.py:84 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
-msgstr "日志"
+msgstr "Naplófájlok"
 
 #: src/common/webapp.py:463 web/templates/config.html:22
 #: web/templates/navbar.html:6
 msgid "Settings"
-msgstr "设置"
+msgstr "Beállítások"
 
-#: src/themerr_plex.py:171
+#: src/main.py:171
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s 负责管理 Plex 的主题曲。\n"
-"此处提供的参数仅供临时使用。"
+msgstr "%(app_name)s a Plex témazenéit kezeli.\n"
+"Az itt megadott argumentumok ideiglenes jellegűek."
 
-#: src/themerr_plex.py:175
+#: src/main.py:175
 msgid "Show this help message and exit"
-msgstr "显示此帮助信息并退出"
+msgstr "A súgóüzenet megjelenítése és kilépés"
 
-#: src/themerr_plex.py:177
+#: src/main.py:177
 msgid "Specify a config file to use"
-msgstr "指定要使用的配置文件"
+msgstr "Adja meg a használni kívánt konfigurációs fájlt"
 
-#: src/themerr_plex.py:178
+#: src/main.py:178
 msgid "Use debug logging level"
-msgstr "使用调试日志级别"
+msgstr "Hibakeresési naplózási szint használata"
 
-#: src/themerr_plex.py:179
+#: src/main.py:179
 #, python-format
 msgid "Start %(app_name)s in the development environment"
-msgstr "在开发环境中启动 %(app_name)s 程序"
+msgstr "Indítsa el a %(app_name)s oldalt a fejlesztői környezetben"
 
-#: src/themerr_plex.py:181
+#: src/main.py:181
 msgid "Health check the container and exit"
-msgstr "健康检查容器并退出"
+msgstr "Ellenőrizze a konténer állapotát, majd lépjen ki"
 
-#: src/themerr_plex.py:184
+#: src/main.py:184
 #, python-format
 msgid "Do not open %(app_name)s in browser"
-msgstr "请勿在浏览器中打开 %(app_name)s 该网址"
+msgstr "Ne nyissa meg a %(app_name)s címet a böngészőben"
 
-#: src/themerr_plex.py:187
+#: src/main.py:187
 #, python-format
 msgid "Force %(app_name)s to run on a specified port, default=9494"
-msgstr "强制 %(app_name)s 在指定端口上运行，默认端口为 9494"
+msgstr "A ` %(app_name)s ` futtatását egy megadott porthoz kötjük, alapértelmezett érték: 9494"
 
-#: src/themerr_plex.py:190
+#: src/main.py:190
 msgid "Turn off console logging"
-msgstr "关闭控制台日志"
+msgstr "Kapcsolja ki a konzolnaplózást"
 
-#: src/themerr_plex.py:191
+#: src/main.py:191
 msgid "Print the version details and exit"
-msgstr "打印版本详细信息并退出"
+msgstr "A verzió adatait kinyomtatja, majd kilép"
 
 #: web/js/api.js:9
 msgid "Your session expired. Sign in to continue."
-msgstr "您的会话已过期。登录以继续。"
+msgstr "A munkamenet lejárt. Jelentkezzen be a folytatáshoz."
 
 #: web/js/api.js:25
 msgid "Dismiss message"
-msgstr "清除消息"
+msgstr "Üzenet elrejtése"
 
 #: web/js/config.js:18 web/js/config.js:44
 msgid "Unsaved changes"
-msgstr "未保存的更改"
+msgstr "Még nem mentett módosítások"
 
 #: web/js/config.js:26
 msgid "Discard unsaved settings changes?"
-msgstr "放弃未保存的设置更改？"
+msgstr "El akarja vetni a még nem mentett beállításmódosításokat?"
 
 #: web/js/config.js:44 web/templates/config.html:36
 msgid "All changes saved."
-msgstr "所有更改已保存。"
+msgstr "Minden módosítás elmentve."
 
 #: web/js/config.js:46
 msgid "Settings saved. Network changes take effect after restarting Themerr."
-msgstr "设置已保存。网络更改在重启主题后生效。"
+msgstr "A beállítások elmentve. A hálózati módosítások a Themerr újraindítása után lépnek életbe."
 
 #: web/js/config.js:50
 msgid "Unable to save changes."
-msgstr "无法保存更改。"
+msgstr "A módosítások nem menthetők el."
 
 #: web/js/config.js:58
 msgid "Save your settings changes before changing your password."
-msgstr "更改密码前保存您的设置。"
+msgstr "A jelszó megváltoztatása előtt mentse el a beállítások módosításait."
 
 #: web/js/logs.js:117
 msgid "No records match your filters."
-msgstr "没有与您的筛选器匹配的记录。"
+msgstr "A szűrőfeltételeknek megfelelő találat nem található."
 
 #: web/js/logs.js:117 web/templates/logs.html:37
 msgid "No log records yet."
-msgstr "尚无日志记录。"
+msgstr "Még nincsenek naplóbejegyzések."
 
 #: web/js/logs.js:125
 msgid "Search, filters, warning navigation, and download cover all loaded records since startup."
-msgstr "搜索、过滤、警告导航和下载覆盖启动以来所有加载的记录。"
+msgstr "A keresés, a szűrők, a figyelmeztető navigáció és a letöltés a rendszer indítása óta betöltött összes rekordra vonatkozik."
 
 #: web/js/logs.js:126 web/templates/logs.html:28
 msgid "Filters and search apply to the loaded records. Older history remains in the log directory."
-msgstr "过滤器和搜索应用于加载的记录。旧的历史记录仍然存在于日志目录。"
+msgstr "A szűrők és a keresés a betöltött rekordokra vonatkoznak. A régebbi előzmények a naplókönyvtárban maradnak."
 
 #: web/js/logs.js:144
 msgid "Session log loading stalled."
-msgstr "会话日志加载已停顿。"
+msgstr "A munkamenet-napló betöltése megakadt."
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/activity.html:5
 msgid "Live"
-msgstr "实时模式"
+msgstr "Élőben"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
 #: web/templates/servers.html:13
 msgid "Paused"
-msgstr "已暂停"
+msgstr "Szüneteltetve"
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
-msgstr "刷新失败。显示最近加载的记录。"
+msgstr "A frissítés nem sikerült. Az utoljára betöltött rekordok jelennek meg."
 
 #: web/js/servers.js:13 web/templates/servers.html:25
 msgid "Select libraries to ignore"
-msgstr "选择要忽略的库"
+msgstr "A figyelmen kívül hagandó könyvtárak kiválasztása"
 
 #: web/js/servers.js:22
 msgid "Loading libraries…"
-msgstr "正在加载库：…"
+msgstr "Könyvtárak betöltése…"
 
 #: web/js/servers.js:46
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
-msgstr "显示缓存的库。启用或重新连接此服务器以加载当前库。"
+msgstr "A rendszer a gyorsítótárban tárolt könyvtárakat jeleníti meg. Engedélyezze a szervert, vagy csatlakoztassa újra, hogy betöltse az aktuális könyvtárakat."
 
 #: web/js/servers.js:48
 msgid "This server has no libraries."
-msgstr "此服务器没有库。"
+msgstr "Ezen a szerveren nincsenek könyvtárak."
 
 #: web/js/servers.js:54
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
-msgstr "无法加载库。保留您的选择。关闭并重新打开列表以重试。"
+msgstr "A könyvtárak betöltése nem sikerült. A kiválasztott elemek megmaradnak. Zárja be, majd nyissa meg újra a listát, és próbálja meg újra."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
-msgstr "看看Themer正在做什么，为什么某个项目可能需要您注意。"
+msgstr "Nézd meg, min dolgozik jelenleg a Themerr, és miért lehet, hogy egy elemre oda kell figyelned."
 
 #: web/templates/activity.html:3
 msgid "Scan for themes"
-msgstr "扫描主题"
+msgstr "Témák keresése"
 
 #: web/templates/activity.html:3 web/templates/logs.html:4
 msgid "BEHIND THE MUSIC"
-msgstr "从MUSIC"
+msgstr "A ZENE MÖGÖTT"
 
 #: web/templates/activity.html:3 web/templates/navbar.html:6
 msgid "Activity"
-msgstr "活动"
+msgstr "Tevékenység"
 
 #: web/templates/activity.html:4
 msgid "items waiting in the processing queue"
-msgstr "等待处理队列中的项目"
+msgstr "a feldolgozási sorban várakozó tételek"
 
 #: web/templates/activity.html:4
 msgid "Task history covers the current application session."
-msgstr "任务历史涵盖当前应用程序会话。"
+msgstr "A feladatok előzményei az aktuális alkalmazás-munkamenetet fedik le."
 
 #: web/templates/activity.html:5
 msgid "Recent tasks"
-msgstr "最近任务"
+msgstr "Legutóbbi feladatok"
 
 #: web/templates/activity.html:6
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
-msgstr "尚未运行任何任务。请求扫描，或等待下次计划刷新。"
+msgstr "Még nem futott le egyetlen feladat sem. Kérjen lefutást, vagy várja meg a következő ütemezett frissítést."
 
 #: web/templates/activity.html:7 web/templates/home.html:14
 #: web/templates/home.html:31 web/templates/servers.html:13
 msgid "Needs attention"
-msgstr "需要关注"
+msgstr "Figyelmet igényel"
 
 #: web/templates/activity.html:8
 msgid "No processing failures recorded. All quiet here."
-msgstr "没有记录处理失败。此处保持静音。"
+msgstr "Feldolgozási hiba nem történt. Itt minden rendben."
 
 #: web/templates/activity.html:8 web/templates/home.html:64
 msgid "Plex ID"
-msgstr "Plex ID"
+msgstr "Plex-azonosító"
 
 #: web/templates/activity.html:8 web/templates/home.html:78
 msgid "Outdated from ThemerrDB"
-msgstr "ThemerrDB 过期的"
+msgstr "A ThemerrDB-ből elavult"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
-msgstr "使用您登录的会话探索API。"
+msgstr "Fedezze fel az API-t a bejelentkezett munkamenet segítségével."
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
-msgstr "你的船主"
+msgstr "A KÖNYVTÁR HANGJA"
 
 #: web/templates/auth.html:8
 msgid "Every story"
-msgstr "每个故事"
+msgstr "Minden történet"
 
 #: web/templates/auth.html:8
 msgid "has a soundtrack."
-msgstr "有音轨。"
+msgstr "van hozzá filmzene."
 
 #: web/templates/auth.html:9
 msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "将您的Plex库带到生命中。为您的服务器，您的主题和之间的一切，一个平静的工作空间。"
+msgstr "Élessze meg Plex-könyvtárait! Egy áttekinthető munkaterület a szerverekhez, a témákhoz és minden egyébhez."
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
-msgstr "您的工作区，安全无误。"
+msgstr "A munkaterületed biztonságban van."
 
 #: web/templates/auth.html:19
 msgid "Open the one-time setup link printed in the application console to create your admin account."
-msgstr "打开应用程序控制台打印的一次性设置链接来创建您的管理员帐户。"
+msgstr "Nyissa meg az alkalmazáskonzolban kinyomtatott egyszeri beállítási linket az adminisztrátori fiók létrehozásához."
 
 #: web/templates/auth.html:20
 msgid "The link is generated each time the application starts, until setup is complete."
-msgstr "每次应用程序启动时都生成链接，直到安装完成。"
+msgstr "A link az alkalmazás minden indításakor létrejön, amíg a beállítás be nem fejeződik."
 
 #: web/templates/auth.html:22
 msgid "GET STARTED"
-msgstr "开始了"
+msgstr "Kezdés"
 
 #: web/templates/auth.html:22
 msgid "WELCOME BACK"
-msgstr "WELCOME BACK"
+msgstr "ÜDVÖZÖLJÜK ÚJRA!"
 
 #: web/templates/auth.html:23
 msgid "Make it yours."
-msgstr "让它成为你的。"
+msgstr "Tedd a sajátoddá!"
 
 #: web/templates/auth.html:23
 msgid "Sign in to Themerr."
-msgstr "登录到 Themerr。"
+msgstr "Jelentkezz be a Themerr-be."
 
 #: web/templates/auth.html:24
 msgid "Create the administrator account for this installation."
-msgstr "为此安装创建管理员帐户。"
+msgstr "Hozza létre a telepítéshez tartozó rendszergazdai fiókot."
 
 #: web/templates/auth.html:24
 msgid "Your libraries are waiting for their next soundtrack."
-msgstr "您的库正在等待下一个音轨。"
+msgstr "A könyvtáraid már alig várják a következő zenei aláfestést."
 
 #: web/templates/auth.html:28
 msgid "Username"
-msgstr "用户名"
+msgstr "Felhasználónév"
 
 #: web/templates/auth.html:30
 msgid "Password"
-msgstr "密码"
+msgstr "Jelszó"
 
 #: web/templates/auth.html:33
 msgid "Use at least 12 characters. A long, unique passphrase works well."
-msgstr "至少使用12个字符。一个长的、唯一的密码很好。"
+msgstr "Legalább 12 karaktert használjon. Egy hosszú, egyedi jelszó jól bevált."
 
 #: web/templates/auth.html:34
 msgid "Confirm password"
-msgstr "确认密码"
+msgstr "Jelszó megerősítése"
 
 #: web/templates/auth.html:37
 msgid "Create workspace"
-msgstr "创建工作区"
+msgstr "Munkaterület létrehozása"
 
 #: web/templates/auth.html:37
 msgid "Sign in"
-msgstr "登录"
+msgstr "Bejelentkezés"
 
 #: web/templates/auth.html:39
 msgid "Plex account linking happens inside your workspace."
-msgstr "Plex帐户链接发生在您的工作区内。"
+msgstr "A Plex-fiók összekapcsolása a munkaterületeden belül történik."
 
 #: web/templates/base.html:21
 msgid "Skip to content"
-msgstr "跳转到内容"
+msgstr "Tartalomra ugrás"
 
 #: web/templates/base.html:27
 msgid "Toggle navigation"
-msgstr "切换导航"
+msgstr "Navigáció váltása"
 
 #: web/templates/base.html:28
 msgid "Workspace"
-msgstr "工作区"
+msgstr "Munkaterület"
 
 #: web/templates/color_theme.html:2 web/templates/color_theme.html:5
 msgid "Theme: Automatic. Switch to light mode."
-msgstr "主题：自动切换到灯光模式。"
+msgstr "Téma: Automatikus. Átváltás világos módra."
 
 #: web/templates/color_theme.html:3
 msgid "Theme: Light. Switch to dark mode."
-msgstr "主题: Light, 切换到暗色模式。"
+msgstr "Téma: Világos. Sötét módra váltás."
 
 #: web/templates/color_theme.html:4
 msgid "Theme: Dark. Switch to automatic mode."
-msgstr "主题: 暗色。切换到自动模式。"
+msgstr "Téma: Sötét. Válts át automatikus üzemmódra."
 
 #: web/templates/config.html:15
 msgid "Browse directories for"
-msgstr "浏览目录为"
+msgstr "Keresés a könyvtárakban a következőkre:"
 
 #: web/templates/config.html:22
 msgid "TUNE YOUR WORKSPACE"
-msgstr "推荐您的工作"
+msgstr "ÁLLÍTSD BE A MUNKAKÖRNYEZETEDET"
 
 #: web/templates/config.html:22
 msgid "Make Themerr work the way your library does."
-msgstr "让Themer以您的知识库的方式工作。"
+msgstr "Állítsd be a Themerr-t úgy, hogy úgy működjön, ahogyan a könyvtárad."
 
 #: web/templates/config.html:24
 msgid "Settings sections"
-msgstr "设置部分"
+msgstr "Beállítások szakaszok"
 
 #: web/templates/config.html:24 web/templates/config.html:33
 msgid "Security"
-msgstr "安全"
+msgstr "Biztonság"
 
 #: web/templates/config.html:28
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
-msgstr "服务器连接、数据目录和忽略的库在服务器页面上管理。"
+msgstr "A szerverkapcsolatok, az adatkönyvtárak és az ignorált könyvtárak kezelése a „Szerverek” oldalon történik."
 
 #: web/templates/config.html:28
 msgid "Changes to network settings take effect after restarting Themerr."
-msgstr "网络设置的更改在重启主题后生效。"
+msgstr "A hálózati beállítások módosításai a Themerr újraindítása után lépnek életbe."
 
 #: web/templates/config.html:33
 msgid "One administrator for this installation. Change your password and sign out other sessions."
-msgstr "此安装有一个管理员。更改您的密码并注销其他会话。"
+msgstr "Ennek a telepítésnek egy rendszergazdája van. Módosítsa a jelszavát, és jelentkezzen ki az egyéb munkamenetekből."
 
 #: web/templates/config.html:34
 msgid "Current password"
-msgstr "当前密码"
+msgstr "Jelenlegi jelszó"
 
 #: web/templates/config.html:34
 msgid "New password"
-msgstr "新密码"
+msgstr "Új jelszó"
 
 #: web/templates/config.html:34
 msgid "Confirm new password"
-msgstr "确认新密码"
+msgstr "Az új jelszó megerősítése"
 
 #: web/templates/config.html:34
 msgid "Change password"
-msgstr "更改密码"
+msgstr "Jelszó módosítása"
 
 #: web/templates/config.html:36
 msgid "Save changes"
-msgstr "保存更改"
+msgstr "Módosítások mentése"
 
 #: web/templates/directory_picker.html:2
 msgid "Choose an application directory"
-msgstr "选择应用程序目录"
+msgstr "Válasszon ki egy alkalmazáskönyvtárat"
 
 #: web/templates/directory_picker.html:2
 msgid "Close directory picker"
-msgstr "关闭目录选择器"
+msgstr "A könyvtárválasztó bezárása"
 
 #: web/templates/directory_picker.html:3
 msgid "Browse directories on the machine running Themerr."
-msgstr "在运行Themerr的机器上浏览目录。"
+msgstr "A Themerr programot futtató gépen található könyvtárak böngészése."
 
 #: web/templates/directory_picker.html:4
 msgid "Parent directory"
-msgstr "父目录"
+msgstr "Főkönyvtár"
 
 #: web/templates/directory_picker.html:6
 msgid "Select directory"
-msgstr "选择目录"
+msgstr "Könyvtár kiválasztása"
 
 #: web/templates/error.html:5
 msgid "LET’S TRY THAT AGAIN"
-msgstr "试试他们的"
+msgstr "PRÓBÁLJUK MEG ÚJRA!"
 
 #: web/templates/error.html:7
 msgid "Back to workspace"
-msgstr "返回工作区"
+msgstr "Vissza a munkaterületre"
 
 #: web/templates/home.html:4
 msgid "YOUR LIBRARY, IN HARMONY"
-msgstr "你的液体流感，血液量"
+msgstr "A KÖNYVTÁRAD, HARMÓNIAJELEN"
 
 #: web/templates/home.html:4
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
-msgstr "每个故事的声音轨迹。看看什么在玩，什么需要一点关注。"
+msgstr "Minden történethez van egy saját zenei aláfestése. Nézd meg, mi szól éppen, és mire kell egy kicsit odafigyelni."
 
 #: web/templates/home.html:4 web/templates/navbar.html:6
 msgid "Overview"
-msgstr "概览"
+msgstr "Áttekintés"
 
 #: web/templates/home.html:5
 msgid "Refresh libraries"
-msgstr "刷新库"
+msgstr "Könyvtárak frissítése"
 
 #: web/templates/home.html:7
 msgid "Unknown"
-msgstr "未知的"
+msgstr "Ismeretlen"
 
 #: web/templates/home.html:7
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "GitHub 检查失败。显示最后一个已知的部署；检查运行时间最多为小时。"
+msgstr "A GitHub-ellenőrzés sikertelen volt. Az utolsó ismert telepítést jelenítjük meg; az ellenőrzések legfeljebb óránként futnak."
 
 #: web/templates/home.html:8
 msgid "Last deployed"
-msgstr "最后一次部署"
+msgstr "Legutóbb telepítve"
 
 #: web/templates/home.html:8
 msgid "Checking…"
-msgstr "正在检查…"
+msgstr "… ellenőrzése"
 
 #: web/templates/home.html:8
 msgid "Check unavailable"
-msgstr "检查不可用"
+msgstr "Ellenőrzés nem elérhető"
 
 #: web/templates/home.html:11
 msgid "Library items"
-msgstr "图书馆项目"
+msgstr "Könyvtári dokumentumok"
 
 #: web/templates/home.html:11
 msgid "libraries across"
-msgstr "跨越库"
+msgstr "könyvtárak szerte"
 
 #: web/templates/home.html:11
 msgid "servers"
-msgstr "服务器"
+msgstr "szerverek"
 
 #: web/templates/home.html:12
 msgid "Themes installed"
-msgstr "已安装的主题"
+msgstr "Telepített témák"
 
 #: web/templates/home.html:12
 msgid "Your library sounds better already."
-msgstr "您的知识库已经有了更好的声音。"
+msgstr "Úgy tűnik, a könyvtárad máris jobb lett."
 
 #: web/templates/home.html:13
 msgid "Theme coverage"
-msgstr "主题范围"
+msgstr "A téma áttekintése"
 
 #: web/templates/home.html:14
 msgid "Review activity"
-msgstr "审核活动"
+msgstr "Tevékenységek áttekintése"
 
 #: web/templates/home.html:19
 msgid "LET’S SET THE TONE"
-msgstr "已经设置了 TONE"
+msgstr "ÁLLÍTSUK BE A HANGULATOT!"
 
 #: web/templates/home.html:20
 msgid "Your library deserves a soundtrack."
-msgstr "你的知识库应该有一个音轨。"
+msgstr "A könyvtáradnak jár egy kísérőzene."
 
 #: web/templates/home.html:20
 msgid "Getting to know your library."
-msgstr "了解您的故事书库。"
+msgstr "Ismerkedés a könyvtárral."
 
 #: web/templates/home.html:21
 msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "连接您的Plex帐户，选择您的服务器，然后让Themer照看音乐。"
+msgstr "Csatlakoztasd a Plex-fiókodat, válaszd ki a szervereidet, és bízd a zenét a Themerrre!"
 
 #: web/templates/home.html:21
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
-msgstr "您的第一次刷新正在构建库视图。请检查进度或请求刷新。"
+msgstr "Az első frissítés során a könyvtár nézetét töltjük be. Az előrehaladást az „Activity” menüpontban ellenőrizheti, vagy a fenti gombra kattintva kérheti a frissítést."
 
 #: web/templates/home.html:22
 msgid "Connect a server"
-msgstr "连接服务器"
+msgstr "Szerver csatlakoztatása"
 
 #: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
 msgid "View activity"
-msgstr "查看活动"
+msgstr "Tevékenységek megtekintése"
 
 #: web/templates/home.html:26
 msgid "Your libraries"
-msgstr "您的库"
+msgstr "A könyvtáraid"
 
 #: web/templates/home.html:26
 msgid "items"
-msgstr "项目"
+msgstr "tételek"
 
 #: web/templates/home.html:28
 msgid "Search library items"
-msgstr "搜索库项"
+msgstr "Könyvtári dokumentumok keresése"
 
 #: web/templates/home.html:28
 msgid "Search titles…"
-msgstr "搜索标题：…"
+msgstr "Címek keresése…"
 
 #: web/templates/home.html:28 web/templates/logs.html:9
 msgid "Clear search"
-msgstr "清除搜索"
+msgstr "Keresés törlése"
 
 #: web/templates/home.html:29
 msgid "Server"
-msgstr "服务器"
+msgstr "Szerver"
 
 #: web/templates/home.html:29
 msgid "All servers"
-msgstr "所有服务器"
+msgstr "Minden szerver"
 
 #: web/templates/home.html:30
 msgid "Type"
-msgstr "类型"
+msgstr "Típus"
 
 #: web/templates/home.html:30
 msgid "All types"
-msgstr "所有类型"
+msgstr "Minden típus"
 
 #: web/templates/home.html:30
 msgid "Movies"
-msgstr "电影"
+msgstr "Filmek"
 
 #: web/templates/home.html:30
 msgid "TV shows"
-msgstr "电视节目"
+msgstr "Tévéműsorok"
 
 #: web/templates/home.html:31
 msgid "Theme status"
-msgstr "主题状态"
+msgstr "A téma állapota"
 
 #: web/templates/home.html:31
 msgid "All statuses"
-msgstr "所有状态"
+msgstr "Minden állapot"
 
 #: web/templates/home.html:31
 msgid "Has a theme"
-msgstr "有主题"
+msgstr "Van egy témája"
 
 #: web/templates/home.html:31
 msgid "No theme"
-msgstr "无主题"
+msgstr "Nincs téma"
 
 #: web/templates/home.html:32
 msgid "Reset filters"
-msgstr "重置过滤器"
+msgstr "Szűrők visszaállítása"
 
 #: web/templates/home.html:38
 msgid "Library ID"
-msgstr "库 ID"
+msgstr "Könyvtári azonosító"
 
 #: web/templates/home.html:43
 msgid "Title"
-msgstr "标题"
+msgstr "Cím"
 
 #: web/templates/home.html:43
 msgid "Metadata ID"
-msgstr "元数据ID"
+msgstr "Metadatok azonosítója"
 
 #: web/templates/home.html:43
 msgid "Theme"
-msgstr "主题"
+msgstr "Téma"
 
 #: web/templates/home.html:43
 msgid "ThemerrDB"
-msgstr "主题DB"
+msgstr "ThemerrDB"
 
 #: web/templates/home.html:56
 msgid "Pause theme for"
-msgstr "暂停主题为"
+msgstr "Szünet zene a"
 
 #: web/templates/home.html:56 web/templates/home.html:58
 msgid "Play theme for"
-msgstr "播放主题"
+msgstr "A „Play” című dal témája"
 
 #: web/templates/home.html:57 web/templates/theme_player.html:2
 msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "无法播放此主题。请检查Plex连接和浏览器音频支持。"
+msgstr "A zene nem játszható le. Ellenőrizze a Plex-kapcsolatot és a böngésző hangtámogatását."
 
 #: web/templates/home.html:64
 msgid "Open in Plex"
-msgstr "在Plex中打开"
+msgstr "Megnyitás a Plexben"
 
 #: web/templates/home.html:68 web/templates/home.html:76
 msgid "External ID unavailable"
-msgstr "外部ID不可用"
+msgstr "Külső azonosító nem elérhető"
 
 #: web/templates/home.html:70
 msgid "Failed to add theme"
-msgstr "添加主题失败"
+msgstr "A téma hozzáadása nem sikerült"
 
 #: web/templates/home.html:71
 msgid "Plex provided"
-msgstr "Plex提供"
+msgstr "Plex biztosított"
 
 #: web/templates/home.html:72
 msgid "User provided"
-msgstr "用户提供"
+msgstr "Felhasználó által biztosított"
 
 #: web/templates/home.html:73
 msgid "Themerr provided"
-msgstr "Themerr提供"
+msgstr "Themerr feltéve, hogy"
 
 #: web/templates/home.html:74
 msgid "Unknown provider"
-msgstr "未知提供者"
+msgstr "Ismeretlen szolgáltató"
 
 #: web/templates/home.html:75
 msgid "Missing from ThemerrDB"
-msgstr "不在ThemerrDB中"
+msgstr "Hiányzik a ThemerrDB-ből"
 
 #: web/templates/home.html:76
 msgid "TMDB ID unavailable"
-msgstr "TMDB ID unavailable"
+msgstr "A TMDB-azonosító nem elérhető"
 
 #: web/templates/home.html:77
 msgid "Theme not installed yet"
-msgstr "主题尚未安装"
+msgstr "A téma még nincs telepítve"
 
 #: web/templates/home.html:80
 msgid "Edit"
-msgstr "编辑"
+msgstr "Szerkesztés"
 
 #: web/templates/home.html:80
 msgid "Add"
-msgstr "添加"
+msgstr "Add"
 
 #: web/templates/home.html:87
 msgid "No titles match."
-msgstr "没有匹配的标题。"
+msgstr "Nincs egyező cím."
 
 #: web/templates/home.html:87
 msgid "Try another search or reset your filters."
-msgstr "尝试另一次搜索或重置您的过滤器。"
+msgstr "Próbáljon meg egy másik keresést, vagy állítsa vissza a szűrőket."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "Your library is on its way."
-msgstr "您的库正在运行中。"
+msgstr "A könyvtárad már úton van."
 
 #: web/templates/home_db_not_cached.html:3
 msgid "The first refresh builds your library view. You can follow progress in Activity."
-msgstr "第一次刷新你的库视图。你可以跟随活动进度。"
+msgstr "Az első frissítés során a könyvtár nézet megjelenik. A folyamatot az Activity alkalmazásban követheted nyomon."
 
 #: web/templates/logs.html:4
 msgid "Explore recent logs, find a message, and jump between warnings and errors."
-msgstr "探索最近的日志，找到一条消息，然后在警告和错误之间跳跃。"
+msgstr "Fedezze fel a legutóbbi naplóbejegyzéseket, keressen meg egy üzenetet, és váltson a figyelmeztetések és a hibák között."
 
 #: web/templates/logs.html:5
 msgid "Download filtered logs"
-msgstr "下载过滤日志"
+msgstr "Szűrt naplófájlok letöltése"
 
 #: web/templates/logs.html:7
 msgid "Log viewer"
-msgstr "日志查看器"
+msgstr "Napló-megjelenítő"
 
 #: web/templates/logs.html:9
 msgid "Search logs"
-msgstr "搜索日志"
+msgstr "Keresési naplófájlok"
 
 #: web/templates/logs.html:9
 msgid "Search messages, threads, or timestamps…"
-msgstr "搜索消息、线程或时间戳…"
+msgstr "Üzenetek, beszélgetésszálak vagy időbélyegek keresése…"
 
 #: web/templates/logs.html:10
 msgid "Log source"
-msgstr "日志源"
+msgstr "Naplóforrás"
 
 #: web/templates/logs.html:10
 msgid "All sources"
-msgstr "所有来源"
+msgstr "Minden forrás"
 
 #: web/templates/logs.html:11
 msgid "Log level"
-msgstr "日志级别"
+msgstr "Naplózási szint"
 
 #: web/templates/logs.html:11
 msgid "All levels"
-msgstr "所有级别"
+msgstr "Minden szint"
 
 #: web/templates/logs.html:11
 msgid "Warnings and errors"
-msgstr "警告和错误"
+msgstr "Figyelmeztetések és hibák"
 
 #: web/templates/logs.html:12
 msgid "Log history"
-msgstr "历史记录"
+msgstr "Naplóelőzmények"
 
 #: web/templates/logs.html:12
 msgid "Latest 250"
-msgstr "最新的 250"
+msgstr "Legutóbbi 250"
 
 #: web/templates/logs.html:12
 msgid "Latest 1,000"
-msgstr "最新1 000"
+msgstr "Legutóbbi 1 000"
 
 #: web/templates/logs.html:12
 msgid "Latest 2,000"
-msgstr "最新的 2 000"
+msgstr "Legutóbbi 2 000"
 
 #: web/templates/logs.html:12
 msgid "Since startup"
-msgstr "自启动"
+msgstr "A cég alapítása óta"
 
 #: web/templates/logs.html:13
 msgid "Clear filters"
-msgstr "清除过滤器"
+msgstr "Szűrők törlése"
 
 #: web/templates/logs.html:17
 msgid "Warning and error navigation"
-msgstr "警告和错误导航"
+msgstr "Figyelmeztetések és hibák kezelése"
 
 #: web/templates/logs.html:18
 msgid "Previous warning or error"
-msgstr "上一个警告或错误"
+msgstr "Előző figyelmeztetés vagy hibaüzenet"
 
 #: web/templates/logs.html:19
 msgid "Next warning or error"
-msgstr "下一个警告或错误"
+msgstr "Következő figyelmeztetés vagy hibaüzenet"
 
 #: web/templates/logs.html:22
 msgid "Live refresh"
-msgstr "实时刷新"
+msgstr "Élő frissítés"
 
 #: web/templates/logs.html:23
 msgid "Follow latest"
-msgstr "跟随最新的"
+msgstr "Kövesse a legfrissebb híreket"
 
 #: web/templates/logs.html:24
 msgid "Refresh"
-msgstr "刷新"
+msgstr "Frissítés"
 
 #: web/templates/logs.html:26
 msgid "Loading logs…"
-msgstr "加载日志…"
+msgstr "Naplófájlok betöltése:…"
 
 #: web/templates/logs.html:30
 msgid "Log history pages"
-msgstr "历史记录页面"
+msgstr "Naplóelőzmények oldalak"
 
 #: web/templates/logs.html:31
 msgid "Older records"
-msgstr "旧记录"
+msgstr "Régebbi bejegyzések"
 
 #: web/templates/logs.html:33
 msgid "Newer records"
-msgstr "更新记录"
+msgstr "Újabb bejegyzések"
 
 #: web/templates/logs.html:35
 msgid "Log records"
-msgstr "日志记录"
+msgstr "Naplóbejegyzések"
 
 #: web/templates/navbar.html:1
 msgid "Close navigation"
-msgstr "关闭导航"
+msgstr "Navigáció bezárása"
 
 #: web/templates/navbar.html:2
 msgid "Main navigation"
-msgstr "主导航"
+msgstr "Fő navigáció"
 
 #: web/templates/navbar.html:4
 msgid "YOUR WORKSPACE"
-msgstr "您的工作"
+msgstr "A MUNKAKÖRNYEZETED"
 
 #: web/templates/navbar.html:5
 msgid "Workspace pages"
-msgstr "工作区页面"
+msgstr "Munkaterületi oldalak"
 
 #: web/templates/navbar.html:6 web/templates/servers.html:3
 msgid "Servers"
-msgstr "服务器"
+msgstr "Szerverek"
 
 #: web/templates/navbar.html:11
 msgid "A little music."
-msgstr "一款小音乐。"
+msgstr "Egy kis zene."
 
 #: web/templates/navbar.html:11
 msgid "A lot more atmosphere."
-msgstr "更多的大气层。"
+msgstr "Sokkal hangulatosabb."
 
 #: web/templates/navbar.html:12
 msgid "Resources"
-msgstr "资源"
+msgstr "Források"
 
 #: web/templates/navbar.html:15
 msgid "Contribute a theme"
-msgstr "贡献一个主题"
+msgstr "Témát beküldeni"
 
 #: web/templates/navbar.html:16
 msgid "Support LizardByte"
-msgstr "支持 LizardByte"
+msgstr "Támogasd a LizardByte-ot"
 
 #: web/templates/navbar.html:20
 msgid "Sign out"
-msgstr "登出"
+msgstr "Kijelentkezés"
 
 #: web/templates/servers.html:3
 msgid "ONE WORKSPACE. EVERY SERVER."
-msgstr "工作站. EVERY SERVER."
+msgstr "EGY MUNKAKÖRNYEZET. MINDEN SZERVER."
 
 #: web/templates/servers.html:3
 msgid "Connect your Plex account, then choose where the music goes."
-msgstr "连接您的Plex帐户，然后选择音乐去哪里。"
+msgstr "Csatlakoztasd a Plex-fiókodat, majd válaszd ki, hová szeretnéd menteni a zenét."
 
 #: web/templates/servers.html:3
 msgid "saved"
-msgstr "已保存"
+msgstr "mentve"
 
 #: web/templates/servers.html:6
 msgid "Your Plex account"
-msgstr "您的Plex帐户"
+msgstr "A Plex-fiókod"
 
 #: web/templates/servers.html:6
 msgid "Account linked. Choose a server below."
-msgstr "帐户已链接。请在下面选择一个服务器。"
+msgstr "A fiók összekapcsolva. Válasszon ki egy szervert az alábbiak közül."
 
 #: web/templates/servers.html:6
 msgid "Link your account securely through Plex to access your servers."
-msgstr "通过Plex安全地连接您的帐户以访问您的服务器。"
+msgstr "Csatlakoztassa fiókját biztonságosan a Plexen keresztül, hogy hozzáférhessen a szervereihez."
 
 #: web/templates/servers.html:6
 msgid "Continue Plex sign-in"
-msgstr "继续Plex登录"
+msgstr "Folytatás: Bejelentkezés a Plexbe"
 
 #: web/templates/servers.html:7
 msgid "Reconnect account"
-msgstr "重新连接帐户"
+msgstr "Fiók újracsatlakoztatása"
 
 #: web/templates/servers.html:7
 msgid "Connect Plex account"
-msgstr "连接Plex账户"
+msgstr "Plex-fiók összekapcsolása"
 
 #: web/templates/servers.html:7
 msgid "Disconnect"
-msgstr "断开连接"
+msgstr "Kapcsolat bontása"
 
 #: web/templates/servers.html:9
 msgid "Connected servers"
-msgstr "已连接服务器"
+msgstr "Csatlakoztatott szerverek"
 
 #: web/templates/servers.html:9
 msgid "Theme history and library settings are kept separately for each server."
-msgstr "每个服务器的主题历史和库设置都是分开保存的。"
+msgstr "A témák előzményei és a könyvtárbeállítások szerverenként külön-külön kerülnek tárolásra."
 
 #: web/templates/servers.html:13
 msgid "Enabled"
-msgstr "已启用"
+msgstr "Engedélyezve"
 
 #: web/templates/servers.html:16
 msgid "Last library refresh"
-msgstr "上次刷新库"
+msgstr "A könyvtár legutóbbi frissítése"
 
 #: web/templates/servers.html:16
 msgid "Not yet refreshed"
-msgstr "尚未刷新"
+msgstr "Még nem frissült"
 
 #: web/templates/servers.html:17
 msgid "Processing settings"
-msgstr "处理设置"
+msgstr "Feldolgozási beállítások"
 
 #: web/templates/servers.html:19
 msgid "Process this server"
-msgstr "处理此服务器"
+msgstr "A szerver feldolgozása"
 
 #: web/templates/servers.html:20
 msgid "optional"
-msgstr "可选的"
+msgstr "opcionális"
 
 #: web/templates/servers.html:21
 msgid "Browse Plex data directory"
-msgstr "浏览Plex数据目录"
+msgstr "A Plex adatkönyvtárának böngészése"
 
 #: web/templates/servers.html:22
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "仅需要本地或挂载Plex数据目录来删除旧上传的文件。为远程服务器留空。"
+msgstr "A helyi vagy csatlakoztatott Plex-adatkatalógus kizárólag a régebben feltöltött fájlok eltávolításához szükséges. Távoli szerverek esetén hagyja üresen ezt a mezőt."
 
 #: web/templates/servers.html:23
 msgid "Ignored libraries"
-msgstr "忽略的库"
+msgstr "Figyelmen kívül hagyott könyvtárak"
 
 #: web/templates/servers.html:29
 msgid "Library"
-msgstr "书库"
+msgstr "Könyvtár"
 
 #: web/templates/servers.html:32
 msgid "Open the list to load this server’s libraries."
-msgstr "打开列表加载此服务器的库。"
+msgstr "Nyissa meg a listát a szerver könyvtárainak betöltéséhez."
 
 #: web/templates/servers.html:35
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
-msgstr "选择要从主题更新中排除的库。请取消选中以处理每个库。"
+msgstr "Válaszd ki azokat a könyvtárakat, amelyeket ki szeretnél zárni a témafrissítésekből. Ha az összes jelölőnégyzetet bejelöletlenül hagyod, akkor minden könyvtár feldolgozásra kerül."
 
 #: web/templates/servers.html:36
 msgid "Save settings"
-msgstr "保存设置"
+msgstr "Beállítások mentése"
 
 #: web/templates/servers.html:36
 msgid "Remove server"
-msgstr "删除服务器"
+msgstr "A szerver eltávolítása"
 
 #: web/templates/servers.html:40
 msgid "Your first server starts here."
-msgstr "您的第一个服务器在此开始。"
+msgstr "Az első szervered itt kezdődik."
 
 #: web/templates/servers.html:40
 msgid "Link Plex above, then discover or add an address below."
-msgstr "链接上面的Plex，然后发现或添加一个地址。"
+msgstr "Kattints a fenti Plex linkre, majd az alábbiak közül válassz ki vagy add hozzá egy címet."
 
 #: web/templates/servers.html:43
 msgid "Add a server"
-msgstr "添加服务器"
+msgstr "Szerver hozzáadása"
 
 #: web/templates/servers.html:43
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
-msgstr "从您的Plex帐户中选择一个服务器，发现附近的服务器，或使用您知道的地址。"
+msgstr "Válasszon ki egy szervert a Plex-fiókjából, keressen egyet a közelben, vagy adjon meg egy ismert címet."
 
 #: web/templates/servers.html:44
 msgid "Find account servers"
-msgstr "查找帐户服务器"
+msgstr "Fiókszerverek keresése"
 
 #: web/templates/servers.html:44
 msgid "Discover on LAN"
-msgstr "在局域网上发现"
+msgstr "Fedezd fel a LAN-on"
 
 #: web/templates/servers.html:44
 msgid "LAN discovery uses Plex GDM on your application’s network."
-msgstr "局域网发现在您的应用程序网络上使用PlexGDM。"
+msgstr "A LAN-felismerés az alkalmazás hálózatán a Plex GDM-et használja."
 
 #: web/templates/servers.html:45
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
-msgstr "帐户地址由Plex发布，可能无法访问。HTTPS plex.direct 地址使用Plex的证书。 从运行Themerr的机器中选择一个可访问的地址，或手动输入一个已知地址。"
+msgstr "A fiókcímeket a Plex teszi közzé, és előfordulhat, hogy azok nem érhetők el. A plex.direct HTTPS-címek a Plex tanúsítványát használják. Válasszon egy olyan címet, amely a Themerr programot futtató gépről elérhető, vagy írjon be kézzel egy ismert címet."
 
 #: web/templates/servers.html:47
 msgid "Enter an address manually"
-msgstr "手动输入地址"
+msgstr "Cím kézi megadása"
 
 #: web/templates/servers.html:48
 msgid "Plex server address"
-msgstr "Plex服务器地址"
+msgstr "A Plex-kiszolgáló címe"
 
 #: web/templates/servers.html:48
 msgid "Connect server"
-msgstr "连接服务器"
+msgstr "Csatlakozás a szerverhez"
 
 #: web/templates/servers.html:48
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
-msgstr "使用局域网地址或有效的 HTTPS Plex地址。您链接的Plex帐户必须有访问权限。添加现有的服务器更新其地址。"
+msgstr "Használjon LAN-címet vagy érvényes HTTPS-Plex-címet. A kapcsolt Plex-fiókjának hozzáférési jogosultsággal kell rendelkeznie. Egy meglévő szerver hozzáadásával frissül a szerver címe."
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
-msgstr "主题播放器"
+msgstr "Témalejátszó"
 
 #: web/templates/theme_player.html:2 web/templates/theme_player.html:7
 msgid "Choose a theme from your library"
-msgstr "从您的知识库中选择一个主题"
+msgstr "Válasszon ki egy témát a könyvtárából"
 
 #: web/templates/theme_player.html:3
 msgid "Unable to load themes. Try again."
-msgstr "无法加载主题。请重试。"
+msgstr "A témák betöltése nem sikerült. Próbáld meg újra."
 
 #: web/templates/theme_player.html:3
 msgid "No installed themes are available yet."
-msgstr "尚无已安装的主题。"
+msgstr "Még nincs telepített téma."
 
 #: web/templates/theme_player.html:7
 msgid "THEME PLAYER"
-msgstr "这个玩家"
+msgstr "TÉMAJÁTSZÓ"
 
 #: web/templates/theme_player.html:7
 msgid "A soundtrack for every story."
-msgstr "每个故事的声音曲目。"
+msgstr "Minden történethez egy filmzene."
 
 #: web/templates/theme_player.html:11
 msgid "Shuffle"
-msgstr "随机播放"
+msgstr "Véletlenszerű sorrend"
 
 #: web/templates/theme_player.html:12
 msgid "Previous theme"
-msgstr "上一个主题"
+msgstr "Előző téma"
 
 #: web/templates/theme_player.html:13
 msgid "Play theme"
-msgstr "播放主题"
+msgstr "Téma lejátszása"
 
 #: web/templates/theme_player.html:13
 msgid "Pause theme"
-msgstr "暂停主题"
+msgstr "Szünet zene"
 
 #: web/templates/theme_player.html:14
 msgid "Next theme"
-msgstr "下一个主题"
+msgstr "Következő téma"
 
 #: web/templates/theme_player.html:15
 msgid "Repeat this theme"
-msgstr "重复此主题"
+msgstr "Ismételje meg ezt a témát"
 
 #: web/templates/theme_player.html:17
 msgid "Playback position"
-msgstr "播放位置"
+msgstr "Lejátszási pozíció"
 
 #: web/templates/theme_player.html:19
 msgid "Surprise me"
-msgstr "惊喜我"
+msgstr "Lepj meg!"
 
 #: web/templates/theme_player.html:19
 msgid "Volume"
-msgstr "音量"
+msgstr "Kötet"
 
 #: web/templates/translations.html:3
 msgid "Themerr speaks your language."
-msgstr "Themer说你的语言。"
+msgstr "A Themerr a te nyelveden beszél."
 
 #: web/templates/translations.html:3
 msgid "Choose a language in Settings, or help improve translations on Crowdin."
-msgstr "在设置中选择一种语言，或帮助改进Crowdin上的翻译。"
+msgstr "Válassz nyelvet a Beállítások menüpontban, vagy segíts javítani a fordításokat a Crowdinon."
 
 #: web/templates/translations.html:3
 msgid "Help translate"
-msgstr "帮助翻译"
+msgstr "Segíts a fordításban"
 

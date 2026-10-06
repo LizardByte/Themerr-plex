@@ -245,7 +245,7 @@ def schema(routes: list) -> dict:
     """
     documented = _documented_routes(routes)
     document = get_openapi(
-        title='Themerr-plex API',
+        title='Themerr API',
         version='1',
         routes=documented,
         description='Sign in through the web interface to use these endpoints. The interactive documentation '

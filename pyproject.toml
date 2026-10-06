@@ -1,7 +1,7 @@
 [project]
-name = "themerr-plex"
+name = "themerr"
 version = "0.0.0"
-description = "Standalone theme song manager for Plex"
+description = "Standalone theme song manager for Plex and Jellyfin"
 readme = "README.md"
 requires-python = ">=3.14"
 license = { text = "AGPL-3.0-only" }
@@ -46,15 +46,15 @@ dev = [
 ]
 docs = [
     "breathe==5.1.0",
-    "lizardbyte-dockle[sphinx]==2026.924.215413",
+    "lizardbyte-dockle[sphinx]==2026.1006.111",
     "numpydoc==1.11.0",
     "rstcheck[sphinx]==6.3.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/LizardByte/Themerr-plex"
-Repository = "https://github.com/LizardByte/Themerr-plex"
-Issues = "https://github.com/LizardByte/Themerr-plex/issues"
+Homepage = "https://github.com/LizardByte/Themerr"
+Repository = "https://github.com/LizardByte/Themerr"
+Issues = "https://github.com/LizardByte/Themerr/issues"
 
 [tool.uv]
 package = false

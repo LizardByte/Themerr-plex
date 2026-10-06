@@ -86,8 +86,8 @@ RUN <<EOF
 set -eu
 groupadd -f -g "${PGID}" "${UNAME}"
 useradd -lm -d "${HOME}" -s /bin/bash -g "${PGID}" -u "${PUID}" "${UNAME}"
-mkdir -p "${HOME}/.config/themerr-plex"
-ln -s "${HOME}/.config/themerr-plex" /config
+mkdir -p "${HOME}/.config/themerr"
+ln -s "${HOME}/.config/themerr" /config
 chown -R "${UNAME}" "${HOME}"
 EOF
 
@@ -97,5 +97,5 @@ VOLUME /config
 USER ${UNAME}
 WORKDIR ${HOME}
 
-ENTRYPOINT ["python", "/app/src/themerr_plex.py"]
-HEALTHCHECK --start-period=90s CMD ["python", "/app/src/themerr_plex.py", "--docker_healthcheck"]
+ENTRYPOINT ["python", "/app/src/main.py"]
+HEALTHCHECK --start-period=90s CMD ["python", "/app/src/main.py", "--docker_healthcheck"]

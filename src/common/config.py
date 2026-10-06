@@ -394,7 +394,7 @@ _CONFIG_SPEC_DICT = {
         'BOOL_IGNORE_LOCKED_FIELDS': {
             'type': 'boolean',
             'name': _('Ignore locked fields.'),
-            'description': _('If you used Themerr-plex v2024.813.13709 or lower, '
+            'description': _('If you used Themerr v2024.813.13709 or lower, '
                              'you may need to enable this to update items.'),
             'default': False,
         },
