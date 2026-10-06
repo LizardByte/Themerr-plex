@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: zh_CN\n"
-"PO-Revision-Date: 2026-10-06 03:08\n"
+"PO-Revision-Date: 2026-10-06 04:21\n"
 
 #: src/common/config.py:84
 msgid "Info"
@@ -537,7 +537,8 @@ msgstr "设置"
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex and Jellyfin.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr ""
+msgstr "%(app_name)s 负责管理 Plex 和 Jellyfin 的主题曲。\n"
+"此处提供的参数仅供临时使用。"
 
 #: src/main.py:175
 msgid "Show this help message and exit"
@@ -1132,7 +1133,7 @@ msgstr "无法播放此主题。请检查服务器连接和浏览器音频支持
 #: web/templates/home.html:66
 #, python-format
 msgid "Open in %(server)s"
-msgstr ""
+msgstr "在...中打开 %(server)s"
 
 #: web/templates/home.html:70 web/templates/home.html:78
 msgid "External ID unavailable"
