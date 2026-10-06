@@ -12,339 +12,431 @@ msgstr ""
 "X-Crowdin-Project-ID: 606145\n"
 "X-Crowdin-Language: hu\n"
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
-"X-Crowdin-File-ID: 5784\n"
+"X-Crowdin-File-ID: 6533\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2026-10-04 15:02\n"
+"PO-Revision-Date: 2026-10-06 03:08\n"
 
-#: src/common/config.py:90
+#: src/common/config.py:84
 msgid "Info"
 msgstr "Információ"
 
-#: src/common/config.py:91
+#: src/common/config.py:85
 msgid "For information purposes only."
 msgstr "Kizárólag tájékoztató jellegű."
 
-#: src/common/config.py:95
+#: src/common/config.py:89
 msgid "Config version"
 msgstr "Konfigurációs verzió"
 
-#: src/common/config.py:96
+#: src/common/config.py:90
 msgid "The configuration version."
 msgstr "A konfigurációs verzió."
 
-#: src/common/config.py:105
+#: src/common/config.py:99
 msgid "First run complete"
 msgstr "Az első futtatás befejeződött"
 
-#: src/common/config.py:106
+#: src/common/config.py:100
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "Todo: Jelzi, hogy a felhasználó elvégezte-e az első beállítást."
 
-#: src/common/config.py:113
+#: src/common/config.py:107
 msgid "General"
 msgstr "Általános"
 
-#: src/common/config.py:114
+#: src/common/config.py:108
 msgid "General settings."
 msgstr "Általános beállítások."
 
-#: src/common/config.py:118
+#: src/common/config.py:112
 msgid "Locale"
 msgstr "Helyi beállítások"
 
-#: src/common/config.py:119
+#: src/common/config.py:113
 msgid "The localization setting to use."
 msgstr "A használni kívánt lokalizációs beállítás."
 
-#: src/common/config.py:128
+#: src/common/config.py:122
 msgid "Launch Browser on Startup "
 msgstr "A böngésző elindítása a rendszer indításakor "
 
-#: src/common/config.py:134
+#: src/common/config.py:128
 msgid "Enable System Tray Icon"
 msgstr "A tálcán megjelenő ikon engedélyezése"
 
-#: src/common/config.py:142
+#: src/common/config.py:136
 msgid "Notifications"
 msgstr "Értesítések"
 
-#: src/common/config.py:143
+#: src/common/config.py:137
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "Az asztali értesítések azon a számítógépen jelennek meg, amelyen a Themerr fut. A Docker- és a headless telepítések esetén ezek nem jelennek meg."
 
-#: src/common/config.py:148 src/common/notifications.py:138
+#: src/common/config.py:142 src/common/notifications.py:138
 msgid "New release available"
 msgstr "Új kiadás elérhető"
 
-#: src/common/config.py:149
+#: src/common/config.py:143
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "Értesíts, ha elérhető egy újabb Themerr-kiadás. Az ellenőrzés óránként egyszer történik."
 
-#: src/common/config.py:154
+#: src/common/config.py:148
 msgid "Follow pre-releases"
 msgstr "Kövesse az előzetes kiadásokat"
 
-#: src/common/config.py:155
+#: src/common/config.py:149
 msgid "Include pre-releases in new release notifications."
 msgstr "Az új kiadásokról szóló értesítésekbe vegyék fel az előzetes kiadásokat is."
 
-#: src/common/config.py:160
+#: src/common/config.py:154
 msgid "Theme coverage increased"
 msgstr "A témák lefedettsége nőtt"
 
-#: src/common/config.py:161
+#: src/common/config.py:155
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "A sikeres frissítés után értesítsen, ha a téma teljes lefedettsége növekszik. Ha a frissítés során nem történik növekedés, ne küldjön értesítést."
 
-#: src/common/config.py:168
+#: src/common/config.py:162
 msgid "Logging"
 msgstr "Fakitermelés"
 
-#: src/common/config.py:169
+#: src/common/config.py:163
 msgid "Logging settings."
 msgstr "Naplózási beállítások."
 
-#: src/common/config.py:173
+#: src/common/config.py:167
 msgid "Log directory"
 msgstr "Naplókönyvtár"
 
-#: src/common/config.py:175
+#: src/common/config.py:169
 msgid "The directory where to store the log files."
 msgstr "Az a könyvtár, amelybe a naplófájlokat kell menteni."
 
-#: src/common/config.py:182
+#: src/common/config.py:176
 msgid "Debug logging"
 msgstr "Hibakeresési naplózás"
 
-#: src/common/config.py:184
+#: src/common/config.py:178
 msgid "Enable debug logging."
 msgstr "Engedélyezze a hibakeresési naplózást."
 
-#: src/common/config.py:190
+#: src/common/config.py:184
 msgid "Network"
 msgstr "Hálózat"
 
-#: src/common/config.py:191
+#: src/common/config.py:185
 msgid "Network settings."
 msgstr "Hálózati beállítások."
 
-#: src/common/config.py:195
+#: src/common/config.py:189
 msgid "HTTP host address"
 msgstr "HTTP-gazdagép-cím"
 
-#: src/common/config.py:197
+#: src/common/config.py:191
 msgid "The HTTP address to bind to."
 msgstr "A kapcsolni kívánt HTTP-cím."
 
-#: src/common/config.py:206
+#: src/common/config.py:200
 msgid "HTTP port"
 msgstr "HTTP-port"
 
-#: src/common/config.py:208
+#: src/common/config.py:202
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "A webszerverhez rendelendő port. Figyelem: az 1024 alatti portok használatához root jogosultságra lehet szükség."
 
-#: src/common/config.py:216
+#: src/common/config.py:210
 msgid "HTTP root"
 msgstr "HTTP gyökérkönyvtár"
 
-#: src/common/config.py:218
+#: src/common/config.py:212
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Todo: A webszerver alap-URL-je. Fordított proxy-k esetén használatos."
 
-#: src/common/config.py:223
+#: src/common/config.py:217
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:225
+#: src/common/config.py:219
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Indítsa el a webszervert HTTPS-en keresztül. Ennek letiltása biztonsági kockázatot jelenthet, ezért ezt saját felelősségére tegye."
 
-#: src/common/config.py:231
+#: src/common/config.py:225
 msgid "Updater"
 msgstr "Frissítő"
 
-#: src/common/config.py:232
+#: src/common/config.py:226
 msgid "Updater settings."
 msgstr "A frissítő beállításai."
 
-#: src/common/config.py:236
+#: src/common/config.py:230
 msgid "Auto update"
 msgstr "Automatikus frissítés"
 
-#: src/common/config.py:244
-msgid "Plex"
-msgstr "Plex"
+#: src/common/config.py:238
+msgid "Jellyfin"
+msgstr "Jellyfin"
 
-#: src/common/config.py:245
-msgid "Plex settings."
-msgstr "A Plex beállításai."
+#: src/common/config.py:239
+msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
+msgstr "A Jellyfin témák feldolgozási beállításai. A kapcsolatok kezelése a „Szerverek” oldalon történik."
 
-#: src/common/config.py:249
-msgid "Plex URL"
-msgstr "Plex URL"
-
-#: src/common/config.py:250
-msgid "The URL to the Plex server."
-msgstr "A Plex-kiszolgáló URL-címe."
-
-#: src/common/config.py:259 web/templates/servers.html:20
-msgid "Plex data directory"
-msgstr "A Plex adatkönyvtára"
-
-#: src/common/config.py:260
-msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
-
-#: src/common/config.py:270
-msgid "Themerr"
-msgstr "Themerr"
-
-#: src/common/config.py:271
-msgid "Themerr settings."
-msgstr "Themerr beállítások."
-
-#: src/common/config.py:275
-msgid "Themerr Enabled"
-msgstr "Themerr engedélyezve"
-
-#: src/common/config.py:276
-msgid "When enabled, Themerr will attempt to update themes."
-msgstr "Ha engedélyezve van, a Themerr megpróbálja frissíteni a témákat."
-
-#: src/common/config.py:281 web/templates/home.html:30
-msgid "Collections"
-msgstr "Gyűjtemények"
-
-#: src/common/config.py:282
-msgid "Add themes to collections."
-msgstr "Témák hozzáadása gyűjteményekhez."
-
-#: src/common/config.py:287
+#: src/common/config.py:242 src/common/config.py:343
 msgid "Movie support"
 msgstr "Filmek támogatása"
 
-#: src/common/config.py:288
-msgid "Add themes to movies using the Plex Movie agent."
-msgstr "A Plex Movie ügynök segítségével témákat adhat hozzá a filmekhez."
+#: src/common/config.py:243
+msgid "Add themes to Jellyfin movies."
+msgstr "Témák hozzáadása a Jellyfin-filmekhez."
 
-#: src/common/config.py:293
+#: src/common/config.py:246 src/common/config.py:349
 msgid "Series support"
 msgstr "Sorozat-támogatás"
 
-#: src/common/config.py:294
+#: src/common/config.py:247
+msgid "Add themes to Jellyfin series."
+msgstr "Témák hozzáadása a Jellyfin sorozatokhoz."
+
+#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+msgid "Collections"
+msgstr "Gyűjtemények"
+
+#: src/common/config.py:251
+msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
+msgstr "Helyezd el a témákat a Jellyfin gyűjteménykönyvtáraiba. A médiafájlok máshol is maradhatnak."
+
+#: src/common/config.py:254
+msgid "Overwrite user themes"
+msgstr "Felhasználói témák felülírása"
+
+#: src/common/config.py:255
+msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
+msgstr "Cserélje ki a meglévő témafájlokat, beleértve a régebbi Themerr-jellyfin bővítmény által létrehozott témákat is."
+
+#: src/common/config.py:259
+msgid "Back up replaced user themes"
+msgstr "A kicserélt felhasználói témák biztonsági mentése"
+
+#: src/common/config.py:260
+msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
+msgstr "A meglévő felhasználói témákat a cseréjük során tárolja egy biztonsági másolat mappában. A beállítás kikapcsolásával véglegesen eltávolíthatja a kicserélt témákat."
+
+#: src/common/config.py:264
+msgid "Import older Themerr-jellyfin ownership"
+msgstr "A Themerr-jellyfin korábbi tulajdonjogának átvétele"
+
+#: src/common/config.py:265
+msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
+msgstr "A régebbi bővítmény adatbázisában rögzített témákat csak akkor ismerje fel, ha azok SHA-256-értéke továbbra is egyezik. A módosított fájlok védelme megmarad. A régi adatbázis változatlan marad."
+
+#: src/common/config.py:269
+msgid "Ignore locked metadata"
+msgstr "A zárolt metaadatok figyelmen kívül hagyása"
+
+#: src/common/config.py:270
+msgid "Allow Jellyfin theme updates for items with locked metadata."
+msgstr "Engedélyezze a Jellyfin-téma frissítését a lezárt metaadatokkal rendelkező elemek esetében."
+
+#: src/common/config.py:273
+msgid "Update connector automatically"
+msgstr "A csatlakozó automatikus frissítése"
+
+#: src/common/config.py:274
+msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
+msgstr "Telepítse a megfelelő csatlakozót, amikor a Themerr elindul, vagy verzióeltérést észlel. Először állítsa be a Themerr elérhető címét a „Szerverek” oldalon."
+
+#: src/common/config.py:278
+msgid "Restart Jellyfin automatically"
+msgstr "A Jellyfin automatikus újraindítása"
+
+#: src/common/config.py:279
+msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
+msgstr "A csatlakozó telepítése vagy frissítése után indítsa újra a Jellyfin programot. Az újraindítás előtt a „Kiszolgálók” oldalon megjelenik egy függőben lévő újraindítás."
+
+#: src/common/config.py:283
+msgid "Wait for playback to finish"
+msgstr "Várja meg, amíg a lejátszás befejeződik"
+
+#: src/common/config.py:284
+msgid "Defer connector restarts until there are no playing or paused streams."
+msgstr "A csatlakozó újraindítását addig halassza el, amíg nincs lejátszás alatt álló vagy szüneteltetett stream."
+
+#: src/common/config.py:287
+msgid "Remove the older Themerr-jellyfin plugin"
+msgstr "Távolítsa el a régebbi Themerr-jellyfin bővítményt"
+
+#: src/common/config.py:288
+msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
+msgstr "A csatlakozó telepítése után távolítsa el a régebbi Themerr bővítményt, és csak annak saját tárolóját törölje. A meglévő témafájlok megmaradnak."
+
+#: src/common/config.py:292
+msgid "Connector HTTP port"
+msgstr "Csatlakozó HTTP-portja"
+
+#: src/common/config.py:293
+msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
+msgstr "Csak akkor szolgáltasson csatlakozó-letöltéseket HTTP-n keresztül, ha a Themerr önaláírt tanúsítványt használ. Az adminisztrációs felület továbbra is HTTPS-en marad. A letiltáshoz állítsa be a 0 értéket. A port módosítása után indítsa újra a Themerr-t."
+
+#: src/common/config.py:300
+msgid "Plex"
+msgstr "Plex"
+
+#: src/common/config.py:301
+msgid "Plex settings."
+msgstr "A Plex beállításai."
+
+#: src/common/config.py:305
+msgid "Plex URL"
+msgstr "Plex URL"
+
+#: src/common/config.py:306
+msgid "The URL to the Plex server."
+msgstr "A Plex-kiszolgáló URL-címe."
+
+#: src/common/config.py:315 web/templates/servers.html:37
+msgid "Plex data directory"
+msgstr "A Plex adatkönyvtára"
+
+#: src/common/config.py:316
+msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
+
+#: src/common/config.py:326
+msgid "Themerr"
+msgstr "Themerr"
+
+#: src/common/config.py:327
+msgid "Themerr settings."
+msgstr "Themerr beállítások."
+
+#: src/common/config.py:331
+msgid "Themerr Enabled"
+msgstr "Themerr engedélyezve"
+
+#: src/common/config.py:332
+msgid "When enabled, Themerr will attempt to update themes."
+msgstr "Ha engedélyezve van, a Themerr megpróbálja frissíteni a témákat."
+
+#: src/common/config.py:338
+msgid "Add themes to collections."
+msgstr "Témák hozzáadása gyűjteményekhez."
+
+#: src/common/config.py:344
+msgid "Add themes to movies using the Plex Movie agent."
+msgstr "A Plex Movie ügynök segítségével témákat adhat hozzá a filmekhez."
+
+#: src/common/config.py:350
 msgid "Add themes to series using the Plex Series agent."
 msgstr "A Plex Series ügynök segítségével témákat adhat hozzá sorozatokhoz."
 
-#: src/common/config.py:299
+#: src/common/config.py:355
 msgid "Overwrite Plex themes"
 msgstr "A Plex-témák felülírása"
 
-#: src/common/config.py:300
+#: src/common/config.py:356
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Ha engedélyezve van, a Themerr felülírja a Plex által biztosított témákat."
 
-#: src/common/config.py:305
+#: src/common/config.py:361
 msgid "Prefer MP4A AAC Codec"
 msgstr "Az MP4A AAC kodeket részesítsd előnyben"
 
-#: src/common/config.py:306
+#: src/common/config.py:362
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Ez javíthatja a téma kompatibilitását az Apple-eszközökkel."
 
-#: src/common/config.py:311
+#: src/common/config.py:367
 msgid "Remove unused themes"
 msgstr "A fel nem használt témák eltávolítása"
 
-#: src/common/config.py:312
+#: src/common/config.py:368
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Helyet szabadít fel a Plex metaadat-könyvtárában. Ehhez az opcióhoz be kell állítani a „Plex adatkönyvtár” elérési útját"
 
-#: src/common/config.py:318
+#: src/common/config.py:374
 msgid "Remove unused art"
 msgstr "A fel nem használt illusztrációk eltávolítása"
 
-#: src/common/config.py:319 src/common/config.py:327
+#: src/common/config.py:375 src/common/config.py:383
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "A gyűjteményre vonatkozik. Helyet szabadít fel a Plex metaadat-könyvtárában. Ehhez az opcióhoz be kell állítani a „Plex adatkönyvtár” elérési útját"
 
-#: src/common/config.py:326
+#: src/common/config.py:382
 msgid "Remove unused posters"
 msgstr "A felesleges plakátok eltávolítása"
 
-#: src/common/config.py:334
+#: src/common/config.py:390
 msgid "Collection metadata"
 msgstr "A gyűjtemény metaadatai"
 
-#: src/common/config.py:335
+#: src/common/config.py:391
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "A tervezett frissítés során frissítse a gyűjtemény metaadatait (plakát, illusztráció és összefoglaló)."
 
-#: src/common/config.py:340
+#: src/common/config.py:396
 msgid "Ignore locked fields."
 msgstr "A lezárt mezőket hagyja figyelmen kívül."
 
-#: src/common/config.py:341
+#: src/common/config.py:397
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Ha a Themerr v2024.813.13709 vagy annál korábbi verziót használtad, előfordulhat, hogy ezt engedélyezned kell az elemek frissítéséhez."
 
-#: src/common/config.py:347
+#: src/common/config.py:403
 msgid "Ignored library IDs"
 msgstr "Figyelmen kívül hagyott könyvtár-azonosítók"
 
-#: src/common/config.py:348
+#: src/common/config.py:404
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "Vesszővel elválasztott könyvtár-azonosítók, amelyeket ki kell zárni a tervezett frissítésekből. Az azonosítók a Főoldalon jelennek meg."
 
-#: src/common/config.py:354
+#: src/common/config.py:410
 msgid "Update themes interval"
 msgstr "A témák frissítésének gyakorisága"
 
-#: src/common/config.py:355
+#: src/common/config.py:411
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Az automatikus frissítési feladat időköz, percben kifejezve (min.: 15)."
 
-#: src/common/config.py:362
+#: src/common/config.py:418
 msgid "Update database cache interval"
 msgstr "Az adatbázis-gyorsítótár frissítési időközének módosítása"
 
-#: src/common/config.py:363
+#: src/common/config.py:419
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Az adatbázis-gyorsítótár frissítési feladatának időköz, percben kifejezve (min.: 15)."
 
-#: src/common/config.py:370
+#: src/common/config.py:426
 msgid "PlexAPI timeout"
 msgstr "PlexAPI időtúllépés"
 
-#: src/common/config.py:371
+#: src/common/config.py:427
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Ha a témák hozzáadása során időtúllépés lép fel, növelje ezt az értéket kissé. (min.: 1)"
 
-#: src/common/config.py:378
+#: src/common/config.py:434
 msgid "Theme upload retries"
 msgstr "A téma feltöltésének újrapróbálkozásai"
 
-#: src/common/config.py:379
+#: src/common/config.py:435
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Ha a témák feltöltése sikertelen, ennyiszer próbálja meg újra. (min.: 0)"
 
-#: src/common/config.py:386
+#: src/common/config.py:442
 msgid "Multiprocessing thread count"
 msgstr "Többfolyamatú feldolgozás: szálak száma"
 
-#: src/common/config.py:387
+#: src/common/config.py:443
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "A témák hozzáadásakor használandó szálak száma. Újraindítás szükséges. (min.: 1)"
 
-#: src/common/config.py:394
+#: src/common/config.py:450
 msgid "YouTube Cookies"
 msgstr "YouTube-sütik"
 
-#: src/common/config.py:396
+#: src/common/config.py:452
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
 msgstr "Opcionális: exportáld a youtube.com cookie-jait a „Get cookies.txt” paranccsal HELYILEG JSON formátumban, majd illeszd be ide a teljes JSON-tömböt, és mentsd el. A cookie-k a böngésződ munkamenetét tartalmazzák; gondoskodj azok titkosságáról."
 
-#: src/common/config.py:401
+#: src/common/config.py:457
 msgid "Cookie export instructions"
 msgstr "A cookie-k exportálására vonatkozó utasítások"
 
@@ -364,8 +456,8 @@ msgstr "A frissítés befejeződött"
 msgid "Theme coverage increased by %(increase)s percentage points: %(before)s%% → %(after)s%%. %(installed)s of %(total)s items have themes."
 msgstr "A témák lefedettsége %(increase)s százalékponttal nőtt: %(before)s%% → %(after)s%%.  A %(total)s elemek közül %(installed)s tartalmaz témákat."
 
-#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not
-#. translate "%(app_name)s".
+#. NOTE: Open the application. "%(app_name)s" = "Themerr". Do not translate
+#. "%(app_name)s".
 #: src/common/tray_icon.py:103
 #, python-format
 msgid "Open %(app_name)s"
@@ -431,21 +523,21 @@ msgstr "Újraindítás"
 msgid "Quit"
 msgstr "Kilépés"
 
-#: src/common/webapp.py:84 web/templates/logs.html:4
+#: src/common/webapp.py:80 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "Naplófájlok"
 
-#: src/common/webapp.py:463 web/templates/config.html:22
+#: src/common/webapp.py:478 web/templates/config.html:23
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Beállítások"
 
 #: src/main.py:171
 #, python-format
-msgid "%(app_name)s manages theme songs for Plex.\n"
+msgid "%(app_name)s manages theme songs for Plex and Jellyfin.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr "%(app_name)s a Plex témazenéit kezeli.\n"
+msgstr "%(app_name)s a Plex és a Jellyfin témazenéit kezeli.\n"
 "Az itt megadott argumentumok ideiglenes jellegűek."
 
 #: src/main.py:175
@@ -503,7 +595,7 @@ msgstr "Még nem mentett módosítások"
 msgid "Discard unsaved settings changes?"
 msgstr "El akarja vetni a még nem mentett beállításmódosításokat?"
 
-#: web/js/config.js:44 web/templates/config.html:36
+#: web/js/config.js:44 web/templates/config.html:37
 msgid "All changes saved."
 msgstr "Minden módosítás elmentve."
 
@@ -543,8 +635,8 @@ msgstr "A munkamenet-napló betöltése megakadt."
 msgid "Live"
 msgstr "Élőben"
 
-#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:38
-#: web/templates/servers.html:13
+#: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
+#: web/templates/servers.html:14
 msgid "Paused"
 msgstr "Szüneteltetve"
 
@@ -552,25 +644,62 @@ msgstr "Szüneteltetve"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "A frissítés nem sikerült. Az utoljára betöltött rekordok jelennek meg."
 
-#: web/js/servers.js:13 web/templates/servers.html:25
+#: web/js/servers.js:45 web/templates/servers.html:42
 msgid "Select libraries to ignore"
 msgstr "A figyelmen kívül hagandó könyvtárak kiválasztása"
 
-#: web/js/servers.js:22
+#: web/js/servers.js:54
 msgid "Loading libraries…"
 msgstr "Könyvtárak betöltése…"
 
-#: web/js/servers.js:46
+#: web/js/servers.js:78
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "A rendszer a gyorsítótárban tárolt könyvtárakat jeleníti meg. Engedélyezze a szervert, vagy csatlakoztassa újra, hogy betöltse az aktuális könyvtárakat."
 
-#: web/js/servers.js:48
+#: web/js/servers.js:80
 msgid "This server has no libraries."
 msgstr "Ezen a szerveren nincsenek könyvtárak."
 
-#: web/js/servers.js:54
+#: web/js/servers.js:86
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "A könyvtárak betöltése nem sikerült. A kiválasztott elemek megmaradnak. Zárja be, majd nyissa meg újra a listát, és próbálja meg újra."
+
+#: web/js/servers.js:130 web/js/servers.js:296
+msgid "Connected"
+msgstr "Csatlakoztatva"
+
+#: web/js/servers.js:130 web/templates/servers.html:71
+#: web/templates/servers.html:83
+msgid "Connect"
+msgstr "Csatlakozás"
+
+#: web/js/servers.js:278
+msgid "Looking for Jellyfin servers…"
+msgstr "Jellyfin-kiszolgálókat keresek…"
+
+#: web/js/servers.js:284
+msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
+msgstr "Egyetlen Jellyfin-kiszolgáló sem válaszolt. Ellenőrizze az UDP 7359-es portot és a helyi hálózat felderítését, vagy adja meg a címet manuálisan."
+
+#: web/js/servers.js:296
+msgid "Use this address"
+msgstr "Használd ezt a címet"
+
+#: web/js/servers.js:325 web/templates/servers.html:26
+msgid "Save connector address"
+msgstr "Csatlakozó címének mentése"
+
+#: web/js/servers.js:325 web/templates/servers.html:27
+msgid "Install matching connector"
+msgstr "Szerelje be a megfelelő csatlakozót"
+
+#: web/js/servers.js:330
+msgid "This server cannot restart itself. Restart its service or container."
+msgstr "Ez a szerver nem tudja magát újraindítani. Indítsa újra a szolgáltatását vagy a konténerét."
+
+#: web/js/servers.js:362
+msgid "Restart Jellyfin now? Active playback will be interrupted."
+msgstr "Most újraindítsa a Jellyfin-t? Az aktív lejátszás megszakad."
 
 #: web/templates/activity.html:3
 msgid "See what Themerr is working on, and why an item might need your attention."
@@ -604,8 +733,8 @@ msgstr "Legutóbbi feladatok"
 msgid "No tasks have run yet. Request a scan, or wait for the next scheduled refresh."
 msgstr "Még nem futott le egyetlen feladat sem. Kérjen lefutást, vagy várja meg a következő ütemezett frissítést."
 
-#: web/templates/activity.html:7 web/templates/home.html:14
-#: web/templates/home.html:31 web/templates/servers.html:13
+#: web/templates/activity.html:7 web/templates/home.html:15
+#: web/templates/home.html:32 web/templates/servers.html:14
 msgid "Needs attention"
 msgstr "Figyelmet igényel"
 
@@ -613,17 +742,21 @@ msgstr "Figyelmet igényel"
 msgid "No processing failures recorded. All quiet here."
 msgstr "Feldolgozási hiba nem történt. Itt minden rendben."
 
-#: web/templates/activity.html:8 web/templates/home.html:64
-msgid "Plex ID"
-msgstr "Plex-azonosító"
+#: web/templates/activity.html:8 web/templates/home.html:66
+msgid "ID"
+msgstr "ID"
 
-#: web/templates/activity.html:8 web/templates/home.html:78
+#: web/templates/activity.html:8 web/templates/home.html:80
 msgid "Outdated from ThemerrDB"
 msgstr "A ThemerrDB-ből elavult"
 
 #: web/templates/api_docs.html:6
 msgid "Explore the API using your signed-in session."
 msgstr "Fedezze fel az API-t a bejelentkezett munkamenet segítségével."
+
+#: web/templates/auth.html:5 web/templates/navbar.html:3
+msgid "YOUR LIBRARY’S SOUNDTRACK"
+msgstr "A KÖNYVTÁRAD HANGZÁSA"
 
 #: web/templates/auth.html:7
 msgid "THE SOUND OF YOUR LIBRARY"
@@ -638,8 +771,8 @@ msgid "has a soundtrack."
 msgstr "van hozzá filmzene."
 
 #: web/templates/auth.html:9
-msgid "Bring your Plex libraries to life. One calm workspace for your servers, your themes, and everything in between."
-msgstr "Élessze meg Plex-könyvtárait! Egy áttekinthető munkaterület a szerverekhez, a témákhoz és minden egyébhez."
+msgid "Bring your libraries to life. One calm workspace for your servers, your themes, and everything in between."
+msgstr "Élessze meg könyvtárait! Egy áttekinthető munkaterület a szerverekhez, a témákhoz és minden egyébhez."
 
 #: web/templates/auth.html:18
 msgid "Your workspace, secured."
@@ -702,8 +835,8 @@ msgid "Sign in"
 msgstr "Bejelentkezés"
 
 #: web/templates/auth.html:39
-msgid "Plex account linking happens inside your workspace."
-msgstr "A Plex-fiók összekapcsolása a munkaterületeden belül történik."
+msgid "Connect your media servers inside your workspace."
+msgstr "Csatlakoztassa a médiaszervereit a munkaterületén belül."
 
 #: web/templates/base.html:21
 msgid "Skip to content"
@@ -729,55 +862,55 @@ msgstr "Téma: Világos. Sötét módra váltás."
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr "Téma: Sötét. Válts át automatikus üzemmódra."
 
-#: web/templates/config.html:15
+#: web/templates/config.html:16
 msgid "Browse directories for"
 msgstr "Keresés a könyvtárakban a következőkre:"
 
-#: web/templates/config.html:22
+#: web/templates/config.html:23
 msgid "TUNE YOUR WORKSPACE"
 msgstr "ÁLLÍTSD BE A MUNKAKÖRNYEZETEDET"
 
-#: web/templates/config.html:22
+#: web/templates/config.html:23
 msgid "Make Themerr work the way your library does."
 msgstr "Állítsd be a Themerr-t úgy, hogy úgy működjön, ahogyan a könyvtárad."
 
-#: web/templates/config.html:24
+#: web/templates/config.html:25
 msgid "Settings sections"
 msgstr "Beállítások szakaszok"
 
-#: web/templates/config.html:24 web/templates/config.html:33
+#: web/templates/config.html:25 web/templates/config.html:34
 msgid "Security"
 msgstr "Biztonság"
 
-#: web/templates/config.html:28
+#: web/templates/config.html:29
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "A szerverkapcsolatok, az adatkönyvtárak és az ignorált könyvtárak kezelése a „Szerverek” oldalon történik."
 
-#: web/templates/config.html:28
+#: web/templates/config.html:29
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr "A hálózati beállítások módosításai a Themerr újraindítása után lépnek életbe."
 
-#: web/templates/config.html:33
+#: web/templates/config.html:34
 msgid "One administrator for this installation. Change your password and sign out other sessions."
 msgstr "Ennek a telepítésnek egy rendszergazdája van. Módosítsa a jelszavát, és jelentkezzen ki az egyéb munkamenetekből."
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "Current password"
 msgstr "Jelenlegi jelszó"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "New password"
 msgstr "Új jelszó"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "Confirm new password"
 msgstr "Az új jelszó megerősítése"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:35
 msgid "Change password"
 msgstr "Jelszó módosítása"
 
-#: web/templates/config.html:36
+#: web/templates/config.html:37
 msgid "Save changes"
 msgstr "Módosítások mentése"
 
@@ -809,247 +942,248 @@ msgstr "PRÓBÁLJUK MEG ÚJRA!"
 msgid "Back to workspace"
 msgstr "Vissza a munkaterületre"
 
-#: web/templates/home.html:4
+#: web/templates/home.html:5
 msgid "YOUR LIBRARY, IN HARMONY"
 msgstr "A KÖNYVTÁRAD, HARMÓNIAJELEN"
 
-#: web/templates/home.html:4
+#: web/templates/home.html:5
 msgid "A soundtrack for every story. See what’s playing, and what needs a little attention."
 msgstr "Minden történethez van egy saját zenei aláfestése. Nézd meg, mi szól éppen, és mire kell egy kicsit odafigyelni."
 
-#: web/templates/home.html:4 web/templates/navbar.html:6
+#: web/templates/home.html:5 web/templates/navbar.html:6
 msgid "Overview"
 msgstr "Áttekintés"
 
-#: web/templates/home.html:5
+#: web/templates/home.html:6
 msgid "Refresh libraries"
 msgstr "Könyvtárak frissítése"
 
-#: web/templates/home.html:7
+#: web/templates/home.html:8
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: web/templates/home.html:7
+#: web/templates/home.html:8
 msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
 msgstr "A GitHub-ellenőrzés sikertelen volt. Az utolsó ismert telepítést jelenítjük meg; az ellenőrzések legfeljebb óránként futnak."
 
-#: web/templates/home.html:8
+#: web/templates/home.html:9
 msgid "Last deployed"
 msgstr "Legutóbb telepítve"
 
-#: web/templates/home.html:8
+#: web/templates/home.html:9
 msgid "Checking…"
 msgstr "… ellenőrzése"
 
-#: web/templates/home.html:8
+#: web/templates/home.html:9
 msgid "Check unavailable"
 msgstr "Ellenőrzés nem elérhető"
 
-#: web/templates/home.html:11
+#: web/templates/home.html:12
 msgid "Library items"
 msgstr "Könyvtári dokumentumok"
 
-#: web/templates/home.html:11
+#: web/templates/home.html:12
 msgid "libraries across"
 msgstr "könyvtárak szerte"
 
-#: web/templates/home.html:11
+#: web/templates/home.html:12
 msgid "servers"
 msgstr "szerverek"
 
-#: web/templates/home.html:12
+#: web/templates/home.html:13
 msgid "Themes installed"
 msgstr "Telepített témák"
 
-#: web/templates/home.html:12
+#: web/templates/home.html:13
 msgid "Your library sounds better already."
 msgstr "Úgy tűnik, a könyvtárad máris jobb lett."
 
-#: web/templates/home.html:13
+#: web/templates/home.html:14
 msgid "Theme coverage"
 msgstr "A téma áttekintése"
 
-#: web/templates/home.html:14
+#: web/templates/home.html:15
 msgid "Review activity"
 msgstr "Tevékenységek áttekintése"
 
-#: web/templates/home.html:19
+#: web/templates/home.html:20
 msgid "LET’S SET THE TONE"
 msgstr "ÁLLÍTSUK BE A HANGULATOT!"
 
-#: web/templates/home.html:20
+#: web/templates/home.html:21
 msgid "Your library deserves a soundtrack."
 msgstr "A könyvtáradnak jár egy kísérőzene."
 
-#: web/templates/home.html:20
+#: web/templates/home.html:21
 msgid "Getting to know your library."
 msgstr "Ismerkedés a könyvtárral."
 
-#: web/templates/home.html:21
-msgid "Connect your Plex account, choose your servers, and let Themerr take care of the music."
-msgstr "Csatlakoztasd a Plex-fiókodat, válaszd ki a szervereidet, és bízd a zenét a Themerrre!"
+#: web/templates/home.html:22
+msgid "Connect Plex or Jellyfin, choose your servers, and let Themerr take care of the music."
+msgstr "Csatlakoztasd a Plexet vagy a Jellyfint, válaszd ki a szervereidet, és bízd a zenét a Themerrre!"
 
-#: web/templates/home.html:21
+#: web/templates/home.html:22
 msgid "Your first refresh is building the library view. Check Activity for progress, or request a refresh above."
 msgstr "Az első frissítés során a könyvtár nézetét töltjük be. Az előrehaladást az „Activity” menüpontban ellenőrizheti, vagy a fenti gombra kattintva kérheti a frissítést."
 
-#: web/templates/home.html:22
+#: web/templates/home.html:23
 msgid "Connect a server"
 msgstr "Szerver csatlakoztatása"
 
-#: web/templates/home.html:22 web/templates/home_db_not_cached.html:3
+#: web/templates/home.html:23 web/templates/home_db_not_cached.html:3
 msgid "View activity"
 msgstr "Tevékenységek megtekintése"
 
-#: web/templates/home.html:26
+#: web/templates/home.html:27
 msgid "Your libraries"
 msgstr "A könyvtáraid"
 
-#: web/templates/home.html:26
+#: web/templates/home.html:27
 msgid "items"
 msgstr "tételek"
 
-#: web/templates/home.html:28
+#: web/templates/home.html:29
 msgid "Search library items"
 msgstr "Könyvtári dokumentumok keresése"
 
-#: web/templates/home.html:28
+#: web/templates/home.html:29
 msgid "Search titles…"
 msgstr "Címek keresése…"
 
-#: web/templates/home.html:28 web/templates/logs.html:9
+#: web/templates/home.html:29 web/templates/logs.html:9
 msgid "Clear search"
 msgstr "Keresés törlése"
 
-#: web/templates/home.html:29
+#: web/templates/home.html:30
 msgid "Server"
 msgstr "Szerver"
 
-#: web/templates/home.html:29
+#: web/templates/home.html:30
 msgid "All servers"
 msgstr "Minden szerver"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "Type"
 msgstr "Típus"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "All types"
 msgstr "Minden típus"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "Movies"
 msgstr "Filmek"
 
-#: web/templates/home.html:30
+#: web/templates/home.html:31
 msgid "TV shows"
 msgstr "Tévéműsorok"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "Theme status"
 msgstr "A téma állapota"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "All statuses"
 msgstr "Minden állapot"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "Has a theme"
 msgstr "Van egy témája"
 
-#: web/templates/home.html:31
+#: web/templates/home.html:32
 msgid "No theme"
 msgstr "Nincs téma"
 
-#: web/templates/home.html:32
+#: web/templates/home.html:33
 msgid "Reset filters"
 msgstr "Szűrők visszaállítása"
 
-#: web/templates/home.html:38
+#: web/templates/home.html:39
 msgid "Library ID"
 msgstr "Könyvtári azonosító"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "Title"
 msgstr "Cím"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "Metadata ID"
 msgstr "Metadatok azonosítója"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "Theme"
 msgstr "Téma"
 
-#: web/templates/home.html:43
+#: web/templates/home.html:45
 msgid "ThemerrDB"
 msgstr "ThemerrDB"
 
-#: web/templates/home.html:56
+#: web/templates/home.html:58
 msgid "Pause theme for"
 msgstr "Szünet zene a"
 
-#: web/templates/home.html:56 web/templates/home.html:58
+#: web/templates/home.html:58 web/templates/home.html:60
 msgid "Play theme for"
 msgstr "A „Play” című dal témája"
 
-#: web/templates/home.html:57 web/templates/theme_player.html:2
-msgid "Unable to play this theme. Check the Plex connection and browser audio support."
-msgstr "A zene nem játszható le. Ellenőrizze a Plex-kapcsolatot és a böngésző hangtámogatását."
+#: web/templates/home.html:59 web/templates/theme_player.html:2
+msgid "Unable to play this theme. Check the server connection and browser audio support."
+msgstr "A zene nem játszható le. Ellenőrizze a szerverhez való kapcsolatot és a böngésző hangtámogatását."
 
-#: web/templates/home.html:64
-msgid "Open in Plex"
-msgstr "Megnyitás a Plexben"
+#: web/templates/home.html:66
+#, python-format
+msgid "Open in %(server)s"
+msgstr "Megnyitás %(server)s"
 
-#: web/templates/home.html:68 web/templates/home.html:76
+#: web/templates/home.html:70 web/templates/home.html:78
 msgid "External ID unavailable"
 msgstr "Külső azonosító nem elérhető"
 
-#: web/templates/home.html:70
+#: web/templates/home.html:72
 msgid "Failed to add theme"
 msgstr "A téma hozzáadása nem sikerült"
 
-#: web/templates/home.html:71
+#: web/templates/home.html:73
 msgid "Plex provided"
 msgstr "Plex biztosított"
 
-#: web/templates/home.html:72
+#: web/templates/home.html:74
 msgid "User provided"
 msgstr "Felhasználó által biztosított"
 
-#: web/templates/home.html:73
+#: web/templates/home.html:75
 msgid "Themerr provided"
 msgstr "Themerr feltéve, hogy"
 
-#: web/templates/home.html:74
+#: web/templates/home.html:76
 msgid "Unknown provider"
 msgstr "Ismeretlen szolgáltató"
 
-#: web/templates/home.html:75
+#: web/templates/home.html:77
 msgid "Missing from ThemerrDB"
 msgstr "Hiányzik a ThemerrDB-ből"
 
-#: web/templates/home.html:76
+#: web/templates/home.html:78
 msgid "TMDB ID unavailable"
 msgstr "A TMDB-azonosító nem elérhető"
 
-#: web/templates/home.html:77
+#: web/templates/home.html:79
 msgid "Theme not installed yet"
 msgstr "A téma még nincs telepítve"
 
-#: web/templates/home.html:80
+#: web/templates/home.html:82
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: web/templates/home.html:80
+#: web/templates/home.html:82
 msgid "Add"
-msgstr "Add"
+msgstr "Hozzáadás"
 
-#: web/templates/home.html:87
+#: web/templates/home.html:89
 msgid "No titles match."
 msgstr "Nincs egyező cím."
 
-#: web/templates/home.html:87
+#: web/templates/home.html:89
 msgid "Try another search or reset your filters."
 msgstr "Próbáljon meg egy másik keresést, vagy állítsa vissza a szűrőket."
 
@@ -1185,7 +1319,7 @@ msgstr "A MUNKAKÖRNYEZETED"
 msgid "Workspace pages"
 msgstr "Munkaterületi oldalak"
 
-#: web/templates/navbar.html:6 web/templates/servers.html:3
+#: web/templates/navbar.html:6 web/templates/servers.html:4
 msgid "Servers"
 msgstr "Szerverek"
 
@@ -1213,157 +1347,217 @@ msgstr "Támogasd a LizardByte-ot"
 msgid "Sign out"
 msgstr "Kijelentkezés"
 
-#: web/templates/servers.html:3
+#: web/templates/servers.html:4
 msgid "ONE WORKSPACE. EVERY SERVER."
 msgstr "EGY MUNKAKÖRNYEZET. MINDEN SZERVER."
 
-#: web/templates/servers.html:3
-msgid "Connect your Plex account, then choose where the music goes."
-msgstr "Csatlakoztasd a Plex-fiókodat, majd válaszd ki, hová szeretnéd menteni a zenét."
+#: web/templates/servers.html:4
+msgid "Connect Plex or Jellyfin, then choose where the music goes."
+msgstr "Csatlakoztasd a Plexet vagy a Jellyfint, majd válaszd ki, hová kerüljön a zene."
 
-#: web/templates/servers.html:3
+#: web/templates/servers.html:4
 msgid "saved"
 msgstr "mentve"
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Your Plex account"
 msgstr "A Plex-fiókod"
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Account linked. Choose a server below."
 msgstr "A fiók összekapcsolva. Válasszon ki egy szervert az alábbiak közül."
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Link your account securely through Plex to access your servers."
 msgstr "Csatlakoztassa fiókját biztonságosan a Plexen keresztül, hogy hozzáférhessen a szervereihez."
 
-#: web/templates/servers.html:6
+#: web/templates/servers.html:7
 msgid "Continue Plex sign-in"
 msgstr "Folytatás: Bejelentkezés a Plexbe"
 
-#: web/templates/servers.html:7
+#: web/templates/servers.html:8
 msgid "Reconnect account"
 msgstr "Fiók újracsatlakoztatása"
 
-#: web/templates/servers.html:7
+#: web/templates/servers.html:8
 msgid "Connect Plex account"
 msgstr "Plex-fiók összekapcsolása"
 
-#: web/templates/servers.html:7
+#: web/templates/servers.html:8
 msgid "Disconnect"
 msgstr "Kapcsolat bontása"
 
-#: web/templates/servers.html:9
+#: web/templates/servers.html:10
 msgid "Connected servers"
 msgstr "Csatlakoztatott szerverek"
 
-#: web/templates/servers.html:9
+#: web/templates/servers.html:10
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "A témák előzményei és a könyvtárbeállítások szerverenként külön-külön kerülnek tárolásra."
 
-#: web/templates/servers.html:13
+#: web/templates/servers.html:14
 msgid "Enabled"
 msgstr "Engedélyezve"
 
-#: web/templates/servers.html:16
+#: web/templates/servers.html:20
+msgid "Themerr address reachable from Jellyfin"
+msgstr "A Themerr címe a Jellyfinről elérhető"
+
+#: web/templates/servers.html:22
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "Használja a Themerr önaláírt tanúsítványához tartozó, kizárólag csatlakozót tartalmazó HTTP-címet, vagy egy olyan HTTPS-címet, amelyhez a Jellyfin megbízható tanúsítványt rendel. Távoli Jellyfin vagy Docker esetén cserélje ki a „localhost” szót egy olyan címre, amely a Jellyfinből elérhető."
+
+#: web/templates/servers.html:23
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "A Jellyfin a telepítés után, a lejátszás befejezése után újraindul."
+
+#: web/templates/servers.html:23
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "A Jellyfin a telepítés után újraindul. Az éppen folyó lejátszás megszakadhat."
+
+#: web/templates/servers.html:23
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "Az automatikus újraindítások le vannak tiltva. A telepítés után indítsa újra a Jellyfin programot."
+
+#: web/templates/servers.html:24
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "A régebbi Themerr-jellyfin bővítmény és a hozzá tartozó tároló eltávolításra kerül. A meglévő témák megmaradnak."
+
+#: web/templates/servers.html:28
+msgid "Force restart"
+msgstr "Kényszerindítás"
+
+#: web/templates/servers.html:32
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "Engedélyezze a „Theme songs” opciót az egyes Jellyfin-kliensek „Kijelző” beállításaiban. A Jellyfin ezt a beállítást a kliensen tárolja, ezért a Themerr nem tudja azt a szerver API-ján keresztül módosítani."
+
+#: web/templates/servers.html:32
+msgid "Open Jellyfin display settings"
+msgstr "A Jellyfin megjelenítési beállításainak megnyitása"
+
+#: web/templates/servers.html:33
 msgid "Last library refresh"
 msgstr "A könyvtár legutóbbi frissítése"
 
-#: web/templates/servers.html:16
+#: web/templates/servers.html:33
 msgid "Not yet refreshed"
 msgstr "Még nem frissült"
 
-#: web/templates/servers.html:17
+#: web/templates/servers.html:34
 msgid "Processing settings"
 msgstr "Feldolgozási beállítások"
 
-#: web/templates/servers.html:19
+#: web/templates/servers.html:36
 msgid "Process this server"
 msgstr "A szerver feldolgozása"
 
-#: web/templates/servers.html:20
+#: web/templates/servers.html:37
 msgid "optional"
 msgstr "opcionális"
 
-#: web/templates/servers.html:21
+#: web/templates/servers.html:38
 msgid "Browse Plex data directory"
 msgstr "A Plex adatkönyvtárának böngészése"
 
-#: web/templates/servers.html:22
+#: web/templates/servers.html:39
 msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
 msgstr "A helyi vagy csatlakoztatott Plex-adatkatalógus kizárólag a régebben feltöltött fájlok eltávolításához szükséges. Távoli szerverek esetén hagyja üresen ezt a mezőt."
 
-#: web/templates/servers.html:23
+#: web/templates/servers.html:40
 msgid "Ignored libraries"
 msgstr "Figyelmen kívül hagyott könyvtárak"
 
-#: web/templates/servers.html:29
+#: web/templates/servers.html:46
 msgid "Library"
 msgstr "Könyvtár"
 
-#: web/templates/servers.html:32
+#: web/templates/servers.html:49
 msgid "Open the list to load this server’s libraries."
 msgstr "Nyissa meg a listát a szerver könyvtárainak betöltéséhez."
 
-#: web/templates/servers.html:35
+#: web/templates/servers.html:52
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "Válaszd ki azokat a könyvtárakat, amelyeket ki szeretnél zárni a témafrissítésekből. Ha az összes jelölőnégyzetet bejelöletlenül hagyod, akkor minden könyvtár feldolgozásra kerül."
 
-#: web/templates/servers.html:36
+#: web/templates/servers.html:53
 msgid "Save settings"
 msgstr "Beállítások mentése"
 
-#: web/templates/servers.html:36
+#: web/templates/servers.html:53
 msgid "Remove server"
 msgstr "A szerver eltávolítása"
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:57
 msgid "Your first server starts here."
 msgstr "Az első szervered itt kezdődik."
 
-#: web/templates/servers.html:40
-msgid "Link Plex above, then discover or add an address below."
-msgstr "Kattints a fenti Plex linkre, majd az alábbiak közül válassz ki vagy add hozzá egy címet."
+#: web/templates/servers.html:57
+msgid "Link Plex above or add a Jellyfin server below."
+msgstr "Kattints a fenti Plex linkre, vagy add hozzá az alábbi Jellyfin-kiszolgálót."
 
-#: web/templates/servers.html:43
+#: web/templates/servers.html:60
 msgid "Add a server"
 msgstr "Szerver hozzáadása"
 
-#: web/templates/servers.html:43
+#: web/templates/servers.html:61
+msgid "Server type"
+msgstr "Szerver típusa"
+
+#: web/templates/servers.html:66
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Válasszon ki egy szervert a Plex-fiókjából, keressen egyet a közelben, vagy adjon meg egy ismert címet."
 
-#: web/templates/servers.html:44
+#: web/templates/servers.html:67
 msgid "Find account servers"
 msgstr "Fiókszerverek keresése"
 
-#: web/templates/servers.html:44
+#: web/templates/servers.html:67
 msgid "Discover on LAN"
 msgstr "Fedezd fel a LAN-on"
 
-#: web/templates/servers.html:44
+#: web/templates/servers.html:67
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "A LAN-felismerés az alkalmazás hálózatán a Plex GDM-et használja."
 
-#: web/templates/servers.html:45
+#: web/templates/servers.html:68
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "A fiókcímeket a Plex teszi közzé, és előfordulhat, hogy azok nem érhetők el. A plex.direct HTTPS-címek a Plex tanúsítványát használják. Válasszon egy olyan címet, amely a Themerr programot futtató gépről elérhető, vagy írjon be kézzel egy ismert címet."
 
-#: web/templates/servers.html:47
+#: web/templates/servers.html:70
 msgid "Enter an address manually"
 msgstr "Cím kézi megadása"
 
-#: web/templates/servers.html:48
+#: web/templates/servers.html:71
 msgid "Plex server address"
 msgstr "A Plex-kiszolgáló címe"
 
-#: web/templates/servers.html:48
-msgid "Connect server"
-msgstr "Csatlakozás a szerverhez"
-
-#: web/templates/servers.html:48
+#: web/templates/servers.html:71
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Használjon LAN-címet vagy érvényes HTTPS-Plex-címet. A kapcsolt Plex-fiókjának hozzáférési jogosultsággal kell rendelkeznie. Egy meglévő szerver hozzáadásával frissül a szerver címe."
+
+#: web/templates/servers.html:75
+msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
+msgstr "A Jellyfin 10.11 és 12.1 verziói támogatottak. Hozzon létre egy rendszergazdai API-kulcsot a Jellyfin Dashboard – API-kulcsok menüpontjában."
+
+#: web/templates/servers.html:77
+msgid "Jellyfin server address"
+msgstr "A Jellyfin szerver címe"
+
+#: web/templates/servers.html:79
+msgid "Jellyfin API key"
+msgstr "Jellyfin API-kulcs"
+
+#: web/templates/servers.html:81
+msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
+msgstr "A kulcsok a biztonságos hitelesítőadat-tárolóban maradnak. A csatlakozás után állítsa be a fenti szerverkártyán a elérhető Themerr-címet."
+
+#: web/templates/servers.html:84
+msgid "Discover Jellyfin on LAN"
+msgstr "Fedezze fel a Jellyfin-t a LAN-on"
+
+#: web/templates/servers.html:86
+msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
+msgstr "A Themerr hálózatán a 7359-es UDP-portot használja. Továbbra is szükség van egy API-kulcsra."
 
 #: web/templates/theme_player.html:1
 msgid "Theme player"
