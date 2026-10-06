@@ -71,9 +71,14 @@ jobs:
           dotnet format connectors/jellyfin/Themerr.Connector.csproj --verify-no-changes --no-restore
           dotnet format connectors/jellyfin.tests/Connector.Tests.csproj --verify-no-changes
 
-      - name: Test Jellyfin ABIs with coverage
+      - name: Test Jellyfin SDK baselines with coverage
         id: test
         run: uv run --no-project --python ${{ env.PYTHON_VERSION }} scripts/test_connector.py
+
+      - name: Validate connector installation and ownership on Jellyfin servers
+        env:
+          THEMERR_VERSION: ${{ needs.setup_release.outputs.release_version }}
+        run: uv run --locked --python ${{ env.PYTHON_VERSION }} scripts/smoke_connector.py
 
       - name: Upload connector coverage
         if: >-
@@ -83,7 +88,7 @@ jobs:
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         with:
           fail_ci_if_error: true
-          files: ./coverage/connector-10.11/coverage.opencover.xml,./coverage/connector-12.1/coverage.opencover.xml
+          files: ${{ steps.test.outputs.coverage_files }}
           flags: jellyfin-connector
           report_type: coverage
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -96,7 +101,7 @@ jobs:
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5  # v7.1.1
         with:
           fail_ci_if_error: true
-          files: ./coverage/connector-10.11/junit.xml,./coverage/connector-12.1/junit.xml
+          files: ${{ steps.test.outputs.test_files }}
           flags: jellyfin-connector
           report_type: test_results
           token: ${{ secrets.CODECOV_TOKEN }}

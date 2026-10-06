@@ -14,27 +14,38 @@ from sqlalchemy.orm import Session
 from common import definitions, version
 from common.path_policy import resolve_file_path
 from jellyfin.client import base_url
+from jellyfin.compatibility import PROFILES, select
 from media_servers.base import MediaServerError
 from themerr import storage
 
 PLUGIN_ID = 'f9a117dc-b44a-4507-9706-241837784369'
 PLUGIN_NAME = 'Themerr Connector'
-ARCHIVES = {
-    '10.11': 'connector-10.11.zip',
-    '12.1': 'connector-12.1.zip',
-}
+ARCHIVES = {series: values['ConnectorArchive'] for series, values in PROFILES.items()}
 MANIFEST_PATH = '/jellyfin/connector/manifest.json'
-PROFILE_MANIFESTS = {
-    '10.11': '/jellyfin/connector/manifest-10.11.json',
-    '12.1': '/jellyfin/connector/manifest-12.1.json',
+PROFILE_MANIFESTS = {series: values['ConnectorManifest'] for series, values in PROFILES.items()}
+MANIFEST_PROFILES = {
+    path: series
+    for series, values in PROFILES.items()
+    for path in [
+        values['ConnectorManifest'],
+        *filter(None, values.get('ConnectorManifestAliases', '').split(';')),
+    ]
+}
+ARCHIVE_PATHS = {
+    f'/jellyfin/connector/{name}': values['ConnectorArchive']
+    for values in PROFILES.values()
+    for name in [
+        values['ConnectorArchive'],
+        *filter(None, values.get('ConnectorArchiveAliases', '').split(';')),
+    ]
 }
 THUMBNAIL_PATH = '/jellyfin/connector/thumb.png'
 PUBLIC_PATHS = frozenset(
     [
         MANIFEST_PATH,
         THUMBNAIL_PATH,
-        *PROFILE_MANIFESTS.values(),
-        *(f'/jellyfin/connector/{name}' for name in ARCHIVES.values()),
+        *MANIFEST_PROFILES,
+        *ARCHIVE_PATHS,
     ]
 )
 _install_lock = RLock()
@@ -57,6 +68,11 @@ def bundle():
             raise ValueError
         if set(data['artifacts']) != set(ARCHIVES) or len(data['build']) != 64:
             raise ValueError
+        if any(
+            data['artifacts'][series]['targetAbi'] != values['JellyfinMinimumVersion']
+            for series, values in PROFILES.items()
+        ):
+            raise ValueError
         return data
     except (
         OSError,
@@ -70,11 +86,14 @@ def bundle():
 
 
 def profile(server_version):
-    """Select an explicitly supported Jellyfin minor version instead of guessing ABI compatibility."""
-    key = '.'.join(str(server_version).split('.')[:2])
-    if key not in ARCHIVES:
-        raise MediaServerError('This build supports Jellyfin 10.11 and 12.1.', 400)
-    return key
+    """Select a stable server's compatibility series within its explicit version boundaries."""
+    try:
+        return select(server_version)
+    except ValueError as exc:
+        supported = ' and '.join(
+            f'{series}.x (>= {values["JellyfinMinimumVersion"]})' for series, values in PROFILES.items()
+        )
+        raise MediaServerError(f'This build supports Jellyfin {supported}.', 400) from exc
 
 
 def repository_url(value=None, required=True):
@@ -235,7 +254,7 @@ def _register_repository(connection, url, manifest_url):
         f'{url}{path}'
         for path in (
             MANIFEST_PATH,
-            *PROFILE_MANIFESTS.values(),
+            *MANIFEST_PROFILES,
         )
     }
     repositories = [entry for entry in repositories if entry.get('Url') not in owned_repositories]

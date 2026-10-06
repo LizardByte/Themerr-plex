@@ -35,7 +35,7 @@ def test_repository_is_public_but_setup_and_sibling_paths_are_private(browser, c
         result = browser.get(path)
         assert result.status_code == 200
         assert len(result.json()[0]['versions']) == 1
-        assert result.json()[0]['versions'][0]['targetAbi'] == key + '.0'
+        assert result.json()[0]['versions'][0]['targetAbi'] == connector.PROFILES[key]['JellyfinMinimumVersion']
         assert browser.head(path).content == b''
     image = browser.get(connector.THUMBNAIL_PATH)
     assert image.status_code == 200
@@ -68,7 +68,22 @@ def test_repository_rejects_unmapped_paths(browser, connector_bundle, path):
     assert browser.get('/jellyfin/connector/' + path).status_code == 404
 
 
-@pytest.mark.parametrize('filename', ['connector-12.1.zip', 'thumb.png'])
+def test_saved_12_1_repository_aliases_serve_the_12_series(browser, connector_bundle):
+    connector.repository_url('http://themerr.example:9494')
+    manifest = browser.get('/jellyfin/connector/manifest-12.1.json')
+    assert manifest.status_code == 200
+    versions = manifest.json()[0]['versions']
+    assert len(versions) == 1
+    assert versions[0]['targetAbi'] == '12.1.0'
+    assert versions[0]['sourceUrl'].endswith('/connector-12.zip')
+    assert browser.head('/jellyfin/connector/manifest-12.1.json').content == b''
+    archive = browser.get('/jellyfin/connector/connector-12.1.zip')
+    assert archive.status_code == 200
+    assert archive.content == browser.get('/jellyfin/connector/connector-12.zip').content
+    assert browser.head('/jellyfin/connector/connector-12.1.zip').content == b''
+
+
+@pytest.mark.parametrize('filename', ['connector-12.zip', 'thumb.png'])
 def test_artifact_symlink_escape_is_rejected(browser, connector_bundle, tmp_path, filename):
     directory = connector.directory()
     target = tmp_path / 'connector-sibling'

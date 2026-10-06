@@ -29,8 +29,9 @@ def builder(tmp_path, monkeypatch):
     directory = tmp_path / 'jellyfin-connector'
     directory.mkdir()
     (directory / module['THUMBNAIL']).write_bytes(thumbnail)
-    for profile, (abi, _) in module['PROFILES'].items():
-        archive = directory / ('connector-' + profile + '.zip')
+    for profile, values in module['PROFILES'].items():
+        abi = values['JellyfinMinimumVersion']
+        archive = directory / values['ConnectorArchive']
         with zipfile.ZipFile(archive, 'w') as content:
             content.writestr('Themerr.Connector.dll', b'assembly')
         artifacts[profile] = {'version': '2026.1004.1200.0', 'targetAbi': abi,
@@ -100,16 +101,16 @@ def test_stale_or_modified_bundles_fail_before_packaging(builder, monkeypatch, c
     elif change == 'release':
         monkeypatch.setenv('THEMERR_VERSION', '2026.1004.130000')
     elif change == 'checksum':
-        (directory / 'connector-12.1.zip').write_bytes(b'changed')
+        (directory / 'connector-12.zip').write_bytes(b'changed')
     elif change == 'abi':
-        data['artifacts']['12.1']['targetAbi'] = '13.0.0'
+        data['artifacts']['12']['targetAbi'] = '13.0.0'
     elif change == 'version':
-        data['artifacts']['12.1']['version'] = '2026.1004.1200.1'
+        data['artifacts']['12']['version'] = '2026.1004.1200.1'
     else:
-        archive = directory / 'connector-12.1.zip'
+        archive = directory / 'connector-12.zip'
         with zipfile.ZipFile(archive, 'a') as content:
             content.writestr('unexpected.txt', 'unexpected')
-        data['artifacts']['12.1']['checksum'] = hashlib.md5(
+        data['artifacts']['12']['checksum'] = hashlib.md5(
             archive.read_bytes(), usedforsecurity=False).hexdigest()
     (directory / 'bundle.json').write_text(json.dumps(data), encoding='utf-8')
     with pytest.raises(ValueError):

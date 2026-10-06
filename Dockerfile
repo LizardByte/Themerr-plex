@@ -6,6 +6,7 @@ COPY connectors/jellyfin/ connectors/jellyfin/
 COPY connectors/Directory.Build.props connectors/Directory.Build.props
 COPY .editorconfig .editorconfig
 COPY scripts/build_connector.py scripts/build_connector.py
+COPY src/jellyfin/compatibility.py src/jellyfin/compatibility.props src/jellyfin/
 COPY src/common/version.py src/common/version.py
 ARG BUILD_VERSION
 ARG THEMERR_VERSION=${BUILD_VERSION}

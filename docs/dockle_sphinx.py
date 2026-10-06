@@ -2,7 +2,7 @@
 
 # standard imports
 import sys
-import xml.etree.ElementTree as ET
+import runpy
 
 # Add the standalone source tree for autodoc.
 sys.path.insert(0, str(dockle_project_root / 'src'))  # noqa: F821 - injected by Dockle
@@ -58,20 +58,16 @@ intersphinx_mapping = {
 }
 
 # Match public dependency links to the connector's default Jellyfin build.
-connector_project = ET.parse(
-    dockle_project_root / 'connectors' / 'jellyfin' / 'Themerr.Connector.csproj',  # noqa: F821 - injected by Dockle
-).getroot()
-framework = connector_project.findtext('./PropertyGroup/ConnectorFramework')
+compatibility = runpy.run_path(
+    str(dockle_project_root / 'src/jellyfin/compatibility.py'),  # noqa: F821 - injected by Dockle
+)
+profile = compatibility['PROFILES'][compatibility['DEFAULT_SERIES']]
+framework = profile['ConnectorFramework']
 dotnet_version = framework.removeprefix('net')
-jellyfin_version = connector_project.findtext('./PropertyGroup/JellyfinVersion')
+jellyfin_version = profile['JellyfinMinimumVersion']
 jellyfin_tag = jellyfin_version.removesuffix('.0') if int(jellyfin_version.split('.')[0]) >= 12 else jellyfin_version
 jellyfin_source = f'https://github.com/jellyfin/jellyfin/blob/v{jellyfin_tag}'
-efcore_version = next(
-    package.attrib['Version']
-    for package in connector_project.iter('PackageReference')
-    if package.attrib['Include'] == 'Microsoft.EntityFrameworkCore.Sqlite'
-    and framework in package.attrib.get('Condition', '')
-)
+efcore_version = profile['ConnectorEfCoreVersion']
 efcore_doc_version = '.'.join(efcore_version.split('.')[:2])
 
 breathe_default_project = 'Themerr.Connector'

@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../src/jellyfin/compatibility.props" />
   <PropertyGroup>
-    <ConnectorFramework Condition="'$(ConnectorFramework)' == ''">net10.0</ConnectorFramework>
     <TargetFramework>$(ConnectorFramework)</TargetFramework>
-    <JellyfinVersion Condition="'$(JellyfinVersion)' == ''">12.1.0</JellyfinVersion>
     <ConnectorBuild Condition="'$(ConnectorBuild)' == ''">development</ConnectorBuild>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -16,9 +15,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Jellyfin.Controller" Version="$(JellyfinVersion)" PrivateAssets="all" />
     <!-- Match the EF Core/SQLite versions used by these Jellyfin SDKs. Runtime DLLs are supplied by Jellyfin. -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.10" Condition="'$(ConnectorFramework)' == 'net9.0'" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" Condition="'$(ConnectorFramework)' == 'net10.0'" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(ConnectorEfCoreVersion)" PrivateAssets="all" />
     <AssemblyMetadata Include="ThemerrBuild" Value="$(ConnectorBuild)" />
-    <AssemblyMetadata Include="JellyfinAbi" Value="$(JellyfinVersion)" />
+    <AssemblyMetadata Include="JellyfinAbi" Value="$(JellyfinMinimumVersion)" />
   </ItemGroup>
 </Project>
