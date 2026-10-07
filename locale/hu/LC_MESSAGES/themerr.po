@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2026-10-07 04:35\n"
+"PO-Revision-Date: 2026-10-07 14:32\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -292,7 +292,7 @@ msgstr "Plex URL"
 msgid "The URL to the Plex server."
 msgstr "A Plex-kiszolgáló URL-címe."
 
-#: src/common/config.py:316 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "A Plex adatkönyvtára"
 
@@ -652,7 +652,7 @@ msgid "Live"
 msgstr "Élőben"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Paused"
 msgstr "Szüneteltetve"
 
@@ -660,60 +660,68 @@ msgstr "Szüneteltetve"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "A frissítés nem sikerült. Az utoljára betöltött rekordok jelennek meg."
 
-#: web/js/servers.js:45 web/templates/servers.html:42
+#: web/js/servers.js:32
+msgid "Verifying SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:64
+msgid "Checking SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
 msgstr "A figyelmen kívül hagandó könyvtárak kiválasztása"
 
-#: web/js/servers.js:54
+#: web/js/servers.js:125
 msgid "Loading libraries…"
 msgstr "Könyvtárak betöltése…"
 
-#: web/js/servers.js:78
+#: web/js/servers.js:149
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "A rendszer a gyorsítótárban tárolt könyvtárakat jeleníti meg. Engedélyezze a szervert, vagy csatlakoztassa újra, hogy betöltse az aktuális könyvtárakat."
 
-#: web/js/servers.js:80
+#: web/js/servers.js:151
 msgid "This server has no libraries."
 msgstr "Ezen a szerveren nincsenek könyvtárak."
 
-#: web/js/servers.js:86
+#: web/js/servers.js:157
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "A könyvtárak betöltése nem sikerült. A kiválasztott elemek megmaradnak. Zárja be, majd nyissa meg újra a listát, és próbálja meg újra."
 
-#: web/js/servers.js:130 web/js/servers.js:296
+#: web/js/servers.js:201 web/js/servers.js:368
 msgid "Connected"
 msgstr "Csatlakoztatva"
 
-#: web/js/servers.js:130 web/templates/servers.html:71
-#: web/templates/servers.html:83
+#: web/js/servers.js:201 web/templates/servers.html:132
+#: web/templates/servers.html:144
 msgid "Connect"
 msgstr "Csatlakozás"
 
-#: web/js/servers.js:278
+#: web/js/servers.js:350
 msgid "Looking for Jellyfin servers…"
 msgstr "Jellyfin-kiszolgálókat keresek…"
 
-#: web/js/servers.js:284
+#: web/js/servers.js:356
 msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
 msgstr "Egyetlen Jellyfin-kiszolgáló sem válaszolt. Ellenőrizze az UDP 7359-es portot és a helyi hálózat felderítését, vagy adja meg a címet manuálisan."
 
-#: web/js/servers.js:296
+#: web/js/servers.js:368
 msgid "Use this address"
 msgstr "Használd ezt a címet"
 
-#: web/js/servers.js:325 web/templates/servers.html:26
+#: web/js/servers.js:397 web/templates/servers.html:87
 msgid "Save connector address"
 msgstr "Csatlakozó címének mentése"
 
-#: web/js/servers.js:325 web/templates/servers.html:27
+#: web/js/servers.js:397 web/templates/servers.html:88
 msgid "Install matching connector"
 msgstr "Szerelje be a megfelelő csatlakozót"
 
-#: web/js/servers.js:330
+#: web/js/servers.js:402
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr "Ez a szerver nem tudja magát újraindítani. Indítsa újra a szolgáltatását vagy a konténerét."
 
-#: web/js/servers.js:362
+#: web/js/servers.js:434
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr "Most újraindítsa a Jellyfin-t? Az aktív lejátszás megszakad."
 
@@ -750,7 +758,7 @@ msgid "No tasks have run yet. Request a scan, or wait for the next scheduled ref
 msgstr "Még nem futott le egyetlen feladat sem. Kérjen lefutást, vagy várja meg a következő ütemezett frissítést."
 
 #: web/templates/activity.html:7 web/templates/home.html:15
-#: web/templates/home.html:32 web/templates/servers.html:14
+#: web/templates/home.html:32 web/templates/servers.html:18
 msgid "Needs attention"
 msgstr "Figyelmet igényel"
 
@@ -830,7 +838,7 @@ msgstr "A könyvtáraid már alig várják a következő zenei aláfestést."
 msgid "Username"
 msgstr "Felhasználónév"
 
-#: web/templates/auth.html:30
+#: web/templates/auth.html:30 web/templates/servers.html:51
 msgid "Password"
 msgstr "Jelszó"
 
@@ -1415,167 +1423,271 @@ msgstr "Csatlakoztatott szerverek"
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "A témák előzményei és a könyvtárbeállítások szerverenként külön-külön kerülnek tárolásra."
 
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Enabled"
 msgstr "Engedélyezve"
 
-#: web/templates/servers.html:20
-msgid "Themerr address reachable from Jellyfin"
-msgstr "A Themerr címe a Jellyfinről elérhető"
+#: web/templates/servers.html:26
+msgid "Last library refresh"
+msgstr "A könyvtár legutóbbi frissítése"
 
-#: web/templates/servers.html:22
-msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
-msgstr "Használja a Themerr önaláírt tanúsítványához tartozó, kizárólag csatlakozót tartalmazó HTTP-címet, vagy egy olyan HTTPS-címet, amelyhez a Jellyfin megbízható tanúsítványt rendel. Távoli Jellyfin vagy Docker esetén cserélje ki a „localhost” szót egy olyan címre, amely a Jellyfinből elérhető."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation, once playback finishes."
-msgstr "A Jellyfin a telepítés után, a lejátszás befejezése után újraindul."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation. Active playback may be interrupted."
-msgstr "A Jellyfin a telepítés után újraindul. Az éppen folyó lejátszás megszakadhat."
-
-#: web/templates/servers.html:23
-msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
-msgstr "Az automatikus újraindítások le vannak tiltva. A telepítés után indítsa újra a Jellyfin programot."
-
-#: web/templates/servers.html:24
-msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
-msgstr "A régebbi Themerr-jellyfin bővítmény és a hozzá tartozó tároló eltávolításra kerül. A meglévő témák megmaradnak."
+#: web/templates/servers.html:26
+msgid "Not yet refreshed"
+msgstr "Még nem frissült"
 
 #: web/templates/servers.html:28
 msgid "Force restart"
 msgstr "Kényszerindítás"
 
 #: web/templates/servers.html:32
-msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
-msgstr "Engedélyezze a „Theme songs” opciót az egyes Jellyfin-kliensek „Kijelző” beállításaiban. A Jellyfin ezt a beállítást a kliensen tárolja, ezért a Themerr nem tudja azt a szerver API-ján keresztül módosítani."
-
-#: web/templates/servers.html:32
-msgid "Open Jellyfin display settings"
-msgstr "A Jellyfin megjelenítési beállításainak megnyitása"
+msgid "SSH cleanup"
+msgstr ""
 
 #: web/templates/servers.html:33
-msgid "Last library refresh"
-msgstr "A könyvtár legutóbbi frissítése"
-
-#: web/templates/servers.html:33
-msgid "Not yet refreshed"
-msgstr "Még nem frissült"
+msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
+msgstr ""
 
 #: web/templates/servers.html:34
-msgid "Processing settings"
-msgstr "Feldolgozási beállítások"
+msgid "SSH setup guide with Windows examples"
+msgstr ""
 
 #: web/templates/servers.html:36
-msgid "Process this server"
-msgstr "A szerver feldolgozása"
+msgid "SSH hostname or IP address"
+msgstr ""
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:38
+msgid "SSH port"
+msgstr ""
+
+#: web/templates/servers.html:40
+msgid "SSH username"
+msgstr ""
+
+#: web/templates/servers.html:42
+msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
+msgstr ""
+
+#: web/templates/servers.html:43
+msgid "Verified SSH host fingerprint"
+msgstr ""
+
+#: web/templates/servers.html:45
+msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
+msgstr ""
+
+#: web/templates/servers.html:46
+msgid "Remote Plex data directory"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "For a restricted SFTP account, use the path visible inside that account."
+msgstr ""
+
+#: web/templates/servers.html:49
+msgid "SSH authentication"
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid "Private key"
+msgstr ""
+
+#: web/templates/servers.html:54
+msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
+msgstr ""
+
+#: web/templates/servers.html:56
+msgid "SSH private key"
+msgstr ""
+
+#: web/templates/servers.html:58
+msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
+msgstr ""
+
+#: web/templates/servers.html:59
+msgid "Private key passphrase"
+msgstr ""
+
+#: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
 msgstr "opcionális"
 
-#: web/templates/servers.html:38
+#: web/templates/servers.html:61
+msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
+msgstr ""
+
+#: web/templates/servers.html:64
+msgid "Server account password"
+msgstr ""
+
+#: web/templates/servers.html:66
+msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
+msgstr ""
+
+#: web/templates/servers.html:68
+msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
+msgstr ""
+
+#: web/templates/servers.html:70
+msgid "Verify and save SSH"
+msgstr ""
+
+#: web/templates/servers.html:71
+msgid "Check connection"
+msgstr ""
+
+#: web/templates/servers.html:72
+msgid "Disable SSH"
+msgstr ""
+
+#: web/templates/servers.html:79
+msgid "Connector address"
+msgstr ""
+
+#: web/templates/servers.html:81
+msgid "Themerr address reachable from Jellyfin"
+msgstr "A Themerr címe a Jellyfinről elérhető"
+
+#: web/templates/servers.html:83
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "Használja a Themerr önaláírt tanúsítványához tartozó, kizárólag csatlakozót tartalmazó HTTP-címet, vagy egy olyan HTTPS-címet, amelyhez a Jellyfin megbízható tanúsítványt rendel. Távoli Jellyfin vagy Docker esetén cserélje ki a „localhost” szót egy olyan címre, amely a Jellyfinből elérhető."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "A Jellyfin a telepítés után, a lejátszás befejezése után újraindul."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "A Jellyfin a telepítés után újraindul. Az éppen folyó lejátszás megszakadhat."
+
+#: web/templates/servers.html:84
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "Az automatikus újraindítások le vannak tiltva. A telepítés után indítsa újra a Jellyfin programot."
+
+#: web/templates/servers.html:85
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "A régebbi Themerr-jellyfin bővítmény és a hozzá tartozó tároló eltávolításra kerül. A meglévő témák megmaradnak."
+
+#: web/templates/servers.html:92
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "Engedélyezze a „Theme songs” opciót az egyes Jellyfin-kliensek „Kijelző” beállításaiban. A Jellyfin ezt a beállítást a kliensen tárolja, ezért a Themerr nem tudja azt a szerver API-ján keresztül módosítani."
+
+#: web/templates/servers.html:92
+msgid "Open Jellyfin display settings"
+msgstr "A Jellyfin megjelenítési beállításainak megnyitása"
+
+#: web/templates/servers.html:95
+msgid "Processing settings"
+msgstr "Feldolgozási beállítások"
+
+#: web/templates/servers.html:97
+msgid "Process this server"
+msgstr "A szerver feldolgozása"
+
+#: web/templates/servers.html:99
 msgid "Browse Plex data directory"
 msgstr "A Plex adatkönyvtárának böngészése"
 
-#: web/templates/servers.html:39
-msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "A helyi vagy csatlakoztatott Plex-adatkatalógus kizárólag a régebben feltöltött fájlok eltávolításához szükséges. Távoli szerverek esetén hagyja üresen ezt a mezőt."
+#: web/templates/servers.html:100
+msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
+msgstr ""
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:101
 msgid "Ignored libraries"
 msgstr "Figyelmen kívül hagyott könyvtárak"
 
-#: web/templates/servers.html:46
+#: web/templates/servers.html:107
 msgid "Library"
 msgstr "Könyvtár"
 
-#: web/templates/servers.html:49
+#: web/templates/servers.html:110
 msgid "Open the list to load this server’s libraries."
 msgstr "Nyissa meg a listát a szerver könyvtárainak betöltéséhez."
 
-#: web/templates/servers.html:52
+#: web/templates/servers.html:113
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "Válaszd ki azokat a könyvtárakat, amelyeket ki szeretnél zárni a témafrissítésekből. Ha az összes jelölőnégyzetet bejelöletlenül hagyod, akkor minden könyvtár feldolgozásra kerül."
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Save settings"
 msgstr "Beállítások mentése"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Remove server"
 msgstr "A szerver eltávolítása"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Your first server starts here."
 msgstr "Az első szervered itt kezdődik."
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Link Plex above or add a Jellyfin server below."
 msgstr "Kattints a fenti Plex linkre, vagy add hozzá az alábbi Jellyfin-kiszolgálót."
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:121
 msgid "Add a server"
 msgstr "Szerver hozzáadása"
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:122
 msgid "Server type"
 msgstr "Szerver típusa"
 
-#: web/templates/servers.html:66
+#: web/templates/servers.html:127
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Válasszon ki egy szervert a Plex-fiókjából, keressen egyet a közelben, vagy adjon meg egy ismert címet."
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Find account servers"
 msgstr "Fiókszerverek keresése"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Discover on LAN"
 msgstr "Fedezd fel a LAN-on"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "A LAN-felismerés az alkalmazás hálózatán a Plex GDM-et használja."
 
-#: web/templates/servers.html:68
+#: web/templates/servers.html:129
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "A fiókcímeket a Plex teszi közzé, és előfordulhat, hogy azok nem érhetők el. A plex.direct HTTPS-címek a Plex tanúsítványát használják. Válasszon egy olyan címet, amely a Themerr programot futtató gépről elérhető, vagy írjon be kézzel egy ismert címet."
 
-#: web/templates/servers.html:70
+#: web/templates/servers.html:131
 msgid "Enter an address manually"
 msgstr "Cím kézi megadása"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Plex server address"
 msgstr "A Plex-kiszolgáló címe"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Használjon LAN-címet vagy érvényes HTTPS-Plex-címet. A kapcsolt Plex-fiókjának hozzáférési jogosultsággal kell rendelkeznie. Egy meglévő szerver hozzáadásával frissül a szerver címe."
 
-#: web/templates/servers.html:75
+#: web/templates/servers.html:136
 msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
 msgstr "A Jellyfin 10.11 és 12.1 verziói támogatottak. Hozzon létre egy rendszergazdai API-kulcsot a Jellyfin Dashboard – API-kulcsok menüpontjában."
 
-#: web/templates/servers.html:77
+#: web/templates/servers.html:138
 msgid "Jellyfin server address"
 msgstr "A Jellyfin szerver címe"
 
-#: web/templates/servers.html:79
+#: web/templates/servers.html:140
 msgid "Jellyfin API key"
 msgstr "Jellyfin API-kulcs"
 
-#: web/templates/servers.html:81
+#: web/templates/servers.html:142
 msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
 msgstr "A kulcsok a biztonságos hitelesítőadat-tárolóban maradnak. A csatlakozás után állítsa be a fenti szerverkártyán a elérhető Themerr-címet."
 
-#: web/templates/servers.html:84
+#: web/templates/servers.html:145
 msgid "Discover Jellyfin on LAN"
 msgstr "Fedezze fel a Jellyfin-t a LAN-on"
 
-#: web/templates/servers.html:86
+#: web/templates/servers.html:147
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr "A Themerr hálózatán a 7359-es UDP-portot használja. Továbbra is szükség van egy API-kulcsra."
 
