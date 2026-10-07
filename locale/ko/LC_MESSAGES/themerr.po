@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: ko_KR\n"
-"PO-Revision-Date: 2026-10-07 14:32\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -662,11 +662,11 @@ msgstr "새로 고침에 실패했습니다. 마지막으로 불러온 기록을
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
-msgstr ""
+msgstr "SSH 연결 확인…"
 
 #: web/js/servers.js:64
 msgid "Checking SSH connection…"
-msgstr ""
+msgstr "SSH 연결 확인…"
 
 #: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
@@ -1441,75 +1441,75 @@ msgstr "강제 재시작"
 
 #: web/templates/servers.html:32
 msgid "SSH cleanup"
-msgstr ""
+msgstr "SSH 정리"
 
 #: web/templates/servers.html:33
 msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
-msgstr ""
+msgstr "Plex 서버에서 SSH 및 SFTP를 활성화하여 이전에 업로드된 테마, 포스터 및 아트워크를 삭제하세요. Plex의 메타데이터 디렉터리에 접근 권한이 있는 계정을 사용하세요. Themerr는 서버 지문을 확인하며 셸 명령어를 실행하지 않습니다."
 
 #: web/templates/servers.html:34
 msgid "SSH setup guide with Windows examples"
-msgstr ""
+msgstr "Windows 예제를 포함한 SSH 설정 가이드"
 
 #: web/templates/servers.html:36
 msgid "SSH hostname or IP address"
-msgstr ""
+msgstr "SSH 호스트 이름 또는 IP 주소"
 
 #: web/templates/servers.html:38
 msgid "SSH port"
-msgstr ""
+msgstr "SSH 포트"
 
 #: web/templates/servers.html:40
 msgid "SSH username"
-msgstr ""
+msgstr "SSH 사용자 이름"
 
 #: web/templates/servers.html:42
 msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
-msgstr ""
+msgstr "Plex 로그인 정보가 아닌, Plex 컴퓨터의 로그인 계정을 사용하십시오. Windows에서는 해당 컴퓨터에서 whoami 명령을 실행하십시오. PLEX-PC\\plex와 같은 로컬 계정의 경우 plex를 입력하고, 도메인 계정의 경우 domain\\user를 입력하십시오."
 
 #: web/templates/servers.html:43
 msgid "Verified SSH host fingerprint"
-msgstr ""
+msgstr "검증된 SSH 호스트 지문"
 
 #: web/templates/servers.html:45
 msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
-msgstr ""
+msgstr "이는 SSH 서버를 식별하는 정보입니다. Plex 컴퓨터에서 해당 호스트 공개 키의 SHA256 지문을 복사하세요. 이 지문은 아래에서 로그인하는 데 사용되는 사용자 개인 키와는 별개입니다."
 
 #: web/templates/servers.html:46
 msgid "Remote Plex data directory"
-msgstr ""
+msgstr "원격 Plex 데이터 디렉터리"
 
 #: web/templates/servers.html:48
 msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
-msgstr ""
+msgstr "이 서버의 메타데이터가 포함된 디렉터리를 입력하십시오. Windows 드라이브 경로는 자동으로 SFTP 경로로 변환됩니다. 예:"
 
 #: web/templates/servers.html:48
 msgid "For a restricted SFTP account, use the path visible inside that account."
-msgstr ""
+msgstr "접근 권한이 제한된 SFTP 계정의 경우, 해당 계정 내에서 볼 수 있는 경로를 사용하십시오."
 
 #: web/templates/servers.html:49
 msgid "SSH authentication"
-msgstr ""
+msgstr "SSH 인증"
 
 #: web/templates/servers.html:52
 msgid "Private key"
-msgstr ""
+msgstr "개인 키"
 
 #: web/templates/servers.html:54
 msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
-msgstr ""
+msgstr "비밀번호 인증에는 서버 계정의 비밀번호만 필요합니다. 사용자 키 쌍을 생성하고 해당 공개 키를 Plex 컴퓨터에 설치한 경우 ‘개인 키’를 선택하십시오."
 
 #: web/templates/servers.html:56
 msgid "SSH private key"
-msgstr ""
+msgstr "SSH 개인 키"
 
 #: web/templates/servers.html:58
 msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
-msgstr ""
+msgstr "ssh-keygen으로 생성된 개인 키 파일을 BEGIN 및 END 줄을 포함하여 전체를 붙여넣으십시오. .pub로 끝나는 파일은 Plex 컴퓨터에 설치된 공개 키이므로, 여기에는 .pub 확장자를 제외한 파일 내용을 붙여넣으십시오."
 
 #: web/templates/servers.html:59
 msgid "Private key passphrase"
-msgstr ""
+msgstr "개인 키 암호"
 
 #: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
@@ -1517,35 +1517,35 @@ msgstr "선택 사항"
 
 #: web/templates/servers.html:61
 msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
-msgstr ""
+msgstr "이 키를 생성할 때 지정한 암호를 입력하십시오. 이 암호는 개인 키 파일을 잠금 해제하는 데 사용됩니다. 키에 암호가 설정되어 있지 않은 경우 이 항목을 비워 두십시오."
 
 #: web/templates/servers.html:64
 msgid "Server account password"
-msgstr ""
+msgstr "서버 계정 비밀번호"
 
 #: web/templates/servers.html:66
 msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
-msgstr ""
+msgstr "위에서 입력한 계정의 비밀번호를 사용하십시오. Windows에서는 이 비밀번호가 계정 비밀번호이며, Windows Hello PIN이 아닙니다."
 
 #: web/templates/servers.html:68
 msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
-msgstr ""
+msgstr "인증 정보는 안전하게 저장되며 다시는 표시되지 않습니다. 비밀 입력란을 비워두면 동일한 호스트와 계정에 대한 저장된 인증 정보를 유지할 수 있습니다. 다른 컴퓨터에서 인증 정보를 입력할 때는 HTTPS를 통해 Themerr을 사용하십시오."
 
 #: web/templates/servers.html:70
 msgid "Verify and save SSH"
-msgstr ""
+msgstr "SSH 확인 및 저장"
 
 #: web/templates/servers.html:71
 msgid "Check connection"
-msgstr ""
+msgstr "연결 상태 확인"
 
 #: web/templates/servers.html:72
 msgid "Disable SSH"
-msgstr ""
+msgstr "SSH 비활성화"
 
 #: web/templates/servers.html:79
 msgid "Connector address"
-msgstr ""
+msgstr "커넥터 주소"
 
 #: web/templates/servers.html:81
 msgid "Themerr address reachable from Jellyfin"
@@ -1593,7 +1593,7 @@ msgstr "Plex 데이터 디렉터리 살펴보기"
 
 #: web/templates/servers.html:100
 msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
-msgstr ""
+msgstr "Themerr을 실행 중인 컴퓨터에서 접근할 수 있는 이 서버의 로컬 또는 마운트된 데이터 디렉터리입니다. 각 서버마다 고유한 경로가 있습니다. SSH 정리 기능은 이 서버의 별도의 원격 경로를 사용하며, 해당 기능이 구성되어 있을 경우 우선적으로 적용됩니다."
 
 #: web/templates/servers.html:101
 msgid "Ignored libraries"
