@@ -123,18 +123,21 @@ def test_shared_server_uses_resource_token_and_checks_machine_id(configured, mon
     auth.set_token('account-secret')
     resource = SimpleNamespace(clientIdentifier='shared', accessToken='shared-secret')
     monkeypatch.setattr(servers, 'account_resources', lambda: [resource])
-    server = SimpleNamespace(machineIdentifier='shared', friendlyName='Family Plex')
+    server = SimpleNamespace(machineIdentifier='shared', friendlyName='Family Plex', version='1.42.0.12345-test')
     connect = Mock(return_value=server)
     monkeypatch.setattr(plexapi, 'connect_plex_server', connect)
     record = servers.add_server('https://plex.example/', 'shared')
     connect.assert_called_once_with('https://plex.example', 'shared-secret')
     assert record['id'] == 'shared'
     assert record['name'] == 'Family Plex'
+    assert record['version'] == '1.42.0.12345-test'
     assert 'secret' not in str(record)
     assert token_store.get_token(servers.credential_id('shared')) == 'shared-secret'
     assert servers.connect('shared') is server
     servers.clear_connections()
+    server.version = '1.43.0.12345-test'
     assert servers.connect('shared') is server
+    assert servers.get_server('shared')['version'] == '1.43.0.12345-test'
     assert connect.call_count == 2
     connect.return_value = SimpleNamespace(machineIdentifier='other', friendlyName='Wrong')
     with pytest.raises(ValueError, match='different Plex server'):

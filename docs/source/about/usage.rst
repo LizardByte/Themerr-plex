@@ -91,7 +91,8 @@ older uploaded media from Plex's metadata directory. Use the folder button to br
 running Themerr. The same button is available for the log directory in Settings.
 
 When Themerr runs on another machine, use the Plex server's reachable URL and mount its data directory if you
-want this cleanup. Otherwise, disable the three **Remove unused** settings.
+want local filesystem cleanup, or configure **SSH cleanup** on its server card. Otherwise, disable the three
+**Remove unused** settings.
 
 Enable movie, series, and collection updates as needed. Themerr listens for supported Plex library
 events and also scans on the configured schedule. The home page reports theme status for each supported
@@ -158,6 +159,130 @@ from matching collection metadata on their member movies. Themerr asks the item'
 resolve other IMDb or TVDB IDs and collection names. If the Plex proxy is unavailable, you can set the optional
 ``TMDB_API_READ_ACCESS_TOKEN`` environment variable to your TMDB API Read Access Token. Keep this token outside the
 web settings and configuration file.
+
+SSH cleanup
+~~~~~~~~~~~
+
+SSH cleanup uses Python's Paramiko library to remove uploaded themes, posters and artwork through SFTP.
+It does not install a Plex plugin, start a remote helper, or execute shell commands. Enable SSH with an SFTP
+subsystem on the Plex host, and use an account with read and deletion permissions on its ``Metadata`` directory.
+A dedicated account restricted to SFTP and the required data directory is suitable; administrator access is
+not required. The Plex API still handles metadata discovery and uploads.
+
+For Windows, install and start OpenSSH Server using Microsoft's
+`Windows OpenSSH setup guide
+<https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse>`_.
+In **Servers > SSH cleanup**, enter that computer's hostname or IP address and SSH port, usually ``22``.
+Use Themerr over HTTPS when configuring it from another machine; remote credential submissions over HTTP are rejected.
+
+**SSH username**
+
+Enter a login account on the computer running Plex. Your Plex account and your Themerr admin account do not
+determine this username. On Windows, sign in as the account you want to use, open PowerShell on that computer,
+and run:
+
+.. code-block:: powershell
+
+   whoami
+
+If a local account reports ``PLEX-PC\plex``, enter ``plex``. For an Active Directory account, keep both the domain
+and username returned by ``whoami``. Use the account's login name, rather than its display name.
+For the simplest Windows setup, use a local account with permission to read and delete Plex uploads.
+Windows OpenSSH does not support Microsoft Entra accounts; see Microsoft's
+`Windows SSH account configuration
+<https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh-server-configuration>`_.
+On Unix, enter the login name of the account with access to the Plex data directory.
+
+**Remote data directory**
+
+Enter the directory containing ``Metadata`` on the Plex computer. You can paste a native Windows path such as
+``C:\Users\Plex\AppData\Local\Plex Media Server``. Themerr converts it to
+``/C:/Users/Plex/AppData/Local/Plex Media Server`` before checking it through SFTP. Windows paths using forward
+slashes and existing SFTP paths are also accepted. On Linux, a typical directory is
+``/var/lib/plexmediaserver/Library/Application Support/Plex Media Server``.
+Traversal, UNC paths, drive-relative paths and environment-variable expressions are rejected.
+For a restricted SFTP account, use the absolute path visible inside that account's filesystem.
+Both data directories are saved separately for each Plex server. **SSH cleanup > Remote Plex data directory** is
+that server's path reached through SFTP. **Processing settings > Plex data directory** is the local or mounted path
+through which the computer running Themerr reaches that same server's data. Each connected server can use its own
+paths. The SSH form shows the verified SFTP path after saving.
+
+**Server host fingerprint**
+
+Obtain the fingerprint directly from the server or its administrator, rather than trusting an unverified
+network discovery. This identifies the SSH server itself and is required for both authentication choices.
+It is separate from a user key pair generated for signing in. For an OpenSSH server using its Ed25519 host key:
+
+.. code-block:: shell
+
+   # Linux
+   ssh-keygen -l -E sha256 -f /etc/ssh/ssh_host_ed25519_key.pub
+
+.. code-block:: powershell
+
+   # Windows, from an administrator PowerShell session
+   ssh-keygen -l -E sha256 -f "$env:ProgramData\ssh\ssh_host_ed25519_key.pub"
+
+Copy the ``SHA256:...`` value. Themerr verifies that fingerprint before sending authentication credentials.
+If your server negotiates a different host-key algorithm, supply that host key's fingerprint instead.
+A changed fingerprint requires checking the replacement host key on the server before updating Themerr.
+
+**Password authentication: the easiest setup**
+
+New connections default to **Password**. Enter the password for the server account named above.
+On Windows, use its account password, not its Windows Hello PIN. The SSH server must permit password authentication.
+You do not need to generate a user key pair, enter a private key, or choose a key passphrase with this option.
+
+**Private-key authentication: optional**
+
+A user key pair lets Themerr sign in using a private key instead of the server account's password.
+Themerr supports Ed25519, ECDSA and RSA private keys. To create a dedicated Ed25519 pair on a computer you control:
+
+.. code-block:: powershell
+
+   # Windows
+   ssh-keygen -t ed25519 -f "$env:USERPROFILE\themerr_ssh"
+
+.. code-block:: shell
+
+   # Linux or macOS
+   ssh-keygen -t ed25519 -f "$HOME/themerr_ssh"
+
+When prompted, choose a passphrase to protect the private key file. It is a password you choose for that file;
+it does not come from the SSH host fingerprint or your Windows login. If you create the key without a passphrase,
+leave Themerr's **Private key passphrase** field empty. See the
+`OpenSSH key-generation manual <https://man.openbsd.org/ssh-keygen>`_ for the command options.
+
+The command creates two files. ``themerr_ssh.pub`` contains the public key: install its complete line for the selected
+account on the Plex computer. ``themerr_ssh`` contains the private key: open it in a text editor and paste its entire
+contents, including the ``BEGIN`` and ``END`` lines, into Themerr's **SSH private key** field. Select **Private key**
+authentication and enter the passphrase chosen during generation. The fingerprint printed while generating this
+user key is not the server host fingerprint required above.
+
+For a standard Windows account, the public key goes in that account's
+``C:\Users\<account>\.ssh\authorized_keys``. With Windows OpenSSH's default administrator configuration, an
+administrator account uses ``C:\ProgramData\ssh\administrators_authorized_keys`` instead. Follow Microsoft's
+`public-key installation and file-permission instructions
+<https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement#deploy-the-public-key>`_.
+On Unix, the usual location is the selected server account's ``~/.ssh/authorized_keys``.
+
+**Verify and save**
+
+Select **Verify and save SSH**. Themerr checks the connection and ``Metadata`` directory before saving, without
+deleting files. The host fingerprint and SSH username are saved with ordinary connection settings: the fingerprint
+identifies a public key, and the username identifies an account. They are admin-only settings, protected from
+unauthenticated changes, but do not require encryption. Private keys, passwords and passphrases use the same OS
+vault or external Fernet key as Plex tokens and are never returned by the settings API.
+Blank secret fields retain saved credentials only for the same host, port, username, fingerprint and authentication
+method. Changing those requires new credentials. **Check connection** performs a read-only verification;
+**Disable SSH** erases SSH settings and credentials.
+
+When configured, SSH takes priority over a local mount. Failed SSH operations do not fall back to local deletion.
+Cleanup uses item GUIDs obtained from Plex and fixed upload directories, rejects traversal and links escaping the
+configured root, and retains the verified new theme when removing older uploads. If the verified theme is missing,
+existing uploads are kept. Keep other accounts from changing these directories during cleanup; SFTP cannot make
+path verification and deletion one atomic filesystem operation. A live deployment still needs correct SFTP
+permissions and the data directory belonging to the selected Plex server.
 
 Jellyfin servers
 ----------------

@@ -11,11 +11,72 @@
 <div class="server-grid">
 {% for server in servers %}
 <article class="server-card">
-    <header><span class="server-symbol"><i data-lucide="server"></i></span><div><h3>{{ server.name }}</h3><span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span></div>{{ server_brand(server.type) }}</header>
-    <p class="server-address"><i data-lucide="network"></i>{{ server.url }}</p>
+    <header>
+        <span class="server-symbol"><i data-lucide="server"></i></span>
+        <div class="server-identity">
+            <div class="server-name"><h3>{{ server.name }}</h3>{% if server.version %}<span class="status-badge neutral server-version">{{ server.type|capitalize }} {{ server.version }}</span>{% endif %}</div>
+            <span class="status-badge {{ 'neutral' if not server.enabled else 'warning' if server.last_error else 'success' }}"><span class="presence-dot"></span>{{ _('Paused') if not server.enabled else _('Needs attention') if server.last_error else _('Enabled') }}</span>
+        </div>
+        {{ server_brand(server.type) }}
+    </header>
     {% if server.last_error %}<p class="form-error">{{ server.last_error }}</p>{% endif %}
+    <div class="server-connection">
+        <div class="server-connection-info">
+            <p class="server-address"><i data-lucide="network"></i><span>{{ server.url }}</span></p>
+            <small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
+        </div>
+        {% if server.type == 'jellyfin' %}<button type="button" class="btn btn-quiet-danger btn-sm server-restart" data-restart-server disabled><i data-lucide="refresh-cw"></i>{{ _('Force restart') }}</button>{% endif %}
+    </div>
+    {% if server.type == 'plex' %}
+    {% set ssh = plex_ssh_settings.get(server.id, {}) %}
+    <details class="server-settings"><summary>{{ _('SSH cleanup') }}<i data-lucide="chevron-down"></i></summary>
+        <p class="form-text">{{ _('Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands.') }}</p>
+        <p class="form-text"><a href="{{ documentation_url }}about/usage.html#ssh-cleanup" target="_blank" rel="noopener noreferrer">{{ _('SSH setup guide with Windows examples') }}</a></p>
+        <form data-plex-ssh-form data-server-id="{{ server.id }}" data-configured="{{ 'true' if ssh else 'false' }}" autocomplete="off">
+            <label for="ssh-host-{{ loop.index }}">{{ _('SSH hostname or IP address') }}</label>
+            <input id="ssh-host-{{ loop.index }}" name="host" class="form-control" value="{{ ssh.get('host', '') }}" required maxlength="253">
+            <label for="ssh-port-{{ loop.index }}">{{ _('SSH port') }}</label>
+            <input id="ssh-port-{{ loop.index }}" name="port" type="number" class="form-control" value="{{ ssh.get('port', 22) }}" min="1" max="65535" required>
+            <label for="ssh-user-{{ loop.index }}">{{ _('SSH username') }}</label>
+            <input id="ssh-user-{{ loop.index }}" name="username" class="form-control" value="{{ ssh.get('username', '') }}" required maxlength="256" autocomplete="username" aria-describedby="ssh-user-help-{{ loop.index }}">
+            <p id="ssh-user-help-{{ loop.index }}" class="form-text">{{ _('Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user.') }}</p>
+            <label for="ssh-fingerprint-{{ loop.index }}">{{ _('Verified SSH host fingerprint') }}</label>
+            <input id="ssh-fingerprint-{{ loop.index }}" name="host_fingerprint" class="form-control" value="{{ ssh.get('host_fingerprint', '') }}" placeholder="SHA256:…" required>
+            <p class="form-text">{{ _('This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below.') }}</p>
+            <label for="ssh-directory-{{ loop.index }}">{{ _('Remote Plex data directory') }}</label>
+            <input id="ssh-directory-{{ loop.index }}" name="data_directory" class="form-control" value="{{ ssh.get('data_directory', '') }}" placeholder="/var/lib/plexmediaserver/Library/Application Support/Plex Media Server" required maxlength="4096">
+            <p class="form-text">{{ _('Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:') }} <code>C:\Users\Plex\AppData\Local\Plex Media Server</code>. {{ _('For a restricted SFTP account, use the path visible inside that account.') }}</p>
+            <label for="ssh-auth-{{ loop.index }}">{{ _('SSH authentication') }}</label>
+            <select id="ssh-auth-{{ loop.index }}" name="auth_type" class="form-select">
+                <option value="password" {% if ssh.get('auth_type', 'password') == 'password' %}selected{% endif %}>{{ _('Password') }}</option>
+                <option value="key" {% if ssh.get('auth_type') == 'key' %}selected{% endif %}>{{ _('Private key') }}</option>
+            </select>
+            <p class="form-text">{{ _('Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer.') }}</p>
+            <div data-ssh-key-fields {% if ssh.get('auth_type', 'password') != 'key' %}hidden{% endif %}>
+                <label for="ssh-key-{{ loop.index }}">{{ _('SSH private key') }}</label>
+                <textarea id="ssh-key-{{ loop.index }}" name="private_key" class="form-control" rows="4" maxlength="32768" spellcheck="false" autocomplete="off" aria-describedby="ssh-key-help-{{ loop.index }}"></textarea>
+                <p id="ssh-key-help-{{ loop.index }}" class="form-text">{{ _('Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here.') }}</p>
+                <label for="ssh-passphrase-{{ loop.index }}">{{ _('Private key passphrase') }} <span class="muted">{{ _('optional') }}</span></label>
+                <input id="ssh-passphrase-{{ loop.index }}" name="passphrase" type="password" class="form-control" autocomplete="new-password" aria-describedby="ssh-passphrase-help-{{ loop.index }}">
+                <p id="ssh-passphrase-help-{{ loop.index }}" class="form-text">{{ _('Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase.') }}</p>
+            </div>
+            <div data-ssh-password-fields {% if ssh.get('auth_type', 'password') == 'key' %}hidden{% endif %}>
+                <label for="ssh-password-{{ loop.index }}">{{ _('Server account password') }}</label>
+                <input id="ssh-password-{{ loop.index }}" name="password" type="password" class="form-control" autocomplete="new-password" aria-describedby="ssh-password-help-{{ loop.index }}">
+                <p id="ssh-password-help-{{ loop.index }}" class="form-text">{{ _('Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN.') }}</p>
+            </div>
+            <p class="form-text">{{ _('Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine.') }}</p>
+            <div class="server-actions">
+                <button type="submit" class="btn btn-primary btn-sm">{{ _('Verify and save SSH') }}</button>
+                <button type="button" class="btn btn-outline-light btn-sm" data-check-ssh {% if not ssh %}disabled{% endif %}>{{ _('Check connection') }}</button>
+                <button type="button" class="btn btn-quiet-danger btn-sm" data-remove-ssh {% if not ssh %}disabled{% endif %}>{{ _('Disable SSH') }}</button>
+            </div>
+            <output data-ssh-status class="form-text" aria-live="polite"></output>
+        </form>
+    </details>
+    {% endif %}
     {% if server.type == 'jellyfin' %}
-    <span class="status-badge neutral">Jellyfin {{ server.version }}</span>
+    <details class="server-settings"><summary>{{ _('Connector address') }}<i data-lucide="chevron-down"></i></summary>
     <form data-connector-form data-server-id="{{ server.id }}" data-auto-update="{{ 'true' if jellyfin_settings.AUTO_UPDATE_CONNECTOR else 'false' }}">
         <label for="themerr-address-{{ loop.index }}">{{ _('Themerr address reachable from Jellyfin') }}</label>
         <input id="themerr-address-{{ loop.index }}" class="form-control" type="url" name="themerr_url" placeholder="http://localhost:9495" required>
@@ -25,18 +86,18 @@
         <div class="server-actions">
             {% if jellyfin_settings.AUTO_UPDATE_CONNECTOR %}<button type="submit" class="btn btn-outline-light btn-sm">{{ _('Save connector address') }}</button>
             {% else %}<button type="submit" class="btn btn-outline-light btn-sm" hidden>{{ _('Install matching connector') }}</button>{% endif %}
-            <button type="button" class="btn btn-quiet-danger btn-sm" data-restart-server disabled><i data-lucide="refresh-cw"></i>{{ _('Force restart') }}</button>
         </div>
         <output data-connector-status class="form-text"></output>
     </form>
     <p class="form-text">{{ _('Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API.') }} <a href="{{ server.url }}/web/index.html#!/mypreferencesdisplay.html" target="_blank" rel="noopener noreferrer">{{ _('Open Jellyfin display settings') }}<i data-lucide="arrow-up-right"></i></a></p>
-    {% endif %}<small class="server-refresh">{{ _('Last library refresh') }}: <time>{{ server.last_refresh or _('Not yet refreshed') }}</time></small>
+    </details>
+    {% endif %}
     <details class="server-settings"><summary>{{ _('Processing settings') }}<i data-lucide="chevron-down"></i></summary>
         <form data-server-form data-server-id="{{ server.id }}">
             <div class="setting-switch"><label for="enabled-{{ loop.index }}">{{ _('Process this server') }}</label><input id="enabled-{{ loop.index }}" type="checkbox" name="enabled" class="form-check-input" {% if server.enabled %}checked{% endif %}></div>
             {% if server.type == 'plex' %}<label for="directory-{{ loop.index }}">{{ _('Plex data directory') }} <span class="muted">{{ _('optional') }}</span></label>
             <div class="input-group"><input id="directory-{{ loop.index }}" class="form-control" name="data_directory" value="{{ server.data_directory }}"><button type="button" class="btn btn-outline-light" data-directory-target="directory-{{ loop.index }}" aria-label="{{ _('Browse Plex data directory') }}"><i data-lucide="folder-open"></i></button></div>
-            <p class="form-text">{{ _('A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers.') }}</p>{% endif %}
+            <p class="form-text">{{ _('This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured.') }}</p>{% endif %}
             <span id="ignored-label-{{ loop.index }}" class="library-picker-label">{{ _('Ignored libraries') }}</span>
             <details class="library-picker" data-library-picker>
                 <summary class="form-select" aria-labelledby="ignored-label-{{ loop.index }} ignored-summary-{{ loop.index }}" aria-describedby="ignored-help-{{ loop.index }}"><span id="ignored-summary-{{ loop.index }}" data-library-summary>{{ _('Select libraries to ignore') }}</span></summary>

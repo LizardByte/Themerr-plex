@@ -134,11 +134,16 @@ def server_page(request: Request):
     str
         Server management page.
     """
+    from plex import ssh
+
+    saved_servers = get_backend().list_servers()
     return render_template(
         request,
         'servers.html',
         title='Servers',
-        servers=get_backend().list_servers(),
+        servers=saved_servers,
+        plex_ssh_settings={server['id']: ssh.settings(server['id']) for server in saved_servers
+                           if server['type'] == 'plex'},
         plex_connected=get_backend().account_connected(),
         jellyfin_settings=config.CONFIG['Jellyfin'],
     )
