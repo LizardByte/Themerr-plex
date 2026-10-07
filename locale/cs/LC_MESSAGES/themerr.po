@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: cs_CZ\n"
-"PO-Revision-Date: 2026-10-07 04:34\n"
+"PO-Revision-Date: 2026-10-07 14:32\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -292,7 +292,7 @@ msgstr "URL Plexu"
 msgid "The URL to the Plex server."
 msgstr "Adresa URL serveru Plex."
 
-#: src/common/config.py:316 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Datový adresář Plexu"
 
@@ -652,7 +652,7 @@ msgid "Live"
 msgstr "Živé"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Paused"
 msgstr "Pozastaveno"
 
@@ -660,60 +660,68 @@ msgstr "Pozastaveno"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "Obnovení se nezdařilo. Zobrazení naposledy načtených záznamů."
 
-#: web/js/servers.js:45 web/templates/servers.html:42
+#: web/js/servers.js:32
+msgid "Verifying SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:64
+msgid "Checking SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
 msgstr "Vyberte knihovny, které chcete ignorovat"
 
-#: web/js/servers.js:54
+#: web/js/servers.js:125
 msgid "Loading libraries…"
 msgstr "Načítání knihoven…"
 
-#: web/js/servers.js:78
+#: web/js/servers.js:149
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "Zobrazení knihoven v mezipaměti. Povolte nebo připojte tento server k načtení jeho aktuálních knihoven."
 
-#: web/js/servers.js:80
+#: web/js/servers.js:151
 msgid "This server has no libraries."
 msgstr "Tento server nemá žádné knihovny."
 
-#: web/js/servers.js:86
+#: web/js/servers.js:157
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "Nelze načíst knihovny. Váš výběr je zachován. Zavřete a znovu otevřete seznam pro opakování."
 
-#: web/js/servers.js:130 web/js/servers.js:296
+#: web/js/servers.js:201 web/js/servers.js:368
 msgid "Connected"
 msgstr "Připojeno"
 
-#: web/js/servers.js:130 web/templates/servers.html:71
-#: web/templates/servers.html:83
+#: web/js/servers.js:201 web/templates/servers.html:132
+#: web/templates/servers.html:144
 msgid "Connect"
 msgstr "Připojit"
 
-#: web/js/servers.js:278
+#: web/js/servers.js:350
 msgid "Looking for Jellyfin servers…"
 msgstr "Hledání Jellyfin serverů…"
 
-#: web/js/servers.js:284
+#: web/js/servers.js:356
 msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
 msgstr "Žádné servery Jellyfin neodpověděly. Zkontrolujte port UDP 7359 a lokální síť, nebo zadejte adresu ručně."
 
-#: web/js/servers.js:296
+#: web/js/servers.js:368
 msgid "Use this address"
 msgstr "Použít tuto adresu"
 
-#: web/js/servers.js:325 web/templates/servers.html:26
+#: web/js/servers.js:397 web/templates/servers.html:87
 msgid "Save connector address"
 msgstr "Uložit adresu konektoru"
 
-#: web/js/servers.js:325 web/templates/servers.html:27
+#: web/js/servers.js:397 web/templates/servers.html:88
 msgid "Install matching connector"
 msgstr "Nainstalovat odpovídající konektor"
 
-#: web/js/servers.js:330
+#: web/js/servers.js:402
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr "Tento server se nemůže restartovat. Restartujte svou službu nebo kontejner."
 
-#: web/js/servers.js:362
+#: web/js/servers.js:434
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr "Restartovat Jellyfin? Aktivní přehrávání bude přerušeno."
 
@@ -750,7 +758,7 @@ msgid "No tasks have run yet. Request a scan, or wait for the next scheduled ref
 msgstr "Zatím nebyly spuštěny žádné úkoly. Požádejte o skenování nebo počkejte na další naplánované aktualizace."
 
 #: web/templates/activity.html:7 web/templates/home.html:15
-#: web/templates/home.html:32 web/templates/servers.html:14
+#: web/templates/home.html:32 web/templates/servers.html:18
 msgid "Needs attention"
 msgstr "Potřebuje pozornost"
 
@@ -830,7 +838,7 @@ msgstr "Vaše knihovny čekají na další zvukovou stopu."
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: web/templates/auth.html:30
+#: web/templates/auth.html:30 web/templates/servers.html:51
 msgid "Password"
 msgstr "Heslo"
 
@@ -1415,167 +1423,271 @@ msgstr "Připojené servery"
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "Historie témat a nastavení knihovny jsou vedena zvlášť pro každý server."
 
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Enabled"
 msgstr "Povoleno"
 
-#: web/templates/servers.html:20
-msgid "Themerr address reachable from Jellyfin"
-msgstr "Themerr adresa je dostupná z Jellyfinu"
+#: web/templates/servers.html:26
+msgid "Last library refresh"
+msgstr "Poslední aktualizace knihovny"
 
-#: web/templates/servers.html:22
-msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
-msgstr "Použijte HTTP adresu pouze pro konektor pro certifikát Themerr’s sám podepsaný nebo HTTPS adresu s certifikátem Jellyfin. Pro vzdálený Jellyfin nebo Docker, nahraďte localhost adresou dostupnou z Jellyfinu."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation, once playback finishes."
-msgstr "Jellyfin se po instalaci restartuje, jakmile bude přehrávání dokončeno."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation. Active playback may be interrupted."
-msgstr "Jellyfin se restartuje po instalaci. Aktivní přehrávání může být přerušeno."
-
-#: web/templates/servers.html:23
-msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
-msgstr "Automatické restartování je zakázáno. Restartujte Jellyfin po instalaci."
-
-#: web/templates/servers.html:24
-msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
-msgstr "Starší plugin Themerr-jellyfin a jeho repozitář bude odstraněn. Stávající motivy budou zachovány."
+#: web/templates/servers.html:26
+msgid "Not yet refreshed"
+msgstr "Dosud neobnoveno"
 
 #: web/templates/servers.html:28
 msgid "Force restart"
 msgstr "Vynutit restart"
 
 #: web/templates/servers.html:32
-msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
-msgstr "Povolte skladby motivů v každém nastavení zobrazení klienta Jellyfin. Jellyfin ukládá toto nastavení v klientovi, takže Themerr jej nemůže změnit prostřednictvím serveru API."
-
-#: web/templates/servers.html:32
-msgid "Open Jellyfin display settings"
-msgstr "Otevřít nastavení displeje Jellyfin"
+msgid "SSH cleanup"
+msgstr ""
 
 #: web/templates/servers.html:33
-msgid "Last library refresh"
-msgstr "Poslední aktualizace knihovny"
-
-#: web/templates/servers.html:33
-msgid "Not yet refreshed"
-msgstr "Dosud neobnoveno"
+msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
+msgstr ""
 
 #: web/templates/servers.html:34
-msgid "Processing settings"
-msgstr "Zpracování nastavení"
+msgid "SSH setup guide with Windows examples"
+msgstr ""
 
 #: web/templates/servers.html:36
-msgid "Process this server"
-msgstr "Zpracovat tento server"
+msgid "SSH hostname or IP address"
+msgstr ""
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:38
+msgid "SSH port"
+msgstr ""
+
+#: web/templates/servers.html:40
+msgid "SSH username"
+msgstr ""
+
+#: web/templates/servers.html:42
+msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
+msgstr ""
+
+#: web/templates/servers.html:43
+msgid "Verified SSH host fingerprint"
+msgstr ""
+
+#: web/templates/servers.html:45
+msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
+msgstr ""
+
+#: web/templates/servers.html:46
+msgid "Remote Plex data directory"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "For a restricted SFTP account, use the path visible inside that account."
+msgstr ""
+
+#: web/templates/servers.html:49
+msgid "SSH authentication"
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid "Private key"
+msgstr ""
+
+#: web/templates/servers.html:54
+msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
+msgstr ""
+
+#: web/templates/servers.html:56
+msgid "SSH private key"
+msgstr ""
+
+#: web/templates/servers.html:58
+msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
+msgstr ""
+
+#: web/templates/servers.html:59
+msgid "Private key passphrase"
+msgstr ""
+
+#: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
 msgstr "volitelné"
 
-#: web/templates/servers.html:38
+#: web/templates/servers.html:61
+msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
+msgstr ""
+
+#: web/templates/servers.html:64
+msgid "Server account password"
+msgstr ""
+
+#: web/templates/servers.html:66
+msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
+msgstr ""
+
+#: web/templates/servers.html:68
+msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
+msgstr ""
+
+#: web/templates/servers.html:70
+msgid "Verify and save SSH"
+msgstr ""
+
+#: web/templates/servers.html:71
+msgid "Check connection"
+msgstr ""
+
+#: web/templates/servers.html:72
+msgid "Disable SSH"
+msgstr ""
+
+#: web/templates/servers.html:79
+msgid "Connector address"
+msgstr ""
+
+#: web/templates/servers.html:81
+msgid "Themerr address reachable from Jellyfin"
+msgstr "Themerr adresa je dostupná z Jellyfinu"
+
+#: web/templates/servers.html:83
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "Použijte HTTP adresu pouze pro konektor pro certifikát Themerr’s sám podepsaný nebo HTTPS adresu s certifikátem Jellyfin. Pro vzdálený Jellyfin nebo Docker, nahraďte localhost adresou dostupnou z Jellyfinu."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "Jellyfin se po instalaci restartuje, jakmile bude přehrávání dokončeno."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "Jellyfin se restartuje po instalaci. Aktivní přehrávání může být přerušeno."
+
+#: web/templates/servers.html:84
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "Automatické restartování je zakázáno. Restartujte Jellyfin po instalaci."
+
+#: web/templates/servers.html:85
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "Starší plugin Themerr-jellyfin a jeho repozitář bude odstraněn. Stávající motivy budou zachovány."
+
+#: web/templates/servers.html:92
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "Povolte skladby motivů v každém nastavení zobrazení klienta Jellyfin. Jellyfin ukládá toto nastavení v klientovi, takže Themerr jej nemůže změnit prostřednictvím serveru API."
+
+#: web/templates/servers.html:92
+msgid "Open Jellyfin display settings"
+msgstr "Otevřít nastavení displeje Jellyfin"
+
+#: web/templates/servers.html:95
+msgid "Processing settings"
+msgstr "Zpracování nastavení"
+
+#: web/templates/servers.html:97
+msgid "Process this server"
+msgstr "Zpracovat tento server"
+
+#: web/templates/servers.html:99
 msgid "Browse Plex data directory"
 msgstr "Procházet datový adresář Plexu"
 
-#: web/templates/servers.html:39
-msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "Místní nebo připojený datový adresář Plexu je potřeba pouze pro odstranění starších nahraných souborů. Ponechte prázdné pro vzdálené servery."
+#: web/templates/servers.html:100
+msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
+msgstr ""
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:101
 msgid "Ignored libraries"
 msgstr "Ignorované knihovny"
 
-#: web/templates/servers.html:46
+#: web/templates/servers.html:107
 msgid "Library"
 msgstr "Knihovna"
 
-#: web/templates/servers.html:49
+#: web/templates/servers.html:110
 msgid "Open the list to load this server’s libraries."
 msgstr "Otevřete seznam pro načtení knihoven tohoto serveru."
 
-#: web/templates/servers.html:52
+#: web/templates/servers.html:113
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "Vyberte knihovny, které chcete vyloučit z aktualizací motivů. Ponechte všechny nezaškrtnuté pro zpracování každé knihovny."
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Save settings"
 msgstr "Uložit nastavení"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Remove server"
 msgstr "Odstranit server"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Your first server starts here."
 msgstr "Váš první server začíná zde."
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Link Plex above or add a Jellyfin server below."
 msgstr "Propojte Plex nad nebo přidejte níže uvedený Jellyfin server."
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:121
 msgid "Add a server"
 msgstr "Přidat server"
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:122
 msgid "Server type"
 msgstr "Typ serveru"
 
-#: web/templates/servers.html:66
+#: web/templates/servers.html:127
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Vyberte server ze svého účtu Plex, objevte ho v okolí nebo použijte adresu, kterou znáte."
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Find account servers"
 msgstr "Najít servery účtu"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Discover on LAN"
 msgstr "Objevte na LAN"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "LAN objevování používá Plex GDM v síti vaší aplikace."
 
-#: web/templates/servers.html:68
+#: web/templates/servers.html:129
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "Adresy účtu jsou Plex inzerovány a mohou být nedostupné. HTTPS plex.direct adresy používají certifikát Plexu. Vyberte adresu dostupnou ze stroje běží Themerr, nebo zadejte známou adresu ručně."
 
-#: web/templates/servers.html:70
+#: web/templates/servers.html:131
 msgid "Enter an address manually"
 msgstr "Zadejte adresu ručně"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Plex server address"
 msgstr "Adresa serveru Plex"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Použít LAN adresu nebo platnou HTTPS Plex adresu. Připojený účet Plex musí mít přístup. Přidáním existující adresy serveru."
 
-#: web/templates/servers.html:75
+#: web/templates/servers.html:136
 msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
 msgstr "Jellyfin 10.11 a 12.1 jsou podporovány. Vytvořte administrátorský API klíč v Jellyfin Dashboard - API klíče."
 
-#: web/templates/servers.html:77
+#: web/templates/servers.html:138
 msgid "Jellyfin server address"
 msgstr "Adresa serveru Jellyfin"
 
-#: web/templates/servers.html:79
+#: web/templates/servers.html:140
 msgid "Jellyfin API key"
 msgstr "Jellyfin API klíč"
 
-#: web/templates/servers.html:81
+#: web/templates/servers.html:142
 msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
 msgstr "Klíče zůstávají v bezpečném úložišti pověření po připojení nastavte dostupnou Themerr adresu na kartě serveru."
 
-#: web/templates/servers.html:84
+#: web/templates/servers.html:145
 msgid "Discover Jellyfin on LAN"
 msgstr "Objevte Jellyfin na LAN"
 
-#: web/templates/servers.html:86
+#: web/templates/servers.html:147
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr "Používá port UDP 7359 na síti Themerr. API klíč je stále vyžadován."
 
