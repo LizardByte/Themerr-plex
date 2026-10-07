@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: fr_FR\n"
-"PO-Revision-Date: 2026-10-06 22:33\n"
+"PO-Revision-Date: 2026-10-07 04:34\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -983,8 +983,8 @@ msgid "Unknown"
 msgstr "Inconnu"
 
 #: web/templates/home.html:8
-msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "La vérification de GitHub a échoué. Affichage du dernier déploiement connu; les vérifications sont exécutées au plus une fois par heure."
+msgid "Deployment check failed. Showing the last known deployment; checks run at most hourly."
+msgstr "Le test de déploiement a échoué. Affichage du dernier déploiement connu; les vérifications sont exécutées au plus une fois par heure."
 
 #: web/templates/home.html:9
 msgid "Last deployed"
