@@ -14,429 +14,429 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: vi_VN\n"
-"PO-Revision-Date: 2026-10-06 03:08\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
-#: src/common/config.py:84
+#: src/common/config.py:85
 msgid "Info"
 msgstr "Thông tin"
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "For information purposes only."
 msgstr "Chỉ mang tính chất tham khảo."
 
-#: src/common/config.py:89
+#: src/common/config.py:90
 msgid "Config version"
 msgstr "Phiên bản cấu hình"
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "The configuration version."
 msgstr "Phiên bản cấu hình."
 
-#: src/common/config.py:99
+#: src/common/config.py:100
 msgid "First run complete"
 msgstr "Lần chạy đầu tiên đã hoàn tất"
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "Todo: Cho biết người dùng đã hoàn tất quá trình thiết lập ban đầu hay chưa."
 
-#: src/common/config.py:107
+#: src/common/config.py:108
 msgid "General"
 msgstr "Tổng quan"
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General settings."
 msgstr "Cài đặt chung."
 
-#: src/common/config.py:112
+#: src/common/config.py:113
 msgid "Locale"
 msgstr "Vùng địa phương"
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "The localization setting to use."
 msgstr "Cài đặt bản địa hóa cần sử dụng."
 
-#: src/common/config.py:122
+#: src/common/config.py:123
 msgid "Launch Browser on Startup "
 msgstr "Khởi chạy trình duyệt khi khởi động "
 
-#: src/common/config.py:128
+#: src/common/config.py:129
 msgid "Enable System Tray Icon"
 msgstr "Bật biểu tượng trên khay hệ thống"
 
-#: src/common/config.py:136
+#: src/common/config.py:137
 msgid "Notifications"
 msgstr "Thông báo"
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "Các thông báo trên màn hình sẽ xuất hiện trên máy tính đang chạy Themerr. Các bản cài đặt Docker và bản cài đặt không giao diện người dùng sẽ không hiển thị các thông báo này."
 
-#: src/common/config.py:142 src/common/notifications.py:138
+#: src/common/config.py:143 src/common/notifications.py:138
 msgid "New release available"
 msgstr "Phiên bản mới đã ra mắt"
 
-#: src/common/config.py:143
+#: src/common/config.py:144
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "Thông báo khi có phiên bản mới hơn của Themerr. Quá trình kiểm tra được thực hiện mỗi giờ một lần."
 
-#: src/common/config.py:148
+#: src/common/config.py:149
 msgid "Follow pre-releases"
 msgstr "Theo dõi các bản phát hành trước"
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Include pre-releases in new release notifications."
 msgstr "Bao gồm các phiên bản thử nghiệm trong thông báo về phiên bản mới."
 
-#: src/common/config.py:154
+#: src/common/config.py:155
 msgid "Theme coverage increased"
 msgstr "Phạm vi bao phủ của chủ đề đã được mở rộng"
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "Thông báo sau khi làm mới thành công nếu tổng mức độ bao phủ của chủ đề tăng lên. Các lần làm mới mà không có sự gia tăng sẽ không hiển thị thông báo."
 
-#: src/common/config.py:162
+#: src/common/config.py:163
 msgid "Logging"
 msgstr "Ghi nhật ký"
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging settings."
 msgstr "Cài đặt ghi nhật ký."
 
-#: src/common/config.py:167
+#: src/common/config.py:168
 msgid "Log directory"
 msgstr "Thư mục nhật ký"
 
-#: src/common/config.py:169
+#: src/common/config.py:170
 msgid "The directory where to store the log files."
 msgstr "Thư mục dùng để lưu trữ các tệp nhật ký."
 
-#: src/common/config.py:176
+#: src/common/config.py:177
 msgid "Debug logging"
 msgstr "Ghi nhật ký gỡ lỗi"
 
-#: src/common/config.py:178
+#: src/common/config.py:179
 msgid "Enable debug logging."
 msgstr "Bật tính năng ghi nhật ký gỡ lỗi."
 
-#: src/common/config.py:184
+#: src/common/config.py:185
 msgid "Network"
 msgstr "Mạng"
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network settings."
 msgstr "Cài đặt mạng."
 
-#: src/common/config.py:189
+#: src/common/config.py:190
 msgid "HTTP host address"
 msgstr "Địa chỉ máy chủ HTTP"
 
-#: src/common/config.py:191
+#: src/common/config.py:192
 msgid "The HTTP address to bind to."
 msgstr "Địa chỉ HTTP cần liên kết."
 
-#: src/common/config.py:200
+#: src/common/config.py:201
 msgid "HTTP port"
 msgstr "Cổng HTTP"
 
-#: src/common/config.py:202
+#: src/common/config.py:203
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "Cổng để kết nối với máy chủ web. Lưu ý rằng các cổng dưới 1024 có thể yêu cầu quyền root."
 
-#: src/common/config.py:210
+#: src/common/config.py:211
 msgid "HTTP root"
 msgstr "Thư mục gốc HTTP"
 
-#: src/common/config.py:212
+#: src/common/config.py:213
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Todo: URL cơ sở của máy chủ web. Được sử dụng cho các máy chủ proxy ngược."
 
-#: src/common/config.py:217
+#: src/common/config.py:218
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:219
+#: src/common/config.py:220
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Chạy máy chủ web bằng HTTPS. Việc tắt tính năng này có thể gây ra rủi ro bảo mật; nếu bạn quyết định tắt, hãy tự chịu trách nhiệm về hậu quả."
 
-#: src/common/config.py:225
+#: src/common/config.py:226
 msgid "Updater"
 msgstr "Trình cập nhật"
 
-#: src/common/config.py:226
+#: src/common/config.py:227
 msgid "Updater settings."
 msgstr "Cài đặt trình cập nhật."
 
-#: src/common/config.py:230
+#: src/common/config.py:231
 msgid "Auto update"
 msgstr "Cập nhật tự động"
 
-#: src/common/config.py:238
+#: src/common/config.py:239
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/common/config.py:239
+#: src/common/config.py:240
 msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
 msgstr "Cài đặt xử lý chủ đề Jellyfin. Các kết nối được quản lý trên trang Máy chủ."
 
-#: src/common/config.py:242 src/common/config.py:343
+#: src/common/config.py:243 src/common/config.py:344
 msgid "Movie support"
 msgstr "Hỗ trợ phim"
 
-#: src/common/config.py:243
+#: src/common/config.py:244
 msgid "Add themes to Jellyfin movies."
 msgstr "Thêm chủ đề vào các bộ phim trên Jellyfin."
 
-#: src/common/config.py:246 src/common/config.py:349
+#: src/common/config.py:247 src/common/config.py:350
 msgid "Series support"
 msgstr "Hỗ trợ chuỗi"
 
-#: src/common/config.py:247
+#: src/common/config.py:248
 msgid "Add themes to Jellyfin series."
 msgstr "Thêm chủ đề vào các loạt phim trên Jellyfin."
 
-#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
 msgid "Collections"
 msgstr "Bộ sưu tập"
 
-#: src/common/config.py:251
+#: src/common/config.py:252
 msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
 msgstr "Thêm các chủ đề vào các thư mục bộ sưu tập của Jellyfin. Các tệp phương tiện vẫn có thể được lưu trữ ở nơi khác."
 
-#: src/common/config.py:254
+#: src/common/config.py:255
 msgid "Overwrite user themes"
 msgstr "Ghi đè chủ đề của người dùng"
 
-#: src/common/config.py:255
+#: src/common/config.py:256
 msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
 msgstr "Thay thế các tệp chủ đề hiện có, bao gồm cả các chủ đề được tạo bởi plugin Themerr-jellyfin phiên bản cũ."
 
-#: src/common/config.py:259
+#: src/common/config.py:260
 msgid "Back up replaced user themes"
 msgstr "Sao lưu các chủ đề người dùng đã được thay thế"
 
-#: src/common/config.py:260
+#: src/common/config.py:261
 msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
 msgstr "Khi thay thế các chủ đề của người dùng hiện có, hãy lưu chúng vào thư mục sao lưu. Tắt tính năng này để xóa vĩnh viễn các chủ đề đã được thay thế."
 
-#: src/common/config.py:264
+#: src/common/config.py:265
 msgid "Import older Themerr-jellyfin ownership"
 msgstr "Nhập thông tin quyền sở hữu Themerr-jellyfin từ trước đây"
 
-#: src/common/config.py:265
+#: src/common/config.py:266
 msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
 msgstr "Chỉ nhận diện các chủ đề được lưu trong cơ sở dữ liệu của plugin cũ khi mã SHA-256 của chúng vẫn trùng khớp. Các tệp đã thay đổi vẫn được bảo vệ. Cơ sở dữ liệu cũ vẫn được giữ nguyên."
 
-#: src/common/config.py:269
+#: src/common/config.py:270
 msgid "Ignore locked metadata"
 msgstr "Bỏ qua siêu dữ liệu bị khóa"
 
-#: src/common/config.py:270
+#: src/common/config.py:271
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr "Cho phép cập nhật chủ đề Jellyfin cho các mục có siêu dữ liệu bị khóa."
 
-#: src/common/config.py:273
+#: src/common/config.py:274
 msgid "Update connector automatically"
 msgstr "Tự động cập nhật trình kết nối"
 
-#: src/common/config.py:274
+#: src/common/config.py:275
 msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr "Hãy cài đặt trình kết nối tương ứng khi Themerr khởi động hoặc phát hiện sự không khớp về phiên bản. Trước tiên, hãy thiết lập địa chỉ Themerr có thể truy cập được trên trang “Máy chủ”."
 
-#: src/common/config.py:278
+#: src/common/config.py:279
 msgid "Restart Jellyfin automatically"
 msgstr "Tự động khởi động lại Jellyfin"
 
-#: src/common/config.py:279
+#: src/common/config.py:280
 msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
 msgstr "Hãy khởi động lại Jellyfin sau khi cài đặt hoặc cập nhật trình kết nối. Một thông báo về việc khởi động lại đang chờ xử lý sẽ hiển thị trên trang Máy chủ trước khi quá trình này diễn ra."
 
-#: src/common/config.py:283
+#: src/common/config.py:284
 msgid "Wait for playback to finish"
 msgstr "Chờ cho đến khi quá trình phát lại kết thúc"
 
-#: src/common/config.py:284
+#: src/common/config.py:285
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr "Hoãn việc khởi động lại bộ kết nối cho đến khi không còn luồng nào đang phát hoặc đang tạm dừng."
 
-#: src/common/config.py:287
+#: src/common/config.py:288
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr "Gỡ bỏ plugin Themerr-jellyfin phiên bản cũ"
 
-#: src/common/config.py:288
+#: src/common/config.py:289
 msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
 msgstr "Sau khi cài đặt trình kết nối, hãy gỡ cài đặt plugin Themerr phiên bản cũ và chỉ xóa kho lưu trữ dành riêng cho plugin đó. Các tệp chủ đề hiện có sẽ được giữ nguyên."
 
-#: src/common/config.py:292
+#: src/common/config.py:293
 msgid "Connector HTTP port"
 msgstr "Cổng HTTP của bộ kết nối"
 
-#: src/common/config.py:293
+#: src/common/config.py:294
 msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
 msgstr "Chỉ cho phép tải xuống các trình kết nối qua HTTP khi Themerr sử dụng chứng chỉ tự ký. Giao diện quản trị vẫn hoạt động trên HTTPS. Sử dụng giá trị 0 để tắt tính năng này. Khởi động lại Themerr sau khi thay đổi cổng này."
 
-#: src/common/config.py:300
+#: src/common/config.py:301
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:301
+#: src/common/config.py:302
 msgid "Plex settings."
 msgstr "Cài đặt Plex."
 
-#: src/common/config.py:305
+#: src/common/config.py:306
 msgid "Plex URL"
 msgstr "URL Plex"
 
-#: src/common/config.py:306
+#: src/common/config.py:307
 msgid "The URL to the Plex server."
 msgstr "Địa chỉ URL của máy chủ Plex."
 
-#: src/common/config.py:315 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Thư mục dữ liệu Plex"
 
-#: src/common/config.py:316
+#: src/common/config.py:317
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
-#: src/common/config.py:326
+#: src/common/config.py:327
 msgid "Themerr"
 msgstr "Themerr"
 
-#: src/common/config.py:327
+#: src/common/config.py:328
 msgid "Themerr settings."
 msgstr "Cài đặt Themerr."
 
-#: src/common/config.py:331
+#: src/common/config.py:332
 msgid "Themerr Enabled"
 msgstr "Đã bật Themerr"
 
-#: src/common/config.py:332
+#: src/common/config.py:333
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "Khi được bật, Themerr sẽ cố gắng cập nhật các chủ đề."
 
-#: src/common/config.py:338
+#: src/common/config.py:339
 msgid "Add themes to collections."
 msgstr "Thêm chủ đề vào bộ sưu tập."
 
-#: src/common/config.py:344
+#: src/common/config.py:345
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "Thêm chủ đề vào phim bằng trình quản lý phim Plex."
 
-#: src/common/config.py:350
+#: src/common/config.py:351
 msgid "Add themes to series using the Plex Series agent."
 msgstr "Thêm chủ đề vào các bộ phim bằng trình quản lý Plex Series."
 
-#: src/common/config.py:355
+#: src/common/config.py:356
 msgid "Overwrite Plex themes"
 msgstr "Ghi đè các chủ đề Plex"
 
-#: src/common/config.py:356
+#: src/common/config.py:357
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Khi được bật, Themerr sẽ ghi đè lên các chủ đề do Plex cung cấp."
 
-#: src/common/config.py:361
+#: src/common/config.py:362
 msgid "Prefer MP4A AAC Codec"
 msgstr "Ưu tiên codec MP4A AAC"
 
-#: src/common/config.py:362
+#: src/common/config.py:363
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Điều này có thể giúp cải thiện khả năng tương thích của chủ đề với các thiết bị của Apple."
 
-#: src/common/config.py:367
+#: src/common/config.py:368
 msgid "Remove unused themes"
 msgstr "Xóa các chủ đề không sử dụng"
 
-#: src/common/config.py:368
+#: src/common/config.py:369
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Giải phóng dung lượng trong thư mục siêu dữ liệu Plex của bạn. Tùy chọn này yêu cầu phải thiết lập đường dẫn “thư mục dữ liệu Plex”"
 
-#: src/common/config.py:374
+#: src/common/config.py:375
 msgid "Remove unused art"
 msgstr "Xóa các hình ảnh không sử dụng"
 
-#: src/common/config.py:375 src/common/config.py:383
+#: src/common/config.py:376 src/common/config.py:384
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Áp dụng cho bộ sưu tập. Giải phóng dung lượng trong thư mục siêu dữ liệu Plex của bạn. Tùy chọn này yêu cầu đường dẫn “Thư mục dữ liệu Plex” phải được thiết lập"
 
-#: src/common/config.py:382
+#: src/common/config.py:383
 msgid "Remove unused posters"
 msgstr "Gỡ bỏ các áp phích không sử dụng"
 
-#: src/common/config.py:390
+#: src/common/config.py:391
 msgid "Collection metadata"
 msgstr "Siêu dữ liệu bộ sưu tập"
 
-#: src/common/config.py:391
+#: src/common/config.py:392
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "Cập nhật siêu dữ liệu của bộ sưu tập (áp phích, hình ảnh và tóm tắt) trong quá trình cập nhật theo lịch trình."
 
-#: src/common/config.py:396
+#: src/common/config.py:397
 msgid "Ignore locked fields."
 msgstr "Bỏ qua các trường bị khóa."
 
-#: src/common/config.py:397
+#: src/common/config.py:398
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Nếu bạn đang sử dụng Themerr phiên bản v2024.813.13709 hoặc các phiên bản cũ hơn, bạn có thể cần phải kích hoạt tính năng này để cập nhật các mục."
 
-#: src/common/config.py:403
+#: src/common/config.py:404
 msgid "Ignored library IDs"
 msgstr "Các ID thư viện bị bỏ qua"
 
-#: src/common/config.py:404
+#: src/common/config.py:405
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "Các ID thư viện được phân tách bằng dấu phẩy cần loại trừ khỏi các bản cập nhật theo lịch trình. Các ID này hiển thị trên trang Chủ."
 
-#: src/common/config.py:410
+#: src/common/config.py:411
 msgid "Update themes interval"
 msgstr "Cập nhật khoảng thời gian thay đổi chủ đề"
 
-#: src/common/config.py:411
+#: src/common/config.py:412
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Khoảng thời gian cho tác vụ cập nhật tự động, tính bằng phút (tối thiểu: 15)."
 
-#: src/common/config.py:418
+#: src/common/config.py:419
 msgid "Update database cache interval"
 msgstr "Cập nhật khoảng thời gian lưu trữ bộ nhớ đệm cơ sở dữ liệu"
 
-#: src/common/config.py:419
+#: src/common/config.py:420
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Khoảng thời gian thực hiện tác vụ cập nhật bộ nhớ đệm cơ sở dữ liệu, tính bằng phút (tối thiểu: 15)."
 
-#: src/common/config.py:426
+#: src/common/config.py:427
 msgid "PlexAPI timeout"
 msgstr "Thời gian chờ của PlexAPI"
 
-#: src/common/config.py:427
+#: src/common/config.py:428
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Hãy tăng giá trị này lên một chút nếu bạn gặp phải tình trạng hết thời gian chờ khi thêm chủ đề. (tối thiểu: 1)"
 
-#: src/common/config.py:434
+#: src/common/config.py:435
 msgid "Theme upload retries"
 msgstr "Số lần thử lại khi tải lên chủ đề"
 
-#: src/common/config.py:435
+#: src/common/config.py:436
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Nếu việc tải lên chủ đề không thành công, hãy thử lại số lần này. (tối thiểu: 0)"
 
-#: src/common/config.py:442
+#: src/common/config.py:443
 msgid "Multiprocessing thread count"
 msgstr "Số luồng trong xử lý đa luồng"
 
-#: src/common/config.py:443
+#: src/common/config.py:444
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "Số luồng cần sử dụng khi thêm chủ đề. Cần khởi động lại. (tối thiểu: 1)"
 
-#: src/common/config.py:450
+#: src/common/config.py:452
 msgid "YouTube Cookies"
 msgstr "Cookie của YouTube"
 
-#: src/common/config.py:452
-msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "Tùy chọn: Xuất các tệp cookie từ youtube.com bằng công cụ “Get cookies.txt” dưới dạng tệp cục bộ (LOCALLY) theo định dạng JSON, sau đó dán toàn bộ mảng JSON vào đây và lưu lại. Các tệp cookie chứa thông tin phiên làm việc của trình duyệt; hãy giữ chúng ở chế độ riêng tư."
+#: src/common/config.py:454
+msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Saved cookies are encrypted and masked. Select the eye icon to reveal them. Leave this blank to keep them, or select Clear saved cookies to remove them."
+msgstr "Tùy chọn: Xuất các tệp cookie từ youtube.com bằng tính năng “Get cookies.txt” dưới dạng tệp cục bộ (LOCALLY) theo định dạng JSON, sau đó dán toàn bộ mảng JSON vào đây và lưu lại. Các tệp cookie đã lưu được mã hóa và ẩn đi. Chọn biểu tượng con mắt để hiển thị chúng. Để trống ô này để giữ lại các tệp cookie, hoặc chọn “Xóa các tệp cookie đã lưu” để xóa chúng."
 
-#: src/common/config.py:457
+#: src/common/config.py:461
 msgid "Cookie export instructions"
 msgstr "Hướng dẫn xuất cookie"
 
@@ -523,12 +523,12 @@ msgstr "Khởi động lại"
 msgid "Quit"
 msgstr "Thoát"
 
-#: src/common/webapp.py:80 web/templates/logs.html:4
+#: src/common/webapp.py:81 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "Nhật ký"
 
-#: src/common/webapp.py:478 web/templates/config.html:23
+#: src/common/webapp.py:479 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Cài đặt"
@@ -587,27 +587,43 @@ msgstr "Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập
 msgid "Dismiss message"
 msgstr "Bỏ qua tin nhắn"
 
-#: web/js/config.js:18 web/js/config.js:44
+#: web/js/config.js:6
+msgid "Hide cookies"
+msgstr "Ẩn cookie"
+
+#: web/js/config.js:6 web/templates/config.html:18
+msgid "Show cookies"
+msgstr "Hiển thị cookie"
+
+#: web/js/config.js:18 web/templates/config.html:14
+msgid "Cookies saved"
+msgstr "Cookie đã được lưu"
+
+#: web/js/config.js:34 web/templates/config.html:14
+msgid "No cookies saved"
+msgstr "Không có cookie nào được lưu lại"
+
+#: web/js/config.js:81 web/js/config.js:123
 msgid "Unsaved changes"
 msgstr "Các thay đổi chưa được lưu"
 
-#: web/js/config.js:26
+#: web/js/config.js:89
 msgid "Discard unsaved settings changes?"
 msgstr "Có muốn hủy bỏ các thay đổi cài đặt chưa được lưu không?"
 
-#: web/js/config.js:44 web/templates/config.html:37
+#: web/js/config.js:123 web/templates/config.html:40
 msgid "All changes saved."
 msgstr "Tất cả các thay đổi đã được lưu."
 
-#: web/js/config.js:46
+#: web/js/config.js:125
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "Cài đặt đã được lưu. Các thay đổi về mạng sẽ có hiệu lực sau khi khởi động lại Themerr."
 
-#: web/js/config.js:50
+#: web/js/config.js:129
 msgid "Unable to save changes."
 msgstr "Không thể lưu các thay đổi."
 
-#: web/js/config.js:58
+#: web/js/config.js:137
 msgid "Save your settings changes before changing your password."
 msgstr "Hãy lưu các thay đổi về cài đặt trước khi thay đổi mật khẩu."
 
@@ -636,7 +652,7 @@ msgid "Live"
 msgstr "Trực tiếp"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Paused"
 msgstr "Tạm dừng"
 
@@ -644,60 +660,68 @@ msgstr "Tạm dừng"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "Không thể làm mới. Đang hiển thị các bản ghi được tải lần cuối."
 
-#: web/js/servers.js:45 web/templates/servers.html:42
+#: web/js/servers.js:32
+msgid "Verifying SSH connection…"
+msgstr "Kiểm tra kết nối SSH…"
+
+#: web/js/servers.js:64
+msgid "Checking SSH connection…"
+msgstr "Kiểm tra kết nối SSH…"
+
+#: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
 msgstr "Chọn các thư viện cần bỏ qua"
 
-#: web/js/servers.js:54
+#: web/js/servers.js:125
 msgid "Loading libraries…"
 msgstr "Đang tải các thư viện…"
 
-#: web/js/servers.js:78
+#: web/js/servers.js:149
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "Đang hiển thị các thư viện đã được lưu trong bộ nhớ đệm. Vui lòng bật tính năng này hoặc kết nối lại với máy chủ này để tải các thư viện hiện tại của nó."
 
-#: web/js/servers.js:80
+#: web/js/servers.js:151
 msgid "This server has no libraries."
 msgstr "Máy chủ này không có thư viện nào."
 
-#: web/js/servers.js:86
+#: web/js/servers.js:157
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "Không thể tải các thư viện. Các lựa chọn của bạn vẫn được lưu lại. Hãy đóng và mở lại danh sách để thử lại."
 
-#: web/js/servers.js:130 web/js/servers.js:296
+#: web/js/servers.js:201 web/js/servers.js:368
 msgid "Connected"
 msgstr "Kết nối"
 
-#: web/js/servers.js:130 web/templates/servers.html:71
-#: web/templates/servers.html:83
+#: web/js/servers.js:201 web/templates/servers.html:132
+#: web/templates/servers.html:144
 msgid "Connect"
 msgstr "Kết nối"
 
-#: web/js/servers.js:278
+#: web/js/servers.js:350
 msgid "Looking for Jellyfin servers…"
 msgstr "Tìm kiếm các máy chủ Jellyfin…"
 
-#: web/js/servers.js:284
+#: web/js/servers.js:356
 msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
 msgstr "Không có máy chủ Jellyfin nào phản hồi. Vui lòng kiểm tra cổng UDP 7359 và tính năng tự động phát hiện mạng nội bộ, hoặc nhập địa chỉ theo cách thủ công."
 
-#: web/js/servers.js:296
+#: web/js/servers.js:368
 msgid "Use this address"
 msgstr "Hãy sử dụng địa chỉ này"
 
-#: web/js/servers.js:325 web/templates/servers.html:26
+#: web/js/servers.js:397 web/templates/servers.html:87
 msgid "Save connector address"
 msgstr "Lưu địa chỉ đầu nối"
 
-#: web/js/servers.js:325 web/templates/servers.html:27
+#: web/js/servers.js:397 web/templates/servers.html:88
 msgid "Install matching connector"
 msgstr "Lắp đầu nối phù hợp"
 
-#: web/js/servers.js:330
+#: web/js/servers.js:402
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr "Máy chủ này không thể tự khởi động lại. Hãy khởi động lại dịch vụ hoặc container của máy chủ này."
 
-#: web/js/servers.js:362
+#: web/js/servers.js:434
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr "Bạn có muốn khởi động lại Jellyfin ngay bây giờ không? Quá trình phát lại hiện tại sẽ bị gián đoạn."
 
@@ -734,7 +758,7 @@ msgid "No tasks have run yet. Request a scan, or wait for the next scheduled ref
 msgstr "Chưa có tác vụ nào được thực thi. Hãy yêu cầu quét hoặc đợi đến lần làm mới theo lịch trình tiếp theo."
 
 #: web/templates/activity.html:7 web/templates/home.html:15
-#: web/templates/home.html:32 web/templates/servers.html:14
+#: web/templates/home.html:32 web/templates/servers.html:18
 msgid "Needs attention"
 msgstr "Cần chú ý"
 
@@ -814,7 +838,7 @@ msgstr "Các thư viện của bạn đang chờ đón bản nhạc nền tiếp
 msgid "Username"
 msgstr "Tên người dùng"
 
-#: web/templates/auth.html:30
+#: web/templates/auth.html:30 web/templates/servers.html:51
 msgid "Password"
 msgstr "Mật khẩu"
 
@@ -862,55 +886,59 @@ msgstr "Chủ đề: Ánh sáng. Chuyển sang chế độ tối."
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr "Chủ đề: Tối. Chuyển sang chế độ tự động."
 
-#: web/templates/config.html:16
+#: web/templates/config.html:17
 msgid "Browse directories for"
 msgstr "Duyệt qua các thư mục để tìm"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:20
+msgid "Clear saved cookies"
+msgstr "Xóa các tệp cookie đã lưu"
+
+#: web/templates/config.html:26
 msgid "TUNE YOUR WORKSPACE"
 msgstr "TỐI ƯU HÓA KHÔNG GIAN LÀM VIỆC CỦA BẠN"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:26
 msgid "Make Themerr work the way your library does."
 msgstr "Hãy làm cho Themerr hoạt động giống như thư viện của bạn."
 
-#: web/templates/config.html:25
+#: web/templates/config.html:28
 msgid "Settings sections"
 msgstr "Các phần cài đặt"
 
-#: web/templates/config.html:25 web/templates/config.html:34
+#: web/templates/config.html:28 web/templates/config.html:37
 msgid "Security"
 msgstr "An ninh"
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "Các kết nối máy chủ, thư mục dữ liệu và các thư viện bị bỏ qua được quản lý trên trang Máy chủ."
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr "Các thay đổi đối với cài đặt mạng sẽ có hiệu lực sau khi khởi động lại Themerr."
 
-#: web/templates/config.html:34
+#: web/templates/config.html:37
 msgid "One administrator for this installation. Change your password and sign out other sessions."
 msgstr "Chỉ có một quản trị viên cho hệ thống này. Hãy thay đổi mật khẩu của bạn và đăng xuất khỏi các phiên làm việc khác."
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Current password"
 msgstr "Mật khẩu hiện tại"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "New password"
 msgstr "Mật khẩu mới"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Confirm new password"
 msgstr "Xác nhận mật khẩu mới"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Change password"
 msgstr "Thay đổi mật khẩu"
 
-#: web/templates/config.html:37
+#: web/templates/config.html:40
 msgid "Save changes"
 msgstr "Lưu các thay đổi"
 
@@ -963,8 +991,8 @@ msgid "Unknown"
 msgstr "Không rõ"
 
 #: web/templates/home.html:8
-msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "Kiểm tra GitHub không thành công. Đang hiển thị lần triển khai gần nhất được ghi nhận; các kiểm tra được thực hiện tối đa mỗi giờ một lần."
+msgid "Deployment check failed. Showing the last known deployment; checks run at most hourly."
+msgstr "Kiểm tra triển khai không thành công. Hiển thị thông tin triển khai gần nhất đã biết; các kiểm tra được thực hiện tối đa mỗi giờ một lần."
 
 #: web/templates/home.html:9
 msgid "Last deployed"
@@ -1395,167 +1423,271 @@ msgstr "Các máy chủ được kết nối"
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "Lịch sử chủ đề và cài đặt thư viện được lưu trữ riêng biệt cho từng máy chủ."
 
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Enabled"
 msgstr "Đã bật"
 
-#: web/templates/servers.html:20
-msgid "Themerr address reachable from Jellyfin"
-msgstr "Địa chỉ Themerr có thể truy cập từ Jellyfin"
+#: web/templates/servers.html:26
+msgid "Last library refresh"
+msgstr "Lần cập nhật thư viện gần đây nhất"
 
-#: web/templates/servers.html:22
-msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
-msgstr "Sử dụng địa chỉ HTTP chỉ chứa trình kết nối cho chứng chỉ tự ký của Themerr, hoặc địa chỉ HTTPS có chứng chỉ được Jellyfin tin cậy. Đối với Jellyfin từ xa hoặc Docker, hãy thay thế `localhost` bằng một địa chỉ mà Jellyfin có thể truy cập được."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation, once playback finishes."
-msgstr "Jellyfin sẽ khởi động lại sau khi cài đặt xong, ngay sau khi quá trình phát lại kết thúc."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation. Active playback may be interrupted."
-msgstr "Jellyfin sẽ khởi động lại sau khi cài đặt. Quá trình phát đang diễn ra có thể bị gián đoạn."
-
-#: web/templates/servers.html:23
-msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
-msgstr "Tính năng khởi động lại tự động đã bị tắt. Vui lòng khởi động lại Jellyfin sau khi cài đặt."
-
-#: web/templates/servers.html:24
-msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
-msgstr "Plugin Themerr-jellyfin phiên bản cũ và kho lưu trữ của nó sẽ bị gỡ bỏ. Các chủ đề hiện có sẽ được giữ lại."
+#: web/templates/servers.html:26
+msgid "Not yet refreshed"
+msgstr "Chưa được làm mới"
 
 #: web/templates/servers.html:28
 msgid "Force restart"
 msgstr "Khởi động lại bắt buộc"
 
 #: web/templates/servers.html:32
-msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
-msgstr "Bật tính năng “Bài hát chủ đề” trong phần Cài đặt hiển thị của từng ứng dụng khách Jellyfin. Jellyfin lưu cài đặt này trên ứng dụng khách, do đó Themerr không thể thay đổi nó thông qua API máy chủ."
-
-#: web/templates/servers.html:32
-msgid "Open Jellyfin display settings"
-msgstr "Mở cài đặt hiển thị của Jellyfin"
+msgid "SSH cleanup"
+msgstr "Dọn dẹp SSH"
 
 #: web/templates/servers.html:33
-msgid "Last library refresh"
-msgstr "Lần cập nhật thư viện gần đây nhất"
-
-#: web/templates/servers.html:33
-msgid "Not yet refreshed"
-msgstr "Chưa được làm mới"
+msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
+msgstr "Kích hoạt SSH và SFTP trên máy chủ Plex của bạn để xóa các chủ đề, áp phích và hình ảnh minh họa cũ đã được tải lên. Sử dụng tài khoản có quyền truy cập vào thư mục Metadata của Plex. Themerr sẽ xác minh dấu vân tay của máy chủ và không thực thi các lệnh shell."
 
 #: web/templates/servers.html:34
-msgid "Processing settings"
-msgstr "Cài đặt xử lý"
+msgid "SSH setup guide with Windows examples"
+msgstr "Hướng dẫn thiết lập SSH kèm ví dụ trên Windows"
 
 #: web/templates/servers.html:36
-msgid "Process this server"
-msgstr "Xử lý máy chủ này"
+msgid "SSH hostname or IP address"
+msgstr "Tên máy chủ SSH hoặc địa chỉ IP"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:38
+msgid "SSH port"
+msgstr "Cổng SSH"
+
+#: web/templates/servers.html:40
+msgid "SSH username"
+msgstr "Tên người dùng SSH"
+
+#: web/templates/servers.html:42
+msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
+msgstr "Hãy sử dụng tài khoản đăng nhập trên máy tính Plex, chứ không phải tài khoản đăng nhập Plex của bạn. Trên Windows, hãy chạy lệnh `whoami` tại đó: đối với tài khoản cục bộ như PLEX-PC\\plex, hãy nhập `plex`; đối với tài khoản miền, hãy nhập `domain\\user`."
+
+#: web/templates/servers.html:43
+msgid "Verified SSH host fingerprint"
+msgstr "Dấu vân tay máy chủ SSH đã được xác minh"
+
+#: web/templates/servers.html:45
+msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
+msgstr "Thông tin này giúp xác định máy chủ SSH. Hãy sao chép dấu vân tay SHA256 của khóa công khai máy chủ từ chính máy tính Plex. Dấu vân tay này khác với khóa riêng tư của người dùng được sử dụng để đăng nhập ở phần dưới."
+
+#: web/templates/servers.html:46
+msgid "Remote Plex data directory"
+msgstr "Thư mục dữ liệu Plex từ xa"
+
+#: web/templates/servers.html:48
+msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
+msgstr "Nhập đường dẫn đến thư mục chứa siêu dữ liệu trên máy chủ này. Các đường dẫn ổ đĩa Windows sẽ được tự động chuyển đổi thành đường dẫn SFTP. Ví dụ:"
+
+#: web/templates/servers.html:48
+msgid "For a restricted SFTP account, use the path visible inside that account."
+msgstr "Đối với tài khoản SFTP có giới hạn, hãy sử dụng đường dẫn hiển thị bên trong tài khoản đó."
+
+#: web/templates/servers.html:49
+msgid "SSH authentication"
+msgstr "Xác thực SSH"
+
+#: web/templates/servers.html:52
+msgid "Private key"
+msgstr "Khóa riêng"
+
+#: web/templates/servers.html:54
+msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
+msgstr "Xác thực bằng mật khẩu chỉ cần mật khẩu của tài khoản máy chủ. Hãy chọn “Khóa riêng” nếu bạn đã tạo cặp khóa người dùng và cài đặt khóa công khai của cặp khóa đó trên máy tính chạy Plex."
+
+#: web/templates/servers.html:56
+msgid "SSH private key"
+msgstr "Khóa riêng SSH"
+
+#: web/templates/servers.html:58
+msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
+msgstr "Dán toàn bộ tệp khóa riêng được tạo bởi ssh-keygen, bao gồm cả các dòng BEGIN và END. Tệp có phần mở rộng .pub là khóa công khai được cài đặt trên máy tính Plex; hãy dán tệp không có phần mở rộng .pub vào đây."
+
+#: web/templates/servers.html:59
+msgid "Private key passphrase"
+msgstr "Mật khẩu khóa riêng"
+
+#: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
 msgstr "tùy chọn"
 
-#: web/templates/servers.html:38
+#: web/templates/servers.html:61
+msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
+msgstr "Hãy nhập cụm mật khẩu mà bạn đã chọn khi tạo khóa này. Cụm mật khẩu này sẽ mở khóa tệp khóa riêng. Hãy để trống trường này nếu khóa không có cụm mật khẩu."
+
+#: web/templates/servers.html:64
+msgid "Server account password"
+msgstr "Mật khẩu tài khoản máy chủ"
+
+#: web/templates/servers.html:66
+msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
+msgstr "Hãy sử dụng mật khẩu của tài khoản đã nhập ở trên. Trên Windows, đây là mật khẩu tài khoản, không phải mã PIN Windows Hello."
+
+#: web/templates/servers.html:68
+msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
+msgstr "Thông tin đăng nhập được lưu trữ an toàn và sẽ không bao giờ được hiển thị lại. Hãy để trống các trường bí mật để giữ nguyên thông tin đăng nhập đã lưu cho cùng một máy chủ và tài khoản. Hãy sử dụng Themerr qua HTTPS khi nhập thông tin đăng nhập từ một máy tính khác."
+
+#: web/templates/servers.html:70
+msgid "Verify and save SSH"
+msgstr "Xác minh và lưu thông tin SSH"
+
+#: web/templates/servers.html:71
+msgid "Check connection"
+msgstr "Kiểm tra kết nối"
+
+#: web/templates/servers.html:72
+msgid "Disable SSH"
+msgstr "Tắt SSH"
+
+#: web/templates/servers.html:79
+msgid "Connector address"
+msgstr "Địa chỉ đầu nối"
+
+#: web/templates/servers.html:81
+msgid "Themerr address reachable from Jellyfin"
+msgstr "Địa chỉ Themerr có thể truy cập từ Jellyfin"
+
+#: web/templates/servers.html:83
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "Sử dụng địa chỉ HTTP chỉ chứa trình kết nối cho chứng chỉ tự ký của Themerr, hoặc địa chỉ HTTPS có chứng chỉ được Jellyfin tin cậy. Đối với Jellyfin từ xa hoặc Docker, hãy thay thế `localhost` bằng một địa chỉ mà Jellyfin có thể truy cập được."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "Jellyfin sẽ khởi động lại sau khi cài đặt xong, ngay sau khi quá trình phát lại kết thúc."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "Jellyfin sẽ khởi động lại sau khi cài đặt. Quá trình phát đang diễn ra có thể bị gián đoạn."
+
+#: web/templates/servers.html:84
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "Tính năng khởi động lại tự động đã bị tắt. Vui lòng khởi động lại Jellyfin sau khi cài đặt."
+
+#: web/templates/servers.html:85
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "Plugin Themerr-jellyfin phiên bản cũ và kho lưu trữ của nó sẽ bị gỡ bỏ. Các chủ đề hiện có sẽ được giữ lại."
+
+#: web/templates/servers.html:92
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "Bật tính năng “Bài hát chủ đề” trong phần Cài đặt hiển thị của từng ứng dụng khách Jellyfin. Jellyfin lưu cài đặt này trên ứng dụng khách, do đó Themerr không thể thay đổi nó thông qua API máy chủ."
+
+#: web/templates/servers.html:92
+msgid "Open Jellyfin display settings"
+msgstr "Mở cài đặt hiển thị của Jellyfin"
+
+#: web/templates/servers.html:95
+msgid "Processing settings"
+msgstr "Cài đặt xử lý"
+
+#: web/templates/servers.html:97
+msgid "Process this server"
+msgstr "Xử lý máy chủ này"
+
+#: web/templates/servers.html:99
 msgid "Browse Plex data directory"
 msgstr "Duyệt thư mục dữ liệu của Plex"
 
-#: web/templates/servers.html:39
-msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "Thư mục dữ liệu Plex cục bộ hoặc được gắn chỉ cần thiết để xóa các tệp đã tải lên từ trước. Hãy để trống trường này đối với các máy chủ từ xa."
+#: web/templates/servers.html:100
+msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
+msgstr "Thư mục dữ liệu cục bộ hoặc được gắn kết của máy chủ này, như được truy cập bởi máy tính đang chạy Themerr. Mỗi máy chủ có đường dẫn riêng. Tính năng dọn dẹp qua SSH sử dụng đường dẫn từ xa riêng biệt của máy chủ này và sẽ được ưu tiên khi được cấu hình."
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:101
 msgid "Ignored libraries"
 msgstr "Các thư viện bị bỏ qua"
 
-#: web/templates/servers.html:46
+#: web/templates/servers.html:107
 msgid "Library"
 msgstr "Thư viện"
 
-#: web/templates/servers.html:49
+#: web/templates/servers.html:110
 msgid "Open the list to load this server’s libraries."
 msgstr "Mở danh sách để tải các thư viện của máy chủ này."
 
-#: web/templates/servers.html:52
+#: web/templates/servers.html:113
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "Chọn các thư viện cần loại trừ khỏi các bản cập nhật chủ đề. Để tất cả các ô trống để xử lý mọi thư viện."
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Save settings"
 msgstr "Lưu cài đặt"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Remove server"
 msgstr "Xóa máy chủ"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Your first server starts here."
 msgstr "Hành trình với máy chủ đầu tiên của bạn bắt đầu từ đây."
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Link Plex above or add a Jellyfin server below."
 msgstr "Nhấp vào liên kết Plex ở trên hoặc thêm máy chủ Jellyfin ở dưới."
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:121
 msgid "Add a server"
 msgstr "Thêm máy chủ"
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:122
 msgid "Server type"
 msgstr "Loại máy chủ"
 
-#: web/templates/servers.html:66
+#: web/templates/servers.html:127
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Chọn một máy chủ từ tài khoản Plex của bạn, tìm một máy chủ gần đó hoặc sử dụng địa chỉ mà bạn biết."
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Find account servers"
 msgstr "Tìm máy chủ tài khoản"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Discover on LAN"
 msgstr "Khám phá trên mạng LAN"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "Tính năng phát hiện mạng LAN sử dụng Plex GDM trên mạng của ứng dụng của bạn."
 
-#: web/templates/servers.html:68
+#: web/templates/servers.html:129
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "Các địa chỉ tài khoản được Plex công bố và có thể không truy cập được. Các địa chỉ HTTPS plex.direct sử dụng chứng chỉ của Plex. Hãy chọn một địa chỉ có thể truy cập được từ máy đang chạy Themerr, hoặc nhập thủ công một địa chỉ đã biết."
 
-#: web/templates/servers.html:70
+#: web/templates/servers.html:131
 msgid "Enter an address manually"
 msgstr "Nhập địa chỉ theo cách thủ công"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Plex server address"
 msgstr "Địa chỉ máy chủ Plex"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Hãy sử dụng địa chỉ LAN hoặc địa chỉ HTTPS hợp lệ của Plex. Tài khoản Plex đã liên kết của bạn phải có quyền truy cập. Việc thêm một máy chủ hiện có sẽ cập nhật địa chỉ của máy chủ đó."
 
-#: web/templates/servers.html:75
+#: web/templates/servers.html:136
 msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
 msgstr "Jellyfin 10.11 và 12.1 được hỗ trợ. Tạo khóa API quản trị viên trong Bảng điều khiển Jellyfin - Khóa API."
 
-#: web/templates/servers.html:77
+#: web/templates/servers.html:138
 msgid "Jellyfin server address"
 msgstr "Địa chỉ máy chủ Jellyfin"
 
-#: web/templates/servers.html:79
+#: web/templates/servers.html:140
 msgid "Jellyfin API key"
 msgstr "Khóa API Jellyfin"
 
-#: web/templates/servers.html:81
+#: web/templates/servers.html:142
 msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
 msgstr "Các khóa được lưu trữ trong kho thông tin xác thực an toàn. Sau khi kết nối, hãy thiết lập địa chỉ Themerr có thể truy cập trên thẻ máy chủ ở trên."
 
-#: web/templates/servers.html:84
+#: web/templates/servers.html:145
 msgid "Discover Jellyfin on LAN"
 msgstr "Khám phá Jellyfin trên mạng LAN"
 
-#: web/templates/servers.html:86
+#: web/templates/servers.html:147
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr "Sử dụng cổng UDP 7359 trên mạng của Themerr. Vẫn cần có khóa API."
 

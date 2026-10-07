@@ -14,429 +14,429 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: zh_CN\n"
-"PO-Revision-Date: 2026-10-06 03:08\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
-#: src/common/config.py:84
+#: src/common/config.py:85
 msgid "Info"
 msgstr "信息"
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "For information purposes only."
 msgstr "仅供参考。"
 
-#: src/common/config.py:89
+#: src/common/config.py:90
 msgid "Config version"
 msgstr "配置版本"
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "The configuration version."
 msgstr "配置版本。"
 
-#: src/common/config.py:99
+#: src/common/config.py:100
 msgid "First run complete"
 msgstr "第一次运行完成"
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "待办事项：指示用户是否完成了初始设置。"
 
-#: src/common/config.py:107
+#: src/common/config.py:108
 msgid "General"
 msgstr "A. 概况"
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General settings."
 msgstr "常规设置。"
 
-#: src/common/config.py:112
+#: src/common/config.py:113
 msgid "Locale"
 msgstr "区域设置"
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "The localization setting to use."
 msgstr "要使用的本地化设置。"
 
-#: src/common/config.py:122
+#: src/common/config.py:123
 msgid "Launch Browser on Startup "
 msgstr "启动时启动浏览器 "
 
-#: src/common/config.py:128
+#: src/common/config.py:129
 msgid "Enable System Tray Icon"
 msgstr "启用系统托盘图标"
 
-#: src/common/config.py:136
+#: src/common/config.py:137
 msgid "Notifications"
 msgstr "通知"
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "桌面通知出现在运行Themerr的计算机上，停靠栏和无头安装不显示它们。"
 
-#: src/common/config.py:142 src/common/notifications.py:138
+#: src/common/config.py:143 src/common/notifications.py:138
 msgid "New release available"
 msgstr "有新版本可用"
 
-#: src/common/config.py:143
+#: src/common/config.py:144
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "当有新的 Themerr 版本可用时通知。检查每小时一次。"
 
-#: src/common/config.py:148
+#: src/common/config.py:149
 msgid "Follow pre-releases"
 msgstr "跟随预发布"
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Include pre-releases in new release notifications."
 msgstr "在新的发布通知中包含预发布通知。"
 
-#: src/common/config.py:154
+#: src/common/config.py:155
 msgid "Theme coverage increased"
 msgstr "主题覆盖面增加"
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "当主题覆盖率增加时，在成功刷新后通知。刷新时不会增加静音。"
 
-#: src/common/config.py:162
+#: src/common/config.py:163
 msgid "Logging"
 msgstr "日志记录"
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging settings."
 msgstr "日志设置。"
 
-#: src/common/config.py:167
+#: src/common/config.py:168
 msgid "Log directory"
 msgstr "日志目录"
 
-#: src/common/config.py:169
+#: src/common/config.py:170
 msgid "The directory where to store the log files."
 msgstr "存储日志文件的目录。"
 
-#: src/common/config.py:176
+#: src/common/config.py:177
 msgid "Debug logging"
 msgstr "调试日志"
 
-#: src/common/config.py:178
+#: src/common/config.py:179
 msgid "Enable debug logging."
 msgstr "启用调试记录。"
 
-#: src/common/config.py:184
+#: src/common/config.py:185
 msgid "Network"
 msgstr "网络"
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network settings."
 msgstr "网络设置。"
 
-#: src/common/config.py:189
+#: src/common/config.py:190
 msgid "HTTP host address"
 msgstr "HTTP 主机地址"
 
-#: src/common/config.py:191
+#: src/common/config.py:192
 msgid "The HTTP address to bind to."
 msgstr "要绑定的 HTTP 地址。"
 
-#: src/common/config.py:200
+#: src/common/config.py:201
 msgid "HTTP port"
 msgstr "HTTP 端口"
 
-#: src/common/config.py:202
+#: src/common/config.py:203
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "要绑定网络服务器的端口。请注意低于1024的端口可能需要root。"
 
-#: src/common/config.py:210
+#: src/common/config.py:211
 msgid "HTTP root"
 msgstr "HTTP 根目录"
 
-#: src/common/config.py:212
+#: src/common/config.py:213
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "待办事项：Web 服务器的基础URL。用于反向代理。"
 
-#: src/common/config.py:217
+#: src/common/config.py:218
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:219
+#: src/common/config.py:220
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "使用 HTTP 运行网络服务器。禁用这可能是一个安全风险，请自行承担风险。"
 
-#: src/common/config.py:225
+#: src/common/config.py:226
 msgid "Updater"
 msgstr "更新器"
 
-#: src/common/config.py:226
+#: src/common/config.py:227
 msgid "Updater settings."
 msgstr "更新程序设置。"
 
-#: src/common/config.py:230
+#: src/common/config.py:231
 msgid "Auto update"
 msgstr "自动更新"
 
-#: src/common/config.py:238
+#: src/common/config.py:239
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/common/config.py:239
+#: src/common/config.py:240
 msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
 msgstr "Jellyfin 主题处理设置。连接管理在服务器页面上。"
 
-#: src/common/config.py:242 src/common/config.py:343
+#: src/common/config.py:243 src/common/config.py:344
 msgid "Movie support"
 msgstr "电影支持"
 
-#: src/common/config.py:243
+#: src/common/config.py:244
 msgid "Add themes to Jellyfin movies."
 msgstr "将主题添加到 Jellyfin 电影。"
 
-#: src/common/config.py:246 src/common/config.py:349
+#: src/common/config.py:247 src/common/config.py:350
 msgid "Series support"
 msgstr "系列支持"
 
-#: src/common/config.py:247
+#: src/common/config.py:248
 msgid "Add themes to Jellyfin series."
 msgstr "将主题添加到 Jellyfin 系列中。"
 
-#: src/common/config.py:250 src/common/config.py:337 web/templates/home.html:31
+#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
 msgid "Collections"
 msgstr "合集"
 
-#: src/common/config.py:251
+#: src/common/config.py:252
 msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
 msgstr "在 Jellyfin 的收藏目录中添加主题。媒体文件可以留在其他地方。"
 
-#: src/common/config.py:254
+#: src/common/config.py:255
 msgid "Overwrite user themes"
 msgstr "覆盖用户主题"
 
-#: src/common/config.py:255
+#: src/common/config.py:256
 msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
 msgstr "替换现有的主题文件，包括由旧的 Themerr-jellyfin 插件创建的主题。"
 
-#: src/common/config.py:259
+#: src/common/config.py:260
 msgid "Back up replaced user themes"
 msgstr "备份被替换的用户主题"
 
-#: src/common/config.py:260
+#: src/common/config.py:261
 msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
 msgstr "替换现有用户主题时保留在备份文件夹中。禁用以永久删除被替换的主题。"
 
-#: src/common/config.py:264
+#: src/common/config.py:265
 msgid "Import older Themerr-jellyfin ownership"
 msgstr "导入旧的 Themerr-jellyfin 所有权"
 
-#: src/common/config.py:265
+#: src/common/config.py:266
 msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
 msgstr "仅当旧插件数据库中的 SHA-256 仍然匹配时才承认记录的主题。更改的文件仍然受保护。旧的数据库不受触摸。"
 
-#: src/common/config.py:269
+#: src/common/config.py:270
 msgid "Ignore locked metadata"
 msgstr "忽略锁定的元数据"
 
-#: src/common/config.py:270
+#: src/common/config.py:271
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr "允许 Jellyfin 主题更新带有锁定元数据的项目。"
 
-#: src/common/config.py:273
+#: src/common/config.py:274
 msgid "Update connector automatically"
 msgstr "自动更新连接器"
 
-#: src/common/config.py:274
+#: src/common/config.py:275
 msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr "当Themer启动或检测到版本不匹配时安装匹配的连接器。请先在服务器页面设置可访问的Themer地址。"
 
-#: src/common/config.py:278
+#: src/common/config.py:279
 msgid "Restart Jellyfin automatically"
 msgstr "自动重启 Jellyfin"
 
-#: src/common/config.py:279
+#: src/common/config.py:280
 msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
 msgstr "安装或更新连接器后重启Jellyfin。在服务器页面上显示正在进行的重启。"
 
-#: src/common/config.py:283
+#: src/common/config.py:284
 msgid "Wait for playback to finish"
 msgstr "等待播放完成"
 
-#: src/common/config.py:284
+#: src/common/config.py:285
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr "推迟连接器重启直到没有播放或暂停流为止。"
 
-#: src/common/config.py:287
+#: src/common/config.py:288
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr "删除旧的 Themerr-jellyfin 插件"
 
-#: src/common/config.py:288
+#: src/common/config.py:289
 msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
 msgstr "安装连接器后，卸载旧的 Themerr 插件并只移除其专用仓库。现有主题文件将被保存。"
 
-#: src/common/config.py:292
+#: src/common/config.py:293
 msgid "Connector HTTP port"
 msgstr "连接器 HTTP 端口"
 
-#: src/common/config.py:293
+#: src/common/config.py:294
 msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
 msgstr "当Themer使用自签名证书时，只能通过HTTP下载连接器。 管理员界面保持在 HTTPS 上。使用 0 禁用。更改此端口后重新启动Themerr。"
 
-#: src/common/config.py:300
+#: src/common/config.py:301
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:301
+#: src/common/config.py:302
 msgid "Plex settings."
 msgstr "Plex设置。"
 
-#: src/common/config.py:305
+#: src/common/config.py:306
 msgid "Plex URL"
 msgstr "Plex URL"
 
-#: src/common/config.py:306
+#: src/common/config.py:307
 msgid "The URL to the Plex server."
 msgstr "Plex服务器的 URL。"
 
-#: src/common/config.py:315 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Plex数据目录"
 
-#: src/common/config.py:316
+#: src/common/config.py:317
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where is-the-plex-media-server-data-directory/"
 
-#: src/common/config.py:326
+#: src/common/config.py:327
 msgid "Themerr"
 msgstr "星历表"
 
-#: src/common/config.py:327
+#: src/common/config.py:328
 msgid "Themerr settings."
 msgstr "星历设置。"
 
-#: src/common/config.py:331
+#: src/common/config.py:332
 msgid "Themerr Enabled"
 msgstr "星历已启用"
 
-#: src/common/config.py:332
+#: src/common/config.py:333
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "启用时，Themer将尝试更新主题。"
 
-#: src/common/config.py:338
+#: src/common/config.py:339
 msgid "Add themes to collections."
 msgstr "将主题添加到收藏中。"
 
-#: src/common/config.py:344
+#: src/common/config.py:345
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "使用Plex电影代理将主题添加到电影中。"
 
-#: src/common/config.py:350
+#: src/common/config.py:351
 msgid "Add themes to series using the Plex Series agent."
 msgstr "使用Plex系列代理添加主题到系列中。"
 
-#: src/common/config.py:355
+#: src/common/config.py:356
 msgid "Overwrite Plex themes"
 msgstr "覆盖Plex主题"
 
-#: src/common/config.py:356
+#: src/common/config.py:357
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "如果启用，Themer将覆盖由Plex提供的主题。"
 
-#: src/common/config.py:361
+#: src/common/config.py:362
 msgid "Prefer MP4A AAC Codec"
 msgstr "优先使用 MP4A AAC 解码器"
 
-#: src/common/config.py:362
+#: src/common/config.py:363
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "这可以提高主题与苹果设备的兼容性。"
 
-#: src/common/config.py:367
+#: src/common/config.py:368
 msgid "Remove unused themes"
 msgstr "删除未使用的主题"
 
-#: src/common/config.py:368
+#: src/common/config.py:369
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "在您的Plex元数据目录中空闲空间。此选项需要设置\"Plex数据目录\"路径"
 
-#: src/common/config.py:374
+#: src/common/config.py:375
 msgid "Remove unused art"
 msgstr "移除未使用的艺像"
 
-#: src/common/config.py:375 src/common/config.py:383
+#: src/common/config.py:376 src/common/config.py:384
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "应用于收藏。在您的Plex元数据目录中释放空间。此选项需要设置\"Plex数据目录\"路径"
 
-#: src/common/config.py:382
+#: src/common/config.py:383
 msgid "Remove unused posters"
 msgstr "删除未使用的海报"
 
-#: src/common/config.py:390
+#: src/common/config.py:391
 msgid "Collection metadata"
 msgstr "集合元数据"
 
-#: src/common/config.py:391
+#: src/common/config.py:392
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "在预定的更新过程中更新收藏元数据(海报、艺术和摘要)。"
 
-#: src/common/config.py:396
+#: src/common/config.py:397
 msgid "Ignore locked fields."
 msgstr "忽略锁定的字段。"
 
-#: src/common/config.py:397
+#: src/common/config.py:398
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "如果您使用 Themerr v2024.813.13709 或更低，您可能需要启用此选项来更新项目。"
 
-#: src/common/config.py:403
+#: src/common/config.py:404
 msgid "Ignored library IDs"
 msgstr "忽略的库 ID"
 
-#: src/common/config.py:404
+#: src/common/config.py:405
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "用于排除预定更新的逗号分隔的库ID。ID出现在主屏幕上。"
 
-#: src/common/config.py:410
+#: src/common/config.py:411
 msgid "Update themes interval"
 msgstr "更新主题间隔"
 
-#: src/common/config.py:411
+#: src/common/config.py:412
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "自动更新任务的间隔，以分钟为单位(分钟：15分钟)。"
 
-#: src/common/config.py:418
+#: src/common/config.py:419
 msgid "Update database cache interval"
 msgstr "更新数据库缓存间隔"
 
-#: src/common/config.py:419
+#: src/common/config.py:420
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "数据库缓存更新任务的间隔，以分钟为单位(分钟：15分钟)。"
 
-#: src/common/config.py:426
+#: src/common/config.py:427
 msgid "PlexAPI timeout"
 msgstr "PlexAPI 超时"
 
-#: src/common/config.py:427
+#: src/common/config.py:428
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "如果您在添加主题时遇到超时时间问题，请稍微增加。(最小：1)"
 
-#: src/common/config.py:434
+#: src/common/config.py:435
 msgid "Theme upload retries"
 msgstr "主题上传重试"
 
-#: src/common/config.py:435
+#: src/common/config.py:436
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "如果上传主题失败，请重试这么多次(最小：0)"
 
-#: src/common/config.py:442
+#: src/common/config.py:443
 msgid "Multiprocessing thread count"
 msgstr "多处理线程计数"
 
-#: src/common/config.py:443
+#: src/common/config.py:444
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "添加主题时要使用的线程数。重启所需(最小：1)"
 
-#: src/common/config.py:450
+#: src/common/config.py:452
 msgid "YouTube Cookies"
 msgstr "YouTube Cookie"
 
-#: src/common/config.py:452
-msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Cookies contain your browser session; keep them private."
-msgstr "可选：使用 Get cookies.txt LOCALY 导出youtube.com cookie，然后将整个JSON 数组粘贴到此处，然后保存。 Cookie 包含您的浏览器会话；保持它们的隐私。"
+#: src/common/config.py:454
+msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Saved cookies are encrypted and masked. Select the eye icon to reveal them. Leave this blank to keep them, or select Clear saved cookies to remove them."
+msgstr "可选：使用 Get cookies.txt LOCALY 导出youtube.com cookie，然后将整个JSON 数组粘贴到此处，然后保存。 保存的 cookie 已加密并被掩盖。选择眼睛图标以显示它们。 留空以保留它们，或选择清除已保存的 cookie 以删除。"
 
-#: src/common/config.py:457
+#: src/common/config.py:461
 msgid "Cookie export instructions"
 msgstr "Cookie 导出说明"
 
@@ -523,12 +523,12 @@ msgstr "重新启动"
 msgid "Quit"
 msgstr "退出"
 
-#: src/common/webapp.py:80 web/templates/logs.html:4
+#: src/common/webapp.py:81 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "日志"
 
-#: src/common/webapp.py:478 web/templates/config.html:23
+#: src/common/webapp.py:479 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "设置"
@@ -537,7 +537,8 @@ msgstr "设置"
 #, python-format
 msgid "%(app_name)s manages theme songs for Plex and Jellyfin.\n"
 "Arguments supplied here are meant to be temporary."
-msgstr ""
+msgstr "%(app_name)s 负责管理 Plex 和 Jellyfin 的主题曲。\n"
+"此处提供的参数仅供临时使用。"
 
 #: src/main.py:175
 msgid "Show this help message and exit"
@@ -586,27 +587,43 @@ msgstr "您的会话已过期。登录以继续。"
 msgid "Dismiss message"
 msgstr "清除消息"
 
-#: web/js/config.js:18 web/js/config.js:44
+#: web/js/config.js:6
+msgid "Hide cookies"
+msgstr "隐藏 cookie"
+
+#: web/js/config.js:6 web/templates/config.html:18
+msgid "Show cookies"
+msgstr "显示 cookie"
+
+#: web/js/config.js:18 web/templates/config.html:14
+msgid "Cookies saved"
+msgstr "Cookie 已保存"
+
+#: web/js/config.js:34 web/templates/config.html:14
+msgid "No cookies saved"
+msgstr "没有保存 cookie"
+
+#: web/js/config.js:81 web/js/config.js:123
 msgid "Unsaved changes"
 msgstr "未保存的更改"
 
-#: web/js/config.js:26
+#: web/js/config.js:89
 msgid "Discard unsaved settings changes?"
 msgstr "放弃未保存的设置更改？"
 
-#: web/js/config.js:44 web/templates/config.html:37
+#: web/js/config.js:123 web/templates/config.html:40
 msgid "All changes saved."
 msgstr "所有更改已保存。"
 
-#: web/js/config.js:46
+#: web/js/config.js:125
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "设置已保存。网络更改在重启主题后生效。"
 
-#: web/js/config.js:50
+#: web/js/config.js:129
 msgid "Unable to save changes."
 msgstr "无法保存更改。"
 
-#: web/js/config.js:58
+#: web/js/config.js:137
 msgid "Save your settings changes before changing your password."
 msgstr "更改密码前保存您的设置。"
 
@@ -635,7 +652,7 @@ msgid "Live"
 msgstr "实时模式"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Paused"
 msgstr "已暂停"
 
@@ -643,60 +660,68 @@ msgstr "已暂停"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "刷新失败。显示最近加载的记录。"
 
-#: web/js/servers.js:45 web/templates/servers.html:42
+#: web/js/servers.js:32
+msgid "Verifying SSH connection…"
+msgstr "正在验证 SSH 连接…"
+
+#: web/js/servers.js:64
+msgid "Checking SSH connection…"
+msgstr "检查 SSH 连接…"
+
+#: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
 msgstr "选择要忽略的库"
 
-#: web/js/servers.js:54
+#: web/js/servers.js:125
 msgid "Loading libraries…"
 msgstr "正在加载库：…"
 
-#: web/js/servers.js:78
+#: web/js/servers.js:149
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "显示缓存的库。启用或重新连接此服务器以加载当前库。"
 
-#: web/js/servers.js:80
+#: web/js/servers.js:151
 msgid "This server has no libraries."
 msgstr "此服务器没有库。"
 
-#: web/js/servers.js:86
+#: web/js/servers.js:157
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "无法加载库。保留您的选择。关闭并重新打开列表以重试。"
 
-#: web/js/servers.js:130 web/js/servers.js:296
+#: web/js/servers.js:201 web/js/servers.js:368
 msgid "Connected"
 msgstr "已连接"
 
-#: web/js/servers.js:130 web/templates/servers.html:71
-#: web/templates/servers.html:83
+#: web/js/servers.js:201 web/templates/servers.html:132
+#: web/templates/servers.html:144
 msgid "Connect"
 msgstr "连接"
 
-#: web/js/servers.js:278
+#: web/js/servers.js:350
 msgid "Looking for Jellyfin servers…"
 msgstr "正在寻找Jellyfin服务器…"
 
-#: web/js/servers.js:284
+#: web/js/servers.js:356
 msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
 msgstr "没有Jellyfin服务器响应。检查UDP端口7359和本地网络发现，或手动输入地址。"
 
-#: web/js/servers.js:296
+#: web/js/servers.js:368
 msgid "Use this address"
 msgstr "使用此地址"
 
-#: web/js/servers.js:325 web/templates/servers.html:26
+#: web/js/servers.js:397 web/templates/servers.html:87
 msgid "Save connector address"
 msgstr "保存连接器地址"
 
-#: web/js/servers.js:325 web/templates/servers.html:27
+#: web/js/servers.js:397 web/templates/servers.html:88
 msgid "Install matching connector"
 msgstr "安装匹配的连接器"
 
-#: web/js/servers.js:330
+#: web/js/servers.js:402
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr "此服务器不能重新启动自己。重新启动其服务或容器。"
 
-#: web/js/servers.js:362
+#: web/js/servers.js:434
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr "现在重启 Jellyfin 吗？活动播放将被打断。"
 
@@ -733,7 +758,7 @@ msgid "No tasks have run yet. Request a scan, or wait for the next scheduled ref
 msgstr "尚未运行任何任务。请求扫描，或等待下次计划刷新。"
 
 #: web/templates/activity.html:7 web/templates/home.html:15
-#: web/templates/home.html:32 web/templates/servers.html:14
+#: web/templates/home.html:32 web/templates/servers.html:18
 msgid "Needs attention"
 msgstr "需要关注"
 
@@ -813,7 +838,7 @@ msgstr "您的库正在等待下一个音轨。"
 msgid "Username"
 msgstr "用户名"
 
-#: web/templates/auth.html:30
+#: web/templates/auth.html:30 web/templates/servers.html:51
 msgid "Password"
 msgstr "密码"
 
@@ -861,55 +886,59 @@ msgstr "主题: Light, 切换到暗色模式。"
 msgid "Theme: Dark. Switch to automatic mode."
 msgstr "主题: 暗色。切换到自动模式。"
 
-#: web/templates/config.html:16
+#: web/templates/config.html:17
 msgid "Browse directories for"
 msgstr "浏览目录为"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:20
+msgid "Clear saved cookies"
+msgstr "清除已保存的 cookie"
+
+#: web/templates/config.html:26
 msgid "TUNE YOUR WORKSPACE"
 msgstr "推荐您的工作"
 
-#: web/templates/config.html:23
+#: web/templates/config.html:26
 msgid "Make Themerr work the way your library does."
 msgstr "让Themer以您的知识库的方式工作。"
 
-#: web/templates/config.html:25
+#: web/templates/config.html:28
 msgid "Settings sections"
 msgstr "设置部分"
 
-#: web/templates/config.html:25 web/templates/config.html:34
+#: web/templates/config.html:28 web/templates/config.html:37
 msgid "Security"
 msgstr "安全"
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "服务器连接、数据目录和忽略的库在服务器页面上管理。"
 
-#: web/templates/config.html:29
+#: web/templates/config.html:32
 msgid "Changes to network settings take effect after restarting Themerr."
 msgstr "网络设置的更改在重启主题后生效。"
 
-#: web/templates/config.html:34
+#: web/templates/config.html:37
 msgid "One administrator for this installation. Change your password and sign out other sessions."
 msgstr "此安装有一个管理员。更改您的密码并注销其他会话。"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Current password"
 msgstr "当前密码"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "New password"
 msgstr "新密码"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Confirm new password"
 msgstr "确认新密码"
 
-#: web/templates/config.html:35
+#: web/templates/config.html:38
 msgid "Change password"
 msgstr "更改密码"
 
-#: web/templates/config.html:37
+#: web/templates/config.html:40
 msgid "Save changes"
 msgstr "保存更改"
 
@@ -962,8 +991,8 @@ msgid "Unknown"
 msgstr "未知的"
 
 #: web/templates/home.html:8
-msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "GitHub 检查失败。显示最后一个已知的部署；检查运行时间最多为小时。"
+msgid "Deployment check failed. Showing the last known deployment; checks run at most hourly."
+msgstr "部署检查失败。显示已知的最后一次部署，检查最多每小时进行。"
 
 #: web/templates/home.html:9
 msgid "Last deployed"
@@ -1132,7 +1161,7 @@ msgstr "无法播放此主题。请检查服务器连接和浏览器音频支持
 #: web/templates/home.html:66
 #, python-format
 msgid "Open in %(server)s"
-msgstr ""
+msgstr "在...中打开 %(server)s"
 
 #: web/templates/home.html:70 web/templates/home.html:78
 msgid "External ID unavailable"
@@ -1394,167 +1423,271 @@ msgstr "已连接服务器"
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "每个服务器的主题历史和库设置都是分开保存的。"
 
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Enabled"
 msgstr "已启用"
 
-#: web/templates/servers.html:20
-msgid "Themerr address reachable from Jellyfin"
-msgstr "可从 Jellyfin 访问的Themer地址"
+#: web/templates/servers.html:26
+msgid "Last library refresh"
+msgstr "上次刷新库"
 
-#: web/templates/servers.html:22
-msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
-msgstr "仅限连接器的 HTTP 地址用于Themerr's 自签名证书，或者一个带有证书的 Jellyfin 信托的HTTPS 地址。 对于远程 Jellyfin 或 Docker，使用 Jellyfin 的地址替换本地主机。"
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation, once playback finishes."
-msgstr "一旦播放完成，Jellyfin将在安装后重启。"
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation. Active playback may be interrupted."
-msgstr "Jellyfin 安装后将重新启动。激活的播放可能会中断。"
-
-#: web/templates/servers.html:23
-msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
-msgstr "自动重启已禁用。安装后重启Jellyfin。"
-
-#: web/templates/servers.html:24
-msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
-msgstr "旧的 Themerr-jellyfin 插件及其仓库将被删除。现有主题将被保留。"
+#: web/templates/servers.html:26
+msgid "Not yet refreshed"
+msgstr "尚未刷新"
 
 #: web/templates/servers.html:28
 msgid "Force restart"
 msgstr "强制重启"
 
 #: web/templates/servers.html:32
-msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
-msgstr "在每一个 Jellyfin 客户端显示设置中启用主题歌曲。Jellyfin 在客户端中存储此首选项，所以Themerr 不能通过服务器 API 更改它。"
-
-#: web/templates/servers.html:32
-msgid "Open Jellyfin display settings"
-msgstr "打开 Jellyfin 显示设置"
+msgid "SSH cleanup"
+msgstr "SSH 清理"
 
 #: web/templates/servers.html:33
-msgid "Last library refresh"
-msgstr "上次刷新库"
-
-#: web/templates/servers.html:33
-msgid "Not yet refreshed"
-msgstr "尚未刷新"
+msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
+msgstr "在您的 Plex服务器上启用 SSH 和 SFTP 来删除旧上传的主题、海报和艺术品。 使用一个可以访问Plex的元数据目录的帐户。Themer验证服务器指纹，且不运行 shell命令。"
 
 #: web/templates/servers.html:34
-msgid "Processing settings"
-msgstr "处理设置"
+msgid "SSH setup guide with Windows examples"
+msgstr "带有Windows 示例的 SSH 设置指南"
 
 #: web/templates/servers.html:36
-msgid "Process this server"
-msgstr "处理此服务器"
+msgid "SSH hostname or IP address"
+msgstr "SSH 主机名或 IP 地址"
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:38
+msgid "SSH port"
+msgstr "SSH 端口"
+
+#: web/templates/servers.html:40
+msgid "SSH username"
+msgstr "SSH 用户名"
+
+#: web/templates/servers.html:42
+msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
+msgstr "在Plex电脑上使用登录帐户，而不是您的Plex登录。 在 Windows上运行 whoami ：对于本地帐户，如Plex-PC\\plex，请输入plex；对于域帐户，请输入域\\用户。"
+
+#: web/templates/servers.html:43
+msgid "Verified SSH host fingerprint"
+msgstr "已验证SSH主机指纹"
+
+#: web/templates/servers.html:45
+msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
+msgstr "这个标识了 SSH 服务器。从Plex计算机本身复制主机的 SHA256 指纹。 它是不同于用来登录的用户私钥。"
+
+#: web/templates/servers.html:46
+msgid "Remote Plex data directory"
+msgstr "远程Plex数据目录"
+
+#: web/templates/servers.html:48
+msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
+msgstr "输入此服务器包含元数据的目录。Windows 驱动器路径会自动转换为 SFTP 路径。例如："
+
+#: web/templates/servers.html:48
+msgid "For a restricted SFTP account, use the path visible inside that account."
+msgstr "对于受限的 SFTP 帐户，使用该帐户内可见的路径。"
+
+#: web/templates/servers.html:49
+msgid "SSH authentication"
+msgstr "SSH 身份验证"
+
+#: web/templates/servers.html:52
+msgid "Private key"
+msgstr "私钥"
+
+#: web/templates/servers.html:54
+msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
+msgstr "密码验证只需要服务器帐户的密码。 如果您已经生成了一个用户密钥对并在Plex电脑上安装了它的公钥，请选择私钥。"
+
+#: web/templates/servers.html:56
+msgid "SSH private key"
+msgstr "SSH 私钥"
+
+#: web/templates/servers.html:58
+msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
+msgstr "粘贴由 ssh-keygen 创建的全部私钥文件，包括其BEGIN 和 END 行。 结尾为 .pub的文件是安装在Plex计算机上的公钥；在此粘贴文件时不带.pub。"
+
+#: web/templates/servers.html:59
+msgid "Private key passphrase"
+msgstr "私钥密码"
+
+#: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
 msgstr "可选的"
 
-#: web/templates/servers.html:38
+#: web/templates/servers.html:61
+msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
+msgstr "输入您在生成此密钥时选择的密码句。它会解锁私钥文件。如果密钥没有密码句则留空。"
+
+#: web/templates/servers.html:64
+msgid "Server account password"
+msgstr "服务器帐户密码"
+
+#: web/templates/servers.html:66
+msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
+msgstr "使用上面输入的帐户密码。在Windows上，这是帐户密码，而不是Windows Hello PIN。"
+
+#: web/templates/servers.html:68
+msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
+msgstr "凭据安全地存储，永远不会再次显示。留空秘密字段保留为同一个主机和帐户保存凭据。 当从另一台机器输入凭据时，通过 HTTPS 使用Themer。"
+
+#: web/templates/servers.html:70
+msgid "Verify and save SSH"
+msgstr "验证并保存 SSH"
+
+#: web/templates/servers.html:71
+msgid "Check connection"
+msgstr "检查连接"
+
+#: web/templates/servers.html:72
+msgid "Disable SSH"
+msgstr "禁用 SSH"
+
+#: web/templates/servers.html:79
+msgid "Connector address"
+msgstr "连接器地址"
+
+#: web/templates/servers.html:81
+msgid "Themerr address reachable from Jellyfin"
+msgstr "可从 Jellyfin 访问的Themer地址"
+
+#: web/templates/servers.html:83
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "仅限连接器的 HTTP 地址用于Themerr's 自签名证书，或者一个带有证书的 Jellyfin 信托的HTTPS 地址。 对于远程 Jellyfin 或 Docker，使用 Jellyfin 的地址替换本地主机。"
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "一旦播放完成，Jellyfin将在安装后重启。"
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "Jellyfin 安装后将重新启动。激活的播放可能会中断。"
+
+#: web/templates/servers.html:84
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "自动重启已禁用。安装后重启Jellyfin。"
+
+#: web/templates/servers.html:85
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "旧的 Themerr-jellyfin 插件及其仓库将被删除。现有主题将被保留。"
+
+#: web/templates/servers.html:92
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "在每一个 Jellyfin 客户端显示设置中启用主题歌曲。Jellyfin 在客户端中存储此首选项，所以Themerr 不能通过服务器 API 更改它。"
+
+#: web/templates/servers.html:92
+msgid "Open Jellyfin display settings"
+msgstr "打开 Jellyfin 显示设置"
+
+#: web/templates/servers.html:95
+msgid "Processing settings"
+msgstr "处理设置"
+
+#: web/templates/servers.html:97
+msgid "Process this server"
+msgstr "处理此服务器"
+
+#: web/templates/servers.html:99
 msgid "Browse Plex data directory"
 msgstr "浏览Plex数据目录"
 
-#: web/templates/servers.html:39
-msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "仅需要本地或挂载Plex数据目录来删除旧上传的文件。为远程服务器留空。"
+#: web/templates/servers.html:100
+msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
+msgstr "这个服务器是运行Themerr的计算机达到的本地或挂载数据目录。 每个服务器都有自己的路径。SSH 清理使用这个服务器分开的远程路径，并在配置时获得优先级别。"
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:101
 msgid "Ignored libraries"
 msgstr "忽略的库"
 
-#: web/templates/servers.html:46
+#: web/templates/servers.html:107
 msgid "Library"
 msgstr "书库"
 
-#: web/templates/servers.html:49
+#: web/templates/servers.html:110
 msgid "Open the list to load this server’s libraries."
 msgstr "打开列表加载此服务器的库。"
 
-#: web/templates/servers.html:52
+#: web/templates/servers.html:113
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "选择要从主题更新中排除的库。请取消选中以处理每个库。"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Save settings"
 msgstr "保存设置"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Remove server"
 msgstr "删除服务器"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Your first server starts here."
 msgstr "您的第一个服务器在此开始。"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Link Plex above or add a Jellyfin server below."
 msgstr "链接上面的Plex或添加下面的 Jellyfin 服务器。"
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:121
 msgid "Add a server"
 msgstr "添加服务器"
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:122
 msgid "Server type"
 msgstr "服务器类型"
 
-#: web/templates/servers.html:66
+#: web/templates/servers.html:127
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "从您的Plex帐户中选择一个服务器，发现附近的服务器，或使用您知道的地址。"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Find account servers"
 msgstr "查找帐户服务器"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Discover on LAN"
 msgstr "在局域网上发现"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "局域网发现在您的应用程序网络上使用PlexGDM。"
 
-#: web/templates/servers.html:68
+#: web/templates/servers.html:129
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "帐户地址由Plex发布，可能无法访问。HTTPS plex.direct 地址使用Plex的证书。 从运行Themerr的机器中选择一个可访问的地址，或手动输入一个已知地址。"
 
-#: web/templates/servers.html:70
+#: web/templates/servers.html:131
 msgid "Enter an address manually"
 msgstr "手动输入地址"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Plex server address"
 msgstr "Plex服务器地址"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "使用局域网地址或有效的 HTTPS Plex地址。您链接的Plex帐户必须有访问权限。添加现有的服务器更新其地址。"
 
-#: web/templates/servers.html:75
+#: web/templates/servers.html:136
 msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
 msgstr "支持 Jellyfin 10.11 和 12.1 。在 Jellyfin 仪表盘创建 API 密钥。"
 
-#: web/templates/servers.html:77
+#: web/templates/servers.html:138
 msgid "Jellyfin server address"
 msgstr "Jellyfin 服务器地址"
 
-#: web/templates/servers.html:79
+#: web/templates/servers.html:140
 msgid "Jellyfin API key"
 msgstr "Jellyfin API 密钥"
 
-#: web/templates/servers.html:81
+#: web/templates/servers.html:142
 msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
 msgstr "密钥保持在安全的凭证存储。连接后，请在上面的服务器卡上设置可访问的Themer地址。"
 
-#: web/templates/servers.html:84
+#: web/templates/servers.html:145
 msgid "Discover Jellyfin on LAN"
 msgstr "在局域网上发现 Jellyfin"
 
-#: web/templates/servers.html:86
+#: web/templates/servers.html:147
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr "在 Themerr's network上使用 UDP 端口 7359 。API 密钥仍然是必需的。"
 
