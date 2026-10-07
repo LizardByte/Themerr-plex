@@ -104,6 +104,7 @@ class Modes:
 
     if os.getenv('THEMERR_DOCKER', False):  # the environment variable is set in the Dockerfile
         DOCKER = True
+        SPLASH = False
 
 
 class Files:

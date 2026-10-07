@@ -88,7 +88,7 @@ def _js_runtime() -> dict:
     dict
         yt-dlp runtime configuration, or an empty dictionary if none is installed.
     """
-    if definitions.Modes.FROZEN:
+    if definitions.Modes.FROZEN and not definitions.Modes.DOCKER:
         deno_name = 'deno.exe' if sys.platform == 'win32' else 'deno'
         return {'deno': {'path': os.path.join(definitions.Paths.ROOT_DIR, deno_name)}}
 
