@@ -11,15 +11,71 @@ from requests.exceptions import ConnectionError, RequestException, SSLError, Tim
 import requests
 
 # local imports
-from common import logger, server_ui
+from common import credentials, logger, server_ui
 from common.server_ui import _failure, _payload
 from common.validation import ValidationError
+from common.http import read_json
+from media_servers.base import MediaServerError
 from plex import auth as plex_auth
-from plex import plexapi, servers, token_store
+from plex import plexapi, servers, ssh, token_store
 
 router = APIRouter()
 log = logger.get_logger(__name__)
 PLEX_LOGIN_LIFETIME = 600
+
+
+@router.get('/api/plex/servers/{server_id}/ssh', response_model=None)
+def ssh_settings(server_id: str) -> Response:
+    """Report saved SSH cleanup settings without returning credentials."""
+    if not servers.get_server(server_id):
+        return JSONResponse({'message': 'Plex server not found.'}, status_code=404)
+    return JSONResponse({'settings': ssh.settings(server_id)})
+
+
+@router.put('/api/plex/servers/{server_id}/ssh', response_model=None)
+def save_ssh_settings(server_id: str, request: Request, payload: object = Depends(read_json)) -> Response:
+    """Verify and save an administrator's SSH cleanup configuration."""
+    try:
+        if request.url.scheme != 'https' and request.client.host not in (
+            '127.0.0.1',
+            '::1',
+        ):
+            raise MediaServerError('Use HTTPS when saving SSH credentials from another machine.', 409)
+        public = ssh.configure(server_id, payload)
+        return JSONResponse({
+            'message': 'SSH connection verified and saved.',
+            'settings': public,
+        })
+    except MediaServerError as error:
+        return JSONResponse({'message': str(error)}, status_code=error.status_code)
+    except credentials.TokenStorageError:
+        return JSONResponse({'message': 'Unable to save SSH credentials securely.'}, status_code=500)
+
+
+@router.post('/api/plex/servers/{server_id}/ssh/check', response_model=None)
+def check_ssh(server_id: str) -> Response:
+    """Check saved SSH access without deleting files."""
+    try:
+        if not servers.get_server(server_id):
+            raise MediaServerError('Plex server not found.', 404)
+        ssh.check(server_id)
+        return JSONResponse({'message': 'SSH connection and Plex data directory verified.'})
+    except MediaServerError as error:
+        return JSONResponse({'message': str(error)}, status_code=error.status_code)
+    except credentials.TokenStorageError:
+        return JSONResponse({'message': 'Unable to read SSH credentials securely.'}, status_code=500)
+
+
+@router.delete('/api/plex/servers/{server_id}/ssh', response_model=None)
+def remove_ssh_settings(server_id: str) -> Response:
+    """Disable SSH cleanup and erase saved authentication secrets."""
+    if not servers.get_server(server_id):
+        return JSONResponse({'message': 'Plex server not found.'}, status_code=404)
+    try:
+        ssh.remove_settings(server_id)
+        return JSONResponse({'message': 'SSH cleanup disabled and credentials removed.'})
+    except credentials.TokenStorageError:
+        return JSONResponse({'message': 'Unable to remove SSH credentials securely.'}, status_code=500)
 
 
 @router.api_route(

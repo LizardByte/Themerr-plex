@@ -4,6 +4,77 @@ import { _ } from './i18n.js';
 
 let selectedServerTab = 'add-plex-tab';
 
+function initPlexSsh(signal) {
+    document.querySelectorAll('[data-plex-ssh-form]').forEach(form => {
+        const status = form.querySelector('[data-ssh-status]');
+        const check = form.querySelector('[data-check-ssh]');
+        const remove = form.querySelector('[data-remove-ssh]');
+        const endpoint = `/api/plex/servers/${encodeURIComponent(form.dataset.serverId)}/ssh`;
+        const clearSecrets = sent => {
+            [
+                'private_key',
+                'passphrase',
+                'password',
+            ].forEach(name => {
+                if (!sent || form.elements[name].value === sent[name]) form.elements[name].value = '';
+            });
+        };
+        const setAuthFields = () => {
+            const key = form.elements.auth_type.value === 'key';
+            form.querySelector('[data-ssh-key-fields]').hidden = !key;
+            form.querySelector('[data-ssh-password-fields]').hidden = key;
+        };
+        setAuthFields();
+        form.elements.auth_type.addEventListener('change', setAuthFields, { signal });
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            void busy(form.querySelector('button[type="submit"]'), async () => {
+                status.textContent = _('Verifying SSH connection…');
+                const data = new FormData(form);
+                const body = { port: Number(data.get('port')) };
+                [
+                    'host',
+                    'username',
+                    'data_directory',
+                    'host_fingerprint',
+                    'auth_type',
+                    'private_key',
+                    'passphrase',
+                    'password',
+                ].forEach(name => { body[name] = data.get(name); });
+                try {
+                    const result = await api(endpoint, {
+                        method: 'PUT',
+                        body,
+                    });
+                    form.dataset.configured = 'true';
+                    form.elements.data_directory.value = result.settings.data_directory;
+                    check.disabled = false;
+                    remove.disabled = false;
+                    status.textContent = _(result.message);
+                } catch (error) {
+                    status.textContent = _(error.message);
+                    throw error;
+                } finally {
+                    clearSecrets(body);
+                }
+            });
+        }, { signal });
+        check.addEventListener('click', () => busy(check, async () => {
+            status.textContent = _('Checking SSH connection…');
+            const result = await api(`${endpoint}/check`);
+            status.textContent = _(result.message);
+        }), { signal });
+        remove.addEventListener('click', () => busy(remove, async () => {
+            const result = await api(endpoint, { method: 'DELETE' });
+            form.dataset.configured = 'false';
+            clearSecrets();
+            check.disabled = true;
+            status.textContent = _(result.message);
+        }).finally(() => { remove.disabled = form.dataset.configured !== 'true'; }), { signal });
+    });
+}
+
 function initServerTabs(signal) {
     const tablist = document.getElementById('add-server-tabs');
     if (!tablist) return;
@@ -144,6 +215,7 @@ function discoveredServer(resource, source) {
 export function initServers(signal) {
     initServerTabs(signal);
     initJellyfin(signal);
+    initPlexSsh(signal);
     const authStart = document.getElementById('plex-auth-start');
     if (!authStart) return;
     const status = document.getElementById('plex-auth-status');
@@ -311,7 +383,7 @@ function initJellyfin(signal) {
     document.querySelectorAll('[data-connector-form]').forEach(connectorForm => {
         const status = connectorForm.querySelector('[data-connector-status]');
         const button = connectorForm.querySelector('button[type="submit"]');
-        const restartButton = connectorForm.querySelector('[data-restart-server]');
+        const restartButton = connectorForm.closest('.server-card').querySelector('[data-restart-server]');
         const url = `/api/jellyfin/servers/${encodeURIComponent(connectorForm.dataset.serverId)}/connector`;
         let timer;
         let suggested = false;

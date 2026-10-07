@@ -57,7 +57,7 @@ function serverForm(id, selected) {
     return { form, picker, options, summary, status };
 }
 
-function page(context, responses, savedServers = [], jellyfin = {}) {
+function page(context, responses, savedServers = [], jellyfin = {}, sshServers = []) {
     const previous = { document: globalThis.document, window: globalThis.window, FormData: globalThis.FormData };
     context.after(() => Object.assign(globalThis, previous));
     const elements = Object.fromEntries(['plex-auth-start', 'plex-auth-status', 'plex-auth-link', 'plex-auth-disconnect',
@@ -94,19 +94,65 @@ function page(context, responses, savedServers = [], jellyfin = {}) {
         const status = new Element('output');
         const button = new Element('button');
         const restart = new Element('button');
+        const card = new Element('article');
+        card.querySelector = selector => selector === '[data-restart-server]' ? restart : undefined;
+        form.closest = selector => selector === '.server-card' ? card : undefined;
         form.dataset.serverId = id;
         form.dataset.autoUpdate = String(Boolean(jellyfin.automatic));
         form.elements = { themerr_url: { value: '' } };
         form.querySelector = selector => ({ '[data-connector-status]': status,
-            '[data-restart-server]': restart, 'button[type="submit"]': button })[selector];
+            'button[type="submit"]': button })[selector];
         return { form, status, button, restart };
+    });
+    const sshForms = sshServers.map(id => {
+        const form = new Element('form');
+        form.dataset.serverId = id;
+        form.dataset.configured = 'false';
+        form.elements = Object.fromEntries(Object.entries({
+            host: 'plex.example',
+            port: '22',
+            username: 'cleanup',
+            data_directory: '/plex',
+            host_fingerprint: 'SHA256:verified',
+            auth_type: 'password',
+            private_key: '',
+            passphrase: '',
+            password: 'private-password',
+        }).map(([name, value]) => [
+            name,
+            Object.assign(new Element('input'), { value }),
+        ]));
+        const status = new Element('output');
+        const button = new Element('button');
+        const check = new Element('button');
+        const remove = new Element('button');
+        const keyFields = new Element();
+        const passwordFields = new Element();
+        form.querySelector = selector => ({
+            '[data-ssh-status]': status,
+            '[data-check-ssh]': check,
+            '[data-remove-ssh]': remove,
+            '[data-ssh-key-fields]': keyFields,
+            '[data-ssh-password-fields]': passwordFields,
+            'button[type="submit"]': button,
+        })[selector];
+        return {
+            form,
+            status,
+            button,
+            check,
+            remove,
+            keyFields,
+            passwordFields,
+        };
     });
     const events = new EventTarget();
     globalThis.document = {
         getElementById: id => elements[id], createElement: tag => new Element(tag),
         querySelectorAll: selector => ({ '[data-discover]': buttons,
             '[data-server-form]': forms.map(({ form }) => form),
-            '[data-connector-form]': connectors.map(({ form }) => form) })[selector] || [],
+            '[data-connector-form]': connectors.map(({ form }) => form),
+            '[data-plex-ssh-form]': sshForms.map(({ form }) => form) })[selector] || [],
         querySelector: () => ({ content: 'csrf-token' }),
         addEventListener: events.addEventListener.bind(events), dispatchEvent: events.dispatchEvent.bind(events),
     };
@@ -125,8 +171,67 @@ function page(context, responses, savedServers = [], jellyfin = {}) {
     context.mock.method(globalThis, 'setTimeout', () => 0);
     const controller = new AbortController();
     initServers(controller.signal);
-    return { elements, buttons, fetch, reload, forms, controller, connectors };
+    return { elements, buttons, fetch, reload, forms, controller, connectors, sshForms };
 }
+
+test('SSH settings submit with CSRF, clear sent credentials and enable verification', async context => {
+    const { sshForms, fetch } = page(context, [{ body: {
+        message: 'Saved',
+        settings: { data_directory: '/canonical-plex' },
+    } }], [], {}, ['plex/server']);
+    const { form, check, remove, keyFields, passwordFields } = sshForms[0];
+    assert.equal(keyFields.hidden, true);
+    assert.equal(passwordFields.hidden, false);
+    form.listeners.submit({ preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/plex/servers/plex%2Fserver/ssh');
+    const options = fetch.mock.calls[0].arguments[1];
+    assert.equal(options.method, 'PUT');
+    assert.equal(options.headers['X-CSRFToken'], 'csrf-token');
+    assert.equal(JSON.parse(options.body).password, 'private-password');
+    assert.equal(JSON.parse(options.body).port, 22);
+    assert.equal(form.elements.password.value, '');
+    assert.equal(form.elements.data_directory.value, '/canonical-plex');
+    assert.equal(check.disabled, false);
+    assert.equal(remove.disabled, false);
+});
+
+test('SSH connection checks and disabling use the saved server without sending secrets', async context => {
+    const { sshForms, fetch } = page(context, [
+        { body: { message: 'Ready' } },
+        { body: { message: 'Disabled' } },
+    ], [], {}, ['server']);
+    const { form, check, remove, status } = sshForms[0];
+    form.dataset.configured = 'true';
+    await check.click();
+    assert.equal(fetch.mock.calls[0].arguments[0], '/api/plex/servers/server/ssh/check');
+    assert.equal(fetch.mock.calls[0].arguments[1].body, undefined);
+    await remove.click();
+    assert.equal(fetch.mock.calls[1].arguments[1].method, 'DELETE');
+    assert.equal(form.dataset.configured, 'false');
+    assert.equal(form.elements.password.value, '');
+    assert.equal(check.disabled, true);
+    assert.equal(remove.disabled, true);
+    assert.equal(status.textContent, 'Disabled');
+});
+
+test('failed SSH saves report failure and do not erase newer secret edits', async context => {
+    const { sshForms } = page(context, [{
+        error: true,
+        body: { message: 'Fingerprint mismatch' },
+    }], [], {}, ['server']);
+    const { form, status } = sshForms[0];
+    form.listeners.submit({ preventDefault() {} });
+    form.elements.password.value = 'newer-password';
+    await new Promise(setImmediate);
+    assert.equal(status.textContent, 'Fingerprint mismatch');
+    assert.equal(form.dataset.configured, 'false');
+    assert.equal(form.elements.password.value, 'newer-password');
+    form.elements.auth_type.value = 'key';
+    form.elements.auth_type.listeners.change();
+    assert.equal(sshForms[0].keyFields.hidden, false);
+    assert.equal(sshForms[0].passwordFields.hidden, true);
+});
 
 test('Jellyfin connection submits its key with CSRF and clears it after success', async context => {
     const { elements, fetch, reload } = page(context, [{ body: { message: 'Connected' } }], [], { connect: true });
@@ -436,6 +541,23 @@ test('force restart warns about playback and targets the selected server', async
     assert.match(window.confirm.mock.calls[0].arguments[0], /Active playback will be interrupted/);
     assert.equal(fetch.mock.calls[1].arguments[0], '/api/jellyfin/servers/jellyfin%3Aa/restart');
     assert.equal(fetch.mock.calls[1].arguments[1].headers['X-CSRFToken'], 'csrf-token');
+});
+
+test('restart controls outside connector forms remain scoped to their own cards', async context => {
+    const { connectors, fetch } = page(context, [
+        { body: { can_restart: true, message: 'First server ready' } },
+        { body: { can_restart: true, message: 'Second server ready' } },
+        { body: { message: 'Second server restarting' } },
+    ], [], { servers: [
+        'jellyfin:a',
+        'jellyfin:b',
+    ] });
+    await new Promise(setImmediate);
+    connectors[1].restart.click();
+    await new Promise(setImmediate);
+    assert.equal(fetch.mock.calls[2].arguments[0], '/api/jellyfin/servers/jellyfin%3Ab/restart');
+    assert.equal(connectors[0].status.textContent, 'First server ready');
+    assert.equal(connectors[1].status.textContent, 'Second server restarting');
 });
 
 test('unsupported servers disable restart and cancellation sends no request', async context => {

@@ -13,6 +13,7 @@ from common import logger
 from plex.constants import metadata_type_map
 from themerr import storage
 from plex import servers
+from plex import ssh
 
 log = logger.get_logger(__name__)
 
@@ -222,6 +223,10 @@ def remove_uploaded_media(item: PlexPartialObject, media_type: str, keep_sha256:
     >>> remove_uploaded_media(item=..., media_type='themes')
     ...
     """
+    server_id = storage.current_server_id()
+    if server_id != 'default' and ssh.settings(server_id):
+        ssh.remove_uploaded_media(server_id, item, media_type, keep_sha256)
+        return
     theme_upload_path = get_media_upload_path(item=item, media_type=media_type)
     if not os.path.isdir(theme_upload_path):
         return

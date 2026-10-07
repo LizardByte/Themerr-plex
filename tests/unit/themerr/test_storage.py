@@ -65,7 +65,7 @@ def test_initial_migration_creates_complete_model_schema(configured):
     with storage.engine().connect() as connection:
         script = ScriptDirectory.from_config(_migration_config(connection))
         revisions = list(script.walk_revisions())
-        assert len(revisions) == 2
+        assert len(revisions) == 3
         assert revisions[-1].down_revision is None
         assert len(revisions[0].revision) == 12
         assert int(revisions[0].revision, 16) >= 0
@@ -93,6 +93,29 @@ def test_jellyfin_migration_preserves_plex_dashboard_and_theme_history(configure
         assert connection.execute(text('SELECT key FROM library_sections')).scalar_one() == 1
         command.upgrade(migration, 'head')
         assert connection.execute(text('SELECT key FROM library_sections')).scalar_one() == '1'
+        assert connection.execute(text('PRAGMA foreign_key_check')).all() == []
+    assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
+    assert storage.get_tracking(42)['audio_sha256'] == 'digest'
+
+
+def test_plex_version_migration_preserves_connection_and_history(configured):
+    storage.replace_dashboard(_dashboard())
+    storage.save_tracking(42, 'movie', {'audio_sha256': 'digest'})
+    with storage.engine().begin() as connection:
+        migration = _migration_config(connection)
+        command.downgrade(migration, 'd09a42b638a1')
+        connection.execute(text(
+            "INSERT INTO plex_servers (id, name, url, enabled, data_directory, ignored_libraries) "
+            "VALUES ('server', 'Plex', 'http://plex.example:32400', 1, '/plex', '')"
+        ))
+        command.upgrade(migration, 'head')
+        record = connection.execute(text('SELECT name, url, data_directory, version FROM plex_servers')).one()
+        assert tuple(record) == (
+            'Plex',
+            'http://plex.example:32400',
+            '/plex',
+            None,
+        )
         assert connection.execute(text('PRAGMA foreign_key_check')).all() == []
     assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
     assert storage.get_tracking(42)['audio_sha256'] == 'digest'

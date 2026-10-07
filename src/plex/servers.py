@@ -45,6 +45,7 @@ class ServerRecord(storage.Base):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     url: Mapped[str] = mapped_column(String, nullable=False)
+    version: Mapped[str | None] = mapped_column(String)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     data_directory: Mapped[str] = mapped_column(String, nullable=False, default='')
     ignored_libraries: Mapped[str] = mapped_column(String, nullable=False, default='')
@@ -244,12 +245,16 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
         with Session(storage.engine()) as session:
             record = session.get(ServerRecord, server_id)
             if record is None:
-                session.add(ServerRecord(id=server_id, name=server.friendlyName, url=url))
+                record = ServerRecord(id=server_id, name=server.friendlyName, url=url)
+                session.add(record)
             else:
                 record.url = url
                 record.name = server.friendlyName
                 record.enabled = True
                 record.last_error = None
+            version = getattr(server, 'version', None)
+            if isinstance(version, str) and version:
+                record.version = version[:64]
             session.commit()
         _connections[server_id] = server
     log.info('Connected and saved Plex server %s at %s', server.friendlyName, url)
@@ -283,6 +288,13 @@ def connect(server_id: str):
             server = connect_plex_server(record['url'], token)
             if str(server.machineIdentifier) != server_id:
                 raise ValueError('The address now belongs to a different Plex server. Reconnect it.')
+            version = getattr(server, 'version', None)
+            if isinstance(version, str) and version:
+                with Session(storage.engine()) as session:
+                    row = session.get(ServerRecord, server_id)
+                    if row:
+                        row.version = version[:64]
+                        session.commit()
             _connections[server_id] = server
         return _connections[server_id]
 
@@ -340,9 +352,11 @@ def remove_server(server_id: str) -> None:
         Plex machine identifier.
     """
     from plex.plexapi import stop_plex_listener
+    from plex import ssh
 
     stop_plex_listener(server_id)
     token_store.delete_token(credential_id(server_id))
+    ssh.remove_settings(server_id)
     with _lock:
         _connections.pop(server_id, None)
         with Session(storage.engine()) as session:
