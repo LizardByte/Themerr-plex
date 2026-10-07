@@ -174,7 +174,7 @@ jobs:
       - name: Install Deno for YouTube support
         uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed  # v2.0.5
         with:
-          deno-version: 2.9.7
+          deno-version: 2.9.6
 
       - name: Configure OpenSSL for Windows ARM64
         if: runner.os == 'Windows' && matrix.arch == 'ARM64'
