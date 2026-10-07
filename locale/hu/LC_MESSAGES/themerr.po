@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2026-10-07 14:32\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -662,11 +662,11 @@ msgstr "A frissítés nem sikerült. Az utoljára betöltött rekordok jelennek 
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
-msgstr ""
+msgstr "Az SSH-kapcsolat ellenőrzése…"
 
 #: web/js/servers.js:64
 msgid "Checking SSH connection…"
-msgstr ""
+msgstr "Az SSH-kapcsolat ellenőrzése:…"
 
 #: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
@@ -1441,75 +1441,75 @@ msgstr "Kényszerindítás"
 
 #: web/templates/servers.html:32
 msgid "SSH cleanup"
-msgstr ""
+msgstr "SSH-tisztítás"
 
 #: web/templates/servers.html:33
 msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
-msgstr ""
+msgstr "Engedélyezze az SSH-t és az SFTP-t a Plex-kiszolgálón, hogy eltávolíthassa a korábban feltöltött témákat, posztereket és illusztrációkat. Használjon olyan fiókot, amely hozzáfér a Plex „Metadata” könyvtárához. A Themerr ellenőrzi a kiszolgáló ujjlenyomatát, és nem futtat shell-parancsokat."
 
 #: web/templates/servers.html:34
 msgid "SSH setup guide with Windows examples"
-msgstr ""
+msgstr "SSH beállítási útmutató Windows-példákkal"
 
 #: web/templates/servers.html:36
 msgid "SSH hostname or IP address"
-msgstr ""
+msgstr "SSH-gépnév vagy IP-cím"
 
 #: web/templates/servers.html:38
 msgid "SSH port"
-msgstr ""
+msgstr "SSH-port"
 
 #: web/templates/servers.html:40
 msgid "SSH username"
-msgstr ""
+msgstr "SSH felhasználónév"
 
 #: web/templates/servers.html:42
 msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
-msgstr ""
+msgstr "A Plex-számítógépen használj bejelentkezési fiókot, ne a Plex-bejelentkezési adataidat. Windows rendszerben futtasd ott a whoami parancsot: helyi fiók esetén (például PLEX-PC\\plex) írd be a „plex” szót; tartományi fiók esetén írd be a „domain\\user” szót."
 
 #: web/templates/servers.html:43
 msgid "Verified SSH host fingerprint"
-msgstr ""
+msgstr "Ellenőrzött SSH-gazdagép ujjlenyomat"
 
 #: web/templates/servers.html:45
 msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
-msgstr ""
+msgstr "Ez azonosítja az SSH-kiszolgálót. Másold ki a Plex-számítógépről a gazdagép nyilvános kulcsának SHA256-ujjlenyomatát. Ez eltér a bejelentkezéshez alább használt felhasználói titkos kulcstól."
 
 #: web/templates/servers.html:46
 msgid "Remote Plex data directory"
-msgstr ""
+msgstr "A Plex távoli adatkönyvtára"
 
 #: web/templates/servers.html:48
 msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
-msgstr ""
+msgstr "Írja be a szerver azon könyvtárát, amely a metaadatokat tartalmazza. A Windows-meghajtó útvonalait a rendszer automatikusan SFTP-útvonalakra alakítja át. Például:"
 
 #: web/templates/servers.html:48
 msgid "For a restricted SFTP account, use the path visible inside that account."
-msgstr ""
+msgstr "Korlátozott SFTP-fiók esetén használja a fiókban látható elérési utat."
 
 #: web/templates/servers.html:49
 msgid "SSH authentication"
-msgstr ""
+msgstr "SSH-hitelesítés"
 
 #: web/templates/servers.html:52
 msgid "Private key"
-msgstr ""
+msgstr "Titkos kulcs"
 
 #: web/templates/servers.html:54
 msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
-msgstr ""
+msgstr "A jelszóval történő hitelesítéshez csupán a szerverfiók jelszavára van szükség. Válassza a „Magánkulcs” lehetőséget, ha létrehozott egy felhasználói kulcspárt, és a nyilvános kulcsot telepítette a Plex-számítógépre."
 
 #: web/templates/servers.html:56
 msgid "SSH private key"
-msgstr ""
+msgstr "SSH privát kulcs"
 
 #: web/templates/servers.html:58
 msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
-msgstr ""
+msgstr "Illessze be az ssh-keygen által létrehozott teljes titkos kulcsfájlt, beleértve a BEGIN és az END sorokat is. A .pub kiterjesztésű fájl a Plex-számítógépre telepített nyilvános kulcs; ide a .pub kiterjesztés nélküli fájlt illessze be."
 
 #: web/templates/servers.html:59
 msgid "Private key passphrase"
-msgstr ""
+msgstr "A titkos kulcs jelszava"
 
 #: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
@@ -1517,35 +1517,35 @@ msgstr "opcionális"
 
 #: web/templates/servers.html:61
 msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
-msgstr ""
+msgstr "Írja be azt a jelszót, amelyet a kulcs létrehozásakor választott. Ezzel nyitható meg a titkos kulcsfájl. Ha a kulcsnak nincs jelszava, hagyja üresen ezt a mezőt."
 
 #: web/templates/servers.html:64
 msgid "Server account password"
-msgstr ""
+msgstr "A szerverfiók jelszava"
 
 #: web/templates/servers.html:66
 msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
-msgstr ""
+msgstr "Használja a fent megadott fiók jelszavát. Windows rendszerben ez a fiók jelszava, nem pedig a Windows Hello PIN-kódja."
 
 #: web/templates/servers.html:68
 msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
-msgstr ""
+msgstr "A bejelentkezési adatok biztonságosan tárolódnak, és soha többé nem jelennek meg. Ha a titkos mezőket üresen hagyja, a rendszer megőrzi a bejelentkezési adatokat ugyanazon a szerveren és fiókban. Ha másik gépről adja meg a bejelentkezési adatait, használja a Themerr szolgáltatást HTTPS-en keresztül."
 
 #: web/templates/servers.html:70
 msgid "Verify and save SSH"
-msgstr ""
+msgstr "Az SSH ellenőrzése és mentése"
 
 #: web/templates/servers.html:71
 msgid "Check connection"
-msgstr ""
+msgstr "Ellenőrizze a csatlakozást"
 
 #: web/templates/servers.html:72
 msgid "Disable SSH"
-msgstr ""
+msgstr "Az SSH letiltása"
 
 #: web/templates/servers.html:79
 msgid "Connector address"
-msgstr ""
+msgstr "Csatlakozó címe"
 
 #: web/templates/servers.html:81
 msgid "Themerr address reachable from Jellyfin"
@@ -1593,7 +1593,7 @@ msgstr "A Plex adatkönyvtárának böngészése"
 
 #: web/templates/servers.html:100
 msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
-msgstr ""
+msgstr "A szerver helyi vagy csatlakoztatott adatkönyvtára, ahogyan azt a Themerr-t futtató számítógép elérheti. Minden szervernek megvan a saját elérési útvonala. Az SSH-tisztítás a szerver külön távoli elérési útvonalát használja, és ha be van állítva, akkor ez élvez elsőbbséget."
 
 #: web/templates/servers.html:101
 msgid "Ignored libraries"
