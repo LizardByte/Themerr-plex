@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: vi_VN\n"
-"PO-Revision-Date: 2026-10-07 14:33\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -662,11 +662,11 @@ msgstr "Không thể làm mới. Đang hiển thị các bản ghi được tả
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
-msgstr ""
+msgstr "Kiểm tra kết nối SSH…"
 
 #: web/js/servers.js:64
 msgid "Checking SSH connection…"
-msgstr ""
+msgstr "Kiểm tra kết nối SSH…"
 
 #: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
@@ -1441,75 +1441,75 @@ msgstr "Khởi động lại bắt buộc"
 
 #: web/templates/servers.html:32
 msgid "SSH cleanup"
-msgstr ""
+msgstr "Dọn dẹp SSH"
 
 #: web/templates/servers.html:33
 msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
-msgstr ""
+msgstr "Kích hoạt SSH và SFTP trên máy chủ Plex của bạn để xóa các chủ đề, áp phích và hình ảnh minh họa cũ đã được tải lên. Sử dụng tài khoản có quyền truy cập vào thư mục Metadata của Plex. Themerr sẽ xác minh dấu vân tay của máy chủ và không thực thi các lệnh shell."
 
 #: web/templates/servers.html:34
 msgid "SSH setup guide with Windows examples"
-msgstr ""
+msgstr "Hướng dẫn thiết lập SSH kèm ví dụ trên Windows"
 
 #: web/templates/servers.html:36
 msgid "SSH hostname or IP address"
-msgstr ""
+msgstr "Tên máy chủ SSH hoặc địa chỉ IP"
 
 #: web/templates/servers.html:38
 msgid "SSH port"
-msgstr ""
+msgstr "Cổng SSH"
 
 #: web/templates/servers.html:40
 msgid "SSH username"
-msgstr ""
+msgstr "Tên người dùng SSH"
 
 #: web/templates/servers.html:42
 msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
-msgstr ""
+msgstr "Hãy sử dụng tài khoản đăng nhập trên máy tính Plex, chứ không phải tài khoản đăng nhập Plex của bạn. Trên Windows, hãy chạy lệnh `whoami` tại đó: đối với tài khoản cục bộ như PLEX-PC\\plex, hãy nhập `plex`; đối với tài khoản miền, hãy nhập `domain\\user`."
 
 #: web/templates/servers.html:43
 msgid "Verified SSH host fingerprint"
-msgstr ""
+msgstr "Dấu vân tay máy chủ SSH đã được xác minh"
 
 #: web/templates/servers.html:45
 msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
-msgstr ""
+msgstr "Thông tin này giúp xác định máy chủ SSH. Hãy sao chép dấu vân tay SHA256 của khóa công khai máy chủ từ chính máy tính Plex. Dấu vân tay này khác với khóa riêng tư của người dùng được sử dụng để đăng nhập ở phần dưới."
 
 #: web/templates/servers.html:46
 msgid "Remote Plex data directory"
-msgstr ""
+msgstr "Thư mục dữ liệu Plex từ xa"
 
 #: web/templates/servers.html:48
 msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
-msgstr ""
+msgstr "Nhập đường dẫn đến thư mục chứa siêu dữ liệu trên máy chủ này. Các đường dẫn ổ đĩa Windows sẽ được tự động chuyển đổi thành đường dẫn SFTP. Ví dụ:"
 
 #: web/templates/servers.html:48
 msgid "For a restricted SFTP account, use the path visible inside that account."
-msgstr ""
+msgstr "Đối với tài khoản SFTP có giới hạn, hãy sử dụng đường dẫn hiển thị bên trong tài khoản đó."
 
 #: web/templates/servers.html:49
 msgid "SSH authentication"
-msgstr ""
+msgstr "Xác thực SSH"
 
 #: web/templates/servers.html:52
 msgid "Private key"
-msgstr ""
+msgstr "Khóa riêng"
 
 #: web/templates/servers.html:54
 msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
-msgstr ""
+msgstr "Xác thực bằng mật khẩu chỉ cần mật khẩu của tài khoản máy chủ. Hãy chọn “Khóa riêng” nếu bạn đã tạo cặp khóa người dùng và cài đặt khóa công khai của cặp khóa đó trên máy tính chạy Plex."
 
 #: web/templates/servers.html:56
 msgid "SSH private key"
-msgstr ""
+msgstr "Khóa riêng SSH"
 
 #: web/templates/servers.html:58
 msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
-msgstr ""
+msgstr "Dán toàn bộ tệp khóa riêng được tạo bởi ssh-keygen, bao gồm cả các dòng BEGIN và END. Tệp có phần mở rộng .pub là khóa công khai được cài đặt trên máy tính Plex; hãy dán tệp không có phần mở rộng .pub vào đây."
 
 #: web/templates/servers.html:59
 msgid "Private key passphrase"
-msgstr ""
+msgstr "Mật khẩu khóa riêng"
 
 #: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
@@ -1517,35 +1517,35 @@ msgstr "tùy chọn"
 
 #: web/templates/servers.html:61
 msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
-msgstr ""
+msgstr "Hãy nhập cụm mật khẩu mà bạn đã chọn khi tạo khóa này. Cụm mật khẩu này sẽ mở khóa tệp khóa riêng. Hãy để trống trường này nếu khóa không có cụm mật khẩu."
 
 #: web/templates/servers.html:64
 msgid "Server account password"
-msgstr ""
+msgstr "Mật khẩu tài khoản máy chủ"
 
 #: web/templates/servers.html:66
 msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
-msgstr ""
+msgstr "Hãy sử dụng mật khẩu của tài khoản đã nhập ở trên. Trên Windows, đây là mật khẩu tài khoản, không phải mã PIN Windows Hello."
 
 #: web/templates/servers.html:68
 msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
-msgstr ""
+msgstr "Thông tin đăng nhập được lưu trữ an toàn và sẽ không bao giờ được hiển thị lại. Hãy để trống các trường bí mật để giữ nguyên thông tin đăng nhập đã lưu cho cùng một máy chủ và tài khoản. Hãy sử dụng Themerr qua HTTPS khi nhập thông tin đăng nhập từ một máy tính khác."
 
 #: web/templates/servers.html:70
 msgid "Verify and save SSH"
-msgstr ""
+msgstr "Xác minh và lưu thông tin SSH"
 
 #: web/templates/servers.html:71
 msgid "Check connection"
-msgstr ""
+msgstr "Kiểm tra kết nối"
 
 #: web/templates/servers.html:72
 msgid "Disable SSH"
-msgstr ""
+msgstr "Tắt SSH"
 
 #: web/templates/servers.html:79
 msgid "Connector address"
-msgstr ""
+msgstr "Địa chỉ đầu nối"
 
 #: web/templates/servers.html:81
 msgid "Themerr address reachable from Jellyfin"
@@ -1593,7 +1593,7 @@ msgstr "Duyệt thư mục dữ liệu của Plex"
 
 #: web/templates/servers.html:100
 msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
-msgstr ""
+msgstr "Thư mục dữ liệu cục bộ hoặc được gắn kết của máy chủ này, như được truy cập bởi máy tính đang chạy Themerr. Mỗi máy chủ có đường dẫn riêng. Tính năng dọn dẹp qua SSH sử dụng đường dẫn từ xa riêng biệt của máy chủ này và sẽ được ưu tiên khi được cấu hình."
 
 #: web/templates/servers.html:101
 msgid "Ignored libraries"
