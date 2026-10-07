@@ -6,6 +6,7 @@ env:
   PYTHON_VERSION: '3.14'
 
 on:
+  pull_request:
   push:
     branches:
       - master
@@ -44,19 +45,21 @@ jobs:
       - name: Update Strings
         run: uv run --locked --no-build --no-sync python ./scripts/localize.py --extract
 
-      - name: git diff
+      - name: Check locale template
         run: |
-          # disable the pager
-          git config --global pager.diff false
-
-          # print the git diff
-          git diff locale/themerr.po
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            git --no-pager diff --exit-code -- locale/themerr.po
+          else
+            git --no-pager diff -- locale/themerr.po
+          fi
 
       - name: Get current date
+        if: ${{ github.event_name != 'pull_request' }}
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
       - name: Create/Update Pull Request
+        if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
         with:
           add-paths: |

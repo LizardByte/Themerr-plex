@@ -1,4 +1,7 @@
 Dockerfile text eol=lf
 
+# Keep Babel's JavaScript source references consistent across platforms.
+*.js text eol=lf
+
 # Match the C# line endings required by .editorconfig on every platform.
 *.cs text eol=crlf
