@@ -1,4 +1,4 @@
-"""Persist the latest successful ThemerrDB deployment and an hourly GitHub check limit."""
+"""Persist ThemerrDB's published deployment timestamp and an hourly check limit."""
 
 # standard imports
 from datetime import datetime, timezone
@@ -17,11 +17,9 @@ from themerr import storage
 log = logger.get_logger(__name__)
 _lock = Lock()
 _CACHE_KEY = 'themerrdb_deployment'
-_CACHE_VERSION = 2
+_CACHE_VERSION = 3
 _INTERVAL = 3600
-_WORKFLOW_URL = 'https://github.com/LizardByte/ThemerrDB/actions/workflows/pages/pages-build-deployment'
-# GitHub's built-in Pages workflow has no YAML filename; use its stable repository workflow ID.
-_WORKFLOW_ID = 34813093
+_DEPLOYMENT_URL = 'https://app.lizardbyte.dev/ThemerrDB/deployment.json'
 
 
 def _load() -> dict:
@@ -47,33 +45,29 @@ def _save(data: dict) -> None:
 
 
 def _fetch_publication() -> dict:
-    """Validate the latest successful Pages run before returning its metadata."""
+    """Validate the timestamp published with the deployed database."""
     with requests.get(
-        f'https://api.github.com/repos/LizardByte/ThemerrDB/actions/workflows/{_WORKFLOW_ID}/runs',
-        params={'status': 'success', 'per_page': 1},
-        headers={'Accept': 'application/vnd.github+json', 'Cache-Control': 'no-cache'},
+        _DEPLOYMENT_URL,
+        headers={
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache',
+        },
         timeout=10, allow_redirects=False,
     ) as response:
         response.raise_for_status()
         if response.status_code != 200:
-            raise ValueError('Unexpected GitHub response')
-        runs = response.json()['workflow_runs']
-    if not isinstance(runs, list):
-        raise ValueError('Invalid GitHub workflow list')
-    if not runs:
-        return {}
-    run = runs[0]
-    run_id = run['id']
-    date = datetime.fromisoformat(run['updated_at'])
-    if (type(run_id) is not int or run_id <= 0 or date.tzinfo is None or
-            run['workflow_id'] != _WORKFLOW_ID or run['status'] != 'completed' or
-            run['conclusion'] != 'success'):
-        raise ValueError('Invalid GitHub deployment metadata')
-    return {'updated_at': date.astimezone(timezone.utc).isoformat(), 'run_id': run_id}
+            raise ValueError('Unexpected deployment response')
+        metadata = response.json()
+    if not isinstance(metadata, dict):
+        raise ValueError('Invalid deployment metadata')
+    date = datetime.fromisoformat(metadata['deployed_at'])
+    if date.tzinfo is None:
+        raise ValueError('Deployment timestamp must include a timezone')
+    return {'updated_at': date.astimezone(timezone.utc).isoformat()}
 
 
 def publication_status() -> dict:
-    """Return the last successful Pages deployment, checking at most once per hour.
+    """Return the published database deployment, checking at most once per hour.
 
     Checks are serialized across application threads. The attempt deadline is saved
     before the request, so failures and application restarts also respect the limit.
@@ -82,7 +76,7 @@ def publication_status() -> dict:
     Returns
     -------
     dict
-        Deployment completion date and workflow link, last attempt and next check timestamps,
+        Published deployment date and repository link, last attempt and next check timestamps,
         and whether the last check failed. Dates use UTC; timestamps use Unix seconds.
     """
     with _lock:
@@ -101,8 +95,8 @@ def publication_status() -> dict:
             _save(state)
         return {
             'updated_at': state.get('updated_at'),
-            'url': ('https://github.com/LizardByte/ThemerrDB/actions/runs/' + str(state['run_id'])
-                    if state.get('run_id') else _WORKFLOW_URL),
-            'checked_at': state.get('checked_at'), 'next_check': state.get('next_check'),
+            'url': 'https://github.com/LizardByte/ThemerrDB',
+            'checked_at': state.get('checked_at'),
+            'next_check': state.get('next_check'),
             'stale': state.get('stale', True),
         }

@@ -173,10 +173,10 @@ def test_scoped_dashboard_and_playback_url_do_not_mix_identical_rating_keys(clie
 
 
 def test_publication_api_requires_login_and_returns_cached_status(client, monkeypatch):
-    from themerr import github_status
+    from themerr import deployment_status
     status = {'updated_at': '2026-10-02T12:00:00+00:00', 'next_check': 12345, 'stale': False}
     lookup = Mock(return_value=status)
-    monkeypatch.setattr(github_status, 'publication_status', lookup)
+    monkeypatch.setattr(deployment_status, 'publication_status', lookup)
     with TestClient(client.app, follow_redirects=False) as anonymous:
         assert anonymous.get('/api/themerrdb').status_code == 401
     lookup.assert_not_called()

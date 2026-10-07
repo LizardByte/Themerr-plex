@@ -27,16 +27,19 @@ function fixture(t) {
 
 test('age updates locally, publication checks wait for the hourly deadline, and pagehide cancels them', async t => {
     const { root, time, link, warning, window } = fixture(t);
-    const query = t.mock.fn(async () => ({ updated_at: '2026-10-02T10:00:00Z',
-        url: 'https://github.com/LizardByte/ThemerrDB/actions/runs/123', next_check: Date.now() / 1000 + 3600,
-        stale: false }));
+    const query = t.mock.fn(async () => ({
+        updated_at: '2026-10-02T10:00:00+00:00',
+        url: 'https://github.com/LizardByte/ThemerrDB',
+        next_check: Date.now() / 1000 + 3600,
+        stale: false,
+    }));
     initDatabaseStatus(root, query);
     await Promise.resolve();
     assert.equal(time.textContent, '2 hours ago');
     assert.equal(time.dateTime, '2026-10-02T10:00:00.000Z');
     assert.ok(time.title);
     assert.equal(warning.hidden, true);
-    assert.match(link.href, /ThemerrDB\/actions\/runs/);
+    assert.equal(link.href, 'https://github.com/LizardByte/ThemerrDB');
     t.mock.timers.tick(60 * 1000);
     assert.equal(query.mock.callCount(), 1);
     t.mock.timers.tick(3540 * 1000);
