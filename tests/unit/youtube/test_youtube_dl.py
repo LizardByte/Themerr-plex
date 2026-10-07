@@ -128,11 +128,23 @@ def test_ns_bool():
 
 def test_frozen_build_uses_bundled_deno(configured, monkeypatch, tmp_path):
     monkeypatch.setattr(youtube_dl.definitions.Modes, 'FROZEN', True)
+    monkeypatch.setattr(youtube_dl.definitions.Modes, 'DOCKER', False)
     monkeypatch.setattr(youtube_dl.definitions.Paths, 'ROOT_DIR', str(tmp_path))
     seen = extractor(monkeypatch, {'formats': []})
     assert youtube_dl.process_youtube('https://youtube.example') is None
     name = 'deno.exe' if youtube_dl.sys.platform == 'win32' else 'deno'
     assert seen['params']['js_runtimes'] == {'deno': {'path': str(tmp_path / name)}}
+
+
+def test_frozen_docker_build_uses_installed_deno(configured, monkeypatch, tmp_path):
+    monkeypatch.setattr(youtube_dl.definitions.Modes, 'FROZEN', True)
+    monkeypatch.setattr(youtube_dl.definitions.Modes, 'DOCKER', True)
+    monkeypatch.setattr(youtube_dl.definitions.Paths, 'ROOT_DIR', str(tmp_path))
+    monkeypatch.setattr(youtube_dl.shutil, 'which', lambda executable: '/tools/deno' if executable == 'deno' else None)
+    seen = extractor(monkeypatch, {'formats': []})
+
+    assert youtube_dl.process_youtube('https://youtube.example') is None
+    assert seen['params']['js_runtimes'] == {'deno': {'path': '/tools/deno'}}
 
 
 def test_source_build_uses_local_deno(configured, monkeypatch, tmp_path):
