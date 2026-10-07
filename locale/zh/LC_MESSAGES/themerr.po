@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: zh_CN\n"
-"PO-Revision-Date: 2026-10-07 14:33\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -662,11 +662,11 @@ msgstr "刷新失败。显示最近加载的记录。"
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
-msgstr ""
+msgstr "正在验证 SSH 连接…"
 
 #: web/js/servers.js:64
 msgid "Checking SSH connection…"
-msgstr ""
+msgstr "检查 SSH 连接…"
 
 #: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
@@ -1441,75 +1441,75 @@ msgstr "强制重启"
 
 #: web/templates/servers.html:32
 msgid "SSH cleanup"
-msgstr ""
+msgstr "SSH 清理"
 
 #: web/templates/servers.html:33
 msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
-msgstr ""
+msgstr "在您的 Plex服务器上启用 SSH 和 SFTP 来删除旧上传的主题、海报和艺术品。 使用一个可以访问Plex的元数据目录的帐户。Themer验证服务器指纹，且不运行 shell命令。"
 
 #: web/templates/servers.html:34
 msgid "SSH setup guide with Windows examples"
-msgstr ""
+msgstr "带有Windows 示例的 SSH 设置指南"
 
 #: web/templates/servers.html:36
 msgid "SSH hostname or IP address"
-msgstr ""
+msgstr "SSH 主机名或 IP 地址"
 
 #: web/templates/servers.html:38
 msgid "SSH port"
-msgstr ""
+msgstr "SSH 端口"
 
 #: web/templates/servers.html:40
 msgid "SSH username"
-msgstr ""
+msgstr "SSH 用户名"
 
 #: web/templates/servers.html:42
 msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
-msgstr ""
+msgstr "在Plex电脑上使用登录帐户，而不是您的Plex登录。 在 Windows上运行 whoami ：对于本地帐户，如Plex-PC\\plex，请输入plex；对于域帐户，请输入域\\用户。"
 
 #: web/templates/servers.html:43
 msgid "Verified SSH host fingerprint"
-msgstr ""
+msgstr "已验证SSH主机指纹"
 
 #: web/templates/servers.html:45
 msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
-msgstr ""
+msgstr "这个标识了 SSH 服务器。从Plex计算机本身复制主机的 SHA256 指纹。 它是不同于用来登录的用户私钥。"
 
 #: web/templates/servers.html:46
 msgid "Remote Plex data directory"
-msgstr ""
+msgstr "远程Plex数据目录"
 
 #: web/templates/servers.html:48
 msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
-msgstr ""
+msgstr "输入此服务器包含元数据的目录。Windows 驱动器路径会自动转换为 SFTP 路径。例如："
 
 #: web/templates/servers.html:48
 msgid "For a restricted SFTP account, use the path visible inside that account."
-msgstr ""
+msgstr "对于受限的 SFTP 帐户，使用该帐户内可见的路径。"
 
 #: web/templates/servers.html:49
 msgid "SSH authentication"
-msgstr ""
+msgstr "SSH 身份验证"
 
 #: web/templates/servers.html:52
 msgid "Private key"
-msgstr ""
+msgstr "私钥"
 
 #: web/templates/servers.html:54
 msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
-msgstr ""
+msgstr "密码验证只需要服务器帐户的密码。 如果您已经生成了一个用户密钥对并在Plex电脑上安装了它的公钥，请选择私钥。"
 
 #: web/templates/servers.html:56
 msgid "SSH private key"
-msgstr ""
+msgstr "SSH 私钥"
 
 #: web/templates/servers.html:58
 msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
-msgstr ""
+msgstr "粘贴由 ssh-keygen 创建的全部私钥文件，包括其BEGIN 和 END 行。 结尾为 .pub的文件是安装在Plex计算机上的公钥；在此粘贴文件时不带.pub。"
 
 #: web/templates/servers.html:59
 msgid "Private key passphrase"
-msgstr ""
+msgstr "私钥密码"
 
 #: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
@@ -1517,35 +1517,35 @@ msgstr "可选的"
 
 #: web/templates/servers.html:61
 msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
-msgstr ""
+msgstr "输入您在生成此密钥时选择的密码句。它会解锁私钥文件。如果密钥没有密码句则留空。"
 
 #: web/templates/servers.html:64
 msgid "Server account password"
-msgstr ""
+msgstr "服务器帐户密码"
 
 #: web/templates/servers.html:66
 msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
-msgstr ""
+msgstr "使用上面输入的帐户密码。在Windows上，这是帐户密码，而不是Windows Hello PIN。"
 
 #: web/templates/servers.html:68
 msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
-msgstr ""
+msgstr "凭据安全地存储，永远不会再次显示。留空秘密字段保留为同一个主机和帐户保存凭据。 当从另一台机器输入凭据时，通过 HTTPS 使用Themer。"
 
 #: web/templates/servers.html:70
 msgid "Verify and save SSH"
-msgstr ""
+msgstr "验证并保存 SSH"
 
 #: web/templates/servers.html:71
 msgid "Check connection"
-msgstr ""
+msgstr "检查连接"
 
 #: web/templates/servers.html:72
 msgid "Disable SSH"
-msgstr ""
+msgstr "禁用 SSH"
 
 #: web/templates/servers.html:79
 msgid "Connector address"
-msgstr ""
+msgstr "连接器地址"
 
 #: web/templates/servers.html:81
 msgid "Themerr address reachable from Jellyfin"
@@ -1593,7 +1593,7 @@ msgstr "浏览Plex数据目录"
 
 #: web/templates/servers.html:100
 msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
-msgstr ""
+msgstr "这个服务器是运行Themerr的计算机达到的本地或挂载数据目录。 每个服务器都有自己的路径。SSH 清理使用这个服务器分开的远程路径，并在配置时获得优先级别。"
 
 #: web/templates/servers.html:101
 msgid "Ignored libraries"
