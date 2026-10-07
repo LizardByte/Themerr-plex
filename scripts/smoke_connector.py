@@ -30,15 +30,25 @@ from jellyfin.compatibility import PROFILES, version_parts  # noqa: E402
 
 def docker(*arguments):
     """Run a Docker command without a shell and retain diagnostics for failures."""
-    result = subprocess.run(
-        [
-            'docker',
-            *arguments,
-        ],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    try:
+        result = subprocess.run(
+            [
+                'docker',
+                *arguments,
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        if exc.stderr:
+            print(exc.stderr, file=sys.stderr, flush=True)
+        raise
+    if arguments[0] == 'logs':
+        return '\n'.join(part.strip() for part in (
+            result.stdout,
+            result.stderr,
+        ) if part.strip())
     return result.stdout.strip()
 
 
@@ -115,8 +125,19 @@ def setup(url):
 
 
 def server_url(name):
-    """Read the disposable container's currently assigned loopback port."""
-    binding = json.loads(docker('inspect', name))[0]['NetworkSettings']['Ports']['8096/tcp'][0]
+    """Require a running disposable container and read its currently assigned loopback port."""
+    container = json.loads(docker('inspect', name))[0]
+    state = container['State']
+    if not state['Running']:
+        raise RuntimeError(
+            f'Jellyfin validation container is {state["Status"]} (exit code {state["ExitCode"]}).'
+        )
+    bindings = container['NetworkSettings']['Ports'].get('8096/tcp') or []
+    if not bindings:
+        raise RuntimeError('Jellyfin validation container did not publish port 8096/tcp.')
+    binding = bindings[0]
+    if binding['HostIp'] != '127.0.0.1':
+        raise RuntimeError('Jellyfin validation port must be published only on loopback.')
     return f'http://127.0.0.1:{binding["HostPort"]}'
 
 
@@ -238,7 +259,7 @@ def validate(name, tag, media, repository_url):
 
 @contextmanager
 def repository_server():
-    """Serve real repository responses inside a private network without publishing a host port."""
+    """Serve real repository responses on a dedicated bridge without publishing a repository port."""
     network = f'themerr-connector-smoke-{uuid4().hex[:12]}'
     name = f'{network}-repository'
     repository_url = f'http://{name}'
@@ -258,7 +279,7 @@ def repository_server():
                     directory.chmod(0o755)
                     if directory == root:
                         break
-        docker('network', 'create', '--internal', network)
+        docker('network', 'create', '--driver', 'bridge', network)
         created = False
         try:
             docker(

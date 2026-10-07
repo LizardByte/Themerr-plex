@@ -42,11 +42,13 @@ latest official Jellyfin image:
    uv run --locked --extra dev python scripts/smoke_connector.py
 
 Use ``--series 12`` to validate just Jellyfin 12.1 and 12.2. The script starts
-disposable servers and an Nginx container on a private Docker network. Nginx serves
+disposable servers and an Nginx container on a dedicated Docker bridge network. Nginx serves
 responses from the actual connector repository routes without publishing a host port.
 The script installs the same archive, restarts Jellyfin, uploads generated audio,
 checks EF ownership persistence, and confirms that a user-modified theme is protected.
-It removes its containers, private network, and temporary configuration and media
+Jellyfin's test API port is published only on loopback. The bridge permits these
+host port bindings; Docker's ``--internal`` networks do not.
+It removes its containers, dedicated network, and temporary configuration and media
 directories afterward. Existing servers are never selected by this harness.
 CI runs this validation after the xUnit suite.
 
