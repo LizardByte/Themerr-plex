@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: it_IT\n"
-"PO-Revision-Date: 2026-10-07 04:35\n"
+"PO-Revision-Date: 2026-10-07 14:32\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -292,7 +292,7 @@ msgstr "Url Plex"
 msgid "The URL to the Plex server."
 msgstr "L'URL del server Plex."
 
-#: src/common/config.py:316 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Cartella dati Plex"
 
@@ -652,7 +652,7 @@ msgid "Live"
 msgstr "Live"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Paused"
 msgstr "Pausa"
 
@@ -660,60 +660,68 @@ msgstr "Pausa"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "Aggiornamento non riuscito. Visualizzazione degli ultimi record caricati."
 
-#: web/js/servers.js:45 web/templates/servers.html:42
+#: web/js/servers.js:32
+msgid "Verifying SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:64
+msgid "Checking SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
 msgstr "Seleziona librerie da ignorare"
 
-#: web/js/servers.js:54
+#: web/js/servers.js:125
 msgid "Loading libraries…"
 msgstr "Caricamento librerie…"
 
-#: web/js/servers.js:78
+#: web/js/servers.js:149
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "Visualizzazione delle librerie nella cache. Abilitare o riconnettere questo server per caricare le sue librerie correnti."
 
-#: web/js/servers.js:80
+#: web/js/servers.js:151
 msgid "This server has no libraries."
 msgstr "Questo server non ha librerie."
 
-#: web/js/servers.js:86
+#: web/js/servers.js:157
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "Impossibile caricare le librerie. Le tue selezioni sono mantenute. Chiudi e riapri l'elenco per riprovare."
 
-#: web/js/servers.js:130 web/js/servers.js:296
+#: web/js/servers.js:201 web/js/servers.js:368
 msgid "Connected"
 msgstr "Connesso"
 
-#: web/js/servers.js:130 web/templates/servers.html:71
-#: web/templates/servers.html:83
+#: web/js/servers.js:201 web/templates/servers.html:132
+#: web/templates/servers.html:144
 msgid "Connect"
 msgstr "Connetti"
 
-#: web/js/servers.js:278
+#: web/js/servers.js:350
 msgid "Looking for Jellyfin servers…"
 msgstr "Alla ricerca di server Jellyfin…"
 
-#: web/js/servers.js:284
+#: web/js/servers.js:356
 msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
 msgstr "Nessun server Jellyfin ha risposto. Controlla la porta UDP 7359 e la scoperta della rete locale, o inserisci un indirizzo manualmente."
 
-#: web/js/servers.js:296
+#: web/js/servers.js:368
 msgid "Use this address"
 msgstr "Usa questo indirizzo"
 
-#: web/js/servers.js:325 web/templates/servers.html:26
+#: web/js/servers.js:397 web/templates/servers.html:87
 msgid "Save connector address"
 msgstr "Salva indirizzo connettore"
 
-#: web/js/servers.js:325 web/templates/servers.html:27
+#: web/js/servers.js:397 web/templates/servers.html:88
 msgid "Install matching connector"
 msgstr "Installa connettore corrispondente"
 
-#: web/js/servers.js:330
+#: web/js/servers.js:402
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr "Questo server non può riavviarsi. Riavvia il suo servizio o contenitore."
 
-#: web/js/servers.js:362
+#: web/js/servers.js:434
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr "Riavviare Jellyfin ora? La riproduzione attiva verrà interrotta."
 
@@ -750,7 +758,7 @@ msgid "No tasks have run yet. Request a scan, or wait for the next scheduled ref
 msgstr "Nessuna attività è ancora in esecuzione. Richiedi una scansione, o attendi il prossimo aggiornamento pianificato."
 
 #: web/templates/activity.html:7 web/templates/home.html:15
-#: web/templates/home.html:32 web/templates/servers.html:14
+#: web/templates/home.html:32 web/templates/servers.html:18
 msgid "Needs attention"
 msgstr "Richiede attenzione"
 
@@ -830,7 +838,7 @@ msgstr "Le tue librerie stanno aspettando la loro prossima colonna sonora."
 msgid "Username"
 msgstr "Username"
 
-#: web/templates/auth.html:30
+#: web/templates/auth.html:30 web/templates/servers.html:51
 msgid "Password"
 msgstr "Password"
 
@@ -1415,167 +1423,271 @@ msgstr "Server collegati"
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "La cronologia del tema e le impostazioni della libreria sono mantenute separatamente per ogni server."
 
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Enabled"
 msgstr "Abilitato"
 
-#: web/templates/servers.html:20
-msgid "Themerr address reachable from Jellyfin"
-msgstr "Indirizzo Themerr raggiungibile da Jellyfin"
+#: web/templates/servers.html:26
+msgid "Last library refresh"
+msgstr "Ultimo aggiornamento libreria"
 
-#: web/templates/servers.html:22
-msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
-msgstr "Utilizzare l'indirizzo HTTP solo connettore per il certificato autofirmato di Themerr, o un indirizzo HTTPS con un certificato Jellyfin trusts. Per Jellyfin o Docker remoti, sostituire localhost con un indirizzo raggiungibile da Jellyfin."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation, once playback finishes."
-msgstr "Jellyfin si riavvierà dopo l'installazione, una volta terminata la riproduzione."
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation. Active playback may be interrupted."
-msgstr "Jellyfin si riavvierà dopo l'installazione. La riproduzione attiva potrebbe essere interrotta."
-
-#: web/templates/servers.html:23
-msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
-msgstr "Il riavvio automatico è disabilitato. Riavviare Jellyfin dopo l'installazione."
-
-#: web/templates/servers.html:24
-msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
-msgstr "Il vecchio plugin Themerr-jellyfin e il suo repository saranno rimossi. I temi esistenti saranno mantenuti."
+#: web/templates/servers.html:26
+msgid "Not yet refreshed"
+msgstr "Non ancora aggiornato"
 
 #: web/templates/servers.html:28
 msgid "Force restart"
 msgstr "Riavvio forzato"
 
 #: web/templates/servers.html:32
-msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
-msgstr "Abilita canzoni a tema nelle impostazioni di visualizzazione di ogni client Jellyfin. Jellyfin memorizza questa preferenza nel client, quindi Themerr non può cambiarla attraverso l'API del server."
-
-#: web/templates/servers.html:32
-msgid "Open Jellyfin display settings"
-msgstr "Apri impostazioni di visualizzazione Jellyfin"
+msgid "SSH cleanup"
+msgstr ""
 
 #: web/templates/servers.html:33
-msgid "Last library refresh"
-msgstr "Ultimo aggiornamento libreria"
-
-#: web/templates/servers.html:33
-msgid "Not yet refreshed"
-msgstr "Non ancora aggiornato"
+msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
+msgstr ""
 
 #: web/templates/servers.html:34
-msgid "Processing settings"
-msgstr "Impostazioni di elaborazione"
+msgid "SSH setup guide with Windows examples"
+msgstr ""
 
 #: web/templates/servers.html:36
-msgid "Process this server"
-msgstr "Elabora questo server"
+msgid "SSH hostname or IP address"
+msgstr ""
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:38
+msgid "SSH port"
+msgstr ""
+
+#: web/templates/servers.html:40
+msgid "SSH username"
+msgstr ""
+
+#: web/templates/servers.html:42
+msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
+msgstr ""
+
+#: web/templates/servers.html:43
+msgid "Verified SSH host fingerprint"
+msgstr ""
+
+#: web/templates/servers.html:45
+msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
+msgstr ""
+
+#: web/templates/servers.html:46
+msgid "Remote Plex data directory"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "For a restricted SFTP account, use the path visible inside that account."
+msgstr ""
+
+#: web/templates/servers.html:49
+msgid "SSH authentication"
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid "Private key"
+msgstr ""
+
+#: web/templates/servers.html:54
+msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
+msgstr ""
+
+#: web/templates/servers.html:56
+msgid "SSH private key"
+msgstr ""
+
+#: web/templates/servers.html:58
+msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
+msgstr ""
+
+#: web/templates/servers.html:59
+msgid "Private key passphrase"
+msgstr ""
+
+#: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
 msgstr "opzionale"
 
-#: web/templates/servers.html:38
+#: web/templates/servers.html:61
+msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
+msgstr ""
+
+#: web/templates/servers.html:64
+msgid "Server account password"
+msgstr ""
+
+#: web/templates/servers.html:66
+msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
+msgstr ""
+
+#: web/templates/servers.html:68
+msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
+msgstr ""
+
+#: web/templates/servers.html:70
+msgid "Verify and save SSH"
+msgstr ""
+
+#: web/templates/servers.html:71
+msgid "Check connection"
+msgstr ""
+
+#: web/templates/servers.html:72
+msgid "Disable SSH"
+msgstr ""
+
+#: web/templates/servers.html:79
+msgid "Connector address"
+msgstr ""
+
+#: web/templates/servers.html:81
+msgid "Themerr address reachable from Jellyfin"
+msgstr "Indirizzo Themerr raggiungibile da Jellyfin"
+
+#: web/templates/servers.html:83
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "Utilizzare l'indirizzo HTTP solo connettore per il certificato autofirmato di Themerr, o un indirizzo HTTPS con un certificato Jellyfin trusts. Per Jellyfin o Docker remoti, sostituire localhost con un indirizzo raggiungibile da Jellyfin."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "Jellyfin si riavvierà dopo l'installazione, una volta terminata la riproduzione."
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "Jellyfin si riavvierà dopo l'installazione. La riproduzione attiva potrebbe essere interrotta."
+
+#: web/templates/servers.html:84
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "Il riavvio automatico è disabilitato. Riavviare Jellyfin dopo l'installazione."
+
+#: web/templates/servers.html:85
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "Il vecchio plugin Themerr-jellyfin e il suo repository saranno rimossi. I temi esistenti saranno mantenuti."
+
+#: web/templates/servers.html:92
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "Abilita canzoni a tema nelle impostazioni di visualizzazione di ogni client Jellyfin. Jellyfin memorizza questa preferenza nel client, quindi Themerr non può cambiarla attraverso l'API del server."
+
+#: web/templates/servers.html:92
+msgid "Open Jellyfin display settings"
+msgstr "Apri impostazioni di visualizzazione Jellyfin"
+
+#: web/templates/servers.html:95
+msgid "Processing settings"
+msgstr "Impostazioni di elaborazione"
+
+#: web/templates/servers.html:97
+msgid "Process this server"
+msgstr "Elabora questo server"
+
+#: web/templates/servers.html:99
 msgid "Browse Plex data directory"
 msgstr "Sfoglia la directory dei dati Plex"
 
-#: web/templates/servers.html:39
-msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "Una directory di dati Plex locale o montata è necessaria solo per rimuovere i file caricati più vecchi. Lasciarla vuota per i server remoti."
+#: web/templates/servers.html:100
+msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
+msgstr ""
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:101
 msgid "Ignored libraries"
 msgstr "Librerie ignorate"
 
-#: web/templates/servers.html:46
+#: web/templates/servers.html:107
 msgid "Library"
 msgstr "Libreria"
 
-#: web/templates/servers.html:49
+#: web/templates/servers.html:110
 msgid "Open the list to load this server’s libraries."
 msgstr "Apre la lista per caricare le librerie di questo server."
 
-#: web/templates/servers.html:52
+#: web/templates/servers.html:113
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "Seleziona le librerie da escludere dagli aggiornamenti del tema. Lascia tutto deselezionato per elaborare ogni libreria."
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Save settings"
 msgstr "Salva impostazioni"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Remove server"
 msgstr "Rimuovi server"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Your first server starts here."
 msgstr "Il tuo primo server inizia qui."
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Link Plex above or add a Jellyfin server below."
 msgstr "Collega Plex sopra o aggiungi un server Jellyfin qui sotto."
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:121
 msgid "Add a server"
 msgstr "Aggiungi un server"
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:122
 msgid "Server type"
 msgstr "Tipo di server"
 
-#: web/templates/servers.html:66
+#: web/templates/servers.html:127
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "Scegli un server dal tuo account Plex, scopri uno nelle vicinanze o usa un indirizzo che conosci."
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Find account servers"
 msgstr "Trova server account"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Discover on LAN"
 msgstr "Scopri su LAN"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "La ricerca di LAN utilizza Plex GDM sulla rete della tua applicazione."
 
-#: web/templates/servers.html:68
+#: web/templates/servers.html:129
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "Gli indirizzi account sono pubblicizzati da Plex e possono essere irraggiungibili. Gli indirizzi HTTPS plex.direct utilizzano il certificato di Plex. Scegliere un indirizzo raggiungibile dalla macchina che esegue Themerr, o inserire un indirizzo noto manualmente."
 
-#: web/templates/servers.html:70
+#: web/templates/servers.html:131
 msgid "Enter an address manually"
 msgstr "Inserisci un indirizzo manualmente"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Plex server address"
 msgstr "Indirizzo del server Plex"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "Usa un indirizzo LAN o un indirizzo HTTPS Plex valido. Il tuo account Plex collegato deve avere accesso. Aggiungendo un server esistente aggiorna il suo indirizzo."
 
-#: web/templates/servers.html:75
+#: web/templates/servers.html:136
 msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
 msgstr "Jellyfin 10.11 e 12.1 sono supportati. Crea una chiave API amministratore in Jellyfin Dashboard - API Keys."
 
-#: web/templates/servers.html:77
+#: web/templates/servers.html:138
 msgid "Jellyfin server address"
 msgstr "Indirizzo del server Jellyfin"
 
-#: web/templates/servers.html:79
+#: web/templates/servers.html:140
 msgid "Jellyfin API key"
 msgstr "Chiave API Jellyfin"
 
-#: web/templates/servers.html:81
+#: web/templates/servers.html:142
 msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
 msgstr "Le chiavi rimangono nell'archivio credenziali sicuro. Dopo la connessione, imposta l'indirizzo Themerr raggiungibile sulla scheda server qui sopra."
 
-#: web/templates/servers.html:84
+#: web/templates/servers.html:145
 msgid "Discover Jellyfin on LAN"
 msgstr "Scopri Jellyfin su LAN"
 
-#: web/templates/servers.html:86
+#: web/templates/servers.html:147
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr "Usa la porta UDP 7359 sulla rete di Themerr. Una chiave API è ancora richiesta."
 
