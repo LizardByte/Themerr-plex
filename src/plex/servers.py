@@ -190,6 +190,13 @@ def validate_url(url: str) -> str:
     return url.strip().rstrip('/')
 
 
+def _set_server_version(record, server):
+    """Copy a valid version reported by an authenticated Plex connection."""
+    version = getattr(server, 'version', None)
+    if isinstance(version, str) and version:
+        record.version = version[:64]
+
+
 def add_server(url: str, resource_id: str | None = None) -> dict:
     """Verify an address, save its token securely, and register the server.
 
@@ -252,9 +259,7 @@ def add_server(url: str, resource_id: str | None = None) -> dict:
                 record.name = server.friendlyName
                 record.enabled = True
                 record.last_error = None
-            version = getattr(server, 'version', None)
-            if isinstance(version, str) and version:
-                record.version = version[:64]
+            _set_server_version(record, server)
             session.commit()
         _connections[server_id] = server
     log.info('Connected and saved Plex server %s at %s', server.friendlyName, url)

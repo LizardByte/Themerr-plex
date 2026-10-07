@@ -2,6 +2,7 @@
 
 # standard imports
 import time
+from typing import Annotated
 
 # lib imports
 from fastapi import APIRouter, Depends, Request
@@ -22,18 +23,23 @@ from plex import plexapi, servers, ssh, token_store
 router = APIRouter()
 log = logger.get_logger(__name__)
 PLEX_LOGIN_LIFETIME = 600
+_SERVER_NOT_FOUND = 'Plex server not found.'
 
 
 @router.get('/api/plex/servers/{server_id}/ssh', response_model=None)
 def ssh_settings(server_id: str) -> Response:
     """Report saved SSH cleanup settings without returning credentials."""
     if not servers.get_server(server_id):
-        return JSONResponse({'message': 'Plex server not found.'}, status_code=404)
+        return JSONResponse({'message': _SERVER_NOT_FOUND}, status_code=404)
     return JSONResponse({'settings': ssh.settings(server_id)})
 
 
 @router.put('/api/plex/servers/{server_id}/ssh', response_model=None)
-def save_ssh_settings(server_id: str, request: Request, payload: object = Depends(read_json)) -> Response:
+def save_ssh_settings(
+    server_id: str,
+    request: Request,
+    payload: Annotated[object, Depends(read_json)],
+) -> Response:
     """Verify and save an administrator's SSH cleanup configuration."""
     try:
         if request.url.scheme != 'https' and request.client.host not in (
@@ -57,7 +63,7 @@ def check_ssh(server_id: str) -> Response:
     """Check saved SSH access without deleting files."""
     try:
         if not servers.get_server(server_id):
-            raise MediaServerError('Plex server not found.', 404)
+            raise MediaServerError(_SERVER_NOT_FOUND, 404)
         ssh.check(server_id)
         return JSONResponse({'message': 'SSH connection and Plex data directory verified.'})
     except MediaServerError as error:
@@ -70,7 +76,7 @@ def check_ssh(server_id: str) -> Response:
 def remove_ssh_settings(server_id: str) -> Response:
     """Disable SSH cleanup and erase saved authentication secrets."""
     if not servers.get_server(server_id):
-        return JSONResponse({'message': 'Plex server not found.'}, status_code=404)
+        return JSONResponse({'message': _SERVER_NOT_FOUND}, status_code=404)
     try:
         ssh.remove_settings(server_id)
         return JSONResponse({'message': 'SSH cleanup disabled and credentials removed.'})

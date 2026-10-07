@@ -121,8 +121,9 @@ def test_configuration_verifies_and_keeps_secrets_out_of_settings(remote):
         assert 'private-test-password' not in stored
     ssh.configure('server', values(password=''))
     assert remote.connections[-1][1]['password'] == 'private-test-password'
+    changed_host = values(host='another.example', password='')
     with pytest.raises(MediaServerError, match='Provide an SSH password'):
-        ssh.configure('server', values(host='another.example', password=''))
+        ssh.configure('server', changed_host)
     ssh.check('server')
     assert not remote.removed
     ssh.remove_settings('server')
@@ -160,8 +161,9 @@ def test_configuration_verifies_and_keeps_secrets_out_of_settings(remote):
     pytest.param('password', None),
 ])
 def test_rejects_invalid_settings_before_connecting(remote, field, value):
+    invalid_settings = values(**{field: value})
     with pytest.raises(MediaServerError):
-        ssh.configure('server', values(**{field: value}))
+        ssh.configure('server', invalid_settings)
     assert not remote.connections
     assert not ssh.settings('server')
 
@@ -169,8 +171,9 @@ def test_rejects_invalid_settings_before_connecting(remote, field, value):
 def test_failed_verification_does_not_replace_configuration(remote):
     ssh.configure('server', values())
     previous = ssh.settings('server')
+    replacement = values(data_directory='/missing', password='replacement')
     with pytest.raises(OSError):
-        ssh.configure('server', values(data_directory='/missing', password='replacement'))
+        ssh.configure('server', replacement)
     assert ssh.settings('server') == previous
     assert json.loads(credentials.get_token(ssh._credential_id('server')))['password'] == 'private-test-password'
 
@@ -240,8 +243,9 @@ def test_pins_server_host_key():
     key = SimpleNamespace(asbytes=lambda: b'actual-host-key')
     fingerprint = f'SHA256:{base64.b64encode(hashlib.sha256(key.asbytes()).digest()).decode().rstrip("=")}'
     ssh._PinnedHostKey(fingerprint).missing_host_key(None, 'host', key)
+    wrong_host_key = ssh._PinnedHostKey(values()['host_fingerprint'])
     with pytest.raises(paramiko.SSHException, match='fingerprint mismatch'):
-        ssh._PinnedHostKey(values()['host_fingerprint']).missing_host_key(None, 'host', key)
+        wrong_host_key.missing_host_key(None, 'host', key)
 
 
 def test_connection_uses_only_selected_credentials(configured, monkeypatch):
@@ -276,11 +280,12 @@ def test_private_key_and_passphrase_parsing():
         'private_key': output.getvalue(),
         'passphrase': 'key-passphrase',
     }) == key
+    invalid_passphrase = {
+        'private_key': output.getvalue(),
+        'passphrase': 'incorrect',
+    }
     with pytest.raises(MediaServerError, match='private key'):
-        ssh._private_key({
-            'private_key': output.getvalue(),
-            'passphrase': 'incorrect',
-        })
+        ssh._private_key(invalid_passphrase)
 
 
 def test_cleanup_retains_verified_theme_and_isolated_other_item(remote, item):
