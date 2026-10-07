@@ -261,8 +261,8 @@ def database_status():
     Response
         Deployment metadata and check timestamps.
     """
-    from themerr import github_status
-    return JSONResponse(github_status.publication_status())
+    from themerr import deployment_status
+    return JSONResponse(deployment_status.publication_status())
 
 
 @router.api_route('/activity', methods=['GET', 'HEAD'], name='server_ui.activity', response_model=None)

@@ -344,8 +344,8 @@ def test_documentation_supplies_session_bound_csrf_defaults(browser):
 
 
 def test_unexpected_api_failure_keeps_generic_errors_and_security_headers(browser, monkeypatch):
-    from themerr import github_status
-    monkeypatch.setattr(github_status, 'publication_status', Mock(side_effect=RuntimeError('private details')))
+    from themerr import deployment_status
+    monkeypatch.setattr(deployment_status, 'publication_status', Mock(side_effect=RuntimeError('private details')))
     with TestClient(browser.app, base_url='http://localhost', raise_server_exceptions=False,
                     cookies=browser.cookies) as client:
         response = client.get('/api/themerrdb')
