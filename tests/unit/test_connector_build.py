@@ -5,7 +5,8 @@ import hashlib
 import json
 from pathlib import Path, PurePosixPath, PureWindowsPath
 import runpy
-from unittest.mock import MagicMock
+import sys
+from unittest.mock import MagicMock, Mock
 import zipfile
 
 # lib imports
@@ -115,3 +116,53 @@ def test_stale_or_modified_bundles_fail_before_packaging(builder, monkeypatch, c
     (directory / 'bundle.json').write_text(json.dumps(data), encoding='utf-8')
     with pytest.raises(ValueError):
         module['check_bundle'](root)
+
+
+def test_build_uses_fixed_dotnet_command_and_produces_a_valid_bundle(builder, monkeypatch):
+    module, root, _ = builder
+
+    def compile_connector(command, **kwargs):
+        output = Path(command[command.index('--output') + 1])
+        output.mkdir()
+        (output / module['ASSEMBLY_FILE']).write_bytes(b'compiled assembly')
+
+    run = Mock(side_effect=compile_connector)
+    monkeypatch.setattr(module['subprocess'], 'run', run)
+    descriptor = module['build'](root=root)
+
+    assert module['check_bundle'](root) == descriptor
+    assert run.call_count == len(module['PROFILES'])
+    assert all(call.args[0][0] == 'dotnet' and call.kwargs == {'check': True} for call in run.call_args_list)
+
+
+@pytest.mark.parametrize('release', [
+    '1.2.3;-p:Injected=true',
+    '1.2.3\n-p:Injected=true',
+    '1.2.3 -p:Injected=true',
+])
+def test_build_rejects_release_arguments_before_starting_a_process(builder, monkeypatch, release):
+    module, root, _ = builder
+    run = Mock()
+    monkeypatch.setattr(module['subprocess'], 'run', run)
+    monkeypatch.setenv('THEMERR_VERSION', release)
+
+    with pytest.raises(ValueError, match='valid four-part .NET version'):
+        module['build'](root=root)
+    run.assert_not_called()
+
+
+def test_cli_rejects_executable_overrides(builder, monkeypatch):
+    module, _, _ = builder
+    run = Mock()
+    script = Path(__file__).resolve().parents[2] / 'scripts/build_connector.py'
+    monkeypatch.setattr(module['subprocess'], 'run', run)
+    monkeypatch.setattr(sys, 'argv', [
+        str(script),
+        '--dotnet',
+        'unapproved-executable',
+    ])
+
+    with pytest.raises(SystemExit) as error:
+        runpy.run_path(str(script), run_name='__main__')
+    assert error.value.code == 2
+    run.assert_not_called()

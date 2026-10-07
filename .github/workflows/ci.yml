@@ -78,7 +78,7 @@ jobs:
       - name: Validate connector installation and ownership on Jellyfin servers
         env:
           THEMERR_VERSION: ${{ needs.setup_release.outputs.release_version }}
-        run: uv run --locked --python ${{ env.PYTHON_VERSION }} scripts/smoke_connector.py
+        run: uv run --locked --extra dev --python ${{ env.PYTHON_VERSION }} scripts/smoke_connector.py
 
       - name: Upload connector coverage
         if: >-

@@ -71,7 +71,7 @@ def assembly_version(version):
     return '.'.join(str(int(p)) for p in parts)
 
 
-def build(dotnet='dotnet', root=ROOT):
+def build(root=ROOT):
     """Compile every supported ABI and write fixed archive names and their checksums."""
     release = os.environ.get('THEMERR_VERSION') or runpy.run_path(str(root / VERSION_FILE))['VERSION']
     if os.environ.get('THEMERR_VERSION'):
@@ -91,7 +91,7 @@ def build(dotnet='dotnet', root=ROOT):
             output = Path(temp) / 'out'
             subprocess.run(
                 [
-                    dotnet,
+                    'dotnet',
                     'build',
                     str(root / 'connectors/jellyfin/Themerr.Connector.csproj'),
                     '--configuration',
@@ -157,7 +157,6 @@ def check_bundle(root=ROOT):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--dotnet', default='dotnet')
     parser.add_argument('--check', action='store_true', help='Validate existing artifacts without using .NET.')
     arguments = parser.parse_args()
-    check_bundle() if arguments.check else build(arguments.dotnet)
+    check_bundle() if arguments.check else build()

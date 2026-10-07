@@ -39,14 +39,16 @@ latest official Jellyfin image:
 .. code-block:: shell
 
    uv run --locked python scripts/build_connector.py
-   uv run --locked python scripts/smoke_connector.py
+   uv run --locked --extra dev python scripts/smoke_connector.py
 
 Use ``--series 12`` to validate just Jellyfin 12.1 and 12.2. The script starts
-disposable servers and the actual connector repository routes, installs the same
-archive, restarts Jellyfin, uploads generated audio, checks EF ownership persistence,
-and confirms that a user-modified theme is protected. Containers and temporary
-configuration and media directories are removed afterward. Existing servers are
-never selected by this harness. CI runs this validation after the xUnit suite.
+disposable servers and an Nginx container on a private Docker network. Nginx serves
+responses from the actual connector repository routes without publishing a host port.
+The script installs the same archive, restarts Jellyfin, uploads generated audio,
+checks EF ownership persistence, and confirms that a user-modified theme is protected.
+It removes its containers, private network, and temporary configuration and media
+directories afterward. Existing servers are never selected by this harness.
+CI runs this validation after the xUnit suite.
 
 The connector and its tests use the repository's ``.editorconfig`` and the Sonar and StyleCop analyzers
 configured in ``connectors/Directory.Build.props``. Analyzer warnings fail compilation. CI also rejects

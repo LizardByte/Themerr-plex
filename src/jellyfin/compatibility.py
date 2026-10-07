@@ -16,7 +16,7 @@ PROFILES = {
 
 def version_parts(value):
     """Parse stable two-, three-, or four-component versions without accepting previews."""
-    if not isinstance(value, str) or re.fullmatch(r'(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){1,3}', value) is None:
+    if not isinstance(value, str) or re.fullmatch(r'(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*)){1,3}', value, re.ASCII) is None:
         raise ValueError('Invalid stable Jellyfin version.')
     parts = tuple(int(part) for part in value.split('.'))
     return parts + (0,) * (4 - len(parts))
