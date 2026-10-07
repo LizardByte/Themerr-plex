@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2026-10-07 14:32\n"
+"PO-Revision-Date: 2026-10-07 14:38\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -662,11 +662,11 @@ msgstr "Aktualisierung fehlgeschlagen. Zeige die zuletzt geladenen Datensätze."
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
-msgstr ""
+msgstr "SSH-Verbindung wird überprüft…"
 
 #: web/js/servers.js:64
 msgid "Checking SSH connection…"
-msgstr ""
+msgstr "SSH-Verbindung wird überprüft…"
 
 #: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
@@ -1441,75 +1441,75 @@ msgstr "Neustart erzwingen"
 
 #: web/templates/servers.html:32
 msgid "SSH cleanup"
-msgstr ""
+msgstr "SSH-Bereinigung"
 
 #: web/templates/servers.html:33
 msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
-msgstr ""
+msgstr "Aktivieren Sie SSH und SFTP auf Ihrem Plex-Server, um ältere hochgeladene Themes, Plakate und Artworks zu entfernen. Verwenden Sie ein Konto mit Zugriff auf Plex's Metadaten-Verzeichnis. Themerr überprüft den Server-Fingerabdruck und führt keine Shell-Befehle aus."
 
 #: web/templates/servers.html:34
 msgid "SSH setup guide with Windows examples"
-msgstr ""
+msgstr "SSH Setup-Anleitung mit Windows-Beispielen"
 
 #: web/templates/servers.html:36
 msgid "SSH hostname or IP address"
-msgstr ""
+msgstr "SSH Hostname oder IP-Adresse"
 
 #: web/templates/servers.html:38
 msgid "SSH port"
-msgstr ""
+msgstr "SSH-Port"
 
 #: web/templates/servers.html:40
 msgid "SSH username"
-msgstr ""
+msgstr "SSH Benutzername"
 
 #: web/templates/servers.html:42
 msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
-msgstr ""
+msgstr "Verwenden Sie ein Login-Konto auf dem Plex-Computer, nicht Ihre Plex-Anmeldung. Unter Windows Whoami dort ausführen: für ein lokales Konto wie PLEX-PC\\plex geben Sie plex ein; für ein Domänenkonto geben Sie Domain\\user ein."
 
 #: web/templates/servers.html:43
 msgid "Verified SSH host fingerprint"
-msgstr ""
+msgstr "Überprüfter SSH-Host-Fingerabdruck"
 
 #: web/templates/servers.html:45
 msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
-msgstr ""
+msgstr "Dies identifiziert den SSH-Server. Kopieren Sie den SHA256-Fingerabdruck seines öffentlichen Host-Schlüssels vom Plex-Computer selbst. Es ist getrennt von dem privaten Benutzer, der benutzt wird, um sich unten anzumelden."
 
 #: web/templates/servers.html:46
 msgid "Remote Plex data directory"
-msgstr ""
+msgstr "Externes Plex Datenverzeichnis"
 
 #: web/templates/servers.html:48
 msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
-msgstr ""
+msgstr "Geben Sie das Verzeichnis dieses Servers mit Metadaten ein. Windows-Laufwerkspfade werden automatisch in SFTP-Pfade konvertiert. Zum Beispiel:"
 
 #: web/templates/servers.html:48
 msgid "For a restricted SFTP account, use the path visible inside that account."
-msgstr ""
+msgstr "Für ein eingeschränktes SFTP-Konto verwenden Sie den Pfad, der innerhalb dieses Kontos sichtbar ist."
 
 #: web/templates/servers.html:49
 msgid "SSH authentication"
-msgstr ""
+msgstr "SSH-Authentifizierung"
 
 #: web/templates/servers.html:52
 msgid "Private key"
-msgstr ""
+msgstr "Privater Schlüssel"
 
 #: web/templates/servers.html:54
 msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
-msgstr ""
+msgstr "Passwort-Authentifizierung benötigt nur das Passwort des Serverkontos. Wählen Sie den privaten Schlüssel, wenn Sie ein Benutzerschlüsselpaar generiert haben und seinen öffentlichen Schlüssel auf dem Plex-Computer installiert haben."
 
 #: web/templates/servers.html:56
 msgid "SSH private key"
-msgstr ""
+msgstr "SSH privater Schlüssel"
 
 #: web/templates/servers.html:58
 msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
-msgstr ""
+msgstr "Fügen Sie die gesamte private Schlüsseldatei ein, die von ssh-keygen erstellt wurde, inklusive der BEGIN- und END-Zeilen. Die Datei, die in .pub endet, ist der öffentliche Schlüssel, der auf dem Plex-Computer installiert ist; fügen Sie die Datei ohne .pub hier ein."
 
 #: web/templates/servers.html:59
 msgid "Private key passphrase"
-msgstr ""
+msgstr "Privater Schlüssel Passwort"
 
 #: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
@@ -1517,35 +1517,35 @@ msgstr "optional"
 
 #: web/templates/servers.html:61
 msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
-msgstr ""
+msgstr "Geben Sie die Passphrase ein, die Sie bei der Erzeugung dieses Schlüssels ausgewählt haben. Es entsperrt die private Schlüsseldatei. Lassen Sie diese Leertaste wenn der Schlüssel keine Passphrase hat."
 
 #: web/templates/servers.html:64
 msgid "Server account password"
-msgstr ""
+msgstr "Server-Konto-Passwort"
 
 #: web/templates/servers.html:66
 msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
-msgstr ""
+msgstr "Benutzen Sie das Passwort für das oben eingegebene Konto."
 
 #: web/templates/servers.html:68
 msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
-msgstr ""
+msgstr "Zugangsdaten werden sicher gespeichert und nie wieder angezeigt. Lassen Sie geheime Felder leer, um die gespeicherten Zugangsdaten für denselben Host und denselben Account zu behalten. Verwenden Sie Themerr über HTTPS, wenn Sie Anmeldedaten von einem anderen Rechner eingeben."
 
 #: web/templates/servers.html:70
 msgid "Verify and save SSH"
-msgstr ""
+msgstr "SSH überprüfen und speichern"
 
 #: web/templates/servers.html:71
 msgid "Check connection"
-msgstr ""
+msgstr "Verbindung überprüfen"
 
 #: web/templates/servers.html:72
 msgid "Disable SSH"
-msgstr ""
+msgstr "SSH deaktivieren"
 
 #: web/templates/servers.html:79
 msgid "Connector address"
-msgstr ""
+msgstr "Konnektoradresse"
 
 #: web/templates/servers.html:81
 msgid "Themerr address reachable from Jellyfin"
@@ -1593,7 +1593,7 @@ msgstr "Plex Datenverzeichnis durchsuchen"
 
 #: web/templates/servers.html:100
 msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
-msgstr ""
+msgstr "Das lokale oder eingehängte Datenverzeichnis dieses Servers, wie es vom Computer mit Themerr erreicht wurde. Jeder Server hat seinen eigenen Pfad. SSH-Bereinigung verwendet den separaten entfernten Pfad dieses Servers und nimmt bei der Konfiguration Priorität ein."
 
 #: web/templates/servers.html:101
 msgid "Ignored libraries"
