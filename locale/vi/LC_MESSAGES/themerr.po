@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: vi_VN\n"
-"PO-Revision-Date: 2026-10-06 22:33\n"
+"PO-Revision-Date: 2026-10-07 04:35\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -983,8 +983,8 @@ msgid "Unknown"
 msgstr "Không rõ"
 
 #: web/templates/home.html:8
-msgid "GitHub check failed. Showing the last known deployment; checks run at most hourly."
-msgstr "Kiểm tra GitHub không thành công. Đang hiển thị lần triển khai gần nhất được ghi nhận; các kiểm tra được thực hiện tối đa mỗi giờ một lần."
+msgid "Deployment check failed. Showing the last known deployment; checks run at most hourly."
+msgstr "Kiểm tra triển khai không thành công. Hiển thị thông tin triển khai gần nhất đã biết; các kiểm tra được thực hiện tối đa mỗi giờ một lần."
 
 #: web/templates/home.html:9
 msgid "Last deployed"
