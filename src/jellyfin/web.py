@@ -15,7 +15,6 @@ from media_servers.base import MediaServerError
 
 router = APIRouter()
 log = logger.get_logger(__name__)
-_ARCHIVE_PATHS = {f'/jellyfin/connector/{name}': name for name in connector.ARCHIVES.values()}
 
 
 def _failure(exc):
@@ -172,29 +171,10 @@ def discover():
     name='jellyfin.manifest',
     response_model=None,
 )
-@router.api_route(
-    '/jellyfin/connector/manifest-10.11.json',
-    methods=[
-        'GET',
-        'HEAD',
-    ],
-    name='jellyfin.manifest_10_11',
-    response_model=None,
-)
-@router.api_route(
-    '/jellyfin/connector/manifest-12.1.json',
-    methods=[
-        'GET',
-        'HEAD',
-    ],
-    name='jellyfin.manifest_12_1',
-    response_model=None,
-)
 def manifest(request: Request):
     """Serve only bundled connector metadata so Jellyfin can install from this Themerr instance."""
     try:
-        profiles = {path: key for key, path in connector.PROFILE_MANIFESTS.items()}
-        return JSONResponse(connector.manifest(profiles.get(request.url.path)))
+        return JSONResponse(connector.manifest(connector.MANIFEST_PROFILES.get(request.url.path)))
     except MediaServerError as exc:
         return _failure(exc)
 
@@ -217,28 +197,35 @@ def thumbnail():
         return _failure(exc)
 
 
-@router.api_route(
-    '/jellyfin/connector/connector-10.11.zip',
-    methods=[
-        'GET',
-        'HEAD',
-    ],
-    name='jellyfin.archive_10_11',
-    response_model=None,
-)
-@router.api_route(
-    '/jellyfin/connector/connector-12.1.zip',
-    methods=[
-        'GET',
-        'HEAD',
-    ],
-    name='jellyfin.archive_12_1',
-    response_model=None,
-)
 def archive(request: Request):
     """Serve fixed build-owned plugin filenames through the shared file policy."""
     try:
         connector.bundle()
-        return file_response(str(connector.directory()), _ARCHIVE_PATHS[request.url.path], 'application/zip')
+        return file_response(str(connector.directory()), connector.ARCHIVE_PATHS[request.url.path], 'application/zip')
     except MediaServerError as exc:
         return _failure(exc)
+
+
+# Register only exact code-owned routes, including aliases already saved in Jellyfin repositories.
+for _index, _path in enumerate(connector.MANIFEST_PROFILES):
+    router.add_api_route(
+        _path,
+        manifest,
+        methods=[
+            'GET',
+            'HEAD',
+        ],
+        name=f'jellyfin.manifest_{_index}',
+        response_model=None,
+    )
+for _index, _path in enumerate(connector.ARCHIVE_PATHS):
+    router.add_api_route(
+        _path,
+        archive,
+        methods=[
+            'GET',
+            'HEAD',
+        ],
+        name=f'jellyfin.archive_{_index}',
+        response_model=None,
+    )

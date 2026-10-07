@@ -1,0 +1,30 @@
+<Project>
+  <!-- One source of truth for MSBuild, packaging, runtime selection, and smoke tests. -->
+  <PropertyGroup>
+    <JellyfinSeries Condition="'$(JellyfinSeries)' == ''">12</JellyfinSeries>
+  </PropertyGroup>
+  <PropertyGroup Label="10.11" Condition="'$(JellyfinSeries)' == '10.11'">
+    <JellyfinMinimumVersion>10.11.0</JellyfinMinimumVersion>
+    <JellyfinMaximumVersion>10.12.0</JellyfinMaximumVersion>
+    <ConnectorFramework>net9.0</ConnectorFramework>
+    <ConnectorEfCoreVersion>9.0.10</ConnectorEfCoreVersion>
+    <ConnectorArchive>connector-10.11.zip</ConnectorArchive>
+    <ConnectorManifest>/jellyfin/connector/manifest-10.11.json</ConnectorManifest>
+    <JellyfinLatestVersion>10.11.11</JellyfinLatestVersion>
+  </PropertyGroup>
+  <PropertyGroup Label="12" Condition="'$(JellyfinSeries)' == '12'">
+    <JellyfinMinimumVersion>12.1.0</JellyfinMinimumVersion>
+    <JellyfinMaximumVersion>13.0.0</JellyfinMaximumVersion>
+    <ConnectorFramework>net10.0</ConnectorFramework>
+    <ConnectorEfCoreVersion>10.0.11</ConnectorEfCoreVersion>
+    <ConnectorArchive>connector-12.zip</ConnectorArchive>
+    <ConnectorManifest>/jellyfin/connector/manifest-12.json</ConnectorManifest>
+    <ConnectorArchiveAliases>connector-12.1.zip</ConnectorArchiveAliases>
+    <ConnectorManifestAliases>/jellyfin/connector/manifest-12.1.json</ConnectorManifestAliases>
+    <JellyfinLatestVersion>12.2</JellyfinLatestVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Compile against the minimum; newer hotfixes are runtime validation targets. -->
+    <JellyfinVersion>$(JellyfinMinimumVersion)</JellyfinVersion>
+  </PropertyGroup>
+</Project>

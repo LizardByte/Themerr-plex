@@ -14,16 +14,7 @@ import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-PROFILES = {
-    '10.11': (
-        '10.11.0',
-        'net9.0',
-    ),
-    '12.1': (
-        '12.1.0',
-        'net10.0',
-    ),
-}
+PROFILES = runpy.run_path(str(ROOT / 'src/jellyfin/compatibility.py'))['PROFILES']
 PLUGIN_ID = 'f9a117dc-b44a-4507-9706-241837784369'
 PLUGIN_NAME = 'Themerr Connector'
 VERSION_FILE = 'src/common/version.py'
@@ -80,7 +71,7 @@ def assembly_version(version):
     return '.'.join(str(int(p)) for p in parts)
 
 
-def build(dotnet='dotnet', root=ROOT):
+def build(root=ROOT):
     """Compile every supported ABI and write fixed archive names and their checksums."""
     release = os.environ.get('THEMERR_VERSION') or runpy.run_path(str(root / VERSION_FILE))['VERSION']
     if os.environ.get('THEMERR_VERSION'):
@@ -93,13 +84,14 @@ def build(dotnet='dotnet', root=ROOT):
     directory.mkdir(exist_ok=True)
     shutil.copyfile(root / CONNECTOR_SOURCE / THUMBNAIL, directory / THUMBNAIL)
     artifacts = {}
-    for profile, (abi, framework) in PROFILES.items():
+    for profile, values in PROFILES.items():
+        abi = values['JellyfinMinimumVersion']
         version = base_version
         with tempfile.TemporaryDirectory(prefix='themerr-connector-') as temp:
             output = Path(temp) / 'out'
             subprocess.run(
                 [
-                    dotnet,
+                    'dotnet',
                     'build',
                     str(root / 'connectors/jellyfin/Themerr.Connector.csproj'),
                     '--configuration',
@@ -108,15 +100,14 @@ def build(dotnet='dotnet', root=ROOT):
                     str(output),
                     '--configfile',
                     str(root / 'connectors/jellyfin/NuGet.Config'),
-                    f'-p:ConnectorFramework={framework}',
-                    f'-p:JellyfinVersion={abi}',
+                    f'-p:JellyfinSeries={profile}',
                     f'-p:ConnectorBuild={identity}',
                     f'-p:AssemblyVersion={version}',
                     f'-p:BaseIntermediateOutputPath={Path(temp) / "obj"}{os.sep}',
                 ],
                 check=True,
             )
-            archive = directory / f'connector-{profile}.zip'
+            archive = directory / values['ConnectorArchive']
             with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as bundle:
                 bundle.write(output / ASSEMBLY_FILE, ASSEMBLY_FILE)
             artifacts[profile] = {
@@ -149,11 +140,11 @@ def check_bundle(root=ROOT):
         raise ValueError('Prebuilt Jellyfin connector does not match this Themerr source and release.')
     if (directory / THUMBNAIL).read_bytes() != (root / CONNECTOR_SOURCE / THUMBNAIL).read_bytes():
         raise ValueError('Prebuilt Jellyfin connector thumbnail does not match.')
-    for profile, (abi, _) in PROFILES.items():
+    for profile, values in PROFILES.items():
         artifact = descriptor['artifacts'][profile]
-        archive = directory / f'connector-{profile}.zip'
+        archive = directory / values['ConnectorArchive']
         if (
-            artifact['targetAbi'] != abi
+            artifact['targetAbi'] != values['JellyfinMinimumVersion']
             or artifact['version'] != assembly_version(release)
             or artifact['checksum'] != hashlib.md5(archive.read_bytes(), usedforsecurity=False).hexdigest()
         ):
@@ -166,7 +157,6 @@ def check_bundle(root=ROOT):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--dotnet', default='dotnet')
     parser.add_argument('--check', action='store_true', help='Validate existing artifacts without using .NET.')
     arguments = parser.parse_args()
-    check_bundle() if arguments.check else build(arguments.dotnet)
+    check_bundle() if arguments.check else build()

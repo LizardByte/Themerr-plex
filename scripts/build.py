@@ -56,6 +56,7 @@ def build():
         f'--add-data=locale{os.pathsep}locale',
         f'--add-data=src/themerr/migrations{os.pathsep}themerr/migrations',
         f'--add-data=jellyfin-connector{os.pathsep}jellyfin-connector',
+        f'--add-data=src/jellyfin/compatibility.props{os.pathsep}jellyfin',
         f'--add-binary={deno}{os.pathsep}.',
         '--icon=./web/images/favicon.ico',
     ]

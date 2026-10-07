@@ -23,23 +23,28 @@ From the repository root, install dependencies and build browser assets:
    npm run build
    uv run --locked python scripts/build_connector.py
 
-The connector builder produces separate Jellyfin 10.11 and 12.1 assemblies, targeting .NET 9 and .NET 10.
+The connector builder produces separate Jellyfin 10.11 and 12 series assemblies, targeting .NET 9 and .NET 10.
 The .NET 10 SDK builds both targets; Jellyfin supplies their runtime dependencies. Generated ZIP archives and
 their descriptor and catalog thumbnail live in the ignored ``jellyfin-connector`` directory. Rebuild them after
-changing connector source, the thumbnail, or the Themerr version. To use a SDK outside ``PATH``, pass
-``--dotnet /path/to/dotnet``.
+changing connector source, the thumbnail, or the Themerr version. The builder runs ``dotnet`` from ``PATH``;
+add the desired SDK directory to ``PATH`` before running it.
 
 Both connector builds use Themerr's release version mapped with the ``release_setup`` action's .NET scheme.
 Dated versions split the ``HHMMSS`` component into ``HHMM`` and seconds, each with leading zeroes removed:
 ``2026.1005.51610`` becomes ``2026.1005.516.10``. Ordinary three-part versions append a zero revision;
 four-part versions are preserved. Development builds use ``0.0.0.0`` rather than a separate timestamp.
-The server-specific repository advertises only the matching Jellyfin ABI, and the source fingerprint verifies
+The server-specific repository advertises only the matching series' minimum ABI, and the source fingerprint verifies
 the exact build even when release versions are equal.
 
 The connector uses EF Core's SQLite provider and migrations, matching Jellyfin's SDK dependency versions:
 9.0.10 for the 10.11 SDK and 10.0.11 for the 12.1 SDK. Runtime dependency assemblies are supplied by Jellyfin
 and are excluded from the connector ZIP. ASP.NET Core supplies JSON serialization; the connector does not
 manipulate JSON files.
+
+``src/jellyfin/compatibility.props`` supplies these baselines to both MSBuild projects,
+the Python build and runtime, and the documentation. Select the older build with
+``-p:JellyfinSeries=10.11``; the default series is 12. See :doc:`media_servers` for
+the support and retirement policy.
 
 Run the connector's file ownership and upload integrity checks with:
 

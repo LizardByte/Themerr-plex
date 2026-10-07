@@ -27,11 +27,47 @@ def test_manifest_has_only_bundled_versions_and_ignores_request_hosts(configured
     ]
 
 
-@pytest.mark.parametrize('server_version, profile', [('10.11.6', '10.11'), ('12.1.0', '12.1')])
+@pytest.mark.parametrize('server_version, profile', [
+    (
+        '10.11.6',
+        '10.11',
+    ),
+    (
+        '12.1',
+        '12',
+    ),
+    (
+        '12.1.0',
+        '12',
+    ),
+    (
+        '12.2',
+        '12',
+    ),
+    (
+        '12.2.0',
+        '12',
+    ),
+    (
+        '12.3',
+        '12',
+    ),
+])
 def test_install_preserves_repositories_and_selects_exact_artifact(
         configured, connector_bundle, server_version, profile):
     connection = Mock(server_version=server_version)
-    repositories = [{'Name': 'Other plugins', 'Url': 'https://other.example/repo.json', 'Enabled': False}]
+    repositories = [
+        {
+            'Name': 'Other plugins',
+            'Url': 'https://other.example/repo.json',
+            'Enabled': False,
+        },
+        {
+            'Name': connector.PLUGIN_NAME,
+            'Url': 'http://themerr.example:9494/jellyfin/connector/manifest-12.1.json',
+            'Enabled': True,
+        },
+    ]
     connection.json.side_effect = [
         {'Version': server_version}, MediaServerError('Missing connector.', 404), repositories,
         {'versions': [{'version': connector_bundle['artifacts'][profile]['version'],
@@ -41,6 +77,7 @@ def test_install_preserves_repositories_and_selects_exact_artifact(
     assert result['restart_required'] is True
     assert result['version'] == connector_bundle['artifacts'][profile]['version']
     posted = connection.request.call_args_list[0].kwargs['json']
+    assert len(posted) == 2
     assert posted[0] == repositories[0]
     assert posted[1]['Url'] == 'http://themerr.example:9494' + connector.PROFILE_MANIFESTS[profile]
     assert connection.request.call_args_list[1].kwargs['params'] == {
@@ -58,7 +95,7 @@ def test_install_does_not_overwrite_an_active_matching_assembly(configured, conn
     assert connector.install(connection, 'http://themerr.example')['restart_required'] is False
     connection.request.assert_called_once_with('POST', '/Repositories', json=[
         {'Name': connector.PLUGIN_NAME,
-         'Url': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12.1'], 'Enabled': True},
+         'Url': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12'], 'Enabled': True},
     ])
 
 
@@ -67,18 +104,18 @@ def test_profile_repository_has_only_the_requested_abi(configured, connector_bun
     connector.repository_url('http://themerr.example')
     versions = connector.manifest(key)[0]['versions']
     assert len(versions) == 1
-    assert versions[0]['targetAbi'] == key + '.0'
+    assert versions[0]['targetAbi'] == connector.PROFILES[key]['JellyfinMinimumVersion']
     assert versions[0]['version'] == connector_bundle['artifacts'][key]['version']
 
 
 @pytest.mark.parametrize('status', ['Active', 'Disabled', 'Malfunctioned', 'Deleted', 'Restart'])
 def test_changed_build_with_same_version_is_unloaded_before_reinstallation(configured, connector_bundle, status):
-    release = connector_bundle['artifacts']['12.1']['version']
+    release = connector_bundle['artifacts']['12']['version']
     connection = Mock(server_version='12.1.0')
     connection.json.side_effect = [
         {'Version': '12.1.0'}, MediaServerError('Mismatch', 409), [],
         {'versions': [{'version': release,
-                       'repositoryUrl': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12.1']}]},
+                       'repositoryUrl': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12']}]},
         [{'Id': connector.PLUGIN_ID.replace('-', ''), 'Version': release, 'Status': status}],
     ]
     result = connector.install(connection, 'http://themerr.example')
@@ -92,12 +129,12 @@ def test_changed_build_with_same_version_is_unloaded_before_reinstallation(confi
 
 
 def test_older_connector_versions_are_removed_on_a_downgrade(configured, connector_bundle):
-    release = connector_bundle['artifacts']['12.1']['version']
+    release = connector_bundle['artifacts']['12']['version']
     connection = Mock(server_version='12.1.0')
     connection.json.side_effect = [
         {'Version': '12.1.0'}, MediaServerError('Mismatch', 409), [],
         {'versions': [{'version': release,
-                       'repositoryUrl': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12.1']}]},
+                       'repositoryUrl': 'http://themerr.example' + connector.PROFILE_MANIFESTS['12']}]},
         [{'Id': connector.PLUGIN_ID, 'Version': '2026.1005.9999.0', 'Status': 'Active'},
          {'Id': connector.LEGACY_PLUGIN_ID, 'Version': '2026.1005.9999.0', 'Status': 'Active'}],
     ]
@@ -109,7 +146,7 @@ def test_older_connector_versions_are_removed_on_a_downgrade(configured, connect
 
 
 def test_loaded_connector_marked_restart_is_not_mistaken_for_a_pending_install(configured, connector_bundle):
-    release = connector_bundle['artifacts']['12.1']['version']
+    release = connector_bundle['artifacts']['12']['version']
     connection = Mock(server_version='12.1.0')
     connection.json.side_effect = [
         {'Version': '12.1.0'},
@@ -118,7 +155,7 @@ def test_loaded_connector_marked_restart_is_not_mistaken_for_a_pending_install(c
         {'versions': [
             {
                 'version': release,
-                'repositoryUrl': f'http://themerr.example{connector.PROFILE_MANIFESTS["12.1"]}',
+                'repositoryUrl': f'http://themerr.example{connector.PROFILE_MANIFESTS["12"]}',
             },
         ]},
         [{
@@ -234,7 +271,24 @@ def test_mismatched_connector_is_rejected(configured, connector_bundle, field, v
     assert error.value.status_code == 409
 
 
-@pytest.mark.parametrize('release', ['10.10.7', '12.0.0', '13.0.0', None])
+@pytest.mark.parametrize('release', [
+    '10.10.7',
+    '10.12.0',
+    '11.0',
+    '12.0.0',
+    '13.0.0',
+    '12.2-rc1',
+    '12.2.0-rc1',
+    '12.2.0+build',
+    '12.2.0.0.0',
+    '12.02',
+    '12.٢',
+    '12.2٢',
+    '١2.2',
+    '12.2/traversal',
+    '12.2\n',
+    None,
+])
 def test_unsupported_abi_is_not_guessed(release):
     with pytest.raises(MediaServerError):
         connector.profile(release)
@@ -252,7 +306,10 @@ def test_bundle_is_loaded_from_frozen_resources(configured, monkeypatch, tmp_pat
     directory = frozen / 'jellyfin-connector'
     directory.mkdir(parents=True)
     descriptor = {'protocol': 1, 'themerrVersion': version.VERSION, 'build': 'a' * 64,
-                  'artifacts': dict.fromkeys(connector.ARCHIVES, {})}
+                  'artifacts': {
+                      series: {'targetAbi': values['JellyfinMinimumVersion']}
+                      for series, values in connector.PROFILES.items()
+                  }}
     (directory / 'bundle.json').write_text(json.dumps(descriptor), encoding='utf-8')
     monkeypatch.setattr(definitions.Paths, 'ROOT_DIR', str(frozen))
     assert connector.directory() == directory

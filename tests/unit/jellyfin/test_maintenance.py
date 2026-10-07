@@ -261,7 +261,7 @@ def test_locked_connector_after_soft_restart_does_not_loop(connection, monkeypat
     assert current['version'] == connector.install.return_value['version']
     if not saved_version:
         maintenance._save(SERVER, version=None)
-    release = connector.bundle()['artifacts']['12.1']['version']
+    release = connector.bundle()['artifacts']['12']['version']
     if saved_version:
         release = current['version']
     maintenance._save(SERVER, phase='restarting', restart_started=999)

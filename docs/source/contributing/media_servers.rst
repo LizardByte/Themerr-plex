@@ -50,20 +50,45 @@ task, or settings UI. Themerr resolves metadata and downloads audio through the
 shared Python services. AAC remains in MP4; WebM Opus is remuxed to Ogg without
 re-encoding.
 
-``scripts/build_connector.py`` builds one assembly for each explicitly supported
-Jellyfin ABI: 10.11 and 12.1. Its descriptor records a fingerprint of the connector
+``scripts/build_connector.py`` builds one assembly for each supported compatibility
+series: 10.11 and 12. Its descriptor records a fingerprint of the connector
 source, thumbnail, build profiles, and Themerr version. Installation selects the exact
 bundled version for the target server, and uploads require a matching fingerprint,
 protocol, and ABI. Unsupported versions and stale connectors fail with an
 installation error. Jellyfin must restart to load a newly installed plugin.
 
-Themerr serves the manifest, thumbnail, and two archives at fixed routes under
+Version support policy
+~~~~~~~~~~~~~~~~~~~~~~
+
+Themerr supports the current and previous Jellyfin compatibility series. Under
+Jellyfin's older numbering, 10.11.x is one series; starting with Jellyfin 12,
+12.x is one series and its second number identifies hotfixes. Stable hotfixes
+within a supported series are accepted. New compatibility series require explicit
+validation; prereleases are outside normal support.
+
+Each series has an inclusive minimum and an exclusive upper version boundary in
+``src/jellyfin/compatibility.props``. This code-owned manifest also defines the SDK,
+framework, EF Core pin, fixed artifact routes, and latest runtime validation target.
+The 12 series currently starts at 12.1. The connector compiles against that minimum
+SDK and uses its ABI in both assembly metadata and the plugin catalog.
+The runtime validation runs that same artifact on the minimum and latest server
+versions; updating the latest test target does not raise the minimum.
+
+When adding a newly validated series, drop the oldest supported series in the
+same release and document the change in the release notes. Users should run the
+latest hotfix of a supported series.
+Renovate updates runtime test targets within their existing series; SDK and EF
+baselines change together only when the supported minimum is deliberately raised.
+
+Themerr serves the manifest, thumbnail, and series archives at fixed routes under
 ``/jellyfin/connector``. These exact GET and HEAD routes are public so Jellyfin
 can download them. Connection and installation APIs require the usual admin
 session and CSRF token. Downloads use the shared canonical path policy and file
 response helper. Request values never select filenames. The manifest uses the
 administrator-selected Themerr address, rather than the request's Host header.
 Installing the connector preserves the server's other plugin repositories.
+The existing ``manifest-12.1.json`` and ``connector-12.1.zip`` URLs remain aliases
+for the 12-series manifest and archive so saved repositories continue to work.
 The manifest's ``imageUrl`` points to the bundled Themerr-jellyfin artwork.
 Jellyfin downloads and saves that image when installing the connector, so the
 catalog and installed-plugin cards use the same thumbnail. The thumbnail is

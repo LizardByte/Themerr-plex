@@ -162,7 +162,8 @@ web settings and configuration file.
 Jellyfin servers
 ----------------
 
-Themerr supports Jellyfin 10.11 and 12.1. Open **Servers**, select the **Jellyfin** tab, and enter the
+Themerr supports Jellyfin 10.11.x and stable Jellyfin 12.x releases starting at 12.1, including 12.2.
+Use the latest hotfix in your series. Open **Servers**, select the **Jellyfin** tab, and enter the
 server address, such as `http://localhost:8096`. Create an API key under **Jellyfin Dashboard > Advanced >
 API Keys**, paste it into Themerr, and select **Connect**. Use **Discover Jellyfin on LAN** to find nearby
 servers; you still need an API key. If discovery finds nothing, enter the address manually.

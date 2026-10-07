@@ -22,7 +22,7 @@ metadata lookups, and theme playback isolation. Browser playback and dashboard f
 Use an isolated configuration file for manual browser testing so sample data and credentials do not affect your
 normal installation.
 
-Connector tests run the same xUnit suite against Jellyfin 10.11 and 12.1. Install the .NET 10 SDK and
+Connector tests run the same xUnit suite against the Jellyfin 10.11.0 and 12.1.0 SDK baselines. Install the .NET 10 SDK and
 the .NET 9 and 10 ASP.NET Core runtimes, then run:
 
 .. code-block:: shell
@@ -32,6 +32,25 @@ the .NET 9 and 10 ASP.NET Core runtimes, then run:
 The script writes OpenCover coverage and JUnit test reports into separate ``coverage/connector-*`` directories.
 Use ``--output`` to place reports outside the checkout. CI uploads both profiles to Codecov. Tests use temporary
 item directories and mocked Jellyfin services; no running media server is required.
+
+With Docker running, validate the built artifacts on each series' minimum and
+latest official Jellyfin image:
+
+.. code-block:: shell
+
+   uv run --locked python scripts/build_connector.py
+   uv run --locked --extra dev python scripts/smoke_connector.py
+
+Use ``--series 12`` to validate just Jellyfin 12.1 and 12.2. The script starts
+disposable servers and an Nginx container on a dedicated Docker bridge network. Nginx serves
+responses from the actual connector repository routes without publishing a host port.
+The script installs the same archive, restarts Jellyfin, uploads generated audio,
+checks EF ownership persistence, and confirms that a user-modified theme is protected.
+Jellyfin's test API port is published only on loopback. The bridge permits these
+host port bindings; Docker's ``--internal`` networks do not.
+It removes its containers, dedicated network, and temporary configuration and media
+directories afterward. Existing servers are never selected by this harness.
+CI runs this validation after the xUnit suite.
 
 The connector and its tests use the repository's ``.editorconfig`` and the Sonar and StyleCop analyzers
 configured in ``connectors/Directory.Build.props``. Analyzer warnings fail compilation. CI also rejects
