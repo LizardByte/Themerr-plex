@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: zh_TW\n"
-"PO-Revision-Date: 2026-10-07 04:35\n"
+"PO-Revision-Date: 2026-10-07 14:33\n"
 
 #: src/common/config.py:85
 msgid "Info"
@@ -292,7 +292,7 @@ msgstr "Plex URL"
 msgid "The URL to the Plex server."
 msgstr "Plex 伺服器的 URL。"
 
-#: src/common/config.py:316 web/templates/servers.html:37
+#: src/common/config.py:316 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Plex 資料目錄"
 
@@ -652,7 +652,7 @@ msgid "Live"
 msgstr "直播"
 
 #: web/js/logs.js:153 web/js/logs.js:206 web/templates/home.html:39
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Paused"
 msgstr "暫停"
 
@@ -660,60 +660,68 @@ msgstr "暫停"
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "刷新失敗。顯示上次載入的記錄。"
 
-#: web/js/servers.js:45 web/templates/servers.html:42
+#: web/js/servers.js:32
+msgid "Verifying SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:64
+msgid "Checking SSH connection…"
+msgstr ""
+
+#: web/js/servers.js:116 web/templates/servers.html:103
 msgid "Select libraries to ignore"
 msgstr "選取要忽略的函式庫"
 
-#: web/js/servers.js:54
+#: web/js/servers.js:125
 msgid "Loading libraries…"
 msgstr "載入函式庫…"
 
-#: web/js/servers.js:78
+#: web/js/servers.js:149
 msgid "Showing cached libraries. Enable or reconnect this server to load its current libraries."
 msgstr "顯示快取中的函式庫。請啟用此伺服器或重新連線，以載入其目前的函式庫。"
 
-#: web/js/servers.js:80
+#: web/js/servers.js:151
 msgid "This server has no libraries."
 msgstr "此伺服器沒有任何函式庫。"
 
-#: web/js/servers.js:86
+#: web/js/servers.js:157
 msgid "Unable to load libraries. Your selections are kept. Close and reopen the list to retry."
 msgstr "無法載入函式庫。您的選項已儲存。請關閉並重新開啟清單以重新嘗試。"
 
-#: web/js/servers.js:130 web/js/servers.js:296
+#: web/js/servers.js:201 web/js/servers.js:368
 msgid "Connected"
 msgstr "已連線"
 
-#: web/js/servers.js:130 web/templates/servers.html:71
-#: web/templates/servers.html:83
+#: web/js/servers.js:201 web/templates/servers.html:132
+#: web/templates/servers.html:144
 msgid "Connect"
 msgstr "連線"
 
-#: web/js/servers.js:278
+#: web/js/servers.js:350
 msgid "Looking for Jellyfin servers…"
 msgstr "尋找 Jellyfin 伺服器…"
 
-#: web/js/servers.js:284
+#: web/js/servers.js:356
 msgid "No Jellyfin servers responded. Check UDP port 7359 and local network discovery, or enter an address manually."
 msgstr "沒有任何 Jellyfin 伺服器回應。請檢查 UDP 埠 7359 及本地網路偵測功能，或手動輸入網址。"
 
-#: web/js/servers.js:296
+#: web/js/servers.js:368
 msgid "Use this address"
 msgstr "請使用這個地址"
 
-#: web/js/servers.js:325 web/templates/servers.html:26
+#: web/js/servers.js:397 web/templates/servers.html:87
 msgid "Save connector address"
 msgstr "儲存連接器位址"
 
-#: web/js/servers.js:325 web/templates/servers.html:27
+#: web/js/servers.js:397 web/templates/servers.html:88
 msgid "Install matching connector"
 msgstr "安裝相應的連接器"
 
-#: web/js/servers.js:330
+#: web/js/servers.js:402
 msgid "This server cannot restart itself. Restart its service or container."
 msgstr "此伺服器無法自行重新啟動。請重新啟動其服務或容器。"
 
-#: web/js/servers.js:362
+#: web/js/servers.js:434
 msgid "Restart Jellyfin now? Active playback will be interrupted."
 msgstr "現在重新啟動 Jellyfin 嗎？當前的播放將會中斷。"
 
@@ -750,7 +758,7 @@ msgid "No tasks have run yet. Request a scan, or wait for the next scheduled ref
 msgstr "目前尚未執行任何任務。請要求執行掃描，或等待下一次排定的更新。"
 
 #: web/templates/activity.html:7 web/templates/home.html:15
-#: web/templates/home.html:32 web/templates/servers.html:14
+#: web/templates/home.html:32 web/templates/servers.html:18
 msgid "Needs attention"
 msgstr "需要關注"
 
@@ -830,7 +838,7 @@ msgstr "您的圖書館正期待著下一張原聲帶。"
 msgid "Username"
 msgstr "使用者名稱"
 
-#: web/templates/auth.html:30
+#: web/templates/auth.html:30 web/templates/servers.html:51
 msgid "Password"
 msgstr "密碼"
 
@@ -1415,167 +1423,271 @@ msgstr "已連線的伺服器"
 msgid "Theme history and library settings are kept separately for each server."
 msgstr "每個伺服器的佈景主題歷史紀錄與函式庫設定皆獨立儲存。"
 
-#: web/templates/servers.html:14
+#: web/templates/servers.html:18
 msgid "Enabled"
 msgstr "已啟用"
 
-#: web/templates/servers.html:20
-msgid "Themerr address reachable from Jellyfin"
-msgstr "可從 Jellyfin 存取 Themerr 的網址"
+#: web/templates/servers.html:26
+msgid "Last library refresh"
+msgstr "上次圖書館資料更新"
 
-#: web/templates/servers.html:22
-msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
-msgstr "請使用 Themerr 自簽名憑證的「僅連接器」HTTP 位址，或使用 Jellyfin 信任憑證的 HTTPS 位址。若為遠端 Jellyfin 或 Docker 環境，請將 localhost 替換為 Jellyfin 可存取的位址。"
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation, once playback finishes."
-msgstr "Jellyfin 將在安裝完成後，待播放結束時重新啟動。"
-
-#: web/templates/servers.html:23
-msgid "Jellyfin will restart after installation. Active playback may be interrupted."
-msgstr "安裝完成後，Jellyfin 將會重新啟動。當前的播放可能會中斷。"
-
-#: web/templates/servers.html:23
-msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
-msgstr "自動重新啟動功能已停用。安裝完成後，請重新啟動 Jellyfin。"
-
-#: web/templates/servers.html:24
-msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
-msgstr "舊版的 Themerr-jellyfin 外掛及其儲存庫將會被移除。現有的佈景主題將會保留。"
+#: web/templates/servers.html:26
+msgid "Not yet refreshed"
+msgstr "尚未更新"
 
 #: web/templates/servers.html:28
 msgid "Force restart"
 msgstr "強制重新啟動"
 
 #: web/templates/servers.html:32
-msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
-msgstr "請在每個 Jellyfin 客戶端的「顯示」設定中啟用「主題曲」功能。Jellyfin 會將此偏好設定儲存於客戶端中，因此 Themerr 無法透過伺服器 API 進行變更。"
-
-#: web/templates/servers.html:32
-msgid "Open Jellyfin display settings"
-msgstr "開啟 Jellyfin 的顯示設定"
+msgid "SSH cleanup"
+msgstr ""
 
 #: web/templates/servers.html:33
-msgid "Last library refresh"
-msgstr "上次圖書館資料更新"
-
-#: web/templates/servers.html:33
-msgid "Not yet refreshed"
-msgstr "尚未更新"
+msgid "Enable SSH and SFTP on your Plex server to remove older uploaded themes, posters and artwork. Use an account with access to Plex’s Metadata directory. Themerr verifies the server fingerprint and does not run shell commands."
+msgstr ""
 
 #: web/templates/servers.html:34
-msgid "Processing settings"
-msgstr "處理設定"
+msgid "SSH setup guide with Windows examples"
+msgstr ""
 
 #: web/templates/servers.html:36
-msgid "Process this server"
-msgstr "處理此伺服器"
+msgid "SSH hostname or IP address"
+msgstr ""
 
-#: web/templates/servers.html:37
+#: web/templates/servers.html:38
+msgid "SSH port"
+msgstr ""
+
+#: web/templates/servers.html:40
+msgid "SSH username"
+msgstr ""
+
+#: web/templates/servers.html:42
+msgid "Use a login account on the Plex computer, not your Plex sign-in. On Windows, run whoami there: for a local account such as PLEX-PC\\plex, enter plex; for a domain account, enter domain\\user."
+msgstr ""
+
+#: web/templates/servers.html:43
+msgid "Verified SSH host fingerprint"
+msgstr ""
+
+#: web/templates/servers.html:45
+msgid "This identifies the SSH server. Copy the SHA256 fingerprint of its host public key from the Plex computer itself. It is separate from the user private key used to sign in below."
+msgstr ""
+
+#: web/templates/servers.html:46
+msgid "Remote Plex data directory"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "Enter this server’s directory containing Metadata. Windows drive paths are converted automatically to SFTP paths. For example:"
+msgstr ""
+
+#: web/templates/servers.html:48
+msgid "For a restricted SFTP account, use the path visible inside that account."
+msgstr ""
+
+#: web/templates/servers.html:49
+msgid "SSH authentication"
+msgstr ""
+
+#: web/templates/servers.html:52
+msgid "Private key"
+msgstr ""
+
+#: web/templates/servers.html:54
+msgid "Password authentication needs only the server account’s password. Choose Private key if you have generated a user key pair and installed its public key on the Plex computer."
+msgstr ""
+
+#: web/templates/servers.html:56
+msgid "SSH private key"
+msgstr ""
+
+#: web/templates/servers.html:58
+msgid "Paste the entire private key file created by ssh-keygen, including its BEGIN and END lines. The file ending in .pub is the public key installed on the Plex computer; paste the file without .pub here."
+msgstr ""
+
+#: web/templates/servers.html:59
+msgid "Private key passphrase"
+msgstr ""
+
+#: web/templates/servers.html:59 web/templates/servers.html:98
 msgid "optional"
 msgstr "可選"
 
-#: web/templates/servers.html:38
+#: web/templates/servers.html:61
+msgid "Enter the passphrase you chose when generating this key. It unlocks the private key file. Leave this empty if the key has no passphrase."
+msgstr ""
+
+#: web/templates/servers.html:64
+msgid "Server account password"
+msgstr ""
+
+#: web/templates/servers.html:66
+msgid "Use the password for the account entered above. On Windows, this is the account password, not a Windows Hello PIN."
+msgstr ""
+
+#: web/templates/servers.html:68
+msgid "Credentials are stored securely and never displayed again. Leave secret fields empty to keep saved credentials for the same host and account. Use Themerr over HTTPS when entering credentials from another machine."
+msgstr ""
+
+#: web/templates/servers.html:70
+msgid "Verify and save SSH"
+msgstr ""
+
+#: web/templates/servers.html:71
+msgid "Check connection"
+msgstr ""
+
+#: web/templates/servers.html:72
+msgid "Disable SSH"
+msgstr ""
+
+#: web/templates/servers.html:79
+msgid "Connector address"
+msgstr ""
+
+#: web/templates/servers.html:81
+msgid "Themerr address reachable from Jellyfin"
+msgstr "可從 Jellyfin 存取 Themerr 的網址"
+
+#: web/templates/servers.html:83
+msgid "Use the connector-only HTTP address for Themerr’s self-signed certificate, or an HTTPS address with a certificate Jellyfin trusts. For remote Jellyfin or Docker, replace localhost with an address reachable from Jellyfin."
+msgstr "請使用 Themerr 自簽名憑證的「僅連接器」HTTP 位址，或使用 Jellyfin 信任憑證的 HTTPS 位址。若為遠端 Jellyfin 或 Docker 環境，請將 localhost 替換為 Jellyfin 可存取的位址。"
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation, once playback finishes."
+msgstr "Jellyfin 將在安裝完成後，待播放結束時重新啟動。"
+
+#: web/templates/servers.html:84
+msgid "Jellyfin will restart after installation. Active playback may be interrupted."
+msgstr "安裝完成後，Jellyfin 將會重新啟動。當前的播放可能會中斷。"
+
+#: web/templates/servers.html:84
+msgid "Automatic restarts are disabled. Restart Jellyfin after installation."
+msgstr "自動重新啟動功能已停用。安裝完成後，請重新啟動 Jellyfin。"
+
+#: web/templates/servers.html:85
+msgid "The older Themerr-jellyfin plugin and its repository will be removed. Existing themes will be kept."
+msgstr "舊版的 Themerr-jellyfin 外掛及其儲存庫將會被移除。現有的佈景主題將會保留。"
+
+#: web/templates/servers.html:92
+msgid "Enable Theme songs in each Jellyfin client’s Display settings. Jellyfin stores this preference in the client, so Themerr cannot change it through the server API."
+msgstr "請在每個 Jellyfin 客戶端的「顯示」設定中啟用「主題曲」功能。Jellyfin 會將此偏好設定儲存於客戶端中，因此 Themerr 無法透過伺服器 API 進行變更。"
+
+#: web/templates/servers.html:92
+msgid "Open Jellyfin display settings"
+msgstr "開啟 Jellyfin 的顯示設定"
+
+#: web/templates/servers.html:95
+msgid "Processing settings"
+msgstr "處理設定"
+
+#: web/templates/servers.html:97
+msgid "Process this server"
+msgstr "處理此伺服器"
+
+#: web/templates/servers.html:99
 msgid "Browse Plex data directory"
 msgstr "瀏覽 Plex 資料目錄"
 
-#: web/templates/servers.html:39
-msgid "A local or mounted Plex data directory is only needed to remove older uploaded files. Leave this empty for remote servers."
-msgstr "僅需指定本機或已掛載的 Plex 資料目錄，以便移除較舊的上傳檔案。若使用遠端伺服器，請將此欄位留空。"
+#: web/templates/servers.html:100
+msgid "This server’s local or mounted data directory, as reached by the computer running Themerr. Each server has its own path. SSH cleanup uses this server’s separate remote path and takes priority when configured."
+msgstr ""
 
-#: web/templates/servers.html:40
+#: web/templates/servers.html:101
 msgid "Ignored libraries"
 msgstr "被忽略的函式庫"
 
-#: web/templates/servers.html:46
+#: web/templates/servers.html:107
 msgid "Library"
 msgstr "圖書館"
 
-#: web/templates/servers.html:49
+#: web/templates/servers.html:110
 msgid "Open the list to load this server’s libraries."
 msgstr "開啟清單以載入此伺服器的函式庫。"
 
-#: web/templates/servers.html:52
+#: web/templates/servers.html:113
 msgid "Select the libraries to exclude from theme updates. Leave all unchecked to process every library."
 msgstr "選取要從主題更新中排除的函式庫。若不勾選任何選項，則會處理所有函式庫。"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Save settings"
 msgstr "儲存設定"
 
-#: web/templates/servers.html:53
+#: web/templates/servers.html:114
 msgid "Remove server"
 msgstr "移除伺服器"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Your first server starts here."
 msgstr "您的第一台伺服器就從這裡開始。"
 
-#: web/templates/servers.html:57
+#: web/templates/servers.html:118
 msgid "Link Plex above or add a Jellyfin server below."
 msgstr "請在上方連結 Plex，或在下方新增 Jellyfin 伺服器。"
 
-#: web/templates/servers.html:60
+#: web/templates/servers.html:121
 msgid "Add a server"
 msgstr "新增伺服器"
 
-#: web/templates/servers.html:61
+#: web/templates/servers.html:122
 msgid "Server type"
 msgstr "伺服器類型"
 
-#: web/templates/servers.html:66
+#: web/templates/servers.html:127
 msgid "Choose a server from your Plex account, discover one nearby, or use an address you know."
 msgstr "從您的 Plex 帳戶中選擇一台伺服器、尋找附近的伺服器，或使用您已知的伺服器位址。"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Find account servers"
 msgstr "尋找帳戶伺服器"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "Discover on LAN"
 msgstr "透過區域網路 (LAN) 進行偵測"
 
-#: web/templates/servers.html:67
+#: web/templates/servers.html:128
 msgid "LAN discovery uses Plex GDM on your application’s network."
 msgstr "區域網路（LAN）偵測會使用您應用程式網路上的 Plex GDM。"
 
-#: web/templates/servers.html:68
+#: web/templates/servers.html:129
 msgid "Account addresses are advertised by Plex and may be unreachable. HTTPS plex.direct addresses use Plex’s certificate. Choose an address reachable from the machine running Themerr, or enter a known address manually."
 msgstr "帳戶網址由 Plex 公開，但可能無法連線。HTTPS 格式的 plex.direct 網址使用 Plex 的憑證。請選擇一個可從執行 Themerr 的裝置連線的網址，或手動輸入已知的網址。"
 
-#: web/templates/servers.html:70
+#: web/templates/servers.html:131
 msgid "Enter an address manually"
 msgstr "手動輸入地址"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Plex server address"
 msgstr "Plex 伺服器地址"
 
-#: web/templates/servers.html:71
+#: web/templates/servers.html:132
 msgid "Use a LAN address or a valid HTTPS Plex address. Your linked Plex account must have access. Adding an existing server updates its address."
 msgstr "請使用 LAN 位址或有效的 HTTPS Plex 位址。您所連結的 Plex 帳戶必須具備存取權限。新增現有伺服器會更新其位址。"
 
-#: web/templates/servers.html:75
+#: web/templates/servers.html:136
 msgid "Jellyfin 10.11 and 12.1 are supported. Create an administrator API key in Jellyfin Dashboard - API Keys."
 msgstr "支援 Jellyfin 10.11 及 12.1 版本。請在 Jellyfin 儀表板中的「API 金鑰」頁面建立一個管理員 API 金鑰。"
 
-#: web/templates/servers.html:77
+#: web/templates/servers.html:138
 msgid "Jellyfin server address"
 msgstr "Jellyfin 伺服器地址"
 
-#: web/templates/servers.html:79
+#: web/templates/servers.html:140
 msgid "Jellyfin API key"
 msgstr "Jellyfin API 金鑰"
 
-#: web/templates/servers.html:81
+#: web/templates/servers.html:142
 msgid "Keys stay in the secure credential store. After connecting, set the reachable Themerr address on the server card above."
 msgstr "金鑰會存放在安全的憑證儲存庫中。連線完成後，請在上述伺服器卡片上設定可連線的 Themerr 位址。"
 
-#: web/templates/servers.html:84
+#: web/templates/servers.html:145
 msgid "Discover Jellyfin on LAN"
 msgstr "在區域網路（LAN）上探索 Jellyfin"
 
-#: web/templates/servers.html:86
+#: web/templates/servers.html:147
 msgid "Uses UDP port 7359 on Themerr’s network. An API key is still required."
 msgstr "在 Themerr 的網路中使用 UDP 埠 7359。仍需提供 API 金鑰。"
 
