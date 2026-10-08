@@ -83,7 +83,7 @@ class LibrarySection(Base):
 
 
 class LibraryItem(Base):
-    """One dashboard row keyed by its opaque server item identifier."""
+    """One dashboard row keyed by its server, item identifier, and library."""
 
     __tablename__ = 'library_items'
 
@@ -94,7 +94,7 @@ class LibraryItem(Base):
         ['server_id', 'section_key'], ['library_sections.server_id', 'library_sections.key'],
     ),)
 
-    section_key: Mapped[str] = mapped_column(String, nullable=False)
+    section_key: Mapped[str] = mapped_column(String, primary_key=True)
     position: Mapped[int] = mapped_column(Integer, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
     type: Mapped[str] = mapped_column(String, nullable=False)
@@ -260,29 +260,30 @@ def dashboard_revision() -> int:
 
 
 def _set_dashboard_theme_uploaded(session: Session, rating_key: str, provider: str) -> None:
-    """Update one cached row and its library progress in a transaction."""
-    item = session.get(LibraryItem, (current_server_id(), rating_key))
-    if item is None:
-        return
-    item.theme = True
-    item.theme_status = 'complete'
-    item.theme_provider = provider
+    """Update every cached library membership and its progress in a transaction."""
+    items = session.scalars(select(LibraryItem).where(
+        LibraryItem.server_id == current_server_id(), LibraryItem.rating_key == rating_key,
+    )).all()
+    for item in items:
+        item.theme = True
+        item.theme_status = 'complete'
+        item.theme_provider = provider
 
-    section = session.get(LibrarySection, (current_server_id(), item.section_key))
-    if item.type == 'collection':
-        total = section.collection_count
-        field = 'collection_percent_complete'
-        type_filter = LibraryItem.type == 'collection'
-    else:
-        total = section.media_count
-        field = 'media_percent_complete'
-        type_filter = LibraryItem.type != 'collection'
-    session.flush()
-    complete = session.scalar(select(func.count()).select_from(LibraryItem).where(
-        LibraryItem.server_id == current_server_id(), LibraryItem.section_key == item.section_key,
-        type_filter, LibraryItem.theme.is_(True),
-    ))
-    setattr(section, field, int(complete / total * 100) if total else 0)
+        section = session.get(LibrarySection, (current_server_id(), item.section_key))
+        if item.type == 'collection':
+            total = section.collection_count
+            field = 'collection_percent_complete'
+            type_filter = LibraryItem.type == 'collection'
+        else:
+            total = section.media_count
+            field = 'media_percent_complete'
+            type_filter = LibraryItem.type != 'collection'
+        session.flush()
+        complete = session.scalar(select(func.count()).select_from(LibraryItem).where(
+            LibraryItem.server_id == current_server_id(), LibraryItem.section_key == item.section_key,
+            type_filter, LibraryItem.theme.is_(True),
+        ))
+        setattr(section, field, int(complete / total * 100) if total else 0)
 
 
 def mark_dashboard_theme_uploaded(rating_key: int | str, provider: str) -> None:
