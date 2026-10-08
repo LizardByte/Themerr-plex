@@ -25,6 +25,7 @@ _ITEM_PREFIX = '/Items/'
 def _items(connection, **params):
     """Iterate complete bounded pages, including libraries larger than one API page."""
     offset = 0
+    seen = set()
     while True:
         page = connection.json(
             'GET',
@@ -39,7 +40,11 @@ def _items(connection, **params):
             },
         )
         rows = page['Items']
-        yield from rows
+        for row in rows:
+            key = identifier(row['Id'])
+            if key not in seen:
+                seen.add(key)
+                yield row
         offset += len(rows)
         if not rows or offset >= page['TotalRecordCount']:
             break

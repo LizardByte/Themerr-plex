@@ -139,6 +139,11 @@ def _section_media_items(section) -> list:
     return [item for item in section.all() if (getattr(item, 'guid', None) or '').startswith(guid_prefix)]
 
 
+def _unique_items(items) -> list:
+    """Deduplicate Plex API results by normalized rating key."""
+    return list({str(item.ratingKey): item for item in items}.values())
+
+
 def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
     """Collect dashboard counts and item details for a Plex section.
 
@@ -154,14 +159,14 @@ def _cache_section(section, errors: dict[str, str] | None = None) -> dict:
     dict
         Dashboard data for the section.
     """
-    media_items = _section_media_items(section)
+    media_items = _unique_items(_section_media_items(section))
     if section.agent in contributes_to:
-        media_items_with_themes = section.all(theme__exists=True)
+        media_items_with_themes = _unique_items(section.all(theme__exists=True))
     else:
         media_items_with_themes = [item for item in media_items if item.theme]
     collections_enabled = config.CONFIG['Themerr']['BOOL_PLEX_COLLECTION_SUPPORT'] and section.agent in contributes_to
-    collections = section.collections() if collections_enabled else []
-    collections_with_themes = section.collections(theme__exists=True) if collections_enabled else []
+    collections = _unique_items(section.collections()) if collections_enabled else []
+    collections_with_themes = _unique_items(section.collections(theme__exists=True)) if collections_enabled else []
     all_items = media_items + collections
 
     return {

@@ -33,6 +33,27 @@ def _dashboard() -> dict:
     }}
 
 
+def _overlapping_dashboard(item_type='movie') -> dict:
+    """Return an item shared by libraries with different progress totals."""
+    snapshot = _dashboard()
+    section = snapshot['1']
+    section['items'][0]['type'] = item_type
+    count_field = 'collection_count' if item_type == 'collection' else 'media_count'
+    section['media_count'] = int(item_type == 'movie')
+    section['collection_count'] = int(item_type == 'collection')
+    snapshot['2'] = {
+        **section,
+        'key': '2',
+        count_field: 2,
+        'total_count': 2,
+        'items': [
+            section['items'][0].copy(),
+            {**section['items'][0], 'rating_key': '43'},
+        ],
+    }
+    return snapshot
+
+
 def test_state_survives_restart(configured):
     storage.replace_dashboard(_dashboard())
     storage.set_error(42, 'Video unavailable')
@@ -65,7 +86,7 @@ def test_initial_migration_creates_complete_model_schema(configured):
     with storage.engine().connect() as connection:
         script = ScriptDirectory.from_config(_migration_config(connection))
         revisions = list(script.walk_revisions())
-        assert len(revisions) == 3
+        assert len(revisions) == 4
         assert revisions[-1].down_revision is None
         assert len(revisions[0].revision) == 12
         assert int(revisions[0].revision, 16) >= 0
@@ -119,6 +140,55 @@ def test_plex_version_migration_preserves_connection_and_history(configured):
         assert connection.execute(text('PRAGMA foreign_key_check')).all() == []
     assert storage.get_dashboard()['1']['items'][0]['rating_key'] == '42'
     assert storage.get_tracking(42)['audio_sha256'] == 'digest'
+
+
+def test_library_membership_migration_preserves_existing_state_on_startup(configured):
+    storage.replace_dashboard(_dashboard())
+    storage.save_tracking(42, 'movie', {'audio_sha256': 'digest'})
+    storage.set_error(42, 'Existing error')
+    storage.save_credentials({'client_id': 'existing-installation'})
+    dashboard = storage.get_dashboard()
+    with storage.engine().begin() as connection:
+        command.downgrade(_migration_config(connection), 'e71b34a5d890')
+        assert inspect(connection).get_pk_constraint('library_items')['constrained_columns'] == [
+            'server_id',
+            'rating_key',
+        ]
+    storage.close()
+
+    assert storage.get_dashboard() == dashboard
+    assert storage.get_tracking(42)['audio_sha256'] == 'digest'
+    assert storage.get_errors() == {'42': 'Existing error'}
+    assert storage.get_credentials() == {'client_id': 'existing-installation'}
+    with storage.engine().connect() as connection:
+        assert inspect(connection).get_pk_constraint('library_items')['constrained_columns'] == [
+            'server_id',
+            'rating_key',
+            'section_key',
+        ]
+        assert connection.execute(text('PRAGMA foreign_key_check')).all() == []
+
+
+def test_library_membership_downgrade_invalidates_only_overlapping_caches(configured):
+    storage.replace_dashboard(_overlapping_dashboard())
+    storage.save_tracking(42, 'movie', {'audio_sha256': 'digest'})
+    with storage.server_scope('other-server'):
+        storage.replace_dashboard(_dashboard())
+        other_dashboard = storage.get_dashboard()
+
+    with storage.engine().begin() as connection:
+        migration = _migration_config(connection)
+        command.downgrade(migration, 'e71b34a5d890')
+        assert inspect(connection).get_pk_constraint('library_items')['constrained_columns'] == [
+            'server_id',
+            'rating_key',
+        ]
+        command.upgrade(migration, 'head')
+        assert connection.execute(text('PRAGMA foreign_key_check')).all() == []
+    assert storage.get_dashboard() is None
+    assert storage.get_tracking(42)['audio_sha256'] == 'digest'
+    with storage.server_scope('other-server'):
+        assert storage.get_dashboard() == other_dashboard
 
 
 def test_opaque_library_and_item_keys_remain_scoped(configured):
@@ -181,6 +251,39 @@ def test_dashboard_refresh_retains_upload_completed_during_scan(configured):
     assert data['items'][0]['theme_status'] == 'complete'
     assert data['items'][0]['theme_provider'] == 'themerr'
     assert data['media_percent_complete'] == 100
+
+
+@pytest.mark.parametrize('item_type', [
+    'movie',
+    'collection',
+])
+@pytest.mark.parametrize('during_scan', [
+    False,
+    True,
+])
+def test_theme_upload_updates_every_library_membership_in_its_server(configured, item_type, during_scan):
+    snapshot = _overlapping_dashboard(item_type)
+    percent_field = 'collection_percent_complete' if item_type == 'collection' else 'media_percent_complete'
+    storage.replace_dashboard(snapshot)
+    with storage.server_scope('other-server'):
+        storage.replace_dashboard(snapshot)
+
+    revision = storage.dashboard_revision()
+    storage.mark_dashboard_theme_uploaded('42', 'themerr')
+    if during_scan:
+        storage.replace_dashboard(snapshot, since_revision=revision)
+    dashboard = storage.get_dashboard()
+    assert dashboard['1'][percent_field] == 100
+    assert dashboard['2'][percent_field] == 50
+    for section in dashboard.values():
+        assert section['items'][0]['theme'] is True
+        assert section['items'][0]['theme_status'] == 'complete'
+        assert section['items'][0]['theme_provider'] == 'themerr'
+    assert dashboard['2']['items'][1]['theme'] is False
+    with storage.server_scope('other-server'):
+        for section in storage.get_dashboard().values():
+            assert section['items'][0]['theme'] is False
+            assert section[percent_field] == 0
 
 
 def test_database_uses_active_config_directory(configured, tmp_path, monkeypatch):
