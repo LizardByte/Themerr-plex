@@ -735,55 +735,55 @@ msgstr ""
 msgid "Refresh failed. Showing the last loaded records."
 msgstr ""
 
-#: web/js/mcp.js:23
+#: web/js/mcp.js:24
 msgid "Mask token"
 msgstr ""
 
-#: web/js/mcp.js:23 web/templates/config.html:64
+#: web/js/mcp.js:24 web/templates/config.html:64
 msgid "Show token"
 msgstr ""
 
-#: web/js/mcp.js:54 web/templates/config.html:54 web/templates/config.html:72
+#: web/js/mcp.js:55 web/templates/config.html:54 web/templates/config.html:72
 msgid "Read only"
 msgstr ""
 
-#: web/js/mcp.js:54 web/templates/config.html:55 web/templates/config.html:72
+#: web/js/mcp.js:55 web/templates/config.html:55 web/templates/config.html:72
 msgid "Read and process"
 msgstr ""
 
-#: web/js/mcp.js:63 web/templates/config.html:72
+#: web/js/mcp.js:64 web/templates/config.html:72
 msgid "Revoke"
 msgstr ""
 
-#: web/js/mcp.js:69 web/templates/config.html:72
+#: web/js/mcp.js:70 web/templates/config.html:72
 msgid "No MCP tokens created."
 msgstr ""
 
-#: web/js/mcp.js:108
+#: web/js/mcp.js:109
 msgid "MCP token created. Copy it into your client now."
 msgstr ""
 
-#: web/js/mcp.js:125
+#: web/js/mcp.js:126
 msgid "Revoke all MCP tokens and disconnect every client?"
 msgstr ""
 
-#: web/js/mcp.js:139
+#: web/js/mcp.js:140
 msgid "Endpoint URL copied."
 msgstr ""
 
-#: web/js/mcp.js:143
+#: web/js/mcp.js:144
 msgid "Copy the selected endpoint URL manually."
 msgstr ""
 
-#: web/js/mcp.js:155
+#: web/js/mcp.js:156
 msgid "MCP token copied."
 msgstr ""
 
-#: web/js/mcp.js:160
+#: web/js/mcp.js:161
 msgid "Copy the selected token manually."
 msgstr ""
 
-#: web/js/mcp.js:163
+#: web/js/mcp.js:164
 msgid "Unable to copy. Show the token to copy it manually."
 msgstr ""
 

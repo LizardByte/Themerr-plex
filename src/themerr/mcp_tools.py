@@ -264,7 +264,10 @@ def retry_items(server_id, item_ids):
     existing = []
     with storage.server_scope(record['id']):
         for item_id in trusted_ids:
-            (queued if processing.enqueue(item_id) else existing).append(item_id)
+            if processing.enqueue(item_id):
+                queued.append(item_id)
+            else:
+                existing.append(item_id)
     logger.get_logger(__name__).info('MCP retry requested for server %s: %d queued, %d already active',
                                      record['id'], len(queued), len(existing))
     return {

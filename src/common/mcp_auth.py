@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import json
 import secrets
+from typing import Annotated, Any
 
 # lib imports
 from fastapi import APIRouter, Depends
@@ -114,7 +115,7 @@ def tokens() -> dict:
 
 
 @router.post('/api/mcp/tokens', name='mcp.create_token', response_model=None)
-def issue_token(payload=Depends(read_json)):
+def issue_token(payload: Annotated[Any, Depends(read_json)]):
     """Create a named MCP credential through a CSRF-protected administrator request.
 
     Returns

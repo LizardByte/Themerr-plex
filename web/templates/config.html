@@ -42,7 +42,7 @@
             {{ setting_field('Network', 'MCP_HTTP', config_spec.Network.MCP_HTTP, 'configForm') }}
             <label for="mcp-endpoint">{{ _('Endpoint URL') }}</label>
             <div class="mcp-value-field mb-3">
-                <output id="mcp-endpoint" class="mcp-value" tabindex="0">{{ mcp_endpoint }}</output>
+                <output id="mcp-endpoint" class="mcp-value" tabindex="-1">{{ mcp_endpoint }}</output>
                 <button id="mcp-copy-endpoint" type="button" class="icon-button" aria-label="{{ _('Copy endpoint URL') }}" title="{{ _('Copy endpoint URL') }}"><i data-lucide="copy" aria-hidden="true"></i></button>
             </div>
             <p>{{ _('Choose Streamable HTTP in your client and use the token as its Bearer credential.') }}</p>
@@ -60,7 +60,7 @@
             <div id="mcp-token-reveal" class="mt-3" hidden>
                 <label for="mcp-new-token">{{ _('Copy this token now. It will not be shown again.') }}</label>
                 <div class="mcp-value-field mb-2">
-                    <output id="mcp-new-token" class="mcp-value" tabindex="0"></output>
+                    <output id="mcp-new-token" class="mcp-value" tabindex="-1"></output>
                     <button id="mcp-toggle-token" type="button" class="icon-button" aria-controls="mcp-new-token" aria-pressed="false" aria-label="{{ _('Show token') }}" title="{{ _('Show token') }}"><span id="mcp-show-token-icon" aria-hidden="true"><i data-lucide="eye"></i></span><span id="mcp-mask-token-icon" aria-hidden="true" hidden><i data-lucide="eye-off"></i></span></button>
                     <button id="mcp-copy-token" type="button" class="icon-button" aria-label="{{ _('Copy token') }}" title="{{ _('Copy token') }}"><i data-lucide="copy" aria-hidden="true"></i></button>
                 </div>

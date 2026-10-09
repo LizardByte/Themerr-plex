@@ -195,6 +195,12 @@ def test_web_ui_creates_lists_and_revokes_individual_tokens(mcp_client):
     assert 'id="mcp-token-form"' in page.text
     assert '<output id="mcp-endpoint"' in page.text
     assert '<output id="mcp-new-token"' in page.text
+    for field_id in (
+        'mcp-endpoint',
+        'mcp-new-token',
+    ):
+        field = page.text.split(f'<output id="{field_id}"', 1)[1].split('>', 1)[0]
+        assert 'tabindex="-1"' in field
     assert 'id="mcp-copy-endpoint"' in page.text
     assert 'id="mcp-toggle-token"' in page.text
     assert 'Example prompts' in page.text
@@ -304,7 +310,7 @@ def test_settings_show_only_the_active_mcp_http_endpoint(mcp_client, monkeypatch
     field = page.split('id="Network-MCP_HTTP"', 1)[1].split('>', 1)[0]
     assert 'form="configForm"' in field
     endpoint = f'http://localhost:{port}/mcp' if port is not None else 'http://localhost/mcp'
-    assert f'tabindex="0">{endpoint}</output>' in page
+    assert f'tabindex="-1">{endpoint}</output>' in page
 
 
 def test_mcp_http_option_is_saved_through_the_authenticated_settings_api(mcp_client, configured):

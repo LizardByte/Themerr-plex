@@ -19,7 +19,8 @@ export function initMcpTokens(signal) {
 
     function setTokenVisible(visible) {
         tokenVisible = visible;
-        credential.textContent = token ? (visible ? token : '•'.repeat(32)) : '';
+        const displayedToken = visible ? token : '•'.repeat(32);
+        credential.textContent = token ? displayedToken : '';
         const label = visible ? _('Mask token') : _('Show token');
         toggleToken.setAttribute('aria-label', label);
         toggleToken.setAttribute('title', label);
