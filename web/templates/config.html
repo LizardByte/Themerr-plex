@@ -29,16 +29,16 @@
     <div class="settings-content">
         <form id="configForm" data-csrf-token="{{ csrf_token() }}" method="post">
         {% for group in settings_groups %}{% set section = group.section %}
-            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ _(config_spec[section].name) }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else _(config_spec[section].description) }}</p></div></div>
+            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ _(config_spec[section].name) }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else _(config_spec[section].description) }}</p></div><span class="auth-emblem" aria-hidden="true"><i data-lucide="{{ config_spec[section].icon }}"></i></span></div>
                 {% for key in group['keys'] %}{% set spec = config_spec[group.source][key] %}{% if not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' and key != 'MCP_HTTP' %}{{ setting_field(group.source, key, spec) }}{% endif %}{% endfor %}
             </section>
         {% endfor %}
         </form>
-        <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem"><i data-lucide="shield-check"></i></span></div>
+        <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem" aria-hidden="true"><i data-lucide="shield-check"></i></span></div>
             <form id="password-form" class="password-form"><label for="current-password">{{ _('Current password') }}</label><input id="current-password" name="current_password" type="password" class="form-control" autocomplete="current-password" required maxlength="256"><label for="new-password">{{ _('New password') }}</label><input id="new-password" name="password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><label for="confirm-new-password">{{ _('Confirm new password') }}</label><input id="confirm-new-password" name="confirm_password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><button type="submit" class="btn btn-outline-light">{{ _('Change password') }}</button></form>
         </section>
         <section class="panel settings-panel" id="mcp">
-            <div class="section-heading"><div><h2>{{ _('MCP integration') }}</h2><p>{{ _('Connect an assistant to your theme libraries. Create a separate token for each client.') }}</p></div><i data-lucide="plug" aria-hidden="true"></i></div>
+            <div class="section-heading"><div><h2>{{ _('MCP integration') }}</h2><p>{{ _('Connect an assistant to your theme libraries. Create a separate token for each client.') }}</p></div><span class="auth-emblem" aria-hidden="true"><i data-lucide="plug"></i></span></div>
             {{ setting_field('Network', 'MCP_HTTP', config_spec.Network.MCP_HTTP, 'configForm') }}
             <label for="mcp-endpoint">{{ _('Endpoint URL') }}</label>
             <div class="mcp-value-field mb-3">
