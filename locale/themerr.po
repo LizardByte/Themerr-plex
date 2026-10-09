@@ -156,324 +156,347 @@ msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr ""
 
 #: src/common/config.py:219
+msgid "MCP allowed hosts"
+msgstr ""
+
+#: src/common/config.py:220
+msgid ""
+"Addresses MCP clients may use to connect, for example "
+"themerr.example:9494. Separate addresses with commas. Use :* to allow any"
+" port."
+msgstr ""
+
+#: src/common/config.py:227
+msgid "Serve MCP over HTTP"
+msgstr ""
+
+#: src/common/config.py:229
+msgid ""
+"Use the Connector HTTP port configured under Jellyfin for clients that "
+"cannot trust Themerr’s self-signed HTTPS certificate. Token "
+"authentication is still required. Restart Themerr after changing this "
+"setting."
+msgstr ""
+
+#: src/common/config.py:235
 msgid "SSL"
 msgstr ""
 
-#: src/common/config.py:221
+#: src/common/config.py:237
 msgid ""
 "Run the web server with HTTPS. Disabling this can be a security risk, do "
 "so at your own risk."
 msgstr ""
 
-#: src/common/config.py:227
+#: src/common/config.py:243
 msgid "Updater"
 msgstr ""
 
-#: src/common/config.py:228
+#: src/common/config.py:244
 msgid "Updater settings."
 msgstr ""
 
-#: src/common/config.py:232
+#: src/common/config.py:248
 msgid "Auto update"
 msgstr ""
 
-#: src/common/config.py:240
+#: src/common/config.py:256
 msgid "Jellyfin"
 msgstr ""
 
-#: src/common/config.py:241
+#: src/common/config.py:257
 msgid ""
 "Jellyfin theme processing settings. Connections are managed on the "
 "Servers page."
 msgstr ""
 
-#: src/common/config.py:244 src/common/config.py:345
+#: src/common/config.py:260 src/common/config.py:361
 msgid "Movie support"
 msgstr ""
 
-#: src/common/config.py:245
+#: src/common/config.py:261
 msgid "Add themes to Jellyfin movies."
 msgstr ""
 
-#: src/common/config.py:248 src/common/config.py:351
+#: src/common/config.py:264 src/common/config.py:367
 msgid "Series support"
 msgstr ""
 
-#: src/common/config.py:249
+#: src/common/config.py:265
 msgid "Add themes to Jellyfin series."
 msgstr ""
 
-#: src/common/config.py:252 src/common/config.py:339 web/templates/home.html:31
+#: src/common/config.py:268 src/common/config.py:355 web/templates/home.html:31
 msgid "Collections"
 msgstr ""
 
-#: src/common/config.py:253
+#: src/common/config.py:269
 msgid ""
 "Add themes inside Jellyfin’s collection directories. Media files can "
 "remain elsewhere."
 msgstr ""
 
-#: src/common/config.py:256
+#: src/common/config.py:272
 msgid "Overwrite user themes"
 msgstr ""
 
-#: src/common/config.py:257
+#: src/common/config.py:273
 msgid ""
 "Replace existing theme files, including themes created by the older "
 "Themerr-jellyfin plugin."
 msgstr ""
 
-#: src/common/config.py:261
+#: src/common/config.py:277
 msgid "Back up replaced user themes"
 msgstr ""
 
-#: src/common/config.py:262
+#: src/common/config.py:278
 msgid ""
 "Keep existing user themes in a backup folder when replacing them. Disable"
 " to permanently remove replaced themes."
 msgstr ""
 
-#: src/common/config.py:266
+#: src/common/config.py:282
 msgid "Import older Themerr-jellyfin ownership"
 msgstr ""
 
-#: src/common/config.py:267
+#: src/common/config.py:283
 msgid ""
 "Recognize themes recorded in the older plugin’s database only when their "
 "SHA-256 still matches. Changed files stay protected. The old database is "
 "left untouched."
 msgstr ""
 
-#: src/common/config.py:271
+#: src/common/config.py:287
 msgid "Ignore locked metadata"
 msgstr ""
 
-#: src/common/config.py:272
+#: src/common/config.py:288
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr ""
 
-#: src/common/config.py:275
+#: src/common/config.py:291
 msgid "Update connector automatically"
 msgstr ""
 
-#: src/common/config.py:276
+#: src/common/config.py:292
 msgid ""
 "Install the matching connector when Themerr starts or detects a version "
 "mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr ""
 
-#: src/common/config.py:280
+#: src/common/config.py:296
 msgid "Restart Jellyfin automatically"
 msgstr ""
 
-#: src/common/config.py:281
+#: src/common/config.py:297
 msgid ""
 "Restart Jellyfin after installing or updating the connector. A pending "
 "restart is shown on the Servers page before it happens."
 msgstr ""
 
-#: src/common/config.py:285
+#: src/common/config.py:301
 msgid "Wait for playback to finish"
 msgstr ""
 
-#: src/common/config.py:286
+#: src/common/config.py:302
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr ""
 
-#: src/common/config.py:289
+#: src/common/config.py:305
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr ""
 
-#: src/common/config.py:290
+#: src/common/config.py:306
 msgid ""
 "After installing the connector, uninstall the older Themerr plugin and "
 "remove only its dedicated repository. Existing theme files are kept."
 msgstr ""
 
-#: src/common/config.py:294
+#: src/common/config.py:310
 msgid "Connector HTTP port"
 msgstr ""
 
-#: src/common/config.py:295
+#: src/common/config.py:311
 msgid ""
-"Serve only connector downloads over HTTP when Themerr uses a self-signed "
-"certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart "
-"Themerr after changing this port."
-msgstr ""
-
-#: src/common/config.py:302
-msgid "Plex"
-msgstr ""
-
-#: src/common/config.py:303
-msgid "Plex settings."
-msgstr ""
-
-#: src/common/config.py:307
-msgid "Plex URL"
-msgstr ""
-
-#: src/common/config.py:308
-msgid "The URL to the Plex server."
-msgstr ""
-
-#: src/common/config.py:317 web/templates/servers.html:98
-msgid "Plex data directory"
+"Serve connector downloads and optionally MCP over HTTP. The admin UI "
+"stays on HTTPS. Use 0 to disable. Restart Themerr after changing this "
+"port."
 msgstr ""
 
 #: src/common/config.py:318
+msgid "Plex"
+msgstr ""
+
+#: src/common/config.py:319
+msgid "Plex settings."
+msgstr ""
+
+#: src/common/config.py:323
+msgid "Plex URL"
+msgstr ""
+
+#: src/common/config.py:324
+msgid "The URL to the Plex server."
+msgstr ""
+
+#: src/common/config.py:333 web/templates/servers.html:98
+msgid "Plex data directory"
+msgstr ""
+
+#: src/common/config.py:334
 msgid ""
 "https://support.plex.tv/articles/202915258-where-is-the-plex-media-"
 "server-data-directory-located/"
 msgstr ""
 
-#: src/common/config.py:328
+#: src/common/config.py:344
 msgid "Themerr"
 msgstr ""
 
-#: src/common/config.py:329
+#: src/common/config.py:345
 msgid "Themerr settings."
 msgstr ""
 
-#: src/common/config.py:333
+#: src/common/config.py:349
 msgid "Themerr Enabled"
 msgstr ""
 
-#: src/common/config.py:334
+#: src/common/config.py:350
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr ""
 
-#: src/common/config.py:340
+#: src/common/config.py:356
 msgid "Add themes to collections."
 msgstr ""
 
-#: src/common/config.py:346
+#: src/common/config.py:362
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr ""
 
-#: src/common/config.py:352
+#: src/common/config.py:368
 msgid "Add themes to series using the Plex Series agent."
 msgstr ""
 
-#: src/common/config.py:357
+#: src/common/config.py:373
 msgid "Overwrite Plex themes"
 msgstr ""
 
-#: src/common/config.py:358
+#: src/common/config.py:374
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr ""
 
-#: src/common/config.py:363
+#: src/common/config.py:379
 msgid "Prefer MP4A AAC Codec"
 msgstr ""
 
-#: src/common/config.py:364
+#: src/common/config.py:380
 msgid "This can improve theme compatibility with Apple devices."
 msgstr ""
 
-#: src/common/config.py:369
+#: src/common/config.py:385
 msgid "Remove unused themes"
 msgstr ""
 
-#: src/common/config.py:370
+#: src/common/config.py:386
 msgid ""
 "Frees up space in your Plex metadata directory. This option requires that"
 " the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:376
+#: src/common/config.py:392
 msgid "Remove unused art"
 msgstr ""
 
-#: src/common/config.py:377 src/common/config.py:385
+#: src/common/config.py:393 src/common/config.py:401
 msgid ""
 "Applies to collection. Frees up space in your Plex metadata directory. "
 "This option requires that the \"Plex data directory\" path is set"
 msgstr ""
 
-#: src/common/config.py:384
+#: src/common/config.py:400
 msgid "Remove unused posters"
 msgstr ""
 
-#: src/common/config.py:392
+#: src/common/config.py:408
 msgid "Collection metadata"
 msgstr ""
 
-#: src/common/config.py:393
+#: src/common/config.py:409
 msgid ""
 "Update collection metadata (poster, art, and summary) during scheduled "
 "update."
 msgstr ""
 
-#: src/common/config.py:398
+#: src/common/config.py:414
 msgid "Ignore locked fields."
 msgstr ""
 
-#: src/common/config.py:399
+#: src/common/config.py:415
 msgid ""
 "If you used Themerr v2024.813.13709 or lower, you may need to enable this"
 " to update items."
 msgstr ""
 
-#: src/common/config.py:405
+#: src/common/config.py:421
 msgid "Ignored library IDs"
 msgstr ""
 
-#: src/common/config.py:406
+#: src/common/config.py:422
 msgid ""
 "Comma-separated library IDs to exclude from scheduled updates. IDs appear"
 " on Home."
 msgstr ""
 
-#: src/common/config.py:412
+#: src/common/config.py:428
 msgid "Update themes interval"
 msgstr ""
 
-#: src/common/config.py:413
+#: src/common/config.py:429
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:420
+#: src/common/config.py:436
 msgid "Update database cache interval"
 msgstr ""
 
-#: src/common/config.py:421
+#: src/common/config.py:437
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr ""
 
-#: src/common/config.py:428
+#: src/common/config.py:444
 msgid "PlexAPI timeout"
 msgstr ""
 
-#: src/common/config.py:429
+#: src/common/config.py:445
 msgid ""
 "Increase this slightly if you experience timeouts when adding themes. "
 "(min: 1)"
 msgstr ""
 
-#: src/common/config.py:436
+#: src/common/config.py:452
 msgid "Theme upload retries"
 msgstr ""
 
-#: src/common/config.py:437
+#: src/common/config.py:453
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr ""
 
-#: src/common/config.py:444
+#: src/common/config.py:460
 msgid "Multiprocessing thread count"
 msgstr ""
 
-#: src/common/config.py:445
+#: src/common/config.py:461
 msgid ""
 "The number of threads to use when adding themes. Restart required. (min: "
 "1)"
 msgstr ""
 
-#: src/common/config.py:453
+#: src/common/config.py:469
 msgid "YouTube Cookies"
 msgstr ""
 
-#: src/common/config.py:455
+#: src/common/config.py:471
 msgid ""
 "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using "
 "its JSON format, then paste the entire JSON array here and save. Saved "
@@ -482,7 +505,7 @@ msgid ""
 "them."
 msgstr ""
 
-#: src/common/config.py:462
+#: src/common/config.py:478
 msgid "Cookie export instructions"
 msgstr ""
 
@@ -571,12 +594,12 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: src/common/webapp.py:81 web/templates/logs.html:4
+#: src/common/webapp.py:82 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr ""
 
-#: src/common/webapp.py:479 web/templates/config.html:26
+#: src/common/webapp.py:486 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr ""
@@ -635,43 +658,43 @@ msgstr ""
 msgid "Dismiss message"
 msgstr ""
 
-#: web/js/config.js:6
+#: web/js/config.js:7
 msgid "Hide cookies"
 msgstr ""
 
-#: web/js/config.js:6 web/templates/config.html:18
+#: web/js/config.js:7 web/templates/config.html:18
 msgid "Show cookies"
 msgstr ""
 
-#: web/js/config.js:18 web/templates/config.html:14
+#: web/js/config.js:19 web/templates/config.html:14
 msgid "Cookies saved"
 msgstr ""
 
-#: web/js/config.js:34 web/templates/config.html:14
+#: web/js/config.js:35 web/templates/config.html:14
 msgid "No cookies saved"
 msgstr ""
 
-#: web/js/config.js:81 web/js/config.js:123
+#: web/js/config.js:84 web/js/config.js:131
 msgid "Unsaved changes"
 msgstr ""
 
-#: web/js/config.js:89
+#: web/js/config.js:93
 msgid "Discard unsaved settings changes?"
 msgstr ""
 
-#: web/js/config.js:123 web/templates/config.html:40
+#: web/js/config.js:131 web/templates/config.html:83
 msgid "All changes saved."
 msgstr ""
 
-#: web/js/config.js:125
+#: web/js/config.js:133
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr ""
 
-#: web/js/config.js:129
+#: web/js/config.js:137
 msgid "Unable to save changes."
 msgstr ""
 
-#: web/js/config.js:137
+#: web/js/config.js:145
 msgid "Save your settings changes before changing your password."
 msgstr ""
 
@@ -710,6 +733,58 @@ msgstr ""
 
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
+msgstr ""
+
+#: web/js/mcp.js:23
+msgid "Mask token"
+msgstr ""
+
+#: web/js/mcp.js:23 web/templates/config.html:64
+msgid "Show token"
+msgstr ""
+
+#: web/js/mcp.js:54 web/templates/config.html:54 web/templates/config.html:72
+msgid "Read only"
+msgstr ""
+
+#: web/js/mcp.js:54 web/templates/config.html:55 web/templates/config.html:72
+msgid "Read and process"
+msgstr ""
+
+#: web/js/mcp.js:63 web/templates/config.html:72
+msgid "Revoke"
+msgstr ""
+
+#: web/js/mcp.js:69 web/templates/config.html:72
+msgid "No MCP tokens created."
+msgstr ""
+
+#: web/js/mcp.js:108
+msgid "MCP token created. Copy it into your client now."
+msgstr ""
+
+#: web/js/mcp.js:125
+msgid "Revoke all MCP tokens and disconnect every client?"
+msgstr ""
+
+#: web/js/mcp.js:139
+msgid "Endpoint URL copied."
+msgstr ""
+
+#: web/js/mcp.js:143
+msgid "Copy the selected endpoint URL manually."
+msgstr ""
+
+#: web/js/mcp.js:155
+msgid "MCP token copied."
+msgstr ""
+
+#: web/js/mcp.js:160
+msgid "Copy the selected token manually."
+msgstr ""
+
+#: web/js/mcp.js:163
+msgid "Unable to copy. Show the token to copy it manually."
 msgstr ""
 
 #: web/js/servers.js:32
@@ -976,6 +1051,10 @@ msgstr ""
 msgid "Security"
 msgstr ""
 
+#: web/templates/config.html:28 web/templates/config.html:41
+msgid "MCP integration"
+msgstr ""
+
 #: web/templates/config.html:32
 msgid ""
 "Server connections, data directories, and ignored libraries are managed "
@@ -1008,7 +1087,98 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
-#: web/templates/config.html:40
+#: web/templates/config.html:41
+msgid ""
+"Connect an assistant to your theme libraries. Create a separate token for"
+" each client."
+msgstr ""
+
+#: web/templates/config.html:43
+msgid "Endpoint URL"
+msgstr ""
+
+#: web/templates/config.html:46
+msgid "Copy endpoint URL"
+msgstr ""
+
+#: web/templates/config.html:48
+msgid ""
+"Choose Streamable HTTP in your client and use the token as its Bearer "
+"credential."
+msgstr ""
+
+#: web/templates/config.html:50
+msgid "Client name"
+msgstr ""
+
+#: web/templates/config.html:51
+msgid "My assistant"
+msgstr ""
+
+#: web/templates/config.html:52
+msgid "Access"
+msgstr ""
+
+#: web/templates/config.html:57
+msgid ""
+"Read only allows library queries, activity, and logs. Read and process "
+"also allows library refreshes and selected-item retries under your "
+"existing overwrite settings."
+msgstr ""
+
+#: web/templates/config.html:58
+msgid "Create token"
+msgstr ""
+
+#: web/templates/config.html:61
+msgid "Copy this token now. It will not be shown again."
+msgstr ""
+
+#: web/templates/config.html:65
+msgid "Copy token"
+msgstr ""
+
+#: web/templates/config.html:67
+msgid "Done"
+msgstr ""
+
+#: web/templates/config.html:69
+msgid "Client tokens"
+msgstr ""
+
+#: web/templates/config.html:70
+msgid "Changing your administrator password invalidates all existing tokens."
+msgstr ""
+
+#: web/templates/config.html:72
+msgid "Invalidated"
+msgstr ""
+
+#: web/templates/config.html:74
+msgid "Revoke all tokens"
+msgstr ""
+
+#: web/templates/config.html:75
+msgid "Example prompts"
+msgstr ""
+
+#: web/templates/config.html:77
+msgid "Show movies with failed themes on my Jellyfin server."
+msgstr ""
+
+#: web/templates/config.html:78
+msgid "What percentage of my Movies library has theme music?"
+msgstr ""
+
+#: web/templates/config.html:79
+msgid "Show recent YouTube extraction errors."
+msgstr ""
+
+#: web/templates/config.html:80
+msgid "Refresh library metadata, then retry these selected items."
+msgstr ""
+
+#: web/templates/config.html:83
 msgid "Save changes"
 msgstr ""
 

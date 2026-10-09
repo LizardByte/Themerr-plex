@@ -2,6 +2,7 @@
 
 # standard imports
 import asyncio
+import socket
 from threading import Event, Thread
 import time
 from types import SimpleNamespace
@@ -10,14 +11,17 @@ from unittest.mock import Mock
 # lib imports
 from fastapi.testclient import TestClient
 import httpx2
+from mcp import Client
+from mcp.client.streamable_http import streamable_http_client
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 import polib
 import pytest
 
 # local imports
-from common import admin, crypto, webapp
+from common import admin, crypto, mcp_auth, webapp
 from common import http as browser_http
 from common.definitions import Paths
+from jellyfin import repository
 from plex import plexapi
 from tests.http_helpers import get_session, set_session
 from tests.unit.common.test_locales import write_catalog
@@ -355,9 +359,24 @@ def test_unexpected_api_failure_keeps_generic_errors_and_security_headers(browse
     assert response.headers['Cache-Control'] == 'no-store'
 
 
-@pytest.mark.parametrize('tls', [False, True])
-def test_uvicorn_serves_http_and_https_and_releases_its_socket(configured, monkeypatch, tmp_path, tls):
-    configured['Network'].update({'HTTP_HOST': '127.0.0.1', 'HTTP_PORT': 0, 'SSL': tls})
+@pytest.mark.parametrize('tls,mcp_http', [
+    pytest.param(False, True),
+    pytest.param(True, False),
+    pytest.param(True, True),
+])
+def test_uvicorn_serves_http_and_https_and_releases_its_socket(configured, monkeypatch, tmp_path, tls, mcp_http):
+    configured['Network'].update({
+        'HTTP_HOST': '127.0.0.1',
+        'HTTP_PORT': 0,
+        'SSL': tls,
+        'MCP_HTTP': mcp_http,
+    })
+    with socket.socket() as port_probe:
+        port_probe.bind((
+            '127.0.0.1',
+            0,
+        ))
+        configured['Jellyfin']['REPOSITORY_HTTP_PORT'] = port_probe.getsockname()[1]
     monkeypatch.setattr(crypto, 'CERT_FILE', str(tmp_path / 'cert.pem'))
     monkeypatch.setattr(crypto, 'KEY_FILE', str(tmp_path / 'key.pem'))
     failures = []
@@ -390,6 +409,43 @@ def test_uvicorn_serves_http_and_https_and_releases_its_socket(configured, monke
             assert ('secure' in response.headers['set-cookie'].lower()) is tls
             assert client.get(url + '/setup').status_code == 200
         assert server.config.proxy_headers is False
+        assert server.config.lifespan == 'on'
+        monkeypatch.setattr(admin, 'HASH_METHOD', 'scrypt:16384:8:1')
+        admin._save('admin', 'a unique MCP test password')
+        token = mcp_auth.create_token('read')
+
+        async def query_mcp(target_url):
+            async with httpx2.AsyncClient(verify=target_url.startswith('http:'), trust_env=False,
+                                          headers={'Authorization': f'Bearer {token}'}) as http_client:
+                transport = streamable_http_client(f'{target_url}/mcp', http_client=http_client)
+                async with Client(transport) as mcp_client:
+                    tools = await mcp_client.list_tools()
+                    assert any(tool.name == 'inspect_theme' for tool in tools.tools)
+                    result = await mcp_client.call_tool('get_activity')
+                    assert result.is_error is False
+                    assert 'queued_items' in result.structured_content
+                    denied = await mcp_client.call_tool('refresh_libraries')
+                    assert denied.is_error is True
+
+        asyncio.run(asyncio.wait_for(query_mcp(url), timeout=10))
+        if tls:
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline and repository.http_port() is None:
+                time.sleep(0.02)
+            assert repository.http_port() == configured['Jellyfin']['REPOSITORY_HTTP_PORT']
+            companion = repository._server
+            http_url = f'http://127.0.0.1:{repository.http_port()}'
+            with httpx2.Client(trust_env=False) as client:
+                assert client.get(f'{http_url}/settings/').status_code == 404
+                assert client.post(f'{http_url}/api/mcp/tokens', json={}).status_code == 404
+                assert client.post(f'{http_url}/mcp', json={}).status_code == (401 if mcp_http else 404)
+            if mcp_http:
+                assert repository.mcp_http_port() == repository.http_port()
+                asyncio.run(asyncio.wait_for(query_mcp(http_url), timeout=10))
+            else:
+                assert repository.mcp_http_port() is None
+        else:
+            assert repository.http_port() is None
     finally:
         webapp.stop_webapp()
         thread.join(timeout=10)
@@ -397,6 +453,9 @@ def test_uvicorn_serves_http_and_https_and_releases_its_socket(configured, monke
     assert not failures
     assert webapp._server is None
     assert all(not listener.sockets for listener in server.servers)
+    assert repository.http_port() is None
+    if tls:
+        assert all(not listener.sockets for listener in companion.servers)
 
 
 def test_server_failure_releases_shutdown_waiters(configured, monkeypatch):

@@ -17,7 +17,7 @@ class Element {
     append(...children) { this.children.push(...children); }
 }
 
-function settings(t, request) {
+function settings(t, request, linkedFields = []) {
     const ids = [
         'configForm',
         'save-button',
@@ -68,7 +68,8 @@ function settings(t, request) {
     const events = new EventTarget();
     globalThis.document = { getElementById: id => elements[id], createElement: () => new Element(),
         addEventListener: events.addEventListener.bind(events), dispatchEvent: events.dispatchEvent.bind(events),
-        querySelector: () => ({ content: 'token' }), querySelectorAll: () => [] };
+        querySelector: () => ({ content: 'token' }),
+        querySelectorAll: selector => selector === '[form="configForm"][category]' ? linkedFields : [] };
     const reload = t.mock.fn();
     globalThis.window = { addEventListener() {}, confirm: t.mock.fn(() => false), location: { reload } };
     globalThis.IntersectionObserver = class { observe() {} disconnect() {} };
@@ -103,6 +104,34 @@ test('settings with the same key in Plex and Jellyfin retain their config namesp
     await page.save();
     assert.equal(submitted.get('Themerr|BOOL_IGNORE_LOCKED_FIELDS'), 'false');
     assert.equal(submitted.get('Jellyfin|BOOL_IGNORE_LOCKED_FIELDS'), 'true');
+});
+
+test('MCP HTTP settings outside the settings form participate in dirty tracking and saving', async t => {
+    const field = new Element();
+    field.id = 'Network-MCP_HTTP';
+    field.dataset.settingKey = 'MCP_HTTP';
+    field.type = 'checkbox';
+    field.getAttribute = () => 'Network';
+    let submitted;
+    const page = settings(t, async (url, options) => {
+        submitted = options.body;
+        return {
+            ok: true,
+            status: 200,
+            json: async () => ({}),
+        };
+    }, [field]);
+    field.checked = true;
+    field.listeners.change();
+    assert.equal(page.elements['save-button'].disabled, false);
+    assert.equal(page.elements['settings-save-status'].textContent, 'Unsaved changes');
+    await page.save();
+    assert.equal(submitted.get('Network|MCP_HTTP'), 'true');
+    assert.equal(page.elements['save-button'].disabled, true);
+    field.checked = false;
+    field.listeners.change();
+    await page.save();
+    assert.equal(submitted.get('Network|MCP_HTTP'), 'false');
 });
 
 test('cookies reveal on demand and can be masked again without resubmitting the saved value', async t => {

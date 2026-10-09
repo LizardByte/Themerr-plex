@@ -214,6 +214,22 @@ _CONFIG_SPEC_DICT = {
             'description': _('Todo: The base URL of the web server. Used for reverse proxies.'),
             'extra_class': 'col-lg-6',
         },
+        'MCP_ALLOWED_HOSTS': {
+            'type': 'string',
+            'name': _('MCP allowed hosts'),
+            'description': _('Addresses MCP clients may use to connect, for example themerr.example:9494. '
+                             'Separate addresses with commas. Use :* to allow any port.'),
+            'default': 'localhost,localhost:*,127.0.0.1,127.0.0.1:*,[::1],[::1]:*',
+            'extra_class': 'col-lg-12',
+        },
+        'MCP_HTTP': {
+            'type': 'boolean',
+            'name': _('Serve MCP over HTTP'),
+            'default': False,
+            'description': _('Use the Connector HTTP port configured under Jellyfin for clients that cannot trust '
+                             'Themerr’s self-signed HTTPS certificate. Token authentication is still required. '
+                             'Restart Themerr after changing this setting.'),
+        },
         'SSL': {
             'type': 'boolean',
             'name': _('SSL'),
@@ -292,7 +308,7 @@ _CONFIG_SPEC_DICT = {
         },
         'REPOSITORY_HTTP_PORT': {
             'type': 'integer', 'name': _('Connector HTTP port'), 'default': 9495, 'min': 0, 'max': 65535,
-            'description': _('Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. '
+            'description': _('Serve connector downloads and optionally MCP over HTTP. '
                              'The admin UI stays on HTTPS. Use 0 to disable. '
                              'Restart Themerr after changing this port.'),
         },

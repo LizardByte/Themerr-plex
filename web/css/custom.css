@@ -537,3 +537,13 @@ details[open] > summary .details-chevron { transform: rotate(180deg); }
 .log-entry mark { background: #f5d994; color: #171309; border-radius: 2px; padding: 0 1px; }
 .log-empty { padding: 40px 18px; font-size: 12px; color: var(--muted); text-align: center; }
 @media (max-width: 700px) { .log-toolbar { gap: 12px; } .log-navigation { flex-basis: 100%; } .log-entry { padding: 12px; } .log-viewport { height: 65vh; } }
+.mcp-token-list { display: grid; gap: .75rem; }
+.mcp-token-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--bs-border-color); }
+.mcp-token-row p { margin: .25rem 0 0; overflow-wrap: anywhere; }
+.mcp-token-row strong { overflow-wrap: anywhere; }
+.mcp-value-field { display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 6px 8px 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); }
+.mcp-value { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; color: var(--ink); font-family: var(--bs-font-monospace); font-size: 13px; user-select: text; }
+.mcp-value-field .icon-button { flex-shrink: 0; width: 32px; height: 32px; border: 0; }
+.mcp-value-field .icon-button:hover { background: var(--control-bg); }
+.mcp-prompt-examples { margin-bottom: 0; padding-left: 1.25rem; color: var(--ink-soft); }
+.mcp-prompt-examples li + li { margin-top: .5rem; }

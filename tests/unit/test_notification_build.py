@@ -35,6 +35,7 @@ def test_build_stamps_ci_version_before_packaging(monkeypatch, tmp_path, platfor
         assert runpy.run_path(str(module))['VERSION'] == '2026.1003.120000'
         assert arguments[0] == './src/main.py'
         assert '--name=themerr' in arguments
+        assert '--hidden-import=uvicorn.lifespan.on' in arguments
         assert not any('version.txt' in value for value in arguments)
         assert any(value.startswith('--add-data=jellyfin-connector') for value in arguments)
         assert any(value.startswith('--add-binary=/tools/deno') for value in arguments)

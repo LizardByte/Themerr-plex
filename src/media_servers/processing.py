@@ -26,6 +26,24 @@ class _WorkQueue(queue.Queue):
 q = _WorkQueue()
 
 
+def queue_state() -> dict:
+    """Return queued and active counts from one consistent queue snapshot.
+
+    Returns
+    -------
+    dict
+        Queued items, active items, and whether all uploads are idle.
+    """
+    with q.mutex:
+        queued = len(q.queue)
+        active = len(_active_items)
+    return {
+        'queued_items': queued,
+        'active_items': active,
+        'uploads_idle': queued == 0 and active == 0,
+    }
+
+
 def enqueue(item_id: str) -> bool:
     """Queue an item once within the current server's storage scope.
 

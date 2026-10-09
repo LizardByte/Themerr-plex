@@ -38,6 +38,7 @@ LOG_BLACKLIST = [True]
 
 _BLACKLIST_WORDS = set()
 _session_handler = None
+_MCP_TOKEN = re.compile(r'tmcp_[A-Za-z0-9_-]{43}')
 
 # Global queue for multiprocessing logging
 queue = None
@@ -632,7 +633,7 @@ def redact(text: str) -> str:
     for log_filter in (PublicIPFilter(), EmailFilter(), PlexTokenFilter()):
         for match in log_filter.regex.findall(text):
             text = log_filter.replace(text, match)
-    return text
+    return _MCP_TOKEN.sub(16 * '*', text)
 
 
 class PrivateFormatter(logging.Formatter):
