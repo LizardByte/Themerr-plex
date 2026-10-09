@@ -7,6 +7,7 @@ Responsible for config related functions.
 import base64
 import copy
 import sys
+from pathlib import Path
 from typing import Optional, List
 
 # lib imports
@@ -773,15 +774,12 @@ def create_config(config_file: str, config_spec: dict = _CONFIG_SPEC_DICT) -> Co
 
     # dictionary comprehension
     if config_valid and user_config_valid:
-        # remove values from user config that are no longer in the spec
+        # Remove obsolete sections and root values before reading section options.
         user_config = {
             key: {
-                k: v for k, v in value.items() if k in config.get(key, {})
-            } for key, value in user_config.items()
+                k: v for k, v in value.items() if k in config[key]
+            } for key, value in user_config.items() if key in config
         }
-
-        # remove sections from user config that are no longer in the spec
-        user_config = {key: value for key, value in user_config.items() if key in config}
 
         # merge user config into default config
         config.merge(indict=user_config)
@@ -791,7 +789,8 @@ def create_config(config_file: str, config_spec: dict = _CONFIG_SPEC_DICT) -> Co
 
     config.filename = config_file
     if not save_config(config=config):
-        raise OSError('Unable to securely save the configuration. Check the credential store or external key file.')
+        raise OSError('Unable to securely save the configuration. '
+                      'Check directory permissions, the credential store, or external key file.')
 
     if config_spec == _CONFIG_SPEC_DICT:  # set CONFIG dictionary
         global CONFIG
@@ -830,6 +829,7 @@ def save_config(config: ConfigObj = CONFIG) -> bool:
                     continue
                 if not value.startswith(credentials.SETTING_PREFIX):
                     saved[section][key] = credentials.encrypt_setting(value)
+        Path(saved.filename).parent.mkdir(parents=True, exist_ok=True)
         saved.write()
         config.merge(saved)
     except credentials.TokenStorageError as exc:

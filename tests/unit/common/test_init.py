@@ -12,6 +12,27 @@ import common
 from common import tray_icon
 
 
+def test_initialize_fresh_install_creates_config_before_logs(tmp_path, monkeypatch):
+    directory = tmp_path / 'fresh-install' / 'config'
+    monkeypatch.setattr(common, '_INITIALIZED', False)
+    monkeypatch.setattr(common, 'CONFIG', None)
+    monkeypatch.setattr(common, 'CONFIG_FILE', None)
+    monkeypatch.setattr(common, 'DEBUG', False)
+    monkeypatch.setattr(common.config, 'CONFIG', None)
+    monkeypatch.setattr(common.definitions.Paths, 'CONFIG_DIR', str(directory))
+    monkeypatch.setattr(common.definitions.Paths, 'LOG_DIR', str(directory / 'logs'))
+    monkeypatch.setattr(common.logger, 'blacklist_config', Mock())
+    monkeypatch.setattr(common.logger, 'setup_loggers', Mock())
+    filename = directory / 'config.ini'
+
+    assert not directory.exists()
+    assert common.initialize(str(filename)) is True
+
+    assert filename.is_file()
+    assert (directory / 'logs').is_dir()
+    assert common.CONFIG['Network']['HTTP_PORT'] == 9494
+
+
 def test_initialize_once(configured, monkeypatch, tmp_path):
     monkeypatch.setattr(common, '_INITIALIZED', False)
     monkeypatch.setattr(common, 'DEBUG', False)
@@ -36,6 +57,18 @@ def test_initialize_error(monkeypatch):
     monkeypatch.setattr(common.config, 'create_config', Mock(side_effect=ValueError('corrupt')))
     with pytest.raises(SystemExit, match='corrupted config'):
         common.initialize('invalid.ini')
+
+
+def test_initialize_io_error_does_not_report_corruption_or_expose_details(monkeypatch):
+    error = OSError('private configuration details')
+    monkeypatch.setattr(common.config, 'create_config', Mock(side_effect=error))
+
+    with pytest.raises(SystemExit, match='Check file permissions and credential storage') as result:
+        common.initialize('config.ini')
+
+    assert 'corrupted' not in str(result.value)
+    assert 'private configuration details' not in str(result.value)
+    assert result.value.__cause__ is error
 
 
 def test_stop_and_restart(monkeypatch):

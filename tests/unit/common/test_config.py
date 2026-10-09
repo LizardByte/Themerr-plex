@@ -25,6 +25,52 @@ def cookie_export(value='private-session'):
     }])
 
 
+@pytest.mark.parametrize('relative', (
+    False,
+    True,
+))
+def test_create_config_creates_missing_parent_directories(tmp_path, monkeypatch, relative):
+    monkeypatch.chdir(tmp_path)
+    filename = Path('new-install') / 'config' / 'config.ini'
+    if not relative:
+        filename = tmp_path / filename
+    monkeypatch.setattr(config, 'CONFIG', None)
+
+    loaded = config.create_config(str(filename))
+
+    assert filename.is_file()
+    assert loaded['Network']['HTTP_PORT'] == 9494
+    reloaded = config.create_config(str(filename))
+    assert reloaded == loaded
+
+
+def test_save_config_preserves_a_file_blocking_the_parent_directory(configured, tmp_path):
+    parent = tmp_path / 'blocked-directory'
+    original = b'existing file'
+    parent.write_bytes(original)
+    configured.filename = str(parent / 'config.ini')
+
+    assert not config.save_config(configured)
+    assert parent.read_bytes() == original
+
+
+@pytest.mark.parametrize('legacy_value', (
+    'obsolete_setting = enabled',
+    'obsolete_setting = first, second',
+    '[Legacy]\nobsolete_setting = enabled',
+))
+def test_create_config_removes_obsolete_values_without_losing_settings(configured, legacy_value):
+    filename = Path(configured.filename)
+    filename.write_text(f'{legacy_value}\n[General]\nLAUNCH_BROWSER = False\n', encoding='utf-8')
+
+    loaded = config.create_config(str(filename))
+
+    assert loaded['General']['LAUNCH_BROWSER'] is False
+    assert 'obsolete_setting' not in loaded
+    assert 'Legacy' not in loaded
+    assert 'obsolete_setting' not in filename.read_text(encoding='utf-8')
+
+
 @pytest.mark.parametrize('external_key', (
     False,
     True,

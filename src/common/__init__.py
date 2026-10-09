@@ -63,6 +63,9 @@ def initialize(config_file: str) -> bool:
 
         try:
             CONFIG = config.create_config(config_file=config_file)
+        except OSError as exc:
+            raise SystemExit('Unable to read or securely save the configuration. '
+                             'Check file permissions and credential storage. Exiting...') from exc
         except Exception:
             raise SystemExit("Unable to initialize due to a corrupted config file. Exiting...")
 
