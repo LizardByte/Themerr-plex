@@ -14,429 +14,445 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: uk_UA\n"
-"PO-Revision-Date: 2026-10-07 14:38\n"
+"PO-Revision-Date: 2026-10-10 01:56\n"
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "Info"
 msgstr "Інформація"
 
-#: src/common/config.py:86
+#: src/common/config.py:87
 msgid "For information purposes only."
 msgstr "Лише для отримання інформації."
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "Config version"
 msgstr "Версія конфігурації"
 
-#: src/common/config.py:91
+#: src/common/config.py:92
 msgid "The configuration version."
 msgstr "Конфігурація версії."
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "First run complete"
 msgstr "Перший запуск завершено"
 
-#: src/common/config.py:101
+#: src/common/config.py:102
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "Todo: Вказує, чи користувач завершив початкове налаштування."
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General"
 msgstr "Загальні налаштування"
 
-#: src/common/config.py:109
+#: src/common/config.py:110
 msgid "General settings."
 msgstr "Загальні налаштування."
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "Locale"
 msgstr "Локалізація"
 
-#: src/common/config.py:114
+#: src/common/config.py:115
 msgid "The localization setting to use."
 msgstr "Налаштування локалізації для використання."
 
-#: src/common/config.py:123
+#: src/common/config.py:124
 msgid "Launch Browser on Startup "
 msgstr "Запустити браузер під час запуску програми "
 
-#: src/common/config.py:129
+#: src/common/config.py:130
 msgid "Enable System Tray Icon"
 msgstr "Увімкнути піктограму в системному лотку"
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid "Notifications"
 msgstr "Сповіщення"
 
-#: src/common/config.py:138
+#: src/common/config.py:139
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "Нагадування з'являються на ПК, що працюють Themerr. Docker і headless інсталяції не відображають їх."
 
-#: src/common/config.py:143 src/common/notifications.py:138
+#: src/common/config.py:144 src/common/notifications.py:138
 msgid "New release available"
 msgstr "Доступний новий реліз"
 
-#: src/common/config.py:144
+#: src/common/config.py:145
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "Сповіщати, коли доступний новий реліз Themerr. Перевіряється це раз на годину."
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Follow pre-releases"
 msgstr "Слідкувати за попередніми релізами"
 
-#: src/common/config.py:150
+#: src/common/config.py:151
 msgid "Include pre-releases in new release notifications."
 msgstr "Додавати попередні релізи до сповіщень про релізи."
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid "Theme coverage increased"
 msgstr "Покриття теми збільшено"
 
-#: src/common/config.py:156
+#: src/common/config.py:157
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "Сповіщати після успішного оновлення, коли збільшення загального покриття темами. Оновлюються без збільшення залишитися спокійним."
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging"
 msgstr "Заготівля лісу"
 
-#: src/common/config.py:164
+#: src/common/config.py:165
 msgid "Logging settings."
 msgstr "Налаштування ведення журналу."
 
-#: src/common/config.py:168
+#: src/common/config.py:169
 msgid "Log directory"
 msgstr "Папка логів"
 
-#: src/common/config.py:170
+#: src/common/config.py:171
 msgid "The directory where to store the log files."
 msgstr "Каталог, де зберігати файли журналу."
 
-#: src/common/config.py:177
+#: src/common/config.py:178
 msgid "Debug logging"
 msgstr "Ведення журналу налагодження"
 
-#: src/common/config.py:179
+#: src/common/config.py:180
 msgid "Enable debug logging."
 msgstr "Увімкнути журнал зневадження."
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network"
 msgstr "Мережа"
 
-#: src/common/config.py:186
+#: src/common/config.py:187
 msgid "Network settings."
 msgstr "Налаштування мережі."
 
-#: src/common/config.py:190
+#: src/common/config.py:191
 msgid "HTTP host address"
 msgstr "HTTP-хост"
 
-#: src/common/config.py:192
+#: src/common/config.py:193
 msgid "The HTTP address to bind to."
 msgstr "HTTP адреса для прив'язки."
 
-#: src/common/config.py:201
+#: src/common/config.py:202
 msgid "HTTP port"
 msgstr "Порт HTTP"
 
-#: src/common/config.py:203
+#: src/common/config.py:204
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "Порт для прив'язки до веб-сервера. Зауважте, що порти нижче 1024 можуть потребувати права суперкористувача."
 
-#: src/common/config.py:211
+#: src/common/config.py:212
 msgid "HTTP root"
 msgstr "Кореневий HTTP"
 
-#: src/common/config.py:213
+#: src/common/config.py:214
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "До: Базова URL-адреса веб-сервера. Використовується для зворотних проксі."
 
-#: src/common/config.py:218
+#: src/common/config.py:219
+msgid "MCP allowed hosts"
+msgstr "Дозволені хости MCP"
+
+#: src/common/config.py:220
+msgid "Addresses MCP clients may use to connect, for example themerr.example:9494. Separate addresses with commas. Use :* to allow any port."
+msgstr "Адреси MCP клієнтів можуть використовувати для підключення, наприклад, themerr.example:9494. Розділяйте адреси комами. Використовуйте :*, щоб дозволити будь-який порт."
+
+#: src/common/config.py:227
+msgid "Serve MCP over HTTP"
+msgstr "Зберігати MCP через HTTP"
+
+#: src/common/config.py:229
+msgid "Use the Connector HTTP port configured under Jellyfin for clients that cannot trust Themerr’s self-signed HTTPS certificate. Token authentication is still required. Restart Themerr after changing this setting."
+msgstr "Використовувати HTTP-порт Connector, налаштований під Jellyfin для клієнтів, які не можуть довіряти власному підписаному HTTPS сертифікату Теми. Необхідна перевірка токена. Перезапустіть Themerr після зміни цього параметра."
+
+#: src/common/config.py:235
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:220
+#: src/common/config.py:237
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Запустіть веб-сервер з HTTPS. Вимкнення цього може бути ризиком безпеки, робіть це на власний ризик."
 
-#: src/common/config.py:226
+#: src/common/config.py:243
 msgid "Updater"
 msgstr "Оновлювач"
 
-#: src/common/config.py:227
+#: src/common/config.py:244
 msgid "Updater settings."
 msgstr "Налаштування оновлень."
 
-#: src/common/config.py:231
+#: src/common/config.py:248
 msgid "Auto update"
 msgstr "Автоматичне оновлення"
 
-#: src/common/config.py:239
+#: src/common/config.py:256
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/common/config.py:240
+#: src/common/config.py:257
 msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
 msgstr "Налаштування обробки теми Jellyfin. На сторінці керування серверами керуються підключеннями."
 
-#: src/common/config.py:243 src/common/config.py:344
+#: src/common/config.py:260 src/common/config.py:361
 msgid "Movie support"
 msgstr "Підтримка фільмів"
 
-#: src/common/config.py:244
+#: src/common/config.py:261
 msgid "Add themes to Jellyfin movies."
 msgstr "Додайте тему у фільми Jellyfin."
 
-#: src/common/config.py:247 src/common/config.py:350
+#: src/common/config.py:264 src/common/config.py:367
 msgid "Series support"
 msgstr "Підтримка серії"
 
-#: src/common/config.py:248
+#: src/common/config.py:265
 msgid "Add themes to Jellyfin series."
 msgstr "Додати теми до серії Jellyfin."
 
-#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
+#: src/common/config.py:268 src/common/config.py:355 web/templates/home.html:31
 msgid "Collections"
 msgstr "Колекції"
 
-#: src/common/config.py:252
+#: src/common/config.py:269
 msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
 msgstr "Додайте теми всередині каталогів колекцій Jellyfinin. Медіа файли можуть залишатися в іншому місці."
 
-#: src/common/config.py:255
+#: src/common/config.py:272
 msgid "Overwrite user themes"
 msgstr "Переписати теми користувача"
 
-#: src/common/config.py:256
+#: src/common/config.py:273
 msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
 msgstr "Замінити існуючі файли тем, включаючи теми старих додатків Themerr-jellyfin."
 
-#: src/common/config.py:260
+#: src/common/config.py:277
 msgid "Back up replaced user themes"
 msgstr "Зробити резервну копію замінених тем користувачів"
 
-#: src/common/config.py:261
+#: src/common/config.py:278
 msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
 msgstr "Зберігати існуючі теми користувачів в папці резервної копії при їх заміні. Вимкніть, щоб остаточно видалити теми."
 
-#: src/common/config.py:265
+#: src/common/config.py:282
 msgid "Import older Themerr-jellyfin ownership"
 msgstr "Імпорт власника Themerr-jellyfin"
 
-#: src/common/config.py:266
+#: src/common/config.py:283
 msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
 msgstr "Визнайте теми, записані в базі даних старого плагіна тільки коли їх SHA-256 все ще збігаються. Змінені файли залишаються захищеними. Стара база даних залишилася недоторканою."
 
-#: src/common/config.py:270
+#: src/common/config.py:287
 msgid "Ignore locked metadata"
 msgstr "Ігнорувати заблоковані метадані"
 
-#: src/common/config.py:271
+#: src/common/config.py:288
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr "Дозволити оновлення теми Jellyfin для предметів із заблокованими метаданими."
 
-#: src/common/config.py:274
+#: src/common/config.py:291
 msgid "Update connector automatically"
 msgstr "Оновити конектор автоматично"
 
-#: src/common/config.py:275
+#: src/common/config.py:292
 msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr "Встановіть відповідний підключення, коли Themerr починається або виявляє невідповідність версії. Спочатку встановіть адресу Themerr на сторінці Сервери."
 
-#: src/common/config.py:279
+#: src/common/config.py:296
 msgid "Restart Jellyfin automatically"
 msgstr "Автоматично перезавантажувати Jellyfin"
 
-#: src/common/config.py:280
+#: src/common/config.py:297
 msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
 msgstr "Перезапустити Jellyfin після інсталяції або оновлення конектора. Очікується перезавантаження, буде показано на сторінці серверів, перш ніж це станеться."
 
-#: src/common/config.py:284
+#: src/common/config.py:301
 msgid "Wait for playback to finish"
 msgstr "Дочекайтеся завершення відтворення"
 
-#: src/common/config.py:285
+#: src/common/config.py:302
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr "Відкласти з'єднання знову, доки немає гри або призупинених потоків."
 
-#: src/common/config.py:288
+#: src/common/config.py:305
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr "Видалити старий плагін Themerr-jellyfin"
 
-#: src/common/config.py:289
+#: src/common/config.py:306
 msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
 msgstr "Після встановлення підключення, видаліть старий плагін Themerr і видаліть лише його виділений репозиторій. Існуючі файли тем зберігаються."
 
-#: src/common/config.py:293
+#: src/common/config.py:310
 msgid "Connector HTTP port"
 msgstr "Приєднувач HTTP порт"
 
-#: src/common/config.py:294
-msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
-msgstr "Використовувати HTTP, коли Themerr використовує самостійно підписаний сертифікат. Інтерфейс адміністратора залишається на HTTPS. Використовуйте 0, щоб вимкнути. Перезапустіть Themerr після зміни цього порту."
+#: src/common/config.py:311
+msgid "Serve connector downloads and optionally MCP over HTTP. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
+msgstr "Сервер коннектор завантажень і опціонально MCP через HTTP. Інтерфейс адміністратора залишається в HTTPS. Використовуйте 0, щоб вимкнути. Перезапустити Themerr після зміни цього порту."
 
-#: src/common/config.py:301
+#: src/common/config.py:318
 msgid "Plex"
 msgstr "Плекс"
 
-#: src/common/config.py:302
+#: src/common/config.py:319
 msgid "Plex settings."
 msgstr "Налаштування Plex ."
 
-#: src/common/config.py:306
+#: src/common/config.py:323
 msgid "Plex URL"
 msgstr "Plex URL"
 
-#: src/common/config.py:307
+#: src/common/config.py:324
 msgid "The URL to the Plex server."
 msgstr "URL на сервері Plex."
 
-#: src/common/config.py:316 web/templates/servers.html:98
+#: src/common/config.py:333 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Каталог даних Plex"
 
-#: src/common/config.py:317
+#: src/common/config.py:334
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plea-server-data-directory-located/"
 
-#: src/common/config.py:327
+#: src/common/config.py:344
 msgid "Themerr"
 msgstr "Темерр"
 
-#: src/common/config.py:328
+#: src/common/config.py:345
 msgid "Themerr settings."
 msgstr "Налашт-ня теми."
 
-#: src/common/config.py:332
+#: src/common/config.py:349
 msgid "Themerr Enabled"
 msgstr "Тематика увімкнена"
 
-#: src/common/config.py:333
+#: src/common/config.py:350
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "Коли ввімкнено, Themerr спробує оновити теми."
 
-#: src/common/config.py:339
+#: src/common/config.py:356
 msgid "Add themes to collections."
 msgstr "Додайте теми для колекції."
 
-#: src/common/config.py:345
+#: src/common/config.py:362
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "Додай теми у фільм, використовуючи Plex кіноагента."
 
-#: src/common/config.py:351
+#: src/common/config.py:368
 msgid "Add themes to series using the Plex Series agent."
 msgstr "Додайте теми для серії, використовуючи агента Plex серії."
 
-#: src/common/config.py:356
+#: src/common/config.py:373
 msgid "Overwrite Plex themes"
 msgstr "Перезаписати Plex теми"
 
-#: src/common/config.py:357
+#: src/common/config.py:374
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Коли ввімкнено, Themerr буде перезаписувати теми, надані Plex."
 
-#: src/common/config.py:362
+#: src/common/config.py:379
 msgid "Prefer MP4A AAC Codec"
 msgstr "Перевага MP4A Codec"
 
-#: src/common/config.py:363
+#: src/common/config.py:380
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Це може покращити сумісність теми за допомогою пристроїв Apple."
 
-#: src/common/config.py:368
+#: src/common/config.py:385
 msgid "Remove unused themes"
 msgstr "Видалити невикористані теми"
 
-#: src/common/config.py:369
+#: src/common/config.py:386
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Звільняє простір у вашій теці даних Plex. Ця опція вимагає, щоб задано шлях до каталогу даних Plex"
 
-#: src/common/config.py:375
+#: src/common/config.py:392
 msgid "Remove unused art"
 msgstr "Видалити невикористані твори"
 
-#: src/common/config.py:376 src/common/config.py:384
+#: src/common/config.py:393 src/common/config.py:401
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Застосовується до колекції. Звільняє простір у вашій папці метаданих Plex. Цей параметр вимагає, щоб встановлено шлях до каталогу \"Plex data directory\""
 
-#: src/common/config.py:383
+#: src/common/config.py:400
 msgid "Remove unused posters"
 msgstr "Вилучити невикористані плакати"
 
-#: src/common/config.py:391
+#: src/common/config.py:408
 msgid "Collection metadata"
 msgstr "Метадані колекції"
 
-#: src/common/config.py:392
+#: src/common/config.py:409
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "Оновлення метаданих колекції (постер, мистецтво і резюме) під час запланованих оновлень."
 
-#: src/common/config.py:397
+#: src/common/config.py:414
 msgid "Ignore locked fields."
 msgstr "Ігнорувати заблоковані поля."
 
-#: src/common/config.py:398
+#: src/common/config.py:415
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Якщо ви використовували Themerr v2024.813.13709 або нижче, вам може знадобитися увімкнути це для оновлення елементів."
 
-#: src/common/config.py:404
+#: src/common/config.py:421
 msgid "Ignored library IDs"
 msgstr "Ігноровані ID бібліотеки"
 
-#: src/common/config.py:405
+#: src/common/config.py:422
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "ID бібліотеки, розділених комами, для виключення запланованих оновлень. ID відображаються на головній сторінці."
 
-#: src/common/config.py:411
+#: src/common/config.py:428
 msgid "Update themes interval"
 msgstr "Оновити інтервал тем"
 
-#: src/common/config.py:412
+#: src/common/config.py:429
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Інтервал автоматичного оновлення, у хвилинах (хв: 15)."
 
-#: src/common/config.py:419
+#: src/common/config.py:436
 msgid "Update database cache interval"
 msgstr "Оновлення інтервалу кешу даних"
 
-#: src/common/config.py:420
+#: src/common/config.py:437
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Інтервал перевірки кешу бази данних, через хвилину (хв: 15)."
 
-#: src/common/config.py:427
+#: src/common/config.py:444
 msgid "PlexAPI timeout"
 msgstr "Тривалість часу очікування PlexAPI"
 
-#: src/common/config.py:428
+#: src/common/config.py:445
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Збільшіть це трохи, якщо у вас виникли тайм-аути при додаванні тем. (хв: 1)"
 
-#: src/common/config.py:435
+#: src/common/config.py:452
 msgid "Theme upload retries"
 msgstr "Спроби завантаження теми знову"
 
-#: src/common/config.py:436
+#: src/common/config.py:453
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Якщо ви не можете завантажити теми, повторити це багато разів. (хв: 0)"
 
-#: src/common/config.py:443
+#: src/common/config.py:460
 msgid "Multiprocessing thread count"
 msgstr "Багатопроцесорна кількість потоків"
 
-#: src/common/config.py:444
+#: src/common/config.py:461
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "Кількість потоків для використання при додаванні тем. Необхідно перезапустити тему (хв.: 1)"
 
-#: src/common/config.py:452
+#: src/common/config.py:469
 msgid "YouTube Cookies"
 msgstr "YouTube куки"
 
-#: src/common/config.py:454
+#: src/common/config.py:471
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Saved cookies are encrypted and masked. Select the eye icon to reveal them. Leave this blank to keep them, or select Clear saved cookies to remove them."
 msgstr "Додатково: експортувати файли youtube.com за допомогою отримання cookies.txt LOCALLY з використанням його формату JSON, а потім вставте тут весь масив JSON і збережіть. Збережені куки зашифровані та масковані. Виберіть іконку очей, щоб показати їх. Залиште це поле порожнім, щоб зберегти їх, або виберіть Очистити збережені куки, щоб видалити їх."
 
-#: src/common/config.py:461
+#: src/common/config.py:478
 msgid "Cookie export instructions"
 msgstr "Інструкції для експорту файлів cookie"
 
@@ -523,12 +539,12 @@ msgstr "Перезапустити"
 msgid "Quit"
 msgstr "Вийти"
 
-#: src/common/webapp.py:81 web/templates/logs.html:4
+#: src/common/webapp.py:82 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "Логи"
 
-#: src/common/webapp.py:479 web/templates/config.html:26
+#: src/common/webapp.py:486 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Налаштування"
@@ -587,43 +603,43 @@ msgstr "Термін дійсності вашого сеансу заверши
 msgid "Dismiss message"
 msgstr "Відхилити повідомлення"
 
-#: web/js/config.js:6
+#: web/js/config.js:7
 msgid "Hide cookies"
 msgstr "Приховати куки"
 
-#: web/js/config.js:6 web/templates/config.html:18
+#: web/js/config.js:7 web/templates/config.html:18
 msgid "Show cookies"
 msgstr "Показати куки"
 
-#: web/js/config.js:18 web/templates/config.html:14
+#: web/js/config.js:19 web/templates/config.html:14
 msgid "Cookies saved"
 msgstr "Куки збережено"
 
-#: web/js/config.js:34 web/templates/config.html:14
+#: web/js/config.js:35 web/templates/config.html:14
 msgid "No cookies saved"
 msgstr "Файли cookie не збережені"
 
-#: web/js/config.js:81 web/js/config.js:123
+#: web/js/config.js:84 web/js/config.js:131
 msgid "Unsaved changes"
 msgstr "Незбережені зміни"
 
-#: web/js/config.js:89
+#: web/js/config.js:93
 msgid "Discard unsaved settings changes?"
 msgstr "Скасувати зміни незбережених налаштувань?"
 
-#: web/js/config.js:123 web/templates/config.html:40
+#: web/js/config.js:131 web/templates/config.html:84
 msgid "All changes saved."
 msgstr "Всі зміни збережено."
 
-#: web/js/config.js:125
+#: web/js/config.js:133
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "Параметри збережені. Мережа змінює ефект після перезапуску Themerr."
 
-#: web/js/config.js:129
+#: web/js/config.js:137
 msgid "Unable to save changes."
 msgstr "Не вдалося зберегти зміни."
 
-#: web/js/config.js:137
+#: web/js/config.js:145
 msgid "Save your settings changes before changing your password."
 msgstr "Збережіть налаштування перед зміною вашого пароля."
 
@@ -659,6 +675,58 @@ msgstr "Призупинено"
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "Не вдалося оновити. Показано останні завантажені записи."
+
+#: web/js/mcp.js:24
+msgid "Mask token"
+msgstr "Маскувальний токен"
+
+#: web/js/mcp.js:24 web/templates/config.html:64
+msgid "Show token"
+msgstr "Показати токен"
+
+#: web/js/mcp.js:55 web/templates/config.html:54 web/templates/config.html:72
+msgid "Read only"
+msgstr "Тільки для читання"
+
+#: web/js/mcp.js:55 web/templates/config.html:55 web/templates/config.html:72
+msgid "Read and process"
+msgstr "Читати та обробляти"
+
+#: web/js/mcp.js:64 web/templates/config.html:72
+msgid "Revoke"
+msgstr "Revoke"
+
+#: web/js/mcp.js:70 web/templates/config.html:72
+msgid "No MCP tokens created."
+msgstr "Не створено жодного токену MCP."
+
+#: web/js/mcp.js:109
+msgid "MCP token created. Copy it into your client now."
+msgstr "Токен MCP створено. Скопіюйте його в ваш клієнт зараз."
+
+#: web/js/mcp.js:126
+msgid "Revoke all MCP tokens and disconnect every client?"
+msgstr "Скасувати всі токени MCP і відключити кожен клієнт?"
+
+#: web/js/mcp.js:140
+msgid "Endpoint URL copied."
+msgstr "URL кінцевої точки скопійовано."
+
+#: web/js/mcp.js:144
+msgid "Copy the selected endpoint URL manually."
+msgstr "Скопіювати посилання на вибрану кінцеву точку вручну."
+
+#: web/js/mcp.js:156
+msgid "MCP token copied."
+msgstr "MCP токен скопійовано."
+
+#: web/js/mcp.js:161
+msgid "Copy the selected token manually."
+msgstr "Скопіювати вибраний токен вручну."
+
+#: web/js/mcp.js:164
+msgid "Unable to copy. Show the token to copy it manually."
+msgstr "Не вдалося скопіювати. Покажіть маркер для копіювання вручну."
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
@@ -910,6 +978,10 @@ msgstr "Налаштування розділів"
 msgid "Security"
 msgstr "Безпека"
 
+#: web/templates/config.html:28 web/templates/config.html:41
+msgid "MCP integration"
+msgstr "Інтеграція MCP"
+
 #: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "Серверне підключення, каталоги даних та проігноровані бібліотеки, керуються на сторінці серверів."
@@ -938,7 +1010,95 @@ msgstr "Підвердіть новий пароль"
 msgid "Change password"
 msgstr "Змінити пароль"
 
-#: web/templates/config.html:40
+#: web/templates/config.html:41
+msgid "Connect an assistant to your theme libraries. Create a separate token for each client."
+msgstr "Підключіть асистента до бібліотек тем. Створити окремий токен для кожного клієнта."
+
+#: web/templates/config.html:43
+msgid "Endpoint URL"
+msgstr "Endpoint URL"
+
+#: web/templates/config.html:46
+msgid "Copy endpoint URL"
+msgstr "Копіювати посилання на кінцеву точку"
+
+#: web/templates/config.html:48
+msgid "Choose Streamable HTTP in your client and use the token as its Bearer credential."
+msgstr "Оберіть цільовий HTTP у вашому клієнті та використовуйте токен під назвою його особистого облікового запису."
+
+#: web/templates/config.html:50
+msgid "Client name"
+msgstr "Ім'я клієнта"
+
+#: web/templates/config.html:51
+msgid "My assistant"
+msgstr "Мій помічник"
+
+#: web/templates/config.html:52
+msgid "Access"
+msgstr "Доступ"
+
+#: web/templates/config.html:57
+msgid "Read only allows library queries, activity, and logs. Read and process also allows library refreshes and selected-item retries under your existing overwrite settings."
+msgstr "Читання дозволяє бібліотеці лише запити, активність, журнали. Читання і процес також дозволяє бібліотеці оновлювати і вибирати повторні записи у ваших існуючих налаштуваннях перезаписування."
+
+#: web/templates/config.html:58
+msgid "Create token"
+msgstr "Створити токен"
+
+#: web/templates/config.html:61
+msgid "Copy this token now. It will not be shown again."
+msgstr "Скопіюйте цей токен зараз. Він не буде показаний знову."
+
+#: web/templates/config.html:65
+msgid "Copy token"
+msgstr "Скопіювати токен"
+
+#: web/templates/config.html:67
+msgid "Done"
+msgstr "Виконано"
+
+#: web/templates/config.html:69
+msgid "Client tokens"
+msgstr "Клієнтські токени"
+
+#: web/templates/config.html:70
+msgid "Changing your administrator password invalidates all existing tokens."
+msgstr "Зміна пароля адміністратора анульовує всі існуючі токени."
+
+#: web/templates/config.html:72
+msgid "Invalidated"
+msgstr "Визнано недійсним"
+
+#: web/templates/config.html:74
+msgid "Revoke all tokens"
+msgstr "Відкликати всі токени"
+
+#: web/templates/config.html:75
+msgid "Example prompts"
+msgstr "Приклади повідомлень"
+
+#: web/templates/config.html:77
+msgid "Show movies with failed themes on my Jellyfin server."
+msgstr "Показати фільми з невдалою темами на моєму сервері Jellyfin."
+
+#: web/templates/config.html:78
+msgid "What percentage of my Movies library has theme music?"
+msgstr "Який відсоток з бібліотеки моїх фільмів має музику?"
+
+#: web/templates/config.html:79
+msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
+msgstr "Перевірте, чи знаходиться TMDB ID 123 в ThemerrDB."
+
+#: web/templates/config.html:80
+msgid "Show recent YouTube extraction errors."
+msgstr "Показати останні помилки вилучення YouTube."
+
+#: web/templates/config.html:81
+msgid "Refresh library metadata, then retry these selected items."
+msgstr "Оновити метадані бібліотеки, а потім повторити ці виділені елементи."
+
+#: web/templates/config.html:84
 msgid "Save changes"
 msgstr "Зберегти зміни"
 
