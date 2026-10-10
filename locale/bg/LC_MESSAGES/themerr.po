@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: bg_BG\n"
-"PO-Revision-Date: 2026-10-10 00:43\n"
+"PO-Revision-Date: 2026-10-10 01:56\n"
 
 #: src/common/config.py:86
 msgid "Info"
@@ -290,7 +290,7 @@ msgstr "HTTP порт на конектора"
 
 #: src/common/config.py:311
 msgid "Serve connector downloads and optionally MCP over HTTP. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
-msgstr ""
+msgstr "Предоставя изтегляне на конектори и, по избор, MCP през HTTP. Административният интерфейс остава на HTTPS. За да деактивирате тази опция, въведете 0. Рестартирайте Themerr след промяна на този порт."
 
 #: src/common/config.py:318
 msgid "Plex"
@@ -678,55 +678,55 @@ msgstr "Опресняването се провали. Показват се п
 
 #: web/js/mcp.js:24
 msgid "Mask token"
-msgstr ""
+msgstr "Токен „Маска“"
 
 #: web/js/mcp.js:24 web/templates/config.html:64
 msgid "Show token"
-msgstr ""
+msgstr "Покажи токен"
 
 #: web/js/mcp.js:55 web/templates/config.html:54 web/templates/config.html:72
 msgid "Read only"
-msgstr ""
+msgstr "Само за четене"
 
 #: web/js/mcp.js:55 web/templates/config.html:55 web/templates/config.html:72
 msgid "Read and process"
-msgstr ""
+msgstr "Прочети и обработи"
 
 #: web/js/mcp.js:64 web/templates/config.html:72
 msgid "Revoke"
-msgstr ""
+msgstr "Отмяна"
 
 #: web/js/mcp.js:70 web/templates/config.html:72
 msgid "No MCP tokens created."
-msgstr ""
+msgstr "Не са създадени MCP токени."
 
 #: web/js/mcp.js:109
 msgid "MCP token created. Copy it into your client now."
-msgstr ""
+msgstr "Токенът MCP е създаден. Копирайте го в клиента си сега."
 
 #: web/js/mcp.js:126
 msgid "Revoke all MCP tokens and disconnect every client?"
-msgstr ""
+msgstr "Да се отменят всички MCP токени и да се прекъсне връзката с всеки клиент?"
 
 #: web/js/mcp.js:140
 msgid "Endpoint URL copied."
-msgstr ""
+msgstr "URL адресът на крайната точка е копиран."
 
 #: web/js/mcp.js:144
 msgid "Copy the selected endpoint URL manually."
-msgstr ""
+msgstr "Копирайте ръчно URL адреса на избрания краен пункт."
 
 #: web/js/mcp.js:156
 msgid "MCP token copied."
-msgstr ""
+msgstr "Токенът MCP е копиран."
 
 #: web/js/mcp.js:161
 msgid "Copy the selected token manually."
-msgstr ""
+msgstr "Копирайте избрания токен ръчно."
 
 #: web/js/mcp.js:164
 msgid "Unable to copy. Show the token to copy it manually."
-msgstr ""
+msgstr "Не е възможно копирането. Покажете токена, за да го копирате ръчно."
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
@@ -980,7 +980,7 @@ msgstr "Сигурност"
 
 #: web/templates/config.html:28 web/templates/config.html:41
 msgid "MCP integration"
-msgstr ""
+msgstr "Интеграция на MCP"
 
 #: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
@@ -1012,91 +1012,91 @@ msgstr "Промяна на паролата"
 
 #: web/templates/config.html:41
 msgid "Connect an assistant to your theme libraries. Create a separate token for each client."
-msgstr ""
+msgstr "Свържете асистент с библиотеките с теми. Създайте отделен токен за всеки клиент."
 
 #: web/templates/config.html:43
 msgid "Endpoint URL"
-msgstr ""
+msgstr "URL адрес на крайната точка"
 
 #: web/templates/config.html:46
 msgid "Copy endpoint URL"
-msgstr ""
+msgstr "Копирай URL адреса на крайната точка"
 
 #: web/templates/config.html:48
 msgid "Choose Streamable HTTP in your client and use the token as its Bearer credential."
-msgstr ""
+msgstr "Изберете „Streamable HTTP“ в клиента си и използвайте токена като удостоверение от типа „Bearer“."
 
 #: web/templates/config.html:50
 msgid "Client name"
-msgstr ""
+msgstr "Име на клиента"
 
 #: web/templates/config.html:51
 msgid "My assistant"
-msgstr ""
+msgstr "Моят асистент"
 
 #: web/templates/config.html:52
 msgid "Access"
-msgstr ""
+msgstr "Достъп"
 
 #: web/templates/config.html:57
 msgid "Read only allows library queries, activity, and logs. Read and process also allows library refreshes and selected-item retries under your existing overwrite settings."
-msgstr ""
+msgstr "Режимът „Само за четене“ позволява само заявки към библиотеката, дейности и логове. Режимът „Четене и обработка“ позволява също така обновяване на библиотеката и повторни опити за избрани елементи съгласно вашите текущи настройки за презаписване."
 
 #: web/templates/config.html:58
 msgid "Create token"
-msgstr ""
+msgstr "Създаване на токен"
 
 #: web/templates/config.html:61
 msgid "Copy this token now. It will not be shown again."
-msgstr ""
+msgstr "Копирайте този токен сега. Той няма да се показва отново."
 
 #: web/templates/config.html:65
 msgid "Copy token"
-msgstr ""
+msgstr "Копирай токена"
 
 #: web/templates/config.html:67
 msgid "Done"
-msgstr ""
+msgstr "Готово"
 
 #: web/templates/config.html:69
 msgid "Client tokens"
-msgstr ""
+msgstr "Токени на клиенти"
 
 #: web/templates/config.html:70
 msgid "Changing your administrator password invalidates all existing tokens."
-msgstr ""
+msgstr "Промяната на паролата ви за администратор води до анулиране на всички съществуващи токени."
 
 #: web/templates/config.html:72
 msgid "Invalidated"
-msgstr ""
+msgstr "Невалиден"
 
 #: web/templates/config.html:74
 msgid "Revoke all tokens"
-msgstr ""
+msgstr "Отмени всички токени"
 
 #: web/templates/config.html:75
 msgid "Example prompts"
-msgstr ""
+msgstr "Примери за задачи"
 
 #: web/templates/config.html:77
 msgid "Show movies with failed themes on my Jellyfin server."
-msgstr ""
+msgstr "Показване на филми с неуспешни теми на моя Jellyfin сървър."
 
 #: web/templates/config.html:78
 msgid "What percentage of my Movies library has theme music?"
-msgstr ""
+msgstr "Какъв процент от библиотеката ми с филми съдържа тематична музика?"
 
 #: web/templates/config.html:79
 msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
-msgstr ""
+msgstr "Провери дали филмът с TMDB ID 123 се намира в ThemerrDB."
 
 #: web/templates/config.html:80
 msgid "Show recent YouTube extraction errors."
-msgstr ""
+msgstr "Покажи последните грешки при извличането от YouTube."
 
 #: web/templates/config.html:81
 msgid "Refresh library metadata, then retry these selected items."
-msgstr ""
+msgstr "Актуализирайте метаданните на библиотеката, след което опитайте отново с тези избрани елементи."
 
 #: web/templates/config.html:84
 msgid "Save changes"
