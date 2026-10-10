@@ -682,7 +682,7 @@ msgstr ""
 msgid "Discard unsaved settings changes?"
 msgstr ""
 
-#: web/js/config.js:131 web/templates/config.html:83
+#: web/js/config.js:131 web/templates/config.html:84
 msgid "All changes saved."
 msgstr ""
 
@@ -1171,14 +1171,18 @@ msgid "What percentage of my Movies library has theme music?"
 msgstr ""
 
 #: web/templates/config.html:79
-msgid "Show recent YouTube extraction errors."
+msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
 msgstr ""
 
 #: web/templates/config.html:80
+msgid "Show recent YouTube extraction errors."
+msgstr ""
+
+#: web/templates/config.html:81
 msgid "Refresh library metadata, then retry these selected items."
 msgstr ""
 
-#: web/templates/config.html:83
+#: web/templates/config.html:84
 msgid "Save changes"
 msgstr ""
 

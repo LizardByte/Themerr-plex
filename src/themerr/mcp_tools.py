@@ -2,6 +2,7 @@
 
 # standard imports
 from collections import Counter
+from datetime import datetime, timezone
 
 # lib imports
 from sqlalchemy import select
@@ -10,7 +11,13 @@ from sqlalchemy.orm import Session
 # local imports
 from common import config, log_viewer, logger
 from media_servers import get_backend, processing
-from themerr import cache, scheduled_tasks, storage
+from themerr import cache, scheduled_tasks, storage, themerr_db
+
+_DATABASE_TYPES = {
+    'movie': 'movies',
+    'show': 'tv_shows',
+    'collection': 'movie_collections',
+}
 
 
 class ToolInputError(ValueError):
@@ -208,6 +215,48 @@ def inspect_theme(server_id, item_id):
         'snapshots': _freshness(records),
     })
     return result
+
+
+def check_themerrdb(media_type, database_id, database='themoviedb'):
+    """Check an external identifier against the hourly ThemerrDB index.
+
+    Parameters
+    ----------
+    media_type : str
+        ``movie``, ``show``, or ``collection``.
+    database_id : str
+        Numeric TMDB identifier or an IMDb identifier starting with ``tt``.
+    database : str
+        ``themoviedb`` for any supported media type, or ``imdb`` for movies.
+
+    Returns
+    -------
+    dict
+        Membership result, checked identifier, and index refresh timestamp.
+
+    Raises
+    ------
+    ToolInputError
+        When the identifier is invalid or the requested index is unavailable.
+    """
+    database_type = _DATABASE_TYPES.get(media_type)
+    if database_type is None or database not in themerr_db.db_field_name[database_type]:
+        raise ToolInputError('Use TMDB IDs for movies, shows, or collections; IMDb IDs are only supported for movies.')
+    digits = database_id.removeprefix('tt') if database == 'imdb' else database_id
+    if not digits.isascii() or not digits.isdecimal() or (database == 'imdb' and not database_id.startswith('tt')):
+        raise ToolInputError('Use a numeric TMDB ID or an IMDb ID starting with tt.')
+    themerr_db.update_cache()
+    if database not in themerr_db.database_cache.get(database_type, {}):
+        raise ToolInputError('The ThemerrDB index is unavailable. Try again after its next hourly refresh.')
+    return {
+        'exists': themerr_db.item_exists(database_type, database, database_id),
+        'media_type': media_type,
+        'database_type': database_type,
+        'database': database,
+        'database_id': database_id,
+        'cached': True,
+        'last_refresh': datetime.fromtimestamp(themerr_db.last_cache_update, timezone.utc).isoformat(),
+    }
 
 
 def get_activity():

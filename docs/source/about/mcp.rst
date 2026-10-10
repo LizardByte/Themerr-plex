@@ -39,7 +39,7 @@ Configure your client to connect to the ``/mcp`` URL over Streamable HTTP and se
 
 Tokens have two scopes:
 
-* ``read`` allows server and library discovery, searches, coverage, theme inspection, activity, and logs.
+* ``read`` allows server and library discovery, searches, coverage, theme inspection, ThemerrDB lookups, activity, and logs.
 * ``process`` allows the same queries plus library refreshes and selected-item retries.
 
 Browser sessions and media-server credentials do not authorize MCP requests. Tokens are independent of
@@ -85,6 +85,8 @@ Available tools
      - Installed counts, percentage, and status counts, optionally scoped to a server or library.
    * - ``inspect_theme``
      - Cached metadata identifiers, installed provider, recorded processing error, and successful upload tracking.
+   * - ``check_themerrdb``
+     - Check whether a movie, show, or collection exists in ThemerrDB using a TMDB ID, or an IMDb ID for a movie.
    * - ``get_activity``
      - Recent dispatch jobs and separate counts for queued and active uploads.
    * - ``get_logs``
@@ -99,6 +101,13 @@ Use ``refresh_libraries`` to request new metadata. Searches return library membe
 libraries can appear more than once; coverage counts each item once per server. Library filters require a server ID.
 Server lists, library lists, and searches support ``limit`` and ``offset``, with a maximum page size of 200.
 Follow ``next_offset`` until it is null.
+
+``check_themerrdb`` accepts ``media_type`` (``movie``, ``show``, or ``collection``), ``database_id`` as a string,
+and ``database`` (``themoviedb`` by default, or ``imdb`` for movies). Use the external IDs returned by
+``search_items`` or provide an ID directly; a saved media server is not required. The result includes ``exists``
+and the index's UTC ``last_refresh`` timestamp. The tool refreshes Themerr's shared index when it is older than
+one hour. An unavailable index returns a tool error instead of claiming that the item is absent. A successful
+lookup confirms database membership; it does not verify that the theme is installed or that its video is available.
 
 Theme inspection reports observed state and upload metadata. It does not perform a processing scan or establish
 every reason an item was skipped. Retry requests validate the entire selection before queuing anything, reject
@@ -118,5 +127,6 @@ Example requests
 * "Show movies with failed themes on my Jellyfin server."
 * "What percentage of my Movies library has theme music?"
 * "Inspect this item's metadata and last theme upload."
+* "Check whether movie TMDB ID 123 is in ThemerrDB."
 * "Show recent YouTube extraction errors."
 * "Refresh library metadata, then retry these three items."

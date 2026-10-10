@@ -20,7 +20,7 @@ from jellyfin import servers as jellyfin_servers
 from media_servers import processing
 from plex import servers
 from tests.http_helpers import get_session, set_session
-from themerr import mcp_tools, storage
+from themerr import mcp_tools, storage, themerr_db
 
 PASSWORD = 'a unique test password'
 JELLYFIN = 'jellyfin:second'
@@ -100,6 +100,28 @@ def mcp_client(configured, monkeypatch):
         yield client
 
 
+@pytest.fixture
+def themerrdb_index(monkeypatch):
+    monkeypatch.setattr(themerr_db, 'database_cache', {
+        'movies': {
+            'themoviedb': {'123'},
+            'imdb': {'tt123'},
+        },
+        'tv_shows': {'themoviedb': {'456'}},
+        'movie_collections': {'themoviedb': {'645'}},
+    })
+    monkeypatch.setattr(themerr_db, 'lookup_cache', {})
+    monkeypatch.setattr(themerr_db, 'last_cache_update', 10000)
+    clock = Mock(return_value=10000)
+    monkeypatch.setattr(themerr_db, 'time', SimpleNamespace(time=clock))
+    request = Mock(side_effect=AssertionError('No network expected for a fresh index'))
+    monkeypatch.setattr(themerr_db.helpers, 'json_get', request)
+    return (
+        request,
+        clock,
+    )
+
+
 def _rpc(client, method, params=None, token=None, **kwargs):
     headers = {
         'Authorization': f'Bearer {token or client.read_token}',
@@ -149,6 +171,7 @@ def test_protocol_initialization_and_tool_discovery(mcp_client):
         'search_items',
         'get_theme_coverage',
         'inspect_theme',
+        'check_themerrdb',
         'get_activity',
         'get_logs',
         'refresh_libraries',
@@ -156,6 +179,9 @@ def test_protocol_initialization_and_tool_discovery(mcp_client):
     }
     assert all('ctx' not in tool['inputSchema']['properties'] for tool in tools)
     assert by_name['search_items']['annotations']['readOnlyHint'] is True
+    assert by_name['check_themerrdb']['annotations']['readOnlyHint'] is True
+    assert by_name['check_themerrdb']['annotations']['destructiveHint'] is False
+    assert by_name['check_themerrdb']['annotations']['openWorldHint'] is True
     assert by_name['retry_items']['annotations']['readOnlyHint'] is False
     assert by_name['retry_items']['annotations']['destructiveHint'] is True
     assert 'Mcp-Session-Id' not in response.headers
@@ -205,6 +231,7 @@ def test_web_ui_creates_lists_and_revokes_individual_tokens(mcp_client):
     assert 'id="mcp-toggle-token"' in page.text
     assert 'Example prompts' in page.text
     assert 'Show movies with failed themes on my Jellyfin server.' in page.text
+    assert 'Check whether movie TMDB ID 123 is in ThemerrDB.' in page.text
     assert 'http://localhost/mcp' in page.text
     assert mcp_client.read_token not in page.text
     payload = {
@@ -615,6 +642,190 @@ def test_inspection_is_server_scoped_and_omits_private_upload_paths(mcp_client):
     })['isError'] is True
 
 
+@pytest.mark.parametrize('media_type,database,database_id,database_type', [
+    (
+        'movie',
+        'themoviedb',
+        '123',
+        'movies',
+    ),
+    (
+        'movie',
+        'imdb',
+        'tt123',
+        'movies',
+    ),
+    (
+        'show',
+        'themoviedb',
+        '456',
+        'tv_shows',
+    ),
+    (
+        'collection',
+        'themoviedb',
+        '645',
+        'movie_collections',
+    ),
+])
+def test_themerrdb_lookup_distinguishes_present_and_absent_ids(
+        mcp_client, themerrdb_index, monkeypatch, media_type, database, database_id, database_type):
+    monkeypatch.setattr(mcp_tools, 'get_backend', Mock(side_effect=AssertionError('No media server expected')))
+    arguments = {
+        'media_type': media_type,
+        'database': database,
+        'database_id': database_id,
+    }
+    found = _data(mcp_client, 'check_themerrdb', arguments)
+    assert found == {
+        **arguments,
+        'database_type': database_type,
+        'exists': True,
+        'cached': True,
+        'last_refresh': '1970-01-01T02:46:40+00:00',
+    }
+    missing = _data(mcp_client, 'check_themerrdb', {
+        **arguments,
+        'database_id': 'tt999' if database == 'imdb' else '999',
+    }, token=mcp_client.process_token)
+    assert missing['exists'] is False
+    themerrdb_index[0].assert_not_called()
+
+
+def test_themerrdb_lookup_defaults_to_tmdb_and_preserves_media_categories(mcp_client, themerrdb_index):
+    movie = _data(mcp_client, 'check_themerrdb', {
+        'media_type': 'movie',
+        'database_id': '123',
+    })
+    assert movie['exists'] is True
+    assert movie['database'] == 'themoviedb'
+    show = _data(mcp_client, 'check_themerrdb', {
+        'media_type': 'show',
+        'database_id': '123',
+    })
+    assert show['exists'] is False
+
+
+@pytest.mark.parametrize('arguments', [
+    {},
+    {
+        'media_type': 'episode',
+        'database_id': '123',
+    },
+    {
+        'media_type': 'movie',
+        'database': 'tvdb',
+        'database_id': '123',
+    },
+    {
+        'media_type': 'show',
+        'database': 'imdb',
+        'database_id': 'tt123',
+    },
+    {
+        'media_type': 'collection',
+        'database': 'imdb',
+        'database_id': 'tt123',
+    },
+    {
+        'media_type': 'movie',
+        'database': 'imdb',
+        'database_id': '123',
+    },
+    {
+        'media_type': 'movie',
+        'database': 'imdb',
+        'database_id': 'tt',
+    },
+    {
+        'media_type': 'movie',
+        'database_id': '../123',
+    },
+    {
+        'media_type': 'movie',
+        'database_id': 'https://example.com/123',
+    },
+    {
+        'media_type': 'movie',
+        'database_id': '\u0661\u0662\u0663',
+    },
+    {
+        'media_type': 'movie',
+        'database_id': '',
+    },
+    {
+        'media_type': 'movie',
+        'database_id': '1' * 257,
+    },
+])
+def test_themerrdb_lookup_rejects_invalid_ids_before_refreshing(mcp_client, themerrdb_index, arguments):
+    themerrdb_index[1].return_value = 13601
+    assert _call(mcp_client, 'check_themerrdb', arguments)['isError'] is True
+    themerrdb_index[0].assert_not_called()
+
+
+@pytest.mark.parametrize('initialized', [
+    False,
+    True,
+])
+def test_themerrdb_lookup_refreshes_an_expired_index_once(mcp_client, themerrdb_index, initialized):
+    request, clock = themerrdb_index
+    clock.return_value = 13601
+    if not initialized:
+        themerr_db.database_cache.clear()
+        themerr_db.last_cache_update = 0
+
+    def index(**kwargs):
+        if kwargs['url'].endswith('/pages.json'):
+            return {'pages': 1}
+        return [{
+            'id': 789,
+            'imdb_id': 'tt789',
+            'title': 'New item',
+        }]
+
+    request.side_effect = index
+    arguments = {
+        'media_type': 'movie',
+        'database_id': '789',
+    }
+    refreshed = _data(mcp_client, 'check_themerrdb', arguments)
+    assert refreshed['exists'] is True
+    assert refreshed['last_refresh'] == '1970-01-01T03:46:41+00:00'
+    assert request.call_count == 6
+    assert _data(mcp_client, 'check_themerrdb', arguments)['exists'] is True
+    assert request.call_count == 6
+
+
+def test_themerrdb_lookup_does_not_report_a_failed_index_as_absent(mcp_client, themerrdb_index):
+    request, clock = themerrdb_index
+    clock.return_value = 13601
+    request.side_effect = RuntimeError('private network error')
+    arguments = {
+        'media_type': 'movie',
+        'database_id': '123',
+    }
+    for _ in range(2):
+        result = _call(mcp_client, 'check_themerrdb', arguments)
+        assert result['isError'] is True
+        assert 'ThemerrDB index is unavailable' in result['content'][0]['text']
+        assert 'private network error' not in json.dumps(result)
+    assert request.call_count == 3
+
+
+def test_themerrdb_lookup_reports_absent_from_a_successfully_empty_index(mcp_client, themerrdb_index):
+    request, clock = themerrdb_index
+    clock.return_value = 13601
+    request.side_effect = None
+    request.return_value = {'pages': 0}
+    result = _data(mcp_client, 'check_themerrdb', {
+        'media_type': 'movie',
+        'database_id': '123',
+    })
+    assert result['exists'] is False
+    assert request.call_count == 3
+
+
 def test_process_refresh_only_dispatches_metadata_refresh(mcp_client, monkeypatch):
     dispatch = Mock(return_value=SimpleNamespace(job_id='refresh-id'))
     scan = Mock()
@@ -788,7 +999,7 @@ def test_host_configuration_and_lifespans_are_independent(mcp_client, configured
             restarted.read_token = mcp_client.read_token
             response = _rpc(restarted, 'tools/list', headers={'Origin': f'http://{permitted}'})
             assert response.status_code == 200
-            assert len(response.json()['result']['tools']) == 9
+            assert len(response.json()['result']['tools']) == 10
             assert _rpc(restarted, 'tools/list', headers={'Host': 'localhost'}).status_code == 421
             if override:
                 assert _rpc(restarted, 'tools/list', headers={'Host': 'custom.example:20494'}).status_code == 421
