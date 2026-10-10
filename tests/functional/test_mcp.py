@@ -768,12 +768,12 @@ def test_themerrdb_lookup_rejects_invalid_ids_before_refreshing(mcp_client, them
     False,
     True,
 ])
-def test_themerrdb_lookup_refreshes_an_expired_index_once(mcp_client, themerrdb_index, initialized):
+def test_themerrdb_lookup_refreshes_an_expired_index_once(mcp_client, themerrdb_index, monkeypatch, initialized):
     request, clock = themerrdb_index
     clock.return_value = 13601
     if not initialized:
-        themerr_db.database_cache.clear()
-        themerr_db.last_cache_update = 0
+        monkeypatch.setattr(themerr_db, 'database_cache', {})
+        monkeypatch.setattr(themerr_db, 'last_cache_update', 0)
 
     def index(**kwargs):
         if kwargs['url'].endswith('/pages.json'):
