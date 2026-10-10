@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: fr_FR\n"
-"PO-Revision-Date: 2026-10-10 00:43\n"
+"PO-Revision-Date: 2026-10-10 01:56\n"
 
 #: src/common/config.py:86
 msgid "Info"
@@ -290,7 +290,7 @@ msgstr "Port HTTP du connecteur"
 
 #: src/common/config.py:311
 msgid "Serve connector downloads and optionally MCP over HTTP. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
-msgstr ""
+msgstr "Servez les téléchargements du connecteur et éventuellement MCP via HTTP. L'interface d'administration reste sur HTTPS. Utilisez 0 pour désactiver. Redémarrez Themerr après avoir modifié ce port."
 
 #: src/common/config.py:318
 msgid "Plex"
@@ -678,55 +678,55 @@ msgstr "L'actualisation a échoué. Affichage des derniers enregistrements charg
 
 #: web/js/mcp.js:24
 msgid "Mask token"
-msgstr ""
+msgstr "Jeton de masque"
 
 #: web/js/mcp.js:24 web/templates/config.html:64
 msgid "Show token"
-msgstr ""
+msgstr "Afficher le jeton"
 
 #: web/js/mcp.js:55 web/templates/config.html:54 web/templates/config.html:72
 msgid "Read only"
-msgstr ""
+msgstr "Lecture seule"
 
 #: web/js/mcp.js:55 web/templates/config.html:55 web/templates/config.html:72
 msgid "Read and process"
-msgstr ""
+msgstr "Lire et traiter"
 
 #: web/js/mcp.js:64 web/templates/config.html:72
 msgid "Revoke"
-msgstr ""
+msgstr "Revoke"
 
 #: web/js/mcp.js:70 web/templates/config.html:72
 msgid "No MCP tokens created."
-msgstr ""
+msgstr "Aucun jeton MCP créé."
 
 #: web/js/mcp.js:109
 msgid "MCP token created. Copy it into your client now."
-msgstr ""
+msgstr "Jeton MCP créé. Copiez-le maintenant dans votre client."
 
 #: web/js/mcp.js:126
 msgid "Revoke all MCP tokens and disconnect every client?"
-msgstr ""
+msgstr "Révoquer tous les jetons MCP et déconnecter chaque client?"
 
 #: web/js/mcp.js:140
 msgid "Endpoint URL copied."
-msgstr ""
+msgstr "L'URL du point de terminaison a été copiée."
 
 #: web/js/mcp.js:144
 msgid "Copy the selected endpoint URL manually."
-msgstr ""
+msgstr "Copier l'URL de terminaison sélectionnée manuellement."
 
 #: web/js/mcp.js:156
 msgid "MCP token copied."
-msgstr ""
+msgstr "Jeton MCP copié."
 
 #: web/js/mcp.js:161
 msgid "Copy the selected token manually."
-msgstr ""
+msgstr "Copiez le jeton sélectionné manuellement."
 
 #: web/js/mcp.js:164
 msgid "Unable to copy. Show the token to copy it manually."
-msgstr ""
+msgstr "Copie impossible. Afficher le jeton pour le copier manuellement."
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
@@ -980,7 +980,7 @@ msgstr "Sécurité"
 
 #: web/templates/config.html:28 web/templates/config.html:41
 msgid "MCP integration"
-msgstr ""
+msgstr "Intégration MCP"
 
 #: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
@@ -1012,91 +1012,91 @@ msgstr "Changer le mot de passe"
 
 #: web/templates/config.html:41
 msgid "Connect an assistant to your theme libraries. Create a separate token for each client."
-msgstr ""
+msgstr "Connectez un assistant à vos bibliothèques de thèmes. Créez un jeton séparé pour chaque client."
 
 #: web/templates/config.html:43
 msgid "Endpoint URL"
-msgstr ""
+msgstr "Endpoint URL"
 
 #: web/templates/config.html:46
 msgid "Copy endpoint URL"
-msgstr ""
+msgstr "Copier l'URL du point de terminaison"
 
 #: web/templates/config.html:48
 msgid "Choose Streamable HTTP in your client and use the token as its Bearer credential."
-msgstr ""
+msgstr "Choisissez HTTP Streamable dans votre client et utilisez le jeton comme identifiant Bearer ."
 
 #: web/templates/config.html:50
 msgid "Client name"
-msgstr ""
+msgstr "Nom du client"
 
 #: web/templates/config.html:51
 msgid "My assistant"
-msgstr ""
+msgstr "Mon assistant"
 
 #: web/templates/config.html:52
 msgid "Access"
-msgstr ""
+msgstr "Accès"
 
 #: web/templates/config.html:57
 msgid "Read only allows library queries, activity, and logs. Read and process also allows library refreshes and selected-item retries under your existing overwrite settings."
-msgstr ""
+msgstr "La lecture et le processus permettent uniquement les requêtes de la bibliothèque, l'activité et les logs. La lecture et le processus permettent également l'actualisation de la bibliothèque et les tentatives d'élément sélectionné sous vos paramètres d'écrasement existants."
 
 #: web/templates/config.html:58
 msgid "Create token"
-msgstr ""
+msgstr "Créer un jeton"
 
 #: web/templates/config.html:61
 msgid "Copy this token now. It will not be shown again."
-msgstr ""
+msgstr "Copiez ce jeton maintenant. Il ne sera plus affiché."
 
 #: web/templates/config.html:65
 msgid "Copy token"
-msgstr ""
+msgstr "Copier le jeton"
 
 #: web/templates/config.html:67
 msgid "Done"
-msgstr ""
+msgstr "Fait"
 
 #: web/templates/config.html:69
 msgid "Client tokens"
-msgstr ""
+msgstr "Jetons du client"
 
 #: web/templates/config.html:70
 msgid "Changing your administrator password invalidates all existing tokens."
-msgstr ""
+msgstr "Le changement de votre mot de passe administrateur invalide tous les jetons existants."
 
 #: web/templates/config.html:72
 msgid "Invalidated"
-msgstr ""
+msgstr "Invalidé"
 
 #: web/templates/config.html:74
 msgid "Revoke all tokens"
-msgstr ""
+msgstr "Révoquer tous les jetons"
 
 #: web/templates/config.html:75
 msgid "Example prompts"
-msgstr ""
+msgstr "Exemples d'instructions"
 
 #: web/templates/config.html:77
 msgid "Show movies with failed themes on my Jellyfin server."
-msgstr ""
+msgstr "Afficher les films avec des thèmes en échec sur mon serveur Jellyfin."
 
 #: web/templates/config.html:78
 msgid "What percentage of my Movies library has theme music?"
-msgstr ""
+msgstr "Quel pourcentage de ma bibliothèque de films a de la musique de thème ?"
 
 #: web/templates/config.html:79
 msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
-msgstr ""
+msgstr "Vérifiez si le film TMDB ID 123 est dans ThemerrDB."
 
 #: web/templates/config.html:80
 msgid "Show recent YouTube extraction errors."
-msgstr ""
+msgstr "Afficher les erreurs d'extraction récentes de YouTube."
 
 #: web/templates/config.html:81
 msgid "Refresh library metadata, then retry these selected items."
-msgstr ""
+msgstr "Rafraîchir les métadonnées de la bibliothèque, puis réessayer ces éléments sélectionnés."
 
 #: web/templates/config.html:84
 msgid "Save changes"
