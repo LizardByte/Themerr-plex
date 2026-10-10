@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2026-10-10 00:43\n"
+"PO-Revision-Date: 2026-10-10 01:56\n"
 
 #: src/common/config.py:86
 msgid "Info"
@@ -1088,15 +1088,15 @@ msgstr "A filmgyűjteményem hány százalékában található témazene?"
 
 #: web/templates/config.html:79
 msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
-msgstr ""
+msgstr "Ellenőrizd, hogy a TMDB-azonosítója 123-as film szerepel-e a ThemerrDB-ben."
 
 #: web/templates/config.html:80
 msgid "Show recent YouTube extraction errors."
-msgstr ""
+msgstr "A legutóbbi YouTube-letöltési hibák megjelenítése."
 
 #: web/templates/config.html:81
 msgid "Refresh library metadata, then retry these selected items."
-msgstr ""
+msgstr "Frissítse a könyvtár metaadatait, majd próbálja meg újra letölteni a kiválasztott elemeket."
 
 #: web/templates/config.html:84
 msgid "Save changes"
