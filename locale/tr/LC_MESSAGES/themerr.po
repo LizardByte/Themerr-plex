@@ -14,429 +14,445 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: tr_TR\n"
-"PO-Revision-Date: 2026-10-07 14:38\n"
+"PO-Revision-Date: 2026-10-10 00:43\n"
 
-#: src/common/config.py:85
+#: src/common/config.py:86
 msgid "Info"
 msgstr "Bilgi"
 
-#: src/common/config.py:86
+#: src/common/config.py:87
 msgid "For information purposes only."
 msgstr "Yalnızca bilgilendirme amaçlıdır."
 
-#: src/common/config.py:90
+#: src/common/config.py:91
 msgid "Config version"
 msgstr "Yapılandırma sürümü"
 
-#: src/common/config.py:91
+#: src/common/config.py:92
 msgid "The configuration version."
 msgstr "Yapılandırma sürümü."
 
-#: src/common/config.py:100
+#: src/common/config.py:101
 msgid "First run complete"
 msgstr "İlk çalıştırma tamamlandı"
 
-#: src/common/config.py:101
+#: src/common/config.py:102
 msgid "Todo: Indicates if the user has completed the initial setup."
 msgstr "Yapılacaklar: Kullanıcının ilk kurulumu tamamlayıp tamamlamadığını gösterir."
 
-#: src/common/config.py:108
+#: src/common/config.py:109
 msgid "General"
 msgstr "Genel"
 
-#: src/common/config.py:109
+#: src/common/config.py:110
 msgid "General settings."
 msgstr "Genel ayarlar."
 
-#: src/common/config.py:113
+#: src/common/config.py:114
 msgid "Locale"
 msgstr "Yerel ayar"
 
-#: src/common/config.py:114
+#: src/common/config.py:115
 msgid "The localization setting to use."
 msgstr "Kullanılacak yerelleştirme ayarı."
 
-#: src/common/config.py:123
+#: src/common/config.py:124
 msgid "Launch Browser on Startup "
 msgstr "Başlangıçta Tarayıcıyı Aç "
 
-#: src/common/config.py:129
+#: src/common/config.py:130
 msgid "Enable System Tray Icon"
 msgstr "Sistem Tepsisi Simgesini Etkinleştir"
 
-#: src/common/config.py:137
+#: src/common/config.py:138
 msgid "Notifications"
 msgstr "Bildirimler"
 
-#: src/common/config.py:138
+#: src/common/config.py:139
 msgid "Desktop notifications appear on the computer running Themerr. Docker and headless installations do not display them."
 msgstr "Masaüstü bildirimleri, Themerr’in çalıştığı bilgisayarda görünür. Docker ve başsız kurulumlarda bu bildirimler görüntülenmez."
 
-#: src/common/config.py:143 src/common/notifications.py:138
+#: src/common/config.py:144 src/common/notifications.py:138
 msgid "New release available"
 msgstr "Yeni sürüm çıktı"
 
-#: src/common/config.py:144
+#: src/common/config.py:145
 msgid "Notify when a newer Themerr release is available. Checks run once per hour."
 msgstr "Themerr’ın daha yeni bir sürümü çıktığında bildirim gönder. Kontroller saatte bir kez yapılır."
 
-#: src/common/config.py:149
+#: src/common/config.py:150
 msgid "Follow pre-releases"
 msgstr "Ön sürümleri takip edin"
 
-#: src/common/config.py:150
+#: src/common/config.py:151
 msgid "Include pre-releases in new release notifications."
 msgstr "Yeni sürüm bildirimlerine ön sürümleri de dahil edin."
 
-#: src/common/config.py:155
+#: src/common/config.py:156
 msgid "Theme coverage increased"
 msgstr "Tema kapsamı genişledi"
 
-#: src/common/config.py:156
+#: src/common/config.py:157
 msgid "Notify after a successful refresh when total theme coverage increases. Refreshes with no increase stay quiet."
 msgstr "Toplam tema kapsamı arttığında, yenileme işlemi başarıyla tamamlandıktan sonra bildirim gönderilir. Kapsamda artış olmayan yenileme işlemlerinde bildirim yapılmaz."
 
-#: src/common/config.py:163
+#: src/common/config.py:164
 msgid "Logging"
 msgstr "Günlük kaydı"
 
-#: src/common/config.py:164
+#: src/common/config.py:165
 msgid "Logging settings."
 msgstr "Günlük kaydı ayarları."
 
-#: src/common/config.py:168
+#: src/common/config.py:169
 msgid "Log directory"
 msgstr "Günlük dizini"
 
-#: src/common/config.py:170
+#: src/common/config.py:171
 msgid "The directory where to store the log files."
 msgstr "Günlük dosyalarının depolanacağı dizin."
 
-#: src/common/config.py:177
+#: src/common/config.py:178
 msgid "Debug logging"
 msgstr "Hata ayıklama günlüğü"
 
-#: src/common/config.py:179
+#: src/common/config.py:180
 msgid "Enable debug logging."
 msgstr "Hata ayıklama günlüğünü etkinleştirin."
 
-#: src/common/config.py:185
+#: src/common/config.py:186
 msgid "Network"
 msgstr "Ağ"
 
-#: src/common/config.py:186
+#: src/common/config.py:187
 msgid "Network settings."
 msgstr "Ağ ayarları."
 
-#: src/common/config.py:190
+#: src/common/config.py:191
 msgid "HTTP host address"
 msgstr "HTTP ana bilgisayar adresi"
 
-#: src/common/config.py:192
+#: src/common/config.py:193
 msgid "The HTTP address to bind to."
 msgstr "Bağlanılacak HTTP adresi."
 
-#: src/common/config.py:201
+#: src/common/config.py:202
 msgid "HTTP port"
 msgstr "HTTP bağlantı noktası"
 
-#: src/common/config.py:203
+#: src/common/config.py:204
 msgid "Port to bind web server to. Note that ports below 1024 may require root."
 msgstr "Web sunucusunun bağlanacağı bağlantı noktası. 1024'ün altındaki bağlantı noktaları için root yetkisi gerekebileceğini unutmayın."
 
-#: src/common/config.py:211
+#: src/common/config.py:212
 msgid "HTTP root"
 msgstr "HTTP kökü"
 
-#: src/common/config.py:213
+#: src/common/config.py:214
 msgid "Todo: The base URL of the web server. Used for reverse proxies."
 msgstr "Yapılacaklar: Web sunucusunun temel URL’si. Ters proxy’ler için kullanılır."
 
-#: src/common/config.py:218
+#: src/common/config.py:219
+msgid "MCP allowed hosts"
+msgstr "MCP tarafından izin verilen ana bilgisayarlar"
+
+#: src/common/config.py:220
+msgid "Addresses MCP clients may use to connect, for example themerr.example:9494. Separate addresses with commas. Use :* to allow any port."
+msgstr "MCP istemcilerinin bağlantı kurmak için kullanabileceği adresler; örneğin, themerr.example:9494. Adresleri virgülle ayırın. Herhangi bir bağlantı noktasına izin vermek için :* kullanın."
+
+#: src/common/config.py:227
+msgid "Serve MCP over HTTP"
+msgstr "MCP’yi HTTP üzerinden sunma"
+
+#: src/common/config.py:229
+msgid "Use the Connector HTTP port configured under Jellyfin for clients that cannot trust Themerr’s self-signed HTTPS certificate. Token authentication is still required. Restart Themerr after changing this setting."
+msgstr "Themerr’in kendi imzaladığı HTTPS sertifikasına güvenemeyen istemciler için, Jellyfin altında yapılandırılmış Connector HTTP bağlantı noktasını kullanın. Jetonla kimlik doğrulama hâlâ gereklidir. Bu ayarı değiştirdikten sonra Themerr’i yeniden başlatın."
+
+#: src/common/config.py:235
 msgid "SSL"
 msgstr "SSL"
 
-#: src/common/config.py:220
+#: src/common/config.py:237
 msgid "Run the web server with HTTPS. Disabling this can be a security risk, do so at your own risk."
 msgstr "Web sunucusunu HTTPS ile çalıştırın. Bu ayarın devre dışı bırakılması bir güvenlik riski oluşturabilir; bu işlemi kendi sorumluluğunuzda gerçekleştirin."
 
-#: src/common/config.py:226
+#: src/common/config.py:243
 msgid "Updater"
 msgstr "Güncelleyici"
 
-#: src/common/config.py:227
+#: src/common/config.py:244
 msgid "Updater settings."
 msgstr "Güncelleyici ayarları."
 
-#: src/common/config.py:231
+#: src/common/config.py:248
 msgid "Auto update"
 msgstr "Otomatik güncelleme"
 
-#: src/common/config.py:239
+#: src/common/config.py:256
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/common/config.py:240
+#: src/common/config.py:257
 msgid "Jellyfin theme processing settings. Connections are managed on the Servers page."
 msgstr "Jellyfin tema işleme ayarları. Bağlantılar, “Sunucular” sayfasında yönetilir."
 
-#: src/common/config.py:243 src/common/config.py:344
+#: src/common/config.py:260 src/common/config.py:361
 msgid "Movie support"
 msgstr "Film desteği"
 
-#: src/common/config.py:244
+#: src/common/config.py:261
 msgid "Add themes to Jellyfin movies."
 msgstr "Jellyfin filmlerine temalar ekleyin."
 
-#: src/common/config.py:247 src/common/config.py:350
+#: src/common/config.py:264 src/common/config.py:367
 msgid "Series support"
 msgstr "Seri desteği"
 
-#: src/common/config.py:248
+#: src/common/config.py:265
 msgid "Add themes to Jellyfin series."
 msgstr "Jellyfin dizilerine temalar ekleyin."
 
-#: src/common/config.py:251 src/common/config.py:338 web/templates/home.html:31
+#: src/common/config.py:268 src/common/config.py:355 web/templates/home.html:31
 msgid "Collections"
 msgstr "Koleksiyonlar"
 
-#: src/common/config.py:252
+#: src/common/config.py:269
 msgid "Add themes inside Jellyfin’s collection directories. Media files can remain elsewhere."
 msgstr "Temaları Jellyfin’in koleksiyon dizinlerine ekleyin. Medya dosyaları başka bir yerde kalabilir."
 
-#: src/common/config.py:255
+#: src/common/config.py:272
 msgid "Overwrite user themes"
 msgstr "Kullanıcı temalarını üzerine yaz"
 
-#: src/common/config.py:256
+#: src/common/config.py:273
 msgid "Replace existing theme files, including themes created by the older Themerr-jellyfin plugin."
 msgstr "Eski Themerr-jellyfin eklentisiyle oluşturulan temalar da dahil olmak üzere mevcut tema dosyalarını değiştirin."
 
-#: src/common/config.py:260
+#: src/common/config.py:277
 msgid "Back up replaced user themes"
 msgstr "Değiştirilen kullanıcı temalarını yedekleyin"
 
-#: src/common/config.py:261
+#: src/common/config.py:278
 msgid "Keep existing user themes in a backup folder when replacing them. Disable to permanently remove replaced themes."
 msgstr "Mevcut kullanıcı temalarını değiştirirken bunları bir yedekleme klasöründe saklayın. Değiştirilen temaları kalıcı olarak silmek için bu seçeneği devre dışı bırakın."
 
-#: src/common/config.py:265
+#: src/common/config.py:282
 msgid "Import older Themerr-jellyfin ownership"
 msgstr "Eski Themerr-jellyfin sahiplik bilgilerini içe aktar"
 
-#: src/common/config.py:266
+#: src/common/config.py:283
 msgid "Recognize themes recorded in the older plugin’s database only when their SHA-256 still matches. Changed files stay protected. The old database is left untouched."
 msgstr "Eski eklentinin veritabanında kayıtlı temaları, yalnızca SHA-256 değerleri hala eşleşiyorsa tanıyın. Değiştirilen dosyalar korunmaya devam eder. Eski veritabanında herhangi bir değişiklik yapılmaz."
 
-#: src/common/config.py:270
+#: src/common/config.py:287
 msgid "Ignore locked metadata"
 msgstr "Kilitli meta verileri yok say"
 
-#: src/common/config.py:271
+#: src/common/config.py:288
 msgid "Allow Jellyfin theme updates for items with locked metadata."
 msgstr "Meta verileri kilitli öğeler için Jellyfin tema güncellemelerine izin ver."
 
-#: src/common/config.py:274
+#: src/common/config.py:291
 msgid "Update connector automatically"
 msgstr "Bağlantı elemanını otomatik olarak güncelle"
 
-#: src/common/config.py:275
+#: src/common/config.py:292
 msgid "Install the matching connector when Themerr starts or detects a version mismatch. Set the reachable Themerr address on the Servers page first."
 msgstr "Themerr başlatıldığında veya sürüm uyuşmazlığı tespit edildiğinde, uygun konektörü kurun. Öncelikle “Sunucular” sayfasında erişilebilir Themerr adresini ayarlayın."
 
-#: src/common/config.py:279
+#: src/common/config.py:296
 msgid "Restart Jellyfin automatically"
 msgstr "Jellyfin'i otomatik olarak yeniden başlat"
 
-#: src/common/config.py:280
+#: src/common/config.py:297
 msgid "Restart Jellyfin after installing or updating the connector. A pending restart is shown on the Servers page before it happens."
 msgstr "Bağlayıcıyı yükledikten veya güncelledikten sonra Jellyfin’i yeniden başlatın. Yeniden başlatma işlemi gerçekleşmeden önce, “Sunucular” sayfasında bekleyen bir yeniden başlatma gösterilir."
 
-#: src/common/config.py:284
+#: src/common/config.py:301
 msgid "Wait for playback to finish"
 msgstr "Oynatmanın bitmesini bekleyin"
 
-#: src/common/config.py:285
+#: src/common/config.py:302
 msgid "Defer connector restarts until there are no playing or paused streams."
 msgstr "Çalınan veya duraklatılmış akış kalmayana kadar konektörün yeniden başlatılmasını ertele."
 
-#: src/common/config.py:288
+#: src/common/config.py:305
 msgid "Remove the older Themerr-jellyfin plugin"
 msgstr "Eski Themerr-jellyfin eklentisini kaldırın"
 
-#: src/common/config.py:289
+#: src/common/config.py:306
 msgid "After installing the connector, uninstall the older Themerr plugin and remove only its dedicated repository. Existing theme files are kept."
 msgstr "Bağlayıcıyı yükledikten sonra, eski Themerr eklentisini kaldırın ve yalnızca ona ait depoyu silin. Mevcut tema dosyaları korunur."
 
-#: src/common/config.py:293
+#: src/common/config.py:310
 msgid "Connector HTTP port"
 msgstr "Bağlayıcı HTTP bağlantı noktası"
 
-#: src/common/config.py:294
-msgid "Serve only connector downloads over HTTP when Themerr uses a self-signed certificate. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
-msgstr "Themerr kendi imzaladığı bir sertifika kullandığında, eklenti indirmelerini yalnızca HTTP üzerinden sunun. Yönetici kullanıcı arayüzü HTTPS üzerinde kalır. Devre dışı bırakmak için 0 değerini kullanın. Bu bağlantı noktasını değiştirdikten sonra Themerr’ı yeniden başlatın."
+#: src/common/config.py:311
+msgid "Serve connector downloads and optionally MCP over HTTP. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
+msgstr "Bağlayıcı indirmelerini ve isteğe bağlı olarak MCP’yi HTTP üzerinden sunun. Yönetici kullanıcı arayüzü HTTPS üzerinde kalır. Devre dışı bırakmak için 0 değerini kullanın. Bu bağlantı noktasını değiştirdikten sonra Themerr’ı yeniden başlatın."
 
-#: src/common/config.py:301
+#: src/common/config.py:318
 msgid "Plex"
 msgstr "Plex"
 
-#: src/common/config.py:302
+#: src/common/config.py:319
 msgid "Plex settings."
 msgstr "Plex ayarları."
 
-#: src/common/config.py:306
+#: src/common/config.py:323
 msgid "Plex URL"
 msgstr "Plex URL'si"
 
-#: src/common/config.py:307
+#: src/common/config.py:324
 msgid "The URL to the Plex server."
 msgstr "Plex sunucusunun URL'si."
 
-#: src/common/config.py:316 web/templates/servers.html:98
+#: src/common/config.py:333 web/templates/servers.html:98
 msgid "Plex data directory"
 msgstr "Plex veri dizini"
 
-#: src/common/config.py:317
+#: src/common/config.py:334
 msgid "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 msgstr "https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/"
 
-#: src/common/config.py:327
+#: src/common/config.py:344
 msgid "Themerr"
 msgstr "Themerr"
 
-#: src/common/config.py:328
+#: src/common/config.py:345
 msgid "Themerr settings."
 msgstr "Themerr ayarları."
 
-#: src/common/config.py:332
+#: src/common/config.py:349
 msgid "Themerr Enabled"
 msgstr "Themerr Etkin"
 
-#: src/common/config.py:333
+#: src/common/config.py:350
 msgid "When enabled, Themerr will attempt to update themes."
 msgstr "Etkinleştirildiğinde, Themerr temaları güncellemeye çalışacaktır."
 
-#: src/common/config.py:339
+#: src/common/config.py:356
 msgid "Add themes to collections."
 msgstr "Temaları koleksiyonlara ekleyin."
 
-#: src/common/config.py:345
+#: src/common/config.py:362
 msgid "Add themes to movies using the Plex Movie agent."
 msgstr "Plex Movie ajanı kullanarak filmlere temalar ekleyin."
 
-#: src/common/config.py:351
+#: src/common/config.py:368
 msgid "Add themes to series using the Plex Series agent."
 msgstr "Plex Series ajanı kullanarak dizilere temalar ekleyin."
 
-#: src/common/config.py:356
+#: src/common/config.py:373
 msgid "Overwrite Plex themes"
 msgstr "Plex temalarını üzerine yaz"
 
-#: src/common/config.py:357
+#: src/common/config.py:374
 msgid "When enabled, Themerr will overwrite themes provided by Plex."
 msgstr "Etkinleştirildiğinde, Themerr, Plex tarafından sağlanan temaların üzerine yazacaktır."
 
-#: src/common/config.py:362
+#: src/common/config.py:379
 msgid "Prefer MP4A AAC Codec"
 msgstr "MP4A AAC kodekini tercih edin"
 
-#: src/common/config.py:363
+#: src/common/config.py:380
 msgid "This can improve theme compatibility with Apple devices."
 msgstr "Bu, temanın Apple cihazlarıyla uyumluluğunu artırabilir."
 
-#: src/common/config.py:368
+#: src/common/config.py:385
 msgid "Remove unused themes"
 msgstr "Kullanılmayan temaları kaldırın"
 
-#: src/common/config.py:369
+#: src/common/config.py:386
 msgid "Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Plex meta veri dizininizde yer açar. Bu seçeneğin kullanılabilmesi için “Plex veri dizini” yolunun ayarlanmış olması gerekir"
 
-#: src/common/config.py:375
+#: src/common/config.py:392
 msgid "Remove unused art"
 msgstr "Kullanılmayan görselleri kaldırın"
 
-#: src/common/config.py:376 src/common/config.py:384
+#: src/common/config.py:393 src/common/config.py:401
 msgid "Applies to collection. Frees up space in your Plex metadata directory. This option requires that the \"Plex data directory\" path is set"
 msgstr "Koleksiyon için geçerlidir. Plex meta veri dizininde yer açar. Bu seçeneğin kullanılabilmesi için “Plex veri dizini” yolunun ayarlanmış olması gerekir"
 
-#: src/common/config.py:383
+#: src/common/config.py:400
 msgid "Remove unused posters"
 msgstr "Kullanılmayan posterleri kaldırın"
 
-#: src/common/config.py:391
+#: src/common/config.py:408
 msgid "Collection metadata"
 msgstr "Koleksiyon meta verileri"
 
-#: src/common/config.py:392
+#: src/common/config.py:409
 msgid "Update collection metadata (poster, art, and summary) during scheduled update."
 msgstr "Zamanlanmış güncelleme sırasında koleksiyon meta verilerini (afiş, görsel ve özet) güncelleyin."
 
-#: src/common/config.py:397
+#: src/common/config.py:414
 msgid "Ignore locked fields."
 msgstr "Kilitli alanları göz ardı et."
 
-#: src/common/config.py:398
+#: src/common/config.py:415
 msgid "If you used Themerr v2024.813.13709 or lower, you may need to enable this to update items."
 msgstr "Themerr v2024.813.13709 veya daha eski bir sürümünü kullandıysanız, öğeleri güncellemek için bu özelliği etkinleştirmeniz gerekebilir."
 
-#: src/common/config.py:404
+#: src/common/config.py:421
 msgid "Ignored library IDs"
 msgstr "Yoksayılan kütüphane kimlikleri"
 
-#: src/common/config.py:405
+#: src/common/config.py:422
 msgid "Comma-separated library IDs to exclude from scheduled updates. IDs appear on Home."
 msgstr "Zamanlanmış güncellemelerden hariç tutulacak, virgülle ayrılmış kütüphane kimlikleri. Kimlikler Ana Sayfa’da görüntülenir."
 
-#: src/common/config.py:411
+#: src/common/config.py:428
 msgid "Update themes interval"
 msgstr "Tema güncelleme aralığı"
 
-#: src/common/config.py:412
+#: src/common/config.py:429
 msgid "Interval for automatic update task, in minutes (min: 15)."
 msgstr "Otomatik güncelleme görevinin aralığı, dakika cinsinden (min: 15)."
 
-#: src/common/config.py:419
+#: src/common/config.py:436
 msgid "Update database cache interval"
 msgstr "Veritabanı önbellek aralığını güncelle"
 
-#: src/common/config.py:420
+#: src/common/config.py:437
 msgid "Interval for database cache update task, in minutes (min: 15)."
 msgstr "Veritabanı önbelleği güncelleme görevinin aralığı, dakika cinsinden (min: 15)."
 
-#: src/common/config.py:427
+#: src/common/config.py:444
 msgid "PlexAPI timeout"
 msgstr "PlexAPI zaman aşımı"
 
-#: src/common/config.py:428
+#: src/common/config.py:445
 msgid "Increase this slightly if you experience timeouts when adding themes. (min: 1)"
 msgstr "Tema eklerken zaman aşımı hatalarıyla karşılaşırsanız bu değeri biraz artırın. (min: 1)"
 
-#: src/common/config.py:435
+#: src/common/config.py:452
 msgid "Theme upload retries"
 msgstr "Tema yükleme yeniden denemeleri"
 
-#: src/common/config.py:436
+#: src/common/config.py:453
 msgid "If uploading themes fail, retry this many times. (min: 0)"
 msgstr "Tema yükleme işlemi başarısız olursa, bu kadar kez yeniden dene. (en az: 0)"
 
-#: src/common/config.py:443
+#: src/common/config.py:460
 msgid "Multiprocessing thread count"
 msgstr "Çoklu işleme iş parçacığı sayısı"
 
-#: src/common/config.py:444
+#: src/common/config.py:461
 msgid "The number of threads to use when adding themes. Restart required. (min: 1)"
 msgstr "Tema eklenirken kullanılacak iş parçacığı sayısı. Yeniden başlatma gereklidir. (min: 1)"
 
-#: src/common/config.py:452
+#: src/common/config.py:469
 msgid "YouTube Cookies"
 msgstr "YouTube Çerezleri"
 
-#: src/common/config.py:454
+#: src/common/config.py:471
 msgid "Optional: export youtube.com cookies with Get cookies.txt LOCALLY using its JSON format, then paste the entire JSON array here and save. Saved cookies are encrypted and masked. Select the eye icon to reveal them. Leave this blank to keep them, or select Clear saved cookies to remove them."
 msgstr "İsteğe bağlı: youtube.com çerezlerini “Get cookies.txt” komutuyla JSON biçiminde YEREL OLARAK dışa aktarın, ardından JSON dizisinin tamamını buraya yapıştırın ve kaydedin. Kaydedilen çerezler şifrelenmiş ve maskelenmiştir. Bunları görüntülemek için göz simgesini seçin. Çerezleri saklamak için bu alanı boş bırakın veya silmek için “Kaydedilen çerezleri temizle” seçeneğini seçin."
 
-#: src/common/config.py:461
+#: src/common/config.py:478
 msgid "Cookie export instructions"
 msgstr "Çerez aktarım talimatları"
 
@@ -523,12 +539,12 @@ msgstr "Yeniden başlat"
 msgid "Quit"
 msgstr "Çık"
 
-#: src/common/webapp.py:81 web/templates/logs.html:4
+#: src/common/webapp.py:82 web/templates/logs.html:4
 #: web/templates/navbar.html:6
 msgid "Logs"
 msgstr "Günlükler"
 
-#: src/common/webapp.py:479 web/templates/config.html:26
+#: src/common/webapp.py:486 web/templates/config.html:26
 #: web/templates/navbar.html:6
 msgid "Settings"
 msgstr "Ayarlar"
@@ -587,43 +603,43 @@ msgstr "Oturumunuzun süresi doldu. Devam etmek için oturum açın."
 msgid "Dismiss message"
 msgstr "Mesajı kapat"
 
-#: web/js/config.js:6
+#: web/js/config.js:7
 msgid "Hide cookies"
 msgstr "Çerezleri gizle"
 
-#: web/js/config.js:6 web/templates/config.html:18
+#: web/js/config.js:7 web/templates/config.html:18
 msgid "Show cookies"
 msgstr "Çerezleri göster"
 
-#: web/js/config.js:18 web/templates/config.html:14
+#: web/js/config.js:19 web/templates/config.html:14
 msgid "Cookies saved"
 msgstr "Kaydedilen çerezler"
 
-#: web/js/config.js:34 web/templates/config.html:14
+#: web/js/config.js:35 web/templates/config.html:14
 msgid "No cookies saved"
 msgstr "Kaydedilmiş çerez yok"
 
-#: web/js/config.js:81 web/js/config.js:123
+#: web/js/config.js:84 web/js/config.js:131
 msgid "Unsaved changes"
 msgstr "Kaydedilmemiş değişiklikler"
 
-#: web/js/config.js:89
+#: web/js/config.js:93
 msgid "Discard unsaved settings changes?"
 msgstr "Kaydedilmemiş ayar değişikliklerini silmek ister misiniz?"
 
-#: web/js/config.js:123 web/templates/config.html:40
+#: web/js/config.js:131 web/templates/config.html:84
 msgid "All changes saved."
 msgstr "Tüm değişiklikler kaydedildi."
 
-#: web/js/config.js:125
+#: web/js/config.js:133
 msgid "Settings saved. Network changes take effect after restarting Themerr."
 msgstr "Ayarlar kaydedildi. Ağ değişiklikleri, Themerr yeniden başlatıldıktan sonra yürürlüğe girer."
 
-#: web/js/config.js:129
+#: web/js/config.js:137
 msgid "Unable to save changes."
 msgstr "Değişiklikler kaydedilemedi."
 
-#: web/js/config.js:137
+#: web/js/config.js:145
 msgid "Save your settings changes before changing your password."
 msgstr "Şifrenizi değiştirmeden önce ayar değişikliklerinizi kaydedin."
 
@@ -659,6 +675,58 @@ msgstr "Duraklatıldı"
 #: web/js/logs.js:185
 msgid "Refresh failed. Showing the last loaded records."
 msgstr "Yenileme işlemi başarısız oldu. En son yüklenen kayıtlar gösteriliyor."
+
+#: web/js/mcp.js:24
+msgid "Mask token"
+msgstr "Maske belirteci"
+
+#: web/js/mcp.js:24 web/templates/config.html:64
+msgid "Show token"
+msgstr "Jetonu göster"
+
+#: web/js/mcp.js:55 web/templates/config.html:54 web/templates/config.html:72
+msgid "Read only"
+msgstr "Yalnızca okunur"
+
+#: web/js/mcp.js:55 web/templates/config.html:55 web/templates/config.html:72
+msgid "Read and process"
+msgstr "Oku ve işleme al"
+
+#: web/js/mcp.js:64 web/templates/config.html:72
+msgid "Revoke"
+msgstr "İptal et"
+
+#: web/js/mcp.js:70 web/templates/config.html:72
+msgid "No MCP tokens created."
+msgstr "MCP token'ı oluşturulmadı."
+
+#: web/js/mcp.js:109
+msgid "MCP token created. Copy it into your client now."
+msgstr "MCP tokeni oluşturuldu. Hemen bunu istemcinize kopyalayın."
+
+#: web/js/mcp.js:126
+msgid "Revoke all MCP tokens and disconnect every client?"
+msgstr "Tüm MCP jetonlarını iptal edip her istemcinin bağlantısını kesmek mi?"
+
+#: web/js/mcp.js:140
+msgid "Endpoint URL copied."
+msgstr "Uç nokta URL’si kopyalandı."
+
+#: web/js/mcp.js:144
+msgid "Copy the selected endpoint URL manually."
+msgstr "Seçilen uç nokta URL’sini manuel olarak kopyalayın."
+
+#: web/js/mcp.js:156
+msgid "MCP token copied."
+msgstr "MCP tokeni kopyalandı."
+
+#: web/js/mcp.js:161
+msgid "Copy the selected token manually."
+msgstr "Seçilen jetonu elle kopyalayın."
+
+#: web/js/mcp.js:164
+msgid "Unable to copy. Show the token to copy it manually."
+msgstr "Kopyalama işlemi gerçekleştirilemedi. Manuel olarak kopyalamak için jetonu gösterin."
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
@@ -910,6 +978,10 @@ msgstr "Ayarlar bölümleri"
 msgid "Security"
 msgstr "Güvenlik"
 
+#: web/templates/config.html:28 web/templates/config.html:41
+msgid "MCP integration"
+msgstr "MCP entegrasyonu"
+
 #: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
 msgstr "Sunucu bağlantıları, veri dizinleri ve göz ardı edilen kütüphaneler, “Sunucular” sayfasında yönetilir."
@@ -938,7 +1010,95 @@ msgstr "Yeni şifreyi onaylayın"
 msgid "Change password"
 msgstr "Şifreyi değiştir"
 
-#: web/templates/config.html:40
+#: web/templates/config.html:41
+msgid "Connect an assistant to your theme libraries. Create a separate token for each client."
+msgstr "Tema kütüphanelerinize bir asistan bağlayın. Her müşteri için ayrı bir token oluşturun."
+
+#: web/templates/config.html:43
+msgid "Endpoint URL"
+msgstr "Uç Nokta URL'si"
+
+#: web/templates/config.html:46
+msgid "Copy endpoint URL"
+msgstr "Uç nokta URL’sini kopyala"
+
+#: web/templates/config.html:48
+msgid "Choose Streamable HTTP in your client and use the token as its Bearer credential."
+msgstr "İstemcinizde “Streamable HTTP” seçeneğini seçin ve bu jetonu “Bearer” kimlik bilgisi olarak kullanın."
+
+#: web/templates/config.html:50
+msgid "Client name"
+msgstr "Müşteri adı"
+
+#: web/templates/config.html:51
+msgid "My assistant"
+msgstr "Asistanım"
+
+#: web/templates/config.html:52
+msgid "Access"
+msgstr "Erişim"
+
+#: web/templates/config.html:57
+msgid "Read only allows library queries, activity, and logs. Read and process also allows library refreshes and selected-item retries under your existing overwrite settings."
+msgstr "\"Yalnızca okuma\" seçeneği, kütüphane sorgularına, etkinliklere ve günlüklerine erişim sağlar. \"Okuma ve işleme\" seçeneği ise, mevcut üzerine yazma ayarlarınız kapsamında kütüphane yenilemelerine ve seçilen öğeler için yeniden denemelere de izin verir."
+
+#: web/templates/config.html:58
+msgid "Create token"
+msgstr "Jeton oluştur"
+
+#: web/templates/config.html:61
+msgid "Copy this token now. It will not be shown again."
+msgstr "Bu jetonu şimdi kopyalayın. Bir daha gösterilmeyecektir."
+
+#: web/templates/config.html:65
+msgid "Copy token"
+msgstr "Jetonu kopyala"
+
+#: web/templates/config.html:67
+msgid "Done"
+msgstr "Tamam"
+
+#: web/templates/config.html:69
+msgid "Client tokens"
+msgstr "Müşteri belirteçleri"
+
+#: web/templates/config.html:70
+msgid "Changing your administrator password invalidates all existing tokens."
+msgstr "Yönetici şifrenizi değiştirdiğinizde, mevcut tüm erişim jetonları geçersiz hale gelir."
+
+#: web/templates/config.html:72
+msgid "Invalidated"
+msgstr "Geçersiz kılınan"
+
+#: web/templates/config.html:74
+msgid "Revoke all tokens"
+msgstr "Tüm jetonları iptal et"
+
+#: web/templates/config.html:75
+msgid "Example prompts"
+msgstr "Örnek komutlar"
+
+#: web/templates/config.html:77
+msgid "Show movies with failed themes on my Jellyfin server."
+msgstr "Jellyfin sunucumda teması başarısız olan filmleri göster."
+
+#: web/templates/config.html:78
+msgid "What percentage of my Movies library has theme music?"
+msgstr "Film kütüphanemdeki filmlerin yüzde kaçı tema müziğine sahip?"
+
+#: web/templates/config.html:79
+msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
+msgstr "TMDB kimliği 123 olan filmin ThemerrDB'de olup olmadığını kontrol et."
+
+#: web/templates/config.html:80
+msgid "Show recent YouTube extraction errors."
+msgstr "YouTube'dan son zamanlarda meydana gelen veri alma hatalarını göster."
+
+#: web/templates/config.html:81
+msgid "Refresh library metadata, then retry these selected items."
+msgstr "Kütüphane meta verilerini yenileyin, ardından seçilen bu öğeleri yeniden deneyin."
+
+#: web/templates/config.html:84
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
