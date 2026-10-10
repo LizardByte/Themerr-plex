@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-File: /[LizardByte.Themerr] master/themerr.po\n"
 "X-Crowdin-File-ID: 6533\n"
 "Language: cs_CZ\n"
-"PO-Revision-Date: 2026-10-10 00:43\n"
+"PO-Revision-Date: 2026-10-10 01:56\n"
 
 #: src/common/config.py:86
 msgid "Info"
@@ -290,7 +290,7 @@ msgstr "HTTP port konektoru"
 
 #: src/common/config.py:311
 msgid "Serve connector downloads and optionally MCP over HTTP. The admin UI stays on HTTPS. Use 0 to disable. Restart Themerr after changing this port."
-msgstr ""
+msgstr "Serve konektor stahuje a volitelně MCP přes HTTP. Admin UI zůstává na HTTPS. Použijte 0 pro vypnutí. Restartujte Themerr po změně tohoto portu."
 
 #: src/common/config.py:318
 msgid "Plex"
@@ -678,55 +678,55 @@ msgstr "Obnovení se nezdařilo. Zobrazení naposledy načtených záznamů."
 
 #: web/js/mcp.js:24
 msgid "Mask token"
-msgstr ""
+msgstr "Maska token"
 
 #: web/js/mcp.js:24 web/templates/config.html:64
 msgid "Show token"
-msgstr ""
+msgstr "Zobrazit token"
 
 #: web/js/mcp.js:55 web/templates/config.html:54 web/templates/config.html:72
 msgid "Read only"
-msgstr ""
+msgstr "Pouze pro čtení"
 
 #: web/js/mcp.js:55 web/templates/config.html:55 web/templates/config.html:72
 msgid "Read and process"
-msgstr ""
+msgstr "Číst a zpracovávat"
 
 #: web/js/mcp.js:64 web/templates/config.html:72
 msgid "Revoke"
-msgstr ""
+msgstr "Revoke"
 
 #: web/js/mcp.js:70 web/templates/config.html:72
 msgid "No MCP tokens created."
-msgstr ""
+msgstr "Nebyly vytvořeny žádné MCP tokeny."
 
 #: web/js/mcp.js:109
 msgid "MCP token created. Copy it into your client now."
-msgstr ""
+msgstr "MCP token byl vytvořen. Zkopírujte jej do svého klienta."
 
 #: web/js/mcp.js:126
 msgid "Revoke all MCP tokens and disconnect every client?"
-msgstr ""
+msgstr "Zrušit všechny MCP tokeny a odpojit každého klienta?"
 
 #: web/js/mcp.js:140
 msgid "Endpoint URL copied."
-msgstr ""
+msgstr "URL adresa koncového bodu zkopírována."
 
 #: web/js/mcp.js:144
 msgid "Copy the selected endpoint URL manually."
-msgstr ""
+msgstr "Kopírovat vybranou URL koncového bodu ručně."
 
 #: web/js/mcp.js:156
 msgid "MCP token copied."
-msgstr ""
+msgstr "MCP token zkopírován."
 
 #: web/js/mcp.js:161
 msgid "Copy the selected token manually."
-msgstr ""
+msgstr "Kopírovat vybraný token ručně."
 
 #: web/js/mcp.js:164
 msgid "Unable to copy. Show the token to copy it manually."
-msgstr ""
+msgstr "Nelze zkopírovat. Zobrazte token pro kopírování ručně."
 
 #: web/js/servers.js:32
 msgid "Verifying SSH connection…"
@@ -980,7 +980,7 @@ msgstr "Zabezpečení"
 
 #: web/templates/config.html:28 web/templates/config.html:41
 msgid "MCP integration"
-msgstr ""
+msgstr "Integrace MCP"
 
 #: web/templates/config.html:32
 msgid "Server connections, data directories, and ignored libraries are managed on the Servers page."
@@ -1012,91 +1012,91 @@ msgstr "Změnit heslo"
 
 #: web/templates/config.html:41
 msgid "Connect an assistant to your theme libraries. Create a separate token for each client."
-msgstr ""
+msgstr "Připojte asistenta ke knihovnám motivů. Vytvořte samostatný token pro každého klienta."
 
 #: web/templates/config.html:43
 msgid "Endpoint URL"
-msgstr ""
+msgstr "Endpoint URL"
 
 #: web/templates/config.html:46
 msgid "Copy endpoint URL"
-msgstr ""
+msgstr "Kopírovat URL koncového bodu"
 
 #: web/templates/config.html:48
 msgid "Choose Streamable HTTP in your client and use the token as its Bearer credential."
-msgstr ""
+msgstr "Vyberte si HTTP streamovatelný v klientovi a použijte token jako jeho přihlašovací údaje."
 
 #: web/templates/config.html:50
 msgid "Client name"
-msgstr ""
+msgstr "Název klienta"
 
 #: web/templates/config.html:51
 msgid "My assistant"
-msgstr ""
+msgstr "Můj asistent"
 
 #: web/templates/config.html:52
 msgid "Access"
-msgstr ""
+msgstr "Přístup"
 
 #: web/templates/config.html:57
 msgid "Read only allows library queries, activity, and logs. Read and process also allows library refreshes and selected-item retries under your existing overwrite settings."
-msgstr ""
+msgstr "Číst umožňuje pouze dotazy, aktivitu a logy knihovny. Číst a proces také umožňuje aktualizace knihovny a opakování vybraných položek pod existujícím nastavením."
 
 #: web/templates/config.html:58
 msgid "Create token"
-msgstr ""
+msgstr "Vytvořit token"
 
 #: web/templates/config.html:61
 msgid "Copy this token now. It will not be shown again."
-msgstr ""
+msgstr "Zkopírujte tento token nyní. Nebude znovu zobrazen."
 
 #: web/templates/config.html:65
 msgid "Copy token"
-msgstr ""
+msgstr "Kopírovat token"
 
 #: web/templates/config.html:67
 msgid "Done"
-msgstr ""
+msgstr "Hotovo"
 
 #: web/templates/config.html:69
 msgid "Client tokens"
-msgstr ""
+msgstr "Tokeny klienta"
 
 #: web/templates/config.html:70
 msgid "Changing your administrator password invalidates all existing tokens."
-msgstr ""
+msgstr "Změna hesla správce zneplatní všechny existující tokeny."
 
 #: web/templates/config.html:72
 msgid "Invalidated"
-msgstr ""
+msgstr "Zrušeno"
 
 #: web/templates/config.html:74
 msgid "Revoke all tokens"
-msgstr ""
+msgstr "Zrušit všechny tokeny"
 
 #: web/templates/config.html:75
 msgid "Example prompts"
-msgstr ""
+msgstr "Příklad dotazů"
 
 #: web/templates/config.html:77
 msgid "Show movies with failed themes on my Jellyfin server."
-msgstr ""
+msgstr "Zobrazit filmy s neúspěšnými motivy na mém serveru Jellyfin."
 
 #: web/templates/config.html:78
 msgid "What percentage of my Movies library has theme music?"
-msgstr ""
+msgstr "Jaké procento z mé knihovny filmů má hudbu motivu?"
 
 #: web/templates/config.html:79
 msgid "Check whether movie TMDB ID 123 is in ThemerrDB."
-msgstr ""
+msgstr "Zkontrolujte, zda je film TMDB ID 123 v ThemerrDB."
 
 #: web/templates/config.html:80
 msgid "Show recent YouTube extraction errors."
-msgstr ""
+msgstr "Zobrazit nedávné chyby extrakce YouTube."
 
 #: web/templates/config.html:81
 msgid "Refresh library metadata, then retry these selected items."
-msgstr ""
+msgstr "Aktualizujte metadata knihovny a zkuste tyto vybrané položky znovu."
 
 #: web/templates/config.html:84
 msgid "Save changes"
