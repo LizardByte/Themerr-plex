@@ -9,6 +9,7 @@
 about/installation
 about/docker
 about/usage
+about/mcp
 about/troubleshooting
 about/changelog
 ```

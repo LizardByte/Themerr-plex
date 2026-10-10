@@ -11,6 +11,30 @@ from fastapi.routing import APIRoute
 _STRING = {'type': 'string'}
 _ADD_SERVER = 'server_ui.add_server'
 _BODIES = {
+    'mcp.create_token': (
+        {
+            'name': {
+                'type': 'string',
+                'minLength': 1,
+                'maxLength': 64,
+            },
+            'scope': {
+                'type': 'string',
+                'enum': [
+                    'read',
+                    'process',
+                ],
+            },
+        },
+        [
+            'name',
+            'scope',
+        ],
+        {
+            'name': 'My assistant',
+            'scope': 'read',
+        },
+    ),
     'jellyfin.add_server': (
         {
             'url': _STRING,
@@ -153,6 +177,7 @@ def _describe_operation(route: APIRoute, operation: dict) -> None:
     statuses = {
         _ADD_SERVER: '201',
         'jellyfin.add_server': '201',
+        'mcp.create_token': '201',
         'server_ui.refresh': '202',
         'jellyfin.install_connector': '202',
     }

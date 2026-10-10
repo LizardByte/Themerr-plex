@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% macro setting_field(section, key, spec) %}
+{% macro setting_field(section, key, spec, form_id=None) %}
 {% set value = config_settings[section][key] %}
 {% set field_id = section ~ '-' ~ key %}
 <div class="setting-row {{ 'setting-row-switch' if spec.type == 'boolean' }}">
     <div class="setting-description"><label for="{{ field_id }}">{{ _(spec.name) }}</label><p id="{{ field_id }}-help">{{ _(spec.description) }}{% if spec.help_url %} <a href="{{ spec.help_url }}" target="_blank" rel="noopener noreferrer">{{ _(spec.help_label) }}<i data-lucide="arrow-up-right"></i></a>{% endif %}</p></div>
     <div class="setting-control">
-        {% if spec.type == 'boolean' %}<input id="{{ field_id }}" data-setting-key="{{ key }}" type="checkbox" class="form-check-input" category="{{ section }}" aria-describedby="{{ field_id }}-help" {% if value %}checked{% endif %}>
+        {% if spec.type == 'boolean' %}<input id="{{ field_id }}" data-setting-key="{{ key }}" type="checkbox" class="form-check-input" category="{{ section }}" {% if form_id %}form="{{ form_id }}"{% endif %} aria-describedby="{{ field_id }}-help" {% if value %}checked{% endif %}>
         {% elif spec.type == 'option' %}<select id="{{ field_id }}" data-setting-key="{{ key }}" class="form-select" category="{{ section }}" aria-describedby="{{ field_id }}-help">{% for option in spec.options %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ spec.option_names[loop.index0] }}</option>{% endfor %}</select>
         {% else %}
         <div class="{{ 'input-group' if spec.button_directory or spec.secret }}">
@@ -25,17 +25,61 @@
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">{{ _('TUNE YOUR WORKSPACE') }}</span><h1>{{ _('Settings') }}<span class="heading-dot">.</span></h1><p>{{ _('Make Themerr work the way your library does.') }}</p></div></div>
 <div class="settings-layout">
-    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for group in settings_groups %}{% set key = group.section %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ _(config_spec[key].name) }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a></nav>
+    <nav class="settings-nav" aria-label="{{ _('Settings sections') }}">{% for group in settings_groups %}{% set key = group.section %}<a href="#{{ key|lower }}"><i data-lucide="{{ config_spec[key].icon }}"></i>{{ _(config_spec[key].name) }}</a>{% endfor %}<a href="#security"><i data-lucide="shield-check"></i>{{ _('Security') }}</a><a href="#mcp"><i data-lucide="plug"></i>{{ _('MCP integration') }}</a></nav>
     <div class="settings-content">
         <form id="configForm" data-csrf-token="{{ csrf_token() }}" method="post">
         {% for group in settings_groups %}{% set section = group.section %}
-            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ _(config_spec[section].name) }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else _(config_spec[section].description) }}</p></div></div>
-                {% for key in group['keys'] %}{% set spec = config_spec[group.source][key] %}{% if not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' %}{{ setting_field(group.source, key, spec) }}{% endif %}{% endfor %}
+            <section class="panel settings-panel" id="{{ section|lower }}"><div class="section-heading"><div><h2>{{ _(config_spec[section].name) }}</h2><p>{{ _('Server connections, data directories, and ignored libraries are managed on the Servers page.') if section == 'Themerr' else _('Changes to network settings take effect after restarting Themerr.') if section == 'Network' else _(config_spec[section].description) }}</p></div><span class="auth-emblem" aria-hidden="true"><i data-lucide="{{ config_spec[section].icon }}"></i></span></div>
+                {% for key in group['keys'] %}{% set spec = config_spec[group.source][key] %}{% if not spec.locked and not spec.beta and key != 'IGNORED_LIBRARY_IDS' and key != 'MCP_HTTP' %}{{ setting_field(group.source, key, spec) }}{% endif %}{% endfor %}
             </section>
         {% endfor %}
         </form>
-        <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem"><i data-lucide="shield-check"></i></span></div>
+        <section class="panel settings-panel" id="security"><div class="section-heading"><div><h2>{{ _('Security') }}</h2><p>{{ _('One administrator for this installation. Change your password and sign out other sessions.') }}</p></div><span class="auth-emblem" aria-hidden="true"><i data-lucide="shield-check"></i></span></div>
             <form id="password-form" class="password-form"><label for="current-password">{{ _('Current password') }}</label><input id="current-password" name="current_password" type="password" class="form-control" autocomplete="current-password" required maxlength="256"><label for="new-password">{{ _('New password') }}</label><input id="new-password" name="password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><label for="confirm-new-password">{{ _('Confirm new password') }}</label><input id="confirm-new-password" name="confirm_password" type="password" class="form-control" autocomplete="new-password" required minlength="12" maxlength="256"><button type="submit" class="btn btn-outline-light">{{ _('Change password') }}</button></form>
+        </section>
+        <section class="panel settings-panel" id="mcp">
+            <div class="section-heading"><div><h2>{{ _('MCP integration') }}</h2><p>{{ _('Connect an assistant to your theme libraries. Create a separate token for each client.') }}</p></div><span class="auth-emblem" aria-hidden="true"><i data-lucide="plug"></i></span></div>
+            {{ setting_field('Network', 'MCP_HTTP', config_spec.Network.MCP_HTTP, 'configForm') }}
+            <label for="mcp-endpoint">{{ _('Endpoint URL') }}</label>
+            <div class="mcp-value-field mb-3">
+                <output id="mcp-endpoint" class="mcp-value" tabindex="-1">{{ mcp_endpoint }}</output>
+                <button id="mcp-copy-endpoint" type="button" class="icon-button" aria-label="{{ _('Copy endpoint URL') }}" title="{{ _('Copy endpoint URL') }}"><i data-lucide="copy" aria-hidden="true"></i></button>
+            </div>
+            <p>{{ _('Choose Streamable HTTP in your client and use the token as its Bearer credential.') }}</p>
+            <form id="mcp-token-form" class="password-form">
+                <label for="mcp-token-name">{{ _('Client name') }}</label>
+                <input id="mcp-token-name" class="form-control" name="name" type="text" required maxlength="64" placeholder="{{ _('My assistant') }}">
+                <label for="mcp-token-scope">{{ _('Access') }}</label>
+                <select id="mcp-token-scope" class="form-select" name="scope" aria-describedby="mcp-access-help">
+                    <option value="read">{{ _('Read only') }}</option>
+                    <option value="process">{{ _('Read and process') }}</option>
+                </select>
+                <p id="mcp-access-help">{{ _('Read only allows library queries, activity, and logs. Read and process also allows library refreshes and selected-item retries under your existing overwrite settings.') }}</p>
+                <button id="mcp-create-token" type="submit" class="btn btn-primary" data-mcp-mutation>{{ _('Create token') }}</button>
+            </form>
+            <div id="mcp-token-reveal" class="mt-3" hidden>
+                <label for="mcp-new-token">{{ _('Copy this token now. It will not be shown again.') }}</label>
+                <div class="mcp-value-field mb-2">
+                    <output id="mcp-new-token" class="mcp-value" tabindex="-1"></output>
+                    <button id="mcp-toggle-token" type="button" class="icon-button" aria-controls="mcp-new-token" aria-pressed="false" aria-label="{{ _('Show token') }}" title="{{ _('Show token') }}"><span id="mcp-show-token-icon" aria-hidden="true"><i data-lucide="eye"></i></span><span id="mcp-mask-token-icon" aria-hidden="true" hidden><i data-lucide="eye-off"></i></span></button>
+                    <button id="mcp-copy-token" type="button" class="icon-button" aria-label="{{ _('Copy token') }}" title="{{ _('Copy token') }}"><i data-lucide="copy" aria-hidden="true"></i></button>
+                </div>
+                <button id="mcp-hide-token" type="button" class="btn btn-outline-light">{{ _('Done') }}</button>
+            </div>
+            <h3 class="mt-4">{{ _('Client tokens') }}</h3>
+            <p>{{ _('Changing your administrator password invalidates all existing tokens.') }}</p>
+            <div id="mcp-token-list" class="mcp-token-list">
+                {% for token in mcp_tokens %}<div class="mcp-token-row"><div><strong>{{ token.name }}</strong><p>{{ _('Read only') if token.scope == 'read' else _('Read and process') }} · {{ token.created }}{% if not token.active %} · {{ _('Invalidated') }}{% endif %}</p></div><button type="button" class="btn btn-outline-light" data-mcp-revoke="{{ token.id }}" data-mcp-mutation>{{ _('Revoke') }}</button></div>{% else %}<p>{{ _('No MCP tokens created.') }}</p>{% endfor %}
+            </div>
+            <button id="mcp-revoke-all" type="button" class="btn btn-outline-light mt-3" data-mcp-mutation {% if not mcp_tokens %}disabled{% endif %}>{{ _('Revoke all tokens') }}</button>
+            <h3 class="mt-4">{{ _('Example prompts') }}</h3>
+            <ul class="mcp-prompt-examples">
+                <li>{{ _('Show movies with failed themes on my Jellyfin server.') }}</li>
+                <li>{{ _('What percentage of my Movies library has theme music?') }}</li>
+                <li>{{ _('Check whether movie TMDB ID 123 is in ThemerrDB.') }}</li>
+                <li>{{ _('Show recent YouTube extraction errors.') }}</li>
+                <li>{{ _('Refresh library metadata, then retry these selected items.') }}</li>
+            </ul>
         </section>
         <div class="settings-save-bar"><output id="settings-save-status" class="save-status">{{ _('All changes saved.') }}</output><button id="save-button" type="submit" form="configForm" class="btn btn-primary" disabled><i data-lucide="check"></i>{{ _('Save changes') }}</button></div>
     </div>

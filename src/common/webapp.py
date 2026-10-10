@@ -11,6 +11,7 @@ from threading import Event
 
 # lib imports
 from fastapi import APIRouter, Depends, FastAPI, Query, Request
+from starlette.routing import Route as _Route
 from starlette.responses import JSONResponse, PlainTextResponse, Response, StreamingResponse
 from starlette.requests import ClientDisconnect
 from starlette.middleware.sessions import SessionMiddleware
@@ -473,6 +474,12 @@ def settings(request: Request) -> Response:
     >>> settings(request)
     """
     config_settings = config.decode_config(common.CONFIG)
+    from common import mcp_auth
+    from jellyfin import repository
+    endpoint = request.url_for('mcp')
+    http_port = repository.mcp_http_port()
+    if http_port is not None:
+        endpoint = endpoint.replace(scheme='http', port=http_port)
     return render_template(
         request,
         'config.html',
@@ -486,6 +493,8 @@ def settings(request: Request) -> Response:
         },
         config_spec=config._CONFIG_SPEC_DICT,
         settings_groups=config.settings_groups(),
+        mcp_tokens=mcp_auth.list_tokens(),
+        mcp_endpoint=endpoint,
     )
 
 
@@ -969,7 +978,9 @@ def create_app(*, https_only: bool | None = None) -> FastAPI:
     --------
     >>> application = create_app(https_only=True)
     """
-    application = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+    from common import mcp_auth, mcp_server
+
+    application = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=mcp_server.lifespan)
     application.state.secret_key = secrets.token_hex(32)
     application.state.csrf_enabled = True
     application.state.static_directory = os.path.join(Paths.ROOT_DIR, 'web', 'assets')
@@ -979,6 +990,7 @@ def create_app(*, https_only: bool | None = None) -> FastAPI:
     application.add_middleware(SessionMiddleware, secret_key=application.state.secret_key,
                                max_age=12 * 60 * 60, same_site='lax', https_only=https_only)
     application.include_router(admin.router)
+    application.include_router(mcp_auth.router)
     integration_router = get_backend().web_router()
     application.include_router(integration_router)
     application.include_router(server_ui.router)
@@ -986,13 +998,21 @@ def create_app(*, https_only: bool | None = None) -> FastAPI:
 
     def openapi():
         if application.openapi_schema is None:
-            routes = [*admin.router.routes, *server_ui.router.routes, *integration_router.routes, *router.routes]
+            routes = [
+                *admin.router.routes,
+                *mcp_auth.router.routes,
+                *server_ui.router.routes,
+                *integration_router.routes,
+                *router.routes,
+            ]
             application.openapi_schema = api_docs.schema(routes)
         return application.openapi_schema
 
     application.openapi = openapi
     application.mount('/web/assets', SafeStaticFiles(directory=application.state.static_directory, check_dir=False),
                       name='static')
+    # Match only this endpoint so existing 404/405 handling stays with FastAPI.
+    application.router.routes.append(_Route('/mcp', endpoint=mcp_server.HttpEndpoint(), name='mcp'))
     application.add_exception_handler(HTTPException, browser_error)
     application.add_exception_handler(Exception, unexpected_error)
     logging_filter = admin._SetupLinkFilter()
@@ -1024,7 +1044,7 @@ def start_webapp() -> None:
     app = create_app()
     server_config = uvicorn.Config(
         app, host=config.CONFIG['Network']['HTTP_HOST'], port=config.CONFIG['Network']['HTTP_PORT'],
-        loop='asyncio', http='h11', ws='none', lifespan='off', proxy_headers=False, log_config=None,
+        loop='asyncio', http='h11', ws='none', lifespan='on', proxy_headers=False, log_config=None,
         ssl_certfile=cert_file, ssl_keyfile=key_file, timeout_graceful_shutdown=5,
     )
     _server = uvicorn.Server(server_config)

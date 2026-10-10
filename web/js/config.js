@@ -1,6 +1,7 @@
 import { api, toast } from './api.js';
 import { _ } from './i18n.js';
 import { refreshPage } from './workspace_navigation.js';
+import { initMcpTokens } from './mcp.js';
 
 function setSecretVisible(button, visible) {
     const label = visible ? _('Hide cookies') : _('Show cookies');
@@ -44,10 +45,12 @@ function markSecretsCleared(form, clearedSecrets, revealedSecrets, unchanged) {
 export function initSettings(signal) {
     const form = document.getElementById('configForm');
     if (!form) return;
+    initMcpTokens(signal);
     const save = document.getElementById('save-button');
     const status = document.getElementById('settings-save-status');
     const locale = document.getElementById('General-LOCALE') || document.getElementById('LOCALE');
     const pageLocale = locale.value;
+    const linkedFields = document.querySelectorAll('[form="configForm"][category]');
     let dirty = false;
     let revision = 0;
     const revealedSecrets = new Map();
@@ -82,6 +85,7 @@ export function initSettings(signal) {
     }
     form.addEventListener('input', markDirty);
     form.addEventListener('change', markDirty);
+    linkedFields.forEach(field => field.addEventListener('change', markDirty, { signal }));
     window.addEventListener('beforeunload', event => {
         if (dirty) event.preventDefault();
     }, { signal });
@@ -93,7 +97,11 @@ export function initSettings(signal) {
         if (!form.reportValidity()) return;
         const data = new FormData();
         const secretFields = [];
-        form.querySelectorAll('[category]').forEach(field => {
+        const settingsFields = [
+            ...form.querySelectorAll('[category]'),
+            ...linkedFields,
+        ];
+        settingsFields.forEach(field => {
             if (field.dataset.secret && !field.value) return;
             if (field.dataset.secret && field.value === revealedSecrets.get(field)) return;
             if (!field.disabled) data.append(`${field.getAttribute('category')}|${field.dataset.settingKey || field.id}`,

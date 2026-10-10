@@ -40,6 +40,7 @@ def test_create_config_creates_missing_parent_directories(tmp_path, monkeypatch,
 
     assert filename.is_file()
     assert loaded['Network']['HTTP_PORT'] == 9494
+    assert loaded['Network']['MCP_HTTP'] is False
     reloaded = config.create_config(str(filename))
     assert reloaded == loaded
 

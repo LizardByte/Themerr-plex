@@ -295,7 +295,7 @@ def change_password(request: Request, form=Depends(read_form)):
 
 
 def _require_admin(request: Request):
-    """Reject private requests without a current admin session.
+    """Reject private requests without the required browser credentials.
 
     Returns
     -------
@@ -353,6 +353,11 @@ class BrowserSecurityMiddleware:
     async def __call__(self, scope, receive, send):
         """Apply authentication, CSRF validation, and security headers to HTTP traffic."""
         if scope['type'] != 'http':
+            await self.app(scope, receive, send)
+            return
+        if scope['path'] == '/mcp':
+            # The endpoint owns bearer authentication on both HTTP and HTTPS listeners.
+            # Its SDK supplies body limits and Host/Origin checks; browser sessions never authorize it.
             await self.app(scope, receive, send)
             return
         request = Request(scope, receive)
