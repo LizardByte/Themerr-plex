@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM --platform=$BUILDPLATFORM ghcr.io/astral-sh/uv:0.12 AS connector-uv
+FROM --platform=$BUILDPLATFORM ghcr.io/astral-sh/uv:0.13 AS connector-uv
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:11.0 AS connector
 COPY --from=connector-uv /uv /usr/local/bin/uv
@@ -18,7 +18,7 @@ FROM denoland/deno:alpine-2.9.7 AS deno
 
 FROM python:3.14-alpine3.24 AS build
 
-COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.13 /uv /usr/local/bin/uv
 
 # install build dependencies
 RUN apk add --no-cache binutils npm
