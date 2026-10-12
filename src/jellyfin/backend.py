@@ -32,6 +32,7 @@ def _items(connection, **params):
             '/Items',
             params={
                 'Recursive': True,
+                'CollapseBoxSetItems': False,
                 'IncludeItemTypes': 'Movie,Series,BoxSet',
                 'Fields': 'ProviderIds,LockData',
                 'StartIndex': offset,
