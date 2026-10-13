@@ -876,14 +876,14 @@ wheels = [
 
 [[package]]
 name = "lizardbyte-dockle"
-version = "2026.1006.111"
+version = "2026.1012.133225"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "markdown" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/23/99/a7483e5f7f4c2a5d2a35daf6e2b1ed9d587f0e6ebf06b65d5858419bec93/lizardbyte_dockle-2026.1006.111.tar.gz", hash = "sha256:532024375cfcc79be68092c93c489e98a674fb5413711f50fbbe9b004e8da368", size = 521286, upload-time = "2026-10-06T00:55:32.958Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/2b/badc4eb3fa2269cc587c3a3a9c11c2a90c6a6043e1e36d36424a33becae6/lizardbyte_dockle-2026.1012.133225.tar.gz", hash = "sha256:b40017b48dd48fc4f74c1daf0913c38e8a794327072a8444b182985e0d0f212f", size = 523362, upload-time = "2026-10-12T13:53:17.518Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/31/b60fa6ac823a5f3d92ded76b8e07511d1368f83baf5f3013c57c62a40173/lizardbyte_dockle-2026.1006.111-py3-none-any.whl", hash = "sha256:c13fa7491a0e286b0dc017c87a997e9a05b2ea5afa6dabaa63e8cd999711f50f", size = 535149, upload-time = "2026-10-06T00:55:31.033Z" },
+    { url = "https://files.pythonhosted.org/packages/3f/9b/52c3633b6586bd2b8afeb4f087881c2001f6c069c00f81627485d62f82a9/lizardbyte_dockle-2026.1012.133225-py3-none-any.whl", hash = "sha256:61200e5819c5fc783f704e13ae8ee029091ea2f8b04456ea529d479b8ed3e14b", size = 537178, upload-time = "2026-10-12T13:53:15.774Z" },
 ]
 
 [package.optional-dependencies]
@@ -2159,7 +2159,7 @@ requires-dist = [
     { name = "itsdangerous", specifier = "==2.2.0" },
     { name = "jinja2", specifier = "==3.1.6" },
     { name = "keyring", specifier = "==25.7.0" },
-    { name = "lizardbyte-dockle", extras = ["sphinx"], marker = "extra == 'docs'", specifier = "==2026.1006.111" },
+    { name = "lizardbyte-dockle", extras = ["sphinx"], marker = "extra == 'docs'", specifier = "==2026.1012.133225" },
     { name = "mcp", specifier = "==2.3.0" },
     { name = "numpydoc", marker = "extra == 'docs'", specifier = "==1.11.0" },
     { name = "packaging", specifier = "==26.3" },
