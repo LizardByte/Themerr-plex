@@ -48,7 +48,6 @@ dev = [
 ]
 docs = [
     "breathe==5.1.0",
-    "lizardbyte-dockle[sphinx]==2026.1006.111",
     "numpydoc==1.11.0",
     "rstcheck[sphinx]==6.3.0",
 ]
