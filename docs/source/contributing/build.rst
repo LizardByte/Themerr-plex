@@ -110,10 +110,13 @@ environment with pinned Doxygen and Graphviz versions:
    git submodule update --init --recursive
    conda env create --file third-party/dockle/environment.yml
    conda activate dockle-docs
-   uv run --locked --extra docs python -m dockle check
-   uv run --locked --extra docs python -m dockle build
+   npm --prefix third-party/dockle ci --ignore-scripts
+   npm --prefix third-party/dockle run build
+   uv run --locked --extra docs --with-editable './third-party/dockle[sphinx]' python -m dockle check
+   uv run --locked --extra docs --with-editable './third-party/dockle[sphinx]' python -m dockle build
 
-Dockle writes the local site to ``_site``.
+These commands load Dockle from the pinned submodule. The docs extra installs Themerr's documentation
+dependencies; Dockle is not installed from PyPI. Dockle writes the local site to ``_site``.
 
 Dockle generates the connector's Doxygen XML before building Sphinx. Breathe and the pinned
 ``third-party/sphinx-csharp`` extension render its C# API alongside the Python reference, with links to
