@@ -9,7 +9,7 @@
   "dependencies": {
     "@fontsource/open-sans": "5.3.0",
     "bootstrap": "5.3.8",
-    "lucide": "1.55.0",
+    "lucide": "1.56.0",
     "swagger-ui-dist": "5.33.2"
   },
   "devDependencies": {
