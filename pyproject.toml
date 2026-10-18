@@ -20,7 +20,7 @@ dependencies = [
     "keyring==25.7.0",
     "mcp==2.3.0",
     "packaging==26.3",
-    "paramiko==5.0.0",
+    "paramiko==5.1.0",
     "pillow==12.3.0",
     "plexapi[alert]==4.18.3",
     "polib==1.2.0",
