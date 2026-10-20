@@ -4,21 +4,24 @@
 import sys
 import runpy
 
+_MICROSOFT_SEARCH_URL = 'https://learn.microsoft.com/en-us/search/?scope=.NET&terms=%s'
+_JELLYFIN_SEARCH_URL = 'https://github.com/jellyfin/jellyfin/search?q=%s&type=code'
+_ASPNETCORE_MVC_NAMESPACE = 'Microsoft.AspNetCore.Mvc'
+_EXTENSIONS_LOGGING_NAMESPACE = 'Microsoft.Extensions.Logging'
+_ENTITY_FRAMEWORK_CORE_NAMESPACE = 'Microsoft.EntityFrameworkCore'
+
 # Add the standalone source tree for autodoc.
 sys.path.insert(0, str(dockle_project_root / 'src'))  # noqa: F821 - injected by Dockle
-sys.path.insert(0, str(dockle_project_root / 'third-party' / 'sphinx-csharp'))  # noqa: F821
-sys.path.insert(0, str(dockle_project_root / 'docs'))  # noqa: F821
 
 extensions.extend(  # noqa: F821 - injected by Dockle
     [
+        'sphinx_csharp',
         'breathe',
-        'connector_docs',
         'numpydoc',
         'sphinx.ext.autosectionlabel',
         'sphinx.ext.intersphinx',
         'sphinx.ext.todo',
         'sphinx.ext.viewcode',
-        'sphinx_csharp',
     ]
 )
 
@@ -76,52 +79,62 @@ breathe_projects = {
 }
 breathe_domain_by_extension = {'cs': 'cs'}
 sphinx_csharp_multi_language = True
-sphinx_csharp_test_links = True
-sphinx_csharp_ext_search_pages = {
-    'msdn': (f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=net-{dotnet_version}',),
-    'System': (f'https://learn.microsoft.com/en-us/dotnet/api/system.%s?view=net-{dotnet_version}',),
-    'Microsoft.AspNetCore.Mvc': (
-        f'https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.%s?view=aspnetcore-{dotnet_version}',
+sphinx_csharp_check_external_links = True
+sphinx_csharp_external_search_pages = {
+    'msdn': (
+        f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=net-{dotnet_version}',
+        _MICROSOFT_SEARCH_URL,
     ),
-    'Microsoft.Extensions.Logging': (
-        f'https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.%s?view=net-{dotnet_version}',
+    _ASPNETCORE_MVC_NAMESPACE: (
+        f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=aspnetcore-{dotnet_version}',
+        _MICROSOFT_SEARCH_URL,
     ),
-    'Microsoft.EntityFrameworkCore': (
-        'https://learn.microsoft.com/en-us/dotnet/api/'
-        f'microsoft.entityframeworkcore.%s?view=efcore-{efcore_doc_version}',
+    _EXTENSIONS_LOGGING_NAMESPACE: (
+        f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=net-{dotnet_version}',
+        _MICROSOFT_SEARCH_URL,
     ),
-    'Jellyfin.Common.Configuration': (f'{jellyfin_source}/MediaBrowser.Common/Configuration/%s.cs',),
-    'Jellyfin.Common.Plugins': (f'{jellyfin_source}/MediaBrowser.Common/Plugins/%s.cs',),
-    'Jellyfin.Controller.Library': (f'{jellyfin_source}/MediaBrowser.Controller/Library/%s.cs',),
-    'Jellyfin.Model.Plugins': (f'{jellyfin_source}/MediaBrowser.Model/Plugins/%s.cs',),
-    'Jellyfin.Model.Serialization': (f'{jellyfin_source}/MediaBrowser.Model/Serialization/%s.cs',),
+    _ENTITY_FRAMEWORK_CORE_NAMESPACE: (
+        f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=efcore-{efcore_doc_version}',
+        _MICROSOFT_SEARCH_URL,
+    ),
+    'Jellyfin.Common.Configuration': (
+        f'{jellyfin_source}/MediaBrowser.Common/Configuration/%s.cs',
+        _JELLYFIN_SEARCH_URL,
+    ),
+    'Jellyfin.Common.Plugins': (
+        f'{jellyfin_source}/MediaBrowser.Common/Plugins/%s.cs',
+        _JELLYFIN_SEARCH_URL,
+    ),
+    'Jellyfin.Controller.Library': (
+        f'{jellyfin_source}/MediaBrowser.Controller/Library/%s.cs',
+        _JELLYFIN_SEARCH_URL,
+    ),
+    'Jellyfin.Model.Plugins': (
+        f'{jellyfin_source}/MediaBrowser.Model/Plugins/%s.cs',
+        _JELLYFIN_SEARCH_URL,
+    ),
+    'Jellyfin.Model.Serialization': (
+        f'{jellyfin_source}/MediaBrowser.Model/Serialization/%s.cs',
+        _JELLYFIN_SEARCH_URL,
+    ),
 }
-sphinx_csharp_ext_type_map = {
-    'System': {
-        '': [
-            'Exception',
-            'Guid',
-        ],
-        'IO': ['Stream'],
-        'Threading': ['CancellationToken'],
-        'Threading.Tasks': ['Task'],
-    },
-    'Microsoft.AspNetCore.Mvc': {
-        '': [
-            'ActionResult',
+sphinx_csharp_external_type_map = {
+    _ASPNETCORE_MVC_NAMESPACE: {
+        _ASPNETCORE_MVC_NAMESPACE: [
+            'ActionResult-1',
             'ControllerBase',
         ],
     },
-    'Microsoft.Extensions.Logging': {'': ['ILogger']},
-    'Microsoft.EntityFrameworkCore': {
-        '': [
+    _EXTENSIONS_LOGGING_NAMESPACE: {_EXTENSIONS_LOGGING_NAMESPACE: ['ILogger-1']},
+    _ENTITY_FRAMEWORK_CORE_NAMESPACE: {
+        _ENTITY_FRAMEWORK_CORE_NAMESPACE: [
             'DbContext',
-            'DbContextOptions',
-            'DbSet',
+            'DbContextOptions-1',
+            'DbSet-1',
             'ModelBuilder',
         ],
-        'Infrastructure': ['ModelSnapshot'],
-        'Migrations': [
+        'Microsoft.EntityFrameworkCore.Infrastructure': ['ModelSnapshot'],
+        'Microsoft.EntityFrameworkCore.Migrations': [
             'Migration',
             'MigrationBuilder',
         ],
@@ -133,9 +146,5 @@ sphinx_csharp_ext_type_map = {
     'Jellyfin.Model.Serialization': {'': ['IXmlSerializer']},
 }
 sphinx_csharp_external_type_rename = {
-    'ActionResult': 'ActionResult-1',
-    'DbContextOptions': 'DbContextOptions-1',
-    'DbSet': 'DbSet-1',
-    'ILogger': 'ILogger-1',
     'BasePlugin': 'BasePluginOfT',
 }

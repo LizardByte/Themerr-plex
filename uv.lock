@@ -1904,6 +1904,18 @@ wheels = [
 ]
 
 [[package]]
+name = "sphinx-csharp"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/35/21/9bebd36ffbad6e5bb5fc3dec2a2a148ee71200fc461c849ba8c8f455b52a/sphinx_csharp-1.0.0.tar.gz", hash = "sha256:06fa944ea206613fea8d3542c1fea666acb4e8389cfd36c930a9938cca396f79", size = 73834, upload-time = "2026-10-20T20:02:18.19Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cd/9f/86d5c5c50fd5a6052a772c46a20236d704e0c7bb1b22af762449138215d7/sphinx_csharp-1.0.0-py3-none-any.whl", hash = "sha256:423c28e45ad9a1e36b770dc04b6e4cbb7d6afae497bd2014a788ffe171e5f2d1", size = 38772, upload-time = "2026-10-20T20:02:16.979Z" },
+]
+
+[[package]]
 name = "sphinxcontrib-applehelp"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2084,6 +2096,7 @@ docs = [
     { name = "breathe" },
     { name = "numpydoc" },
     { name = "rstcheck", extra = ["sphinx"] },
+    { name = "sphinx-csharp" },
 ]
 
 [package.metadata]
@@ -2119,6 +2132,7 @@ requires-dist = [
     { name = "requests-cache", specifier = "==1.3.3" },
     { name = "rstcheck", extras = ["sphinx"], marker = "extra == 'docs'", specifier = "==6.3.0" },
     { name = "schedule", specifier = "==1.2.2" },
+    { name = "sphinx-csharp", marker = "extra == 'docs'", specifier = "==1.0.0" },
     { name = "sqlalchemy", specifier = "==2.1.5" },
     { name = "starlette", specifier = "==1.8.0" },
     { name = "urllib3", specifier = "==2.8.0" },
