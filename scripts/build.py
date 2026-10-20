@@ -47,10 +47,13 @@ def build():
             encoding='utf-8',
         )
     build_connector()
+    # Docker supplies Deno separately to isolate its glibc libraries from musl.
+    docker = bool(os.getenv('THEMERR_DOCKER'))
     pyinstaller_args = [
         './src/main.py',
         '--name=themerr',
-        '--onedir' if sys.platform == 'darwin' else '--onefile',
+        # One-file builds re-extract the whole bundle for every launch, including each Docker healthcheck.
+        '--onedir' if sys.platform == 'darwin' or docker else '--onefile',
         '--noconfirm',
         '--paths=./src',
         '--collect-all=av',
@@ -65,8 +68,6 @@ def build():
         '--icon=./web/images/favicon.ico',
     ]
 
-    # Docker supplies Deno separately to isolate its glibc libraries from musl.
-    docker = bool(os.getenv('THEMERR_DOCKER'))
     if not docker:
         pyinstaller_args.append(f'--add-binary={_deno_binary()}{os.pathsep}.')
 

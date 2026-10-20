@@ -55,10 +55,11 @@ COPY --from=deno /lib/ld-linux-* /lib/
 COPY --from=deno /lib64/ /lib64/
 
 # PyInstaller bundles Python, dependencies, web assets, locales, and connectors.
-COPY --from=build /build/dist/themerr /usr/local/bin/themerr
+COPY --from=build /build/dist/themerr/ /opt/themerr/
 COPY --from=build /build/LICENSE /app/LICENSE
 
 # setup remaining env variables
+ENV PATH="/opt/themerr:$PATH"
 ENV THEMERR_DOCKER=True
 
 # network setup

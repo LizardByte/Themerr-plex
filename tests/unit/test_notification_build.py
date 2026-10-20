@@ -103,7 +103,8 @@ def test_docker_build_uses_external_deno_without_splash(monkeypatch):
     builder.build()
 
     arguments = bundle.call_args.args[0]
-    assert '--onefile' in arguments
+    assert '--onedir' in arguments
+    assert '--onefile' not in arguments
     assert any(value.startswith('--add-data=jellyfin-connector') for value in arguments)
     assert not any(value.startswith('--add-binary=') for value in arguments)
     assert not any(value.startswith('--splash=') for value in arguments)
