@@ -118,8 +118,8 @@ environment with pinned Doxygen and Graphviz versions:
 These commands load Dockle from the pinned submodule. The docs extra installs Themerr's documentation
 dependencies; Dockle is not installed from PyPI. Dockle writes the local site to ``_site``.
 
-Dockle generates the connector's Doxygen XML before building Sphinx. Breathe and the pinned
-``third-party/sphinx-csharp`` extension render its C# API alongside the Python reference, with links to
+Dockle generates the connector's Doxygen XML before building Sphinx. Breathe and the upstream
+``sphinx-csharp`` package pinned in the docs extra render its C# API alongside the Python reference, with links to
 Jellyfin and Microsoft dependency documentation. Missing documentation, parameter descriptions, and
 documentation warnings fail the build. Write C# XML comments for types and members, and use
 ``see``/``seealso`` references for related types. See :doc:`../src/jellyfin_connector` for the generated API.
