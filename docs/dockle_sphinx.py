@@ -4,6 +4,12 @@
 import sys
 import runpy
 
+_MICROSOFT_SEARCH_URL = 'https://learn.microsoft.com/en-us/search/?scope=.NET&terms=%s'
+_JELLYFIN_SEARCH_URL = 'https://github.com/jellyfin/jellyfin/search?q=%s&type=code'
+_ASPNETCORE_MVC_NAMESPACE = 'Microsoft.AspNetCore.Mvc'
+_EXTENSIONS_LOGGING_NAMESPACE = 'Microsoft.Extensions.Logging'
+_ENTITY_FRAMEWORK_CORE_NAMESPACE = 'Microsoft.EntityFrameworkCore'
+
 # Add the standalone source tree for autodoc.
 sys.path.insert(0, str(dockle_project_root / 'src'))  # noqa: F821 - injected by Dockle
 
@@ -77,51 +83,51 @@ sphinx_csharp_check_external_links = True
 sphinx_csharp_external_search_pages = {
     'msdn': (
         f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=net-{dotnet_version}',
-        'https://learn.microsoft.com/en-us/search/?scope=.NET&terms=%s',
+        _MICROSOFT_SEARCH_URL,
     ),
-    'Microsoft.AspNetCore.Mvc': (
+    _ASPNETCORE_MVC_NAMESPACE: (
         f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=aspnetcore-{dotnet_version}',
-        'https://learn.microsoft.com/en-us/search/?scope=.NET&terms=%s',
+        _MICROSOFT_SEARCH_URL,
     ),
-    'Microsoft.Extensions.Logging': (
+    _EXTENSIONS_LOGGING_NAMESPACE: (
         f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=net-{dotnet_version}',
-        'https://learn.microsoft.com/en-us/search/?scope=.NET&terms=%s',
+        _MICROSOFT_SEARCH_URL,
     ),
-    'Microsoft.EntityFrameworkCore': (
+    _ENTITY_FRAMEWORK_CORE_NAMESPACE: (
         f'https://learn.microsoft.com/en-us/dotnet/api/%s?view=efcore-{efcore_doc_version}',
-        'https://learn.microsoft.com/en-us/search/?scope=.NET&terms=%s',
+        _MICROSOFT_SEARCH_URL,
     ),
     'Jellyfin.Common.Configuration': (
         f'{jellyfin_source}/MediaBrowser.Common/Configuration/%s.cs',
-        'https://github.com/jellyfin/jellyfin/search?q=%s&type=code',
+        _JELLYFIN_SEARCH_URL,
     ),
     'Jellyfin.Common.Plugins': (
         f'{jellyfin_source}/MediaBrowser.Common/Plugins/%s.cs',
-        'https://github.com/jellyfin/jellyfin/search?q=%s&type=code',
+        _JELLYFIN_SEARCH_URL,
     ),
     'Jellyfin.Controller.Library': (
         f'{jellyfin_source}/MediaBrowser.Controller/Library/%s.cs',
-        'https://github.com/jellyfin/jellyfin/search?q=%s&type=code',
+        _JELLYFIN_SEARCH_URL,
     ),
     'Jellyfin.Model.Plugins': (
         f'{jellyfin_source}/MediaBrowser.Model/Plugins/%s.cs',
-        'https://github.com/jellyfin/jellyfin/search?q=%s&type=code',
+        _JELLYFIN_SEARCH_URL,
     ),
     'Jellyfin.Model.Serialization': (
         f'{jellyfin_source}/MediaBrowser.Model/Serialization/%s.cs',
-        'https://github.com/jellyfin/jellyfin/search?q=%s&type=code',
+        _JELLYFIN_SEARCH_URL,
     ),
 }
 sphinx_csharp_external_type_map = {
-    'Microsoft.AspNetCore.Mvc': {
-        'Microsoft.AspNetCore.Mvc': [
+    _ASPNETCORE_MVC_NAMESPACE: {
+        _ASPNETCORE_MVC_NAMESPACE: [
             'ActionResult-1',
             'ControllerBase',
         ],
     },
-    'Microsoft.Extensions.Logging': {'Microsoft.Extensions.Logging': ['ILogger-1']},
-    'Microsoft.EntityFrameworkCore': {
-        'Microsoft.EntityFrameworkCore': [
+    _EXTENSIONS_LOGGING_NAMESPACE: {_EXTENSIONS_LOGGING_NAMESPACE: ['ILogger-1']},
+    _ENTITY_FRAMEWORK_CORE_NAMESPACE: {
+        _ENTITY_FRAMEWORK_CORE_NAMESPACE: [
             'DbContext',
             'DbContextOptions-1',
             'DbSet-1',
